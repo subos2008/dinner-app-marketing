@@ -1,0 +1,37 @@
+# Dinner Matcher - Marketing
+
+## What is this?
+Marketing repo for Dinner Matcher — an app that solves loneliness by connecting people over dinner. Groups of 6 strangers are matched and booked into dinners together.
+
+## The Problem
+Loneliness. People struggle to meet the *right* people who can move their lives forward.
+
+## The Product
+- Onboarding app asks meaningful matching questions
+- Dinners of 6 strangers, matched intentionally
+- Questions that actually matter: alcohol preferences, dietary requirements, "what do you want more of in your life?"
+
+## Key Differentiator
+Competitors ask "psychology" questions they don't actually use for matching. We ask practical, meaningful questions that directly inform who you're seated with.
+
+## Brand Voice
+- Honest, warm, direct
+- Anti-corporate, anti-gimmick
+- We're solving a real problem, not gamifying loneliness
+
+## Repo Purpose
+This is NOT the tech/product repo. Apps, websites, and product code live elsewhere.
+
+This repo is for:
+- **Marketing strategy** — customer profiling, audience research, positioning
+- **Idea exploration** — kick around concepts, build on them, iterate
+- **Ad copy generation** — write and refine copy for campaigns
+- **Marketing automation** — build tools/skills to connect AI to Meta's ad platform
+- **Launch materials** — campaign assets and collateral
+
+## Platform
+- Primary ad platform: **Meta** (Facebook/Instagram)
+- Need to connect AI tooling to Meta's marketing APIs for automation
+
+## Ways of Working
+This repo is a thinking space. We explore ideas, refine them, and produce actionable marketing output. Not everything here ships — some of it is just us working through the problem.
