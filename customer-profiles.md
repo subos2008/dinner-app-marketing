@@ -106,24 +106,103 @@
 
 ---
 
+### 5. The Sober One
+**Who:** Doesn't drink. Either never has, or has had a difficult journey with alcohol — could be in recovery, could be years into sobriety, could just be done with it. The reason doesn't matter. What matters is that most social situations are built around drinking, and that's exhausting.
+
+**Age skew:** 25-45
+
+**Emotional state:** Ranges widely. Some are quietly confident in their sobriety and just tired of explaining it. Others are more fragile — early recovery, still navigating social situations without a drink in hand. Both need the same thing: a space where not drinking is normal, not something to justify.
+
+**Trigger:** Being invited somewhere and the first question is "what are you drinking?" Watching a friend group dynamic change when they order water. Wanting to go out but knowing every option revolves around a bar.
+
+**What they'd tell a friend:** "I just want to hang out with people where it's not weird that I don't drink."
+
+**Meta targeting signals:**
+- Interests: sobriety, sober curious, alcohol-free living, AA/recovery communities
+- Follows accounts like Sober Girl Society, Club Soda, One Year No Beer, AF Drinks
+- Engages with wellness, mindfulness, mental health content
+- May follow alcohol-free bars/restaurants, mocktail content
+- Age 25-45
+
+**Messaging hook:** A dinner where nobody asks why you're not drinking.
+
+**Why this segment matters:**
+- **Deep product-market fit** — our matching questions include alcohol preferences. This isn't a bolt-on feature, it's core to what we do. Competitors don't match on this.
+- **Underserved and vocal** — sober communities are active, supportive, and share resources aggressively. One good experience gets amplified.
+- **Emotional resonance** — the copy almost writes itself because the pain point is so specific and so real.
+- **Cross-cuts other segments** — a sober Transplant, a sober Explorer, a sober Quiet One. This is a lens that layers on top of the life-situation segments.
+
+---
+
+### 6. The Plant-Based One
+**Who:** Vegan or plant-based, and tired of being the awkward one at the table. Doesn't want to sit across from someone eating steak. Wants to be matched with other plant-based people at plant-based restaurants.
+
+**Age skew:** 22-38
+
+**Emotional state:** Has accepted that most social dining isn't built for them. Either they compromise (sit at a steakhouse, order the one sad salad) or they opt out. Neither feels good. They want a table where their values are the default, not the exception.
+
+**Trigger:** Being dragged to a restaurant where the "vegan option" is chips. Or scanning a menu and finding one thing they can eat while everyone else has the full menu. Or just wanting to eat out with people who get it.
+
+**What they'd tell a friend:** "I don't want to make it a thing, I just want to eat somewhere good with people who eat like me."
+
+**Meta targeting signals:**
+- Interests: veganism, plant-based diet, animal rights, sustainability, ethical living
+- Follows accounts like BOSH!, Earthling Ed, plant-based restaurants, vegan food bloggers
+- Engages with environmental, climate, ethical consumption content
+- May follow specific vegan restaurants in their city
+- Age 22-38
+
+**Messaging hook:** A dinner where the whole table eats like you do.
+
+**Why this segment matters:**
+- **Another core matching question** — dietary requirements are literally in our onboarding. This is what we do.
+- **Highly targetable on Meta** — veganism is a clearly defined interest with strong community signals
+- **Restaurant partnership angle** — matching plant-based people means booking plant-based restaurants, which opens up partnerships and co-marketing
+- **Identity-driven** — being vegan is often a core identity, not just a food preference. Ads that speak to this directly will resonate hard.
+- **Cross-cuts other segments** — like sobriety, this layers on top. A vegan Transplant new to Manchester wants to know where to eat AND who to eat with.
+
+---
+
+## Lifestyle Segments vs Life-Situation Segments
+
+The first four profiles (Transplant, Outgrower, Quiet One, Explorer) are **life-situation segments** — defined by where someone is in life.
+
+The Sober One and The Plant-Based One are **lifestyle segments** — defined by how someone lives. They cross-cut the life-situation segments and can be layered on top for highly specific targeting.
+
+This is a strength. It means we can run:
+- Broad campaigns: "New to Manchester? Meet your people."
+- Layered campaigns: "New to Manchester and sober? Meet your people."
+- Lifestyle-specific campaigns: "A vegan dinner with 5 people who actually get it."
+
+This mirrors how our matching actually works — multiple dimensions, not just one.
+
+---
+
 ## Secondary Segments (Future / Worth Watching)
 
-### 5. The Life Changer
+### 7. The Life Changer
 Post-breakup, post-divorce, new parent whose friend group shifted. Social circle disrupted by circumstance. Similar to The Transplant but didn't move — their life moved around them.
 
-### 6. The Expat / International
+### 8. The Expat / International
 Non-native English speaker in a new country. Extra isolation layer — cultural and linguistic. Huge in London and US cities. Could be a powerful niche.
 
 ---
 
 ## Segment Prioritisation for Meta Ads
 
+### Life-Situation Segments
 | Segment | Ease of targeting | Willingness to act | Volume | Priority |
 |---|---|---|---|---|
 | The Transplant | High (location change data) | High (actively looking) | Medium | **#1 — Launch with this** |
 | The Explorer | High (interest + location data) | High (time-limited, urgent) | Low-Medium | **#2 — High-value early adopter** |
 | The Outgrower | Medium (interest-based) | Medium (needs the right nudge) | High | **#3 — Scale with this** |
 | The Quiet One | Low (passive, hard to identify) | Low (high barrier) | High | **#4 — Content/brand play** |
+
+### Lifestyle Segments (layer on top of the above)
+| Segment | Ease of targeting | Willingness to act | Volume | Priority |
+|---|---|---|---|---|
+| The Sober One | High (interest + community signals) | High (underserved, specific need) | Medium | **Run alongside launch — strong differentiator** |
+| The Plant-Based One | High (clear interest signals) | High (identity-driven) | Medium | **Run alongside launch — easy to target, partnership potential** |
 
 ---
 
@@ -136,6 +215,8 @@ Non-native English speaker in a new country. Extra isolation layer — cultural 
 **The Outgrower** is the scale segment. Bigger pool, but needs more sophisticated messaging. They don't think of themselves as lonely — you have to frame it as growth, not fixing a problem.
 
 **The Quiet One** won't respond to ads that say "meet new people!" — they've heard it before. This segment needs trust-building content: testimonials, stories, a brand that feels safe. Less performance marketing, more organic/brand.
+
+**The Sober One** and **The Plant-Based One** are lifestyle segments that layer on top. They can run as standalone campaigns or combined with life-situation targeting ("New to Manchester and sober?"). These are strong differentiators — they prove we actually use our matching questions, unlike competitors. Both have active, vocal communities that share resources, so word-of-mouth potential is high.
 
 ---
 

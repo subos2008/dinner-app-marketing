@@ -203,12 +203,137 @@
 
 ---
 
+## The Sober One
+*Doesn't drink. Tired of every social situation revolving around alcohol.*
+
+### Feed Ads
+
+**Ad 1 — The Question**
+> "What are you drinking?"
+>
+> Four words that make every night out harder than it needs to be.
+>
+> Dinner Matcher asks you upfront: do you drink? And we actually use your answer. We'll seat you with 5 people who won't make it weird, at a dinner where alcohol isn't the main event.
+>
+> Just good food, good people, no explaining yourself.
+
+**Ad 2 — The Real Social Life**
+> You stopped drinking. You didn't stop wanting a social life.
+>
+> But somewhere along the way, the two got tangled up — and now every invite comes with a calculation. Will there be pressure? Will it be awkward? Will someone ask?
+>
+> We match you with 5 people for dinner. We know you don't drink. So do they. Nobody's counting your glasses. Nobody's asking why.
+>
+> Book a seat.
+
+**Ad 3 — The Differentiator**
+> Most social apps pretend to match you on personality.
+>
+> We ask if you drink.
+>
+> Sounds simple. But it means we can seat you at a dinner with 5 people where sobriety isn't a conversation — it's just the table.
+>
+> That's what matching on things that actually matter looks like.
+
+**Ad 4 — Never Drank**
+> You've never been a drinker. It's not a big deal to you.
+>
+> But it's a big deal to every social situation you've ever been in.
+>
+> Dinner Matcher seats you with 5 people matched on the things that matter — including this one. No pressure. No explaining. Just dinner.
+
+### Stories / Reels
+
+**Reel 1:**
+- Frame 1: "'What are you drinking?'"
+- Frame 2: "'Oh go on, just have one'"
+- Frame 3: "'You're not drinking? Why?'"
+- Frame 4: "How about a dinner where nobody asks?"
+- Frame 5: "Dinner Matcher. Matched on what actually matters. Book a seat."
+
+**Reel 2:**
+- Frame 1: "Sobriety gave you your life back"
+- Frame 2: "But it took your social life with it"
+- Frame 3: "Not because you can't go out"
+- Frame 4: "But because 'going out' always means drinks"
+- Frame 5: "Dinner Matcher. 5 people. No pressure. Book yours."
+
+**Reel 3:**
+- Frame 1: "Other apps match you on star signs"
+- Frame 2: "We ask if you drink"
+- Frame 3: "Then we seat you with people who get it"
+- Frame 4: "Dinner with 5 matched people. No explaining. Book a seat."
+
+---
+
+## The Plant-Based One
+*Vegan or plant-based. Wants to eat with people who eat like them, at restaurants that actually cater to them.*
+
+### Feed Ads
+
+**Ad 1 — The Sad Salad**
+> You love eating out. You hate being the person scanning the menu for the one thing you can eat while everyone else orders the full page.
+>
+> Dinner Matcher seats you with 5 other plant-based people at a plant-based restaurant. The whole menu is yours. The whole table gets it.
+>
+> No compromising. No explaining. Just a great dinner.
+
+**Ad 2 — The Values Table**
+> You went plant-based because it matters to you.
+>
+> Wouldn't it be nice to eat with people who feel the same?
+>
+> We match you with 5 people based on how you actually live — including what you eat. Then we book a restaurant where the whole menu is for you, not just the afterthought at the bottom.
+>
+> Book your seat.
+
+**Ad 3 — The Whole Menu**
+> Imagine a dinner where you don't have to ask "is this vegan?"
+>
+> Where the restaurant is plant-based. The table is plant-based. And nobody's making jokes about your protein intake.
+>
+> 5 people. One restaurant. All on the same page.
+>
+> Dinner Matcher. Book a table.
+
+**Ad 4 — The Compromise**
+> You've done the steakhouse with friends. You've ordered the chips. You've said "no honestly, it's fine."
+>
+> It's not fine. You want to eat somewhere good, with people who eat like you do, at a restaurant that was built for you.
+>
+> We match on dietary requirements. Actually match. Then we book somewhere worthy of the food you care about.
+
+### Stories / Reels
+
+**Reel 1:**
+- Frame 1: "'We're going to that new place'"
+- Frame 2: "*checks menu*"
+- Frame 3: "One vegan option. It's chips."
+- Frame 4: "How about a dinner where the whole menu is yours?"
+- Frame 5: "Dinner Matcher. Plant-based people. Plant-based restaurant. Book a seat."
+
+**Reel 2:**
+- Frame 1: "Being vegan at a group dinner:"
+- Frame 2: "'Can you just pick the meat off?'"
+- Frame 3: "'But where do you get your protein?'"
+- Frame 4: "'I could never give up cheese'"
+- Frame 5: "Or... dinner with 5 people who just get it. Book yours."
+
+**Reel 3:**
+- Frame 1: "Other apps say they match you on compatibility"
+- Frame 2: "Then seat you opposite someone eating a steak"
+- Frame 3: "We ask what you eat. Then we actually use it."
+- Frame 4: "5 plant-based people. 1 plant-based restaurant. Book a table."
+
+---
+
 ## Creative Notes
 
 ### What's working across all segments
 - **Specificity over vagueness** — "5 people" is better than "new friends." "One dinner" is better than "social experiences."
 - **Acknowledging the reality** — not pretending loneliness is fun or quirky. Naming it without pathologising it.
 - **Differentiator baked in** — "matched on what actually matters" does double duty: it sells the product AND distinguishes from competitors.
+- **The lifestyle segments sell the product's core value** — "we ask if you drink and actually use your answer" is the most concrete proof that our matching is real. Same with dietary. These ads double as brand messaging.
 
 ### Things to test
 - **City-specific vs generic** — does "New to Manchester?" outperform "New to the city?" (almost certainly yes)
