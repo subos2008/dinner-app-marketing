@@ -26,6 +26,7 @@ This repo is for:
 - **Marketing strategy** — customer profiling, audience research, positioning
 - **Idea exploration** — kick around concepts, build on them, iterate
 - **Ad copy generation** — write and refine copy for campaigns
+- **Ad creative generation & review** — generate, iterate, and approve visual/video creative here before it goes live
 - **Marketing automation** — build tools/skills to connect AI to Meta's ad platform
 - **Launch materials** — campaign assets and collateral
 
