@@ -1,68 +1,220 @@
 # Ad Copy: The Plant-Based One
 
-*Vegan or plant-based. Wants to eat with people who eat like them, at restaurants that actually cater to them.*
+*Written from concepts.md*
+*Brief: segments/creative-brief.md*
 
-## Feed Ads
+---
 
-**Ad 1 — The Sad Salad**
-> You love eating out. You hate being the person scanning the menu for the one thing you can eat while everyone else orders the full page.
->
-> Dinner Matcher seats you with 5 other plant-based people at a plant-based restaurant. The whole menu is yours. The whole table gets it.
->
-> No compromising. No explaining. Just a great dinner.
+## The One Sad Salad
 
-**Ad 2 — The Values Table**
-> You went plant-based because it matters to you.
->
-> Wouldn't it be nice to eat with people who feel the same?
->
-> We match you with 5 people based on how you actually live — including what you eat. Then we book a restaurant where the whole menu is for you, not just the afterthought at the bottom.
->
-> Book your seat.
+### Feed Ads
 
-**Ad 3 — The Whole Menu**
-> Imagine a dinner where you don't have to ask "is this vegan?"
->
-> Where the restaurant is plant-based. The table is plant-based. And nobody's making jokes about your protein intake.
->
-> 5 people. One restaurant. All on the same page.
->
-> Dinner Matcher. Book a table.
+**The One Sad Salad — Variant A**
 
-**Ad 4 — The Compromise**
-> You've done the steakhouse with friends. You've ordered the chips. You've said "no honestly, it's fine."
->
-> It's not fine. You want to eat somewhere good, with people who eat like you do, at a restaurant that was built for you.
->
-> We match on dietary requirements. Actually match. Then we book somewhere worthy of the food you care about.
+You didn't go plant-based to eat a roasted cauliflower at a steakhouse.
 
-**Ad 5 — The Wednesday Vegan**
-> Every Wednesday, we run vegan dinners.
->
-> Not as a special event. Just because when you tell us you're vegan, we match you with 5 other vegans and book a vegan restaurant.
->
-> Every dish is yours. Every person at the table gets it. The restaurant was picked because the food is genuinely good — curated, rated 4.3+ on Google, no afterthought menus.
->
-> Your diet isn't a limitation here. It's the whole point. Book your Wednesday.
+But here you are. Friday night, team dinner, a restaurant someone else picked. The menu is four pages long and you can eat one thing on it. A cauliflower. With pomegranate seeds. Under the heading "Dietary." You order it. You tell everyone it's great. You go home and eat actual food.
 
-## Stories / Reels
+Dinner Matcher does something different. We ask what you eat during sign-up — not as a footnote, as one of the core matching questions. Vegans are grouped with other vegans. The restaurant is vegan — not "vegan-friendly," not "they have options." Vegan. Every dish on the menu is yours.
 
-**Reel 1:**
-- Frame 1: "'We're going to that new place'"
-- Frame 2: "*checks menu*"
-- Frame 3: "One vegan option. It's chips."
-- Frame 4: "How about a dinner where the whole menu is yours?"
-- Frame 5: "Dinner Matcher. Plant-based people. Plant-based restaurant. Book a seat."
+5 plant-based people. 1 plant-based restaurant. Every Wednesday.
 
-**Reel 2:**
-- Frame 1: "Being vegan at a group dinner:"
-- Frame 2: "'Can you just pick the meat off?'"
-- Frame 3: "'But where do you get your protein?'"
-- Frame 4: "'I could never give up cheese'"
-- Frame 5: "Or... dinner with 5 people who just get it. Book yours."
+Book a seat →
 
-**Reel 3:**
-- Frame 1: "Other apps say they match you on compatibility"
-- Frame 2: "Then seat you opposite someone eating a steak"
-- Frame 3: "We ask what you eat. Then we actually use it."
-- Frame 4: "5 plant-based people. 1 plant-based restaurant. Book a table."
+CTA button: Book Now
+
+---
+
+**The One Sad Salad — Variant B**
+
+The vegan option is chips. It's always chips.
+
+Or a mushroom risotto on page four. Or a roasted vegetable stack the chef clearly didn't want to make. You know before you even sit down — you've already checked the menu, scanned HappyCow, read the Google reviews for any mention of the word "vegan." All this, just to say yes to dinner.
+
+What if you didn't have to check? Every Wednesday, Dinner Matcher groups vegans together and books a vegan restaurant — curated, quality-checked, 4.3+ on Google. Not a place that accommodates you. A place that was built for you.
+
+You eat what you eat. We match you with people who eat the same way.
+
+Book your Wednesday →
+
+CTA button: Book Now
+
+---
+
+**The One Sad Salad — Variant C (spicy)**
+
+Let's be honest about what "they have vegan options" actually means.
+
+It means a cauliflower. It means chips. It means a risotto under a heading called "Dietary" while the chef spent all their talent on the fourteen meat dishes above it. It means you doing ten minutes of menu research before you can reply "sounds great!" to a group chat.
+
+Dinner Matcher matches vegans with vegans at vegan restaurants. Not "vegan-friendly." Not "they can probably do something." Vegan. The whole menu. Every dish. We pick the restaurant, a real person reviews every group, and you just show up and order like everyone else at the table — because everyone at the table eats like you.
+
+Stop performing. Start eating.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+### Stories/Reels
+
+**The One Sad Salad — Stories/Reels**
+
+Frame 1: "The vegan option:"
+Frame 2: "Chips. A mushroom risotto. A cauliflower with pomegranate seeds."
+Frame 3: "Or — a restaurant where every dish on the menu is yours."
+Frame 4: "Matched with 5 plant-based people. At a vegan restaurant we picked for you."
+Frame 5: "Dinner Matcher → Book your Wednesday"
+
+Visual direction: Frame 1-2 in a flat, desaturated look — close-up of a sad side dish on a big empty plate, stark lighting. Frame 3 transitions to warm tones — a full, beautiful vegan menu or a colourful plate. Frames 4-5 warm restaurant table, six people, sharing dishes.
+
+---
+
+## The Whole Menu Is Yours
+
+### Feed Ads
+
+**The Whole Menu Is Yours — Variant A**
+
+Open a menu. Everything on it is for you.
+
+Not one section. Not one asterisk. Not the mushroom thing at the bottom of page four that the kitchen makes when someone like you shows up. Everything. The starters, the mains, the sides, the desserts. Every dish, designed by a chef who was thinking about flavour, not obligation.
+
+That's what happens when Dinner Matcher groups vegans together and books a vegan restaurant. The table isn't mixed — it's matched. The restaurant isn't "vegan-friendly" — it's vegan. And the menu isn't something you navigate. It's something you enjoy.
+
+5 people who eat like you. A restaurant chosen for the group. Every Wednesday.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+**The Whole Menu Is Yours — Variant B**
+
+You know the feeling: everyone at the table is choosing between six dishes and you're choosing between one.
+
+Now imagine the opposite. A menu where the only question is "what do I want?" — not "what can I eat?" A restaurant a chef built for the way you eat. A table of five other people who made the same choice you did.
+
+Dinner Matcher asks what you eat and actually uses the answer. Vegans are matched together. The restaurant is matched too — curated, quality-checked, entirely plant-based. No checking, no negotiating, no performing.
+
+Your Wednesday. Your food. Your people.
+
+CTA button: Book Now
+
+---
+
+### Stories/Reels
+
+**The Whole Menu Is Yours — Stories/Reels**
+
+Frame 1: "What can I eat?" [scanning a long menu, one item circled]
+Frame 2: "vs."
+Frame 3: "What do I want?" [full vegan menu, everything available]
+Frame 4: "Dinner Matcher matches vegans together at vegan restaurants. Every Wednesday."
+Frame 5: "The whole menu is yours → Book a seat"
+
+Visual direction: Frame 1 is a hand holding a menu with most items greyed out, one sad circle around a side dish. Frame 3 is the same hand holding a different menu — every item in colour, finger hovering between choices. Warm, aspirational. Frame 5 is a table shot, six people, shared plates.
+
+---
+
+## Not Vegan-Friendly. Vegan.
+
+### Feed Ads
+
+**Not Vegan-Friendly. Vegan. — Variant A**
+
+There's a difference between a restaurant that has vegan options and a restaurant that's vegan.
+
+The first one is a concession. A checkbox. A mushroom risotto on page four that exists because someone told the chef they had to put something on for people like you. The second one is a menu where every dish was designed with intention — flavour, texture, something the chef actually wanted to make. You know the difference. You always know the difference.
+
+Dinner Matcher doesn't book you into restaurants that accommodate vegans. We book vegan restaurants — curated, 4.3+ on Google, matched to the group. And the group? All plant-based. Matched on what you eat, what you drink, your budget, and what you want more of in your life.
+
+The restaurant isn't vegan-friendly. It's vegan. The table isn't mixed. It's matched.
+
+Book a seat →
+
+CTA button: Book Now
+
+---
+
+**Not Vegan-Friendly. Vegan. — Variant B**
+
+"We picked this place because they have a vegan option!"
+
+It's chips. It's always chips. Or a cauliflower. Or a risotto the kitchen makes with visible reluctance. Your friends are being kind. The restaurant is being compliant. Nobody is being vegan.
+
+Dinner Matcher is. We match vegans together and book a vegan restaurant for the group. Not a place with options — a place with a menu. A whole one. Every dish made for the way you eat, at a table with five people who eat the same way.
+
+What you eat is one of the first things we ask. And we actually use the answer.
+
+Book your Wednesday →
+
+CTA button: Book Now
+
+---
+
+### Stories/Reels
+
+**Not Vegan-Friendly. Vegan. — Stories/Reels**
+
+Frame 1: "Vegan-friendly:"
+Frame 2: "One dish. Page four. Under 'Dietary.'"
+Frame 3: "Vegan:"
+Frame 4: "Every dish on the menu. A chef who meant it. A table who gets it."
+Frame 5: "Dinner Matcher → Not vegan-friendly. Vegan. → Book now"
+
+Visual direction: Frames 1-2 desaturated, stark — a lonely plate on a big table, a tiny (V) symbol at the bottom of a long menu. Frames 3-4 shift to rich colour — a full spread, shared plates, warm lighting. Frame 5 is bold typography on a warm background.
+
+---
+
+## The Explaining Tax
+
+### Feed Ads
+
+**The Explaining Tax — Variant A**
+
+"Can you eat bread?" — someone you've known for three years.
+
+"I could never go vegan." "More for me then!" "We picked this place because they have a vegan option!" (It's chips.) "You're not going to make us all eat vegan, are you?" "God, being vegan must be so hard."
+
+You know these lines by heart. You smile through every one of them. And you're tired.
+
+Dinner Matcher matches vegans with other vegans for dinner every Wednesday. The restaurant is vegan. The people get it. Nobody asks you to explain your food. Nobody makes it a thing. You just sit down and eat.
+
+The best part isn't the food. It's not having to explain the food.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+**The Explaining Tax — Variant B**
+
+Nobody at this table will say "I could never go vegan."
+
+Because everyone at this table already did.
+
+Dinner Matcher groups plant-based people together for dinner every Wednesday. We ask what you eat during sign-up — it's one of the first things, not a footnote — and we match you with five people who answered the same way. At a vegan restaurant we picked for the group.
+
+No explaining. No defending. No pretending the cauliflower is fine. Just dinner with people who eat like you, at a restaurant that was made for how you eat.
+
+Your Wednesday. Your food. Your people.
+
+CTA button: Book Now
+
+---
+
+### Stories/Reels
+
+**The Explaining Tax — Stories/Reels**
+
+Frame 1: "'Can you eat bread?'"
+Frame 2: "'I could never go vegan.'"
+Frame 3: "'More for me then!'"
+Frame 4: "Imagine a table where nobody says any of this. Because they already get it."
+Frame 5: "Dinner Matcher → 5 vegans. 1 vegan restaurant. Every Wednesday. → Book now"
+
+Visual direction: Frames 1-3 are text-on-screen in a casual, slightly exasperated tone — think group chat aesthetic, each quote appearing like a message. Frame 4 is a beat of silence — clean, warm, a dinner table with no text except the line. Frame 5 is the product shot and CTA.
