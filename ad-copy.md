@@ -12,6 +12,8 @@
   - Icebreaker questions sent on the evening
   - Human reviews every group before confirmation
   - Who's coming is a surprise
+  - Onboarding asks "what do you want more of in your life?" (sports, meditation, art, business, adventure, etc.) — collected, not yet used for matching, but powerful for brand/copy
+  - Interest options: Sports, Meditation, Outdoors, Gym, Socialise, Book Clubs, Board Games, Adventure, Art, Business, Gigs, Sober Events, Nightlife + freetext
 
 ---
 
@@ -60,6 +62,15 @@
 > That's why we match you with people in your budget range — and book a restaurant to match. Nobody's getting dragged to a £60-a-head place when they said £20.
 >
 > 5 people. A restaurant you can afford. A Wednesday you'll look forward to.
+
+**Ad 6 — The Question That Matters**
+> When you sign up, we ask: "What do you want more of in your life?"
+>
+> Not "what's your Myers-Briggs type." Not "pick your spirit animal." A real question.
+>
+> Adventure. Art. Business. Meditation. Whatever it is — we want to know. Because the best dinner isn't just about what you eat. It's about what you care about.
+>
+> New to [city]? Start with one dinner.
 
 ### Stories / Reels
 
@@ -130,6 +141,24 @@
 >
 > Every Wednesday. Book yours.
 
+**Ad 5 — The Question**
+> We ask everyone who signs up: "What do you want more of in your life?"
+>
+> Adventure. Art. Business. Sports. Meditation.
+>
+> Not because it sounds good on a landing page. Because the answer tells us who you should be sitting across from on Wednesday night.
+>
+> Your existing friends know who you were. Meet the people who match who you're becoming.
+
+**Ad 6 — The Interests Table**
+> You want more art in your life. Or adventure. Or business conversations that don't feel like networking.
+>
+> When you sign up, you tell us. And we use it.
+>
+> 5 people who care about the same things you're chasing — at a restaurant we picked, on a Wednesday night, with icebreakers so the conversation starts in the right place.
+>
+> Your current group chat can't give you this. Book a dinner.
+
 ### Stories / Reels
 
 **Reel 1:**
@@ -143,6 +172,13 @@
 - Frame 2: "Your bookshelf says self-improvement"
 - Frame 3: "Your Friday night says... the same group chat from 2019"
 - Frame 4: "Dinner Matcher. Meet people who match where you're heading."
+
+**Reel 3 — The Question:**
+- Frame 1: "'What do you want more of in your life?'"
+- Frame 2: "That's what we ask when you sign up"
+- Frame 3: "Not your star sign. Not your Myers-Briggs."
+- Frame 4: "Adventure? Art? Business? We want to know."
+- Frame 5: "Then we seat you with people who said the same thing."
 
 ---
 
@@ -448,6 +484,28 @@
 >
 > You don't know who's coming. That's the best part.
 
+**Ad 4 — The Questions We Ask**
+> Other apps ask your star sign. Your Hogwarts house. Your love language.
+>
+> We ask:
+> Do you drink?
+> What do you eat?
+> What's your budget?
+> What do you want more of in your life?
+>
+> Then we actually use your answers. Every Wednesday, you sit down with 5 people who make sense at the same table — because we asked the questions that matter and matched on them.
+>
+> Book a dinner.
+
+**Ad 5 — More Of**
+> "What do you want more of in your life?"
+>
+> That's a real question we ask every person who signs up. Adventure. Art. Business. Sports. Meditation. Board games. Whatever it is.
+>
+> Because the best dinner isn't just about seating 6 compatible people. It's about seating 6 people who want the same things.
+>
+> Every Wednesday. Book yours.
+
 ### Stories / Reels
 
 **Reel 1 — The Breakdown:**
@@ -463,6 +521,13 @@
 - Frame 3: "Thursday: still thinking about that conversation"
 - Frame 4: "Dinner Matcher. Every Wednesday. Book a seat."
 
+**Reel 3 — Our Questions vs Theirs:**
+- Frame 1: "Them: 'What's your star sign?'"
+- Frame 2: "Us: 'Do you drink?'"
+- Frame 3: "Them: 'Pick your love language'"
+- Frame 4: "Us: 'What do you want more of in your life?'"
+- Frame 5: "Real questions. Real matching. Book a Wednesday."
+
 ---
 
 ## Creative Notes
@@ -472,6 +537,7 @@
 - **Acknowledging the reality** — not pretending loneliness is fun or quirky. Naming it without pathologising it.
 - **Differentiator baked in** — "matched on what actually matters" does double duty: it sells the product AND distinguishes from competitors.
 - **The lifestyle segments sell the product's core value** — "we ask if you drink and actually use your answer" is the most concrete proof that our matching is real. Same with dietary. These ads double as brand messaging.
+- **"What do you want more of in your life?" is the single best brand line** — it works as an ad hook, a differentiator, and a genuine onboarding question. It's what competitors can't say because they don't ask it.
 
 ### Things to test
 - **City-specific vs generic** — does "New to Manchester?" outperform "New to the city?" (almost certainly yes)
@@ -483,3 +549,5 @@
 - **Segment-specific vs cross-segment** — do the Wednesday Ritual ads (generic) perform differently to segment-targeted ads?
 - **The surprise angle** — does "you don't know who's coming" intrigue people or scare them?
 - **Safety/trust copy** — does The Quiet One convert better with "a real person reviews every group" or is it too much detail for an ad?
+- **"What do you want more of?" as a standalone hook** — test this question as the opening line across segments. It's disarming and immediately different from typical ad copy.
+- **Our questions vs their questions** — the side-by-side comparison (star signs vs "do you drink?") is a strong format for reels. Test whether the competitor dig lands or feels petty.
