@@ -4,6 +4,14 @@
 - **Platform:** Meta (Facebook + Instagram) — feed ads, stories, reels
 - **CTA:** Book a dinner → links to onboarding app (profiling questions + payment)
 - **Tone:** Warm, honest, direct. Not corporate. Not cringe. Not "Hey bestie!"
+- **Cadence:** Dinners run every Wednesday. Subscribers opt in each week.
+- **Key product details to weave in:**
+  - We pick the restaurant (curated, quality-checked, matched to the group)
+  - Budget matching — nobody gets taken somewhere they can't afford
+  - Gender-balanced groups
+  - Icebreaker questions sent on the evening
+  - Human reviews every group before confirmation
+  - Who's coming is a surprise
 
 ---
 
@@ -37,6 +45,22 @@
 >
 > Book your seat.
 
+**Ad 4 — The Wednesday**
+> Every Wednesday, we match you with 5 new people and book a restaurant that fits.
+>
+> You don't pick the place. You don't know who's coming. You just show up.
+>
+> Sounds terrifying? It's the opposite. We match you on age, budget, diet, whether you drink — so the table already makes sense before you sit down.
+>
+> New to [city]? This is how you build a life here. One Wednesday at a time.
+
+**Ad 5 — The Budget Promise**
+> Moving to a new city is expensive enough.
+>
+> That's why we match you with people in your budget range — and book a restaurant to match. Nobody's getting dragged to a £60-a-head place when they said £20.
+>
+> 5 people. A restaurant you can afford. A Wednesday you'll look forward to.
+
 ### Stories / Reels
 
 **Hook → Payoff format (text on screen, 3-5 seconds each)**
@@ -58,6 +82,12 @@
 - Frame 2: "isn't the flat or the job"
 - Frame 3: "it's Saturday night with no one to call"
 - Frame 4: "We fix that. One dinner at a time."
+
+**Reel 4 — How It Works:**
+- Frame 1: "Every Wednesday. 6 strangers. 1 dinner."
+- Frame 2: "Matched on age, budget, diet, and whether you drink"
+- Frame 3: "We pick the restaurant. You just show up."
+- Frame 4: "New to [city]? Book your first Wednesday."
 
 ---
 
@@ -90,6 +120,15 @@
 > We match you with 5 people who are actually doing things — over a dinner where the conversation isn't small.
 >
 > Stop consuming inspiration alone. Book a dinner.
+
+**Ad 4 — The Wednesday Upgrade**
+> What if your Wednesday looked like this:
+>
+> A curated restaurant you didn't have to find. 5 people matched on what actually matters — age, values, budget, lifestyle. Icebreaker questions so nobody sits in awkward silence. A gender-balanced table.
+>
+> Not a networking event. Not a dating thing. Just the most interesting dinner of your week.
+>
+> Every Wednesday. Book yours.
 
 ### Stories / Reels
 
@@ -135,6 +174,24 @@
 >
 > You don't have to be perfect at this. You just have to book.
 
+**Ad 4 — The Safety Net**
+> Here's everything we do so you don't have to worry:
+>
+> We match you with people your age. We balance the genders at the table. We pick a restaurant that's been vetted — no loud music, no chaos, good vibes. We send icebreaker questions so the conversation has somewhere to start.
+>
+> A real person reviews every group before you get your confirmation.
+>
+> You just show up. Wednesday. That's it.
+
+**Ad 5 — The Surprise**
+> You don't know who's coming. That's the point.
+>
+> No profiles to stalk. No photos to judge. No "should I go?" spiral.
+>
+> 5 people. Matched on the things that matter. A restaurant we picked for you. Icebreakers to get things going.
+>
+> Sometimes the best people in your life are the ones you didn't choose from a menu.
+
 ### Stories / Reels
 
 **Reel 1:**
@@ -148,6 +205,13 @@
 - Frame 2: "You don't need a 'good' reason"
 - Frame 3: "You just need to be hungry"
 - Frame 4: "Dinner Matcher. Book a table."
+
+**Reel 3 — The Safety Reel:**
+- Frame 1: "What if showing up was the only hard part?"
+- Frame 2: "We match you with people your age"
+- Frame 3: "We balance the table. We pick the restaurant."
+- Frame 4: "We even send icebreakers so nobody sits in silence"
+- Frame 5: "Every Wednesday. Book a seat."
 
 ---
 
@@ -180,6 +244,13 @@
 > The eating every meal alone? Also real.
 >
 > We match you with 5 people for dinner — based on who you are, not where you're from. No small talk. No networking. Just a meal worth remembering.
+
+**Ad 4 — The Wednesday in [City]**
+> You're in [city] for a month. Maybe two. You don't know anyone.
+>
+> Every Wednesday, we seat 6 strangers at a curated restaurant. Matched on age, diet, budget, whether you drink. The restaurant is vetted. The group is balanced. You don't even have to pick the place.
+>
+> It's the easiest social thing you'll do in a new city. And probably the best.
 
 ### Stories / Reels
 
@@ -222,7 +293,7 @@
 >
 > But somewhere along the way, the two got tangled up — and now every invite comes with a calculation. Will there be pressure? Will it be awkward? Will someone ask?
 >
-> We match you with 5 people for dinner. We know you don't drink. So do they. Nobody's counting your glasses. Nobody's asking why.
+> We match you with 5 people for dinner. We know you don't drink. So do they. Nobody's counting your glasses. Nobody's asking why. And the restaurant? Chosen because it's somewhere not drinking isn't weird — good mocktails, good food, good vibes.
 >
 > Book a seat.
 
@@ -241,6 +312,15 @@
 > But it's a big deal to every social situation you've ever been in.
 >
 > Dinner Matcher seats you with 5 people matched on the things that matter — including this one. No pressure. No explaining. Just dinner.
+
+**Ad 5 — The Wednesday Sober**
+> Every Wednesday, we run sober dinners.
+>
+> Not because we made a special category. Because when you tell us you don't drink, we match you with 5 other people who don't drink. At a restaurant where that's normal.
+>
+> It's just how the matching works. Alcohol preference is one of the first things we ask — and one of the strongest things we match on.
+>
+> Your sobriety isn't a filter. It's a feature. Book your Wednesday.
 
 ### Stories / Reels
 
@@ -303,6 +383,15 @@
 >
 > We match on dietary requirements. Actually match. Then we book somewhere worthy of the food you care about.
 
+**Ad 5 — The Wednesday Vegan**
+> Every Wednesday, we run vegan dinners.
+>
+> Not as a special event. Just because when you tell us you're vegan, we match you with 5 other vegans and book a vegan restaurant.
+>
+> Every dish is yours. Every person at the table gets it. The restaurant was picked because the food is genuinely good — curated, rated 4.3+ on Google, no afterthought menus.
+>
+> Your diet isn't a limitation here. It's the whole point. Book your Wednesday.
+
 ### Stories / Reels
 
 **Reel 1:**
@@ -327,6 +416,55 @@
 
 ---
 
+## Cross-Segment: The Wednesday Ritual
+*These ads work for any segment. They sell the format and the matching itself.*
+
+### Feed Ads
+
+**Ad 1 — How It Works**
+> Every Wednesday. 6 strangers. 1 curated restaurant.
+>
+> Here's what we do: you tell us about yourself — what you eat, whether you drink, your budget, what you want more of in your life. Then we match you with 5 people who make sense at the same table.
+>
+> We pick the restaurant. We balance the group. We send icebreaker questions so the conversation starts easy. A real person reviews every group before you get your confirmation.
+>
+> You just show up.
+
+**Ad 2 — Not Random**
+> "Dinner with strangers" sounds random.
+>
+> It's not.
+>
+> We match on age, gender balance, diet, alcohol, budget, and what part of the city works for you. The restaurant is curated — 4.3+ rating, good atmosphere, right price for the group, right menu for the table.
+>
+> This isn't a lucky dip. It's a dinner that was built around you.
+>
+> Every Wednesday. Book a seat.
+
+**Ad 3 — The Anti-App**
+> No swiping. No profiles. No photos to judge.
+>
+> You answer a few honest questions. We match you with 5 people. We pick the restaurant. Wednesday evening, you sit down at a table where everyone already has something in common.
+>
+> You don't know who's coming. That's the best part.
+
+### Stories / Reels
+
+**Reel 1 — The Breakdown:**
+- Frame 1: "How Dinner Matcher works"
+- Frame 2: "You answer a few real questions"
+- Frame 3: "We match you with 5 people on age, diet, budget, and more"
+- Frame 4: "We pick the restaurant. We send icebreakers."
+- Frame 5: "Wednesday evening, you just show up. Book yours."
+
+**Reel 2 — The Wednesday:**
+- Frame 1: "Monday: work. Tuesday: work."
+- Frame 2: "Wednesday: dinner with 5 interesting strangers"
+- Frame 3: "Thursday: still thinking about that conversation"
+- Frame 4: "Dinner Matcher. Every Wednesday. Book a seat."
+
+---
+
 ## Creative Notes
 
 ### What's working across all segments
@@ -341,3 +479,7 @@
 - **Swearing** — "what you give a shit about" is on-brand but may limit reach on Meta. Test clean vs spicy versions.
 - **Question hooks vs statement hooks** — "New to [city]?" vs "Nobody tells you the hardest part of moving."
 - **Dinner imagery** — warm, candlelit table vs group laughing vs empty chair being filled. Visual matters as much as copy on Meta.
+- **Emotional hook first vs product explanation first** — "You moved here for a reason" vs "Every Wednesday, 6 strangers, 1 restaurant"
+- **Segment-specific vs cross-segment** — do the Wednesday Ritual ads (generic) perform differently to segment-targeted ads?
+- **The surprise angle** — does "you don't know who's coming" intrigue people or scare them?
+- **Safety/trust copy** — does The Quiet One convert better with "a real person reviews every group" or is it too much detail for an ad?
