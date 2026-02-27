@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dinner Matcher — Creative Review</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&family=JetBrains+Mono:wght@400&display=swap');
+
+  :root {
+    --cream: #FAF6F1;
+    --warm-white: #FFF9F3;
+    --amber: #C8956C;
+    --amber-light: #E8C9A8;
+    --amber-dark: #8B5E3C;
+    --charcoal: #2C2826;
+    --warm-gray: #6B6461;
+    --light-gray: #E8E2DC;
+    --red: #C4553A;
+    --green: #5B8A5E;
+    --gold: #B8963E;
+    --blue-gray: #7A8B8F;
+    --shadow-sm: 0 1px 3px rgba(44, 40, 38, 0.08);
+    --shadow-md: 0 4px 16px rgba(44, 40, 38, 0.1);
+    --shadow-lg: 0 8px 32px rgba(44, 40, 38, 0.12);
+    --radius: 6px;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--cream);
+    color: var(--charcoal);
+    line-height: 1.6;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* --- Top bar --- */
+  .topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--charcoal);
+    color: var(--cream);
+    padding: 0 32px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+  }
+
+  .topbar-brand {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
+  .topbar-brand span { opacity: 0.5; font-weight: 300; }
+
+  .topbar-meta {
+    opacity: 0.5;
+    font-size: 12px;
+    font-family: var(--font-mono);
+  }
+
+  /* --- Sidebar --- */
+  .sidebar {
+    position: fixed;
+    top: 52px;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    background: var(--warm-white);
+    border-right: 1px solid var(--light-gray);
+    overflow-y: auto;
+    z-index: 90;
+    padding: 24px 0;
+  }
+
+  .sidebar-section {
+    padding: 0 20px;
+    margin-bottom: 24px;
+  }
+
+  .sidebar-section-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--warm-gray);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--charcoal);
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+
+  .sidebar-item:hover { background: var(--light-gray); }
+
+  .sidebar-item.active {
+    background: var(--charcoal);
+    color: var(--cream);
+  }
+
+  .sidebar-item .badge {
+    margin-left: auto;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    opacity: 0.5;
+  }
+
+  .sidebar-item .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-life { background: var(--amber); }
+  .dot-lifestyle { background: var(--blue-gray); }
+  .dot-cross { background: var(--gold); }
+
+  /* --- Main content --- */
+  .main {
+    margin-left: 260px;
+    margin-top: 52px;
+    padding: 40px 48px;
+    max-width: 1100px;
+  }
+
+  /* --- Segment header --- */
+  .segment-header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--light-gray);
+  }
+
+  .segment-type {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--amber);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .segment-title {
+    font-family: var(--font-display);
+    font-size: 42px;
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .segment-hook {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--warm-gray);
+    line-height: 1.4;
+    max-width: 600px;
+  }
+
+  .segment-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    font-size: 13px;
+  }
+
+  .meta-item .label {
+    font-weight: 600;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 10px;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* --- Persona card --- */
+  .persona-card {
+    background: var(--warm-white);
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .persona-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--amber);
+    border-radius: var(--radius) 0 0 var(--radius);
+  }
+
+  .persona-card h3 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 12px;
+    color: var(--amber-dark);
+  }
+
+  .persona-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--warm-gray);
+  }
+
+  /* --- Collapsible sections --- */
+  .collapsible {
+    margin-bottom: 12px;
+  }
+
+  .collapsible-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 0;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--warm-gray);
+    border-bottom: 1px solid var(--light-gray);
+    user-select: none;
+  }
+
+  .collapsible-header:hover { color: var(--charcoal); }
+
+  .collapsible-arrow {
+    transition: transform 0.2s;
+    font-size: 10px;
+  }
+
+  .collapsible.open .collapsible-arrow { transform: rotate(90deg); }
+
+  .collapsible-body {
+    display: none;
+    padding: 16px 0;
+  }
+
+  .collapsible.open .collapsible-body { display: block; }
+
+  /* --- Concepts list --- */
+  .concept-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .concept-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    font-size: 15px;
+  }
+
+  .concept-rank {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--amber);
+    min-width: 20px;
+  }
+
+  .concept-name { font-weight: 600; }
+
+  .concept-insight {
+    font-size: 13px;
+    color: var(--warm-gray);
+    margin-top: 4px;
+  }
+
+  /* --- Section titles --- */
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 400;
+    margin: 48px 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--charcoal);
+  }
+
+  .section-subtitle {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--warm-gray);
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  /* --- Ad cards --- */
+  .ad-concept-group {
+    margin-bottom: 48px;
+  }
+
+  .ad-concept-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ad-concept-title .priority-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--amber-light);
+    color: var(--amber-dark);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  .ad-card {
+    background: var(--warm-white);
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+
+  .ad-card:hover { box-shadow: var(--shadow-md); }
+
+  .ad-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--light-gray);
+    background: rgba(200, 149, 108, 0.04);
+  }
+
+  .ad-card-name {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .ad-card-badges {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .format-badge {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 3px;
+    background: var(--light-gray);
+    color: var(--warm-gray);
+  }
+
+  .format-badge.feed { background: #E8EAF0; color: #4A5568; }
+  .format-badge.story { background: #F0E8F0; color: #6B4A6B; }
+
+  .verdict-badge {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+
+  .verdict-ship { background: #E8F0E8; color: var(--green); }
+  .verdict-polish { background: #FFF3E0; color: #C8801C; }
+  .verdict-rework { background: #FDE8E8; color: var(--red); }
+
+  .ad-card-body {
+    display: flex;
+    gap: 0;
+  }
+
+  .ad-card-image {
+    width: 240px;
+    min-height: 200px;
+    flex-shrink: 0;
+    background: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--warm-gray);
+    font-size: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ad-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ad-card-image .no-image {
+    text-align: center;
+    padding: 20px;
+    opacity: 0.5;
+  }
+
+  .no-image-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+    display: block;
+    opacity: 0.3;
+  }
+
+  .ad-card-copy {
+    flex: 1;
+    padding: 20px 24px;
+  }
+
+  .ad-hook {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    color: var(--charcoal);
+  }
+
+  .ad-body-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--warm-gray);
+    margin-bottom: 12px;
+    white-space: pre-line;
+  }
+
+  .ad-cta {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--amber-dark);
+    margin-bottom: 8px;
+  }
+
+  .ad-cta-button {
+    display: inline-block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    padding: 4px 12px;
+    border: 1px solid var(--amber);
+    border-radius: 3px;
+    color: var(--amber-dark);
+  }
+
+  /* Stories/Reels card */
+  .story-frames {
+    padding: 20px 24px;
+  }
+
+  .story-frame {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    padding: 6px 0;
+    font-size: 14px;
+  }
+
+  .frame-number {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--amber);
+    min-width: 16px;
+  }
+
+  .visual-direction {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--light-gray);
+    font-size: 13px;
+    color: var(--warm-gray);
+    font-style: italic;
+  }
+
+  /* --- Scores --- */
+  .score-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-top: 1px solid var(--light-gray);
+    font-size: 12px;
+    background: rgba(0,0,0,0.01);
+    flex-wrap: wrap;
+  }
+
+  .score-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 0;
+  }
+
+  .score-label {
+    color: var(--warm-gray);
+    font-weight: 400;
+  }
+
+  .score-value {
+    font-family: var(--font-mono);
+    font-weight: 400;
+  }
+
+  .score-1, .score-2 { color: var(--red); }
+  .score-3 { color: var(--gold); }
+  .score-4 { color: var(--blue-gray); }
+  .score-5 { color: var(--green); }
+
+  .score-divider {
+    width: 1px;
+    height: 14px;
+    background: var(--light-gray);
+  }
+
+  .overall-score {
+    margin-left: auto;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  /* --- Top ads summary --- */
+  .top-ads {
+    margin-bottom: 40px;
+  }
+
+  .top-ad-item {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--light-gray);
+  }
+
+  .top-ad-rank {
+    font-family: var(--font-display);
+    font-size: 32px;
+    color: var(--amber-light);
+    min-width: 40px;
+  }
+
+  .top-ad-content h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .top-ad-content p {
+    font-size: 13px;
+    color: var(--warm-gray);
+    line-height: 1.5;
+  }
+
+  .top-ad-score {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: #E8F0E8;
+    color: var(--green);
+  }
+
+  /* --- Pain points table --- */
+  .pain-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  .pain-table th {
+    text-align: left;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--warm-gray);
+    font-weight: 600;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--light-gray);
+  }
+
+  .pain-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--light-gray);
+    vertical-align: top;
+    line-height: 1.5;
+    color: var(--warm-gray);
+  }
+
+  /* --- Key phrases --- */
+  .phrase-category {
+    margin-bottom: 16px;
+  }
+
+  .phrase-category h4 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--charcoal);
+  }
+
+  .phrase-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .phrase-tag {
+    font-size: 12px;
+    padding: 4px 10px;
+    background: var(--cream);
+    border: 1px solid var(--light-gray);
+    border-radius: 20px;
+    color: var(--warm-gray);
+    line-height: 1.3;
+  }
+
+  /* --- Standout lines --- */
+  .standout-line {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--light-gray);
+  }
+
+  .standout-line blockquote {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.4;
+    color: var(--charcoal);
+    margin-bottom: 6px;
+  }
+
+  .standout-line .note {
+    font-size: 13px;
+    color: var(--warm-gray);
+  }
+
+  /* --- Empty state --- */
+  .empty-state {
+    text-align: center;
+    padding: 80px 40px;
+    color: var(--warm-gray);
+  }
+
+  .empty-state h2 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 400;
+    margin-bottom: 12px;
+    color: var(--charcoal);
+  }
+
+  .empty-state p {
+    font-size: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* --- Loading --- */
+  .loading {
+    text-align: center;
+    padding: 120px 40px;
+    color: var(--warm-gray);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 18px;
+  }
+
+  /* --- Quick mode text --- */
+  .quick-mode {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--warm-gray);
+    column-count: 2;
+    column-gap: 32px;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 900px) {
+    .quick-mode { column-count: 1; }
+  }
+
+  /* --- Stats row --- */
+  .stats-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    background: var(--warm-white);
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    min-width: 140px;
+  }
+
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 28px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--warm-gray);
+    font-weight: 600;
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 24px 16px; }
+    .segment-title { font-size: 28px; }
+    .ad-card-body { flex-direction: column; }
+    .ad-card-image { width: 100%; min-height: 160px; }
+    .segment-meta { gap: 16px; }
+  }
+
+  /* --- Animations --- */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.3s ease-out both;
+  }
+
+  .ad-card { animation: fadeIn 0.3s ease-out both; }
+  .ad-concept-group:nth-child(2) .ad-card { animation-delay: 0.05s; }
+  .ad-concept-group:nth-child(3) .ad-card { animation-delay: 0.1s; }
+  .ad-concept-group:nth-child(4) .ad-card { animation-delay: 0.15s; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">Dinner Matcher <span>Creative Review</span></div>
+  <div class="topbar-meta" id="topbar-meta"></div>
+</div>
+
+<nav class="sidebar" id="sidebar"></nav>
+
+<main class="main" id="main">
+  <div class="loading">Loading creative review...</div>
+</main>
+
+<script>
+(function() {
+  let DATA = null;
+  let activeSegment = null;
+
+  // --- Load data ---
+  async function loadData() {
+    try {
+      const res = await fetch('data.json');
+      DATA = await res.json();
+      init();
+    } catch (e) {
+      document.getElementById('main').innerHTML = `
+        <div class="empty-state">
+          <h2>No data found</h2>
+          <p>Run <code>node app/build.js</code> to generate data.json from the segment files.</p>
+        </div>
+      `;
+    }
+  }
+
+  function init() {
+    document.getElementById('topbar-meta').textContent =
+      DATA.segmentCount + ' segments \u00B7 ' + new Date(DATA.generatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    renderSidebar();
+    // Select first segment
+    if (DATA.segments.length) selectSegment(DATA.segments[0].slug);
+  }
+
+  // --- Sidebar ---
+  function renderSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const lifeSit = DATA.segments.filter(s => s.profile?.type?.includes('Life-situation'));
+    const lifestyle = DATA.segments.filter(s => s.profile?.type?.includes('Lifestyle'));
+    const cross = DATA.segments.filter(s => !s.profile?.type);
+
+    let html = '';
+
+    if (lifeSit.length) {
+      html += `<div class="sidebar-section">
+        <div class="sidebar-section-title">Life-Situation</div>
+        ${lifeSit.map(s => sidebarItem(s, 'life')).join('')}
+      </div>`;
+    }
+
+    if (lifestyle.length) {
+      html += `<div class="sidebar-section">
+        <div class="sidebar-section-title">Lifestyle</div>
+        ${lifestyle.map(s => sidebarItem(s, 'lifestyle')).join('')}
+      </div>`;
+    }
+
+    if (cross.length) {
+      html += `<div class="sidebar-section">
+        <div class="sidebar-section-title">Cross-Segment</div>
+        ${cross.map(s => sidebarItem(s, 'cross')).join('')}
+      </div>`;
+    }
+
+    sidebar.innerHTML = html;
+
+    sidebar.querySelectorAll('.sidebar-item').forEach(el => {
+      el.addEventListener('click', () => selectSegment(el.dataset.slug));
+    });
+  }
+
+  function sidebarItem(seg, type) {
+    const adCount = seg.adCopy?.concepts?.reduce((sum, c) => sum + c.feedAds.length + c.storiesReels.length, 0) || 0;
+    return `<div class="sidebar-item" data-slug="${seg.slug}">
+      <span class="dot dot-${type}"></span>
+      ${seg.name}
+      <span class="badge">${adCount}</span>
+    </div>`;
+  }
+
+  function selectSegment(slug) {
+    activeSegment = slug;
+    document.querySelectorAll('.sidebar-item').forEach(el => {
+      el.classList.toggle('active', el.dataset.slug === slug);
+    });
+    renderSegment(slug);
+    window.scrollTo({ top: 0 });
+  }
+
+  // --- Segment renderer ---
+  function renderSegment(slug) {
+    const seg = DATA.segments.find(s => s.slug === slug);
+    if (!seg) return;
+
+    const main = document.getElementById('main');
+    let html = '';
+
+    // Header
+    html += renderHeader(seg);
+
+    // Stats
+    html += renderStats(seg);
+
+    // Persona card
+    if (seg.empathy?.personaSnapshot) {
+      html += renderPersona(seg);
+    }
+
+    // Top ads (if review exists)
+    if (seg.review?.topAds?.length) {
+      html += renderTopAds(seg);
+    }
+
+    // Ad gallery
+    html += renderAdGallery(seg);
+
+    // Empathy detail (collapsible)
+    if (seg.empathy) {
+      html += renderEmpathyDetail(seg);
+    }
+
+    // Concepts (collapsible)
+    if (seg.concepts?.priority?.length) {
+      html += renderConceptsList(seg);
+    }
+
+    main.innerHTML = html;
+
+    // Wire up collapsibles
+    main.querySelectorAll('.collapsible-header').forEach(el => {
+      el.addEventListener('click', () => {
+        el.parentElement.classList.toggle('open');
+      });
+    });
+  }
+
+  function renderHeader(seg) {
+    const p = seg.profile;
+    return `<div class="segment-header fade-in">
+      ${p?.type ? `<div class="segment-type">${esc(p.type)}</div>` : ''}
+      <h1 class="segment-title">${esc(seg.name)}</h1>
+      ${p?.messagingHook ? `<div class="segment-hook">${esc(p.messagingHook)}</div>` : ''}
+      ${p ? `<div class="segment-meta">
+        ${p.ageSkew ? `<div class="meta-item"><span class="label">Age</span>${esc(p.ageSkew)}</div>` : ''}
+        ${p.priority ? `<div class="meta-item"><span class="label">Priority</span>${esc(p.priority)}</div>` : ''}
+        ${p.who ? `<div class="meta-item"><span class="label">Who</span>${esc(p.who.substring(0, 80))}${p.who.length > 80 ? '...' : ''}</div>` : ''}
+      </div>` : ''}
+    </div>`;
+  }
+
+  function renderStats(seg) {
+    const adCount = seg.adCopy?.concepts?.reduce((sum, c) => sum + c.feedAds.length + c.storiesReels.length, 0) || 0;
+    const feedCount = seg.adCopy?.concepts?.reduce((sum, c) => sum + c.feedAds.length, 0) || 0;
+    const storyCount = seg.adCopy?.concepts?.reduce((sum, c) => sum + c.storiesReels.length, 0) || 0;
+    const imageCount = seg.images?.length || 0;
+    const avgScore = seg.review?.ads?.length
+      ? (seg.review.ads.reduce((sum, a) => sum + (a.overall || 0), 0) / seg.review.ads.length).toFixed(1)
+      : null;
+
+    return `<div class="stats-row fade-in">
+      <div class="stat-card">
+        <div class="stat-value">${adCount}</div>
+        <div class="stat-label">Total Ads</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${feedCount}</div>
+        <div class="stat-label">Feed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${storyCount}</div>
+        <div class="stat-label">Stories/Reels</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${imageCount}</div>
+        <div class="stat-label">Images</div>
+      </div>
+      ${avgScore ? `<div class="stat-card">
+        <div class="stat-value">${avgScore}</div>
+        <div class="stat-label">Avg Score</div>
+      </div>` : ''}
+    </div>`;
+  }
+
+  function renderPersona(seg) {
+    return `<div class="persona-card fade-in">
+      <h3>Persona</h3>
+      <div class="persona-text">${esc(seg.empathy.personaSnapshot)}</div>
+    </div>`;
+  }
+
+  function renderTopAds(seg) {
+    return `<div class="top-ads fade-in">
+      <div class="section-subtitle">Top Rated</div>
+      ${seg.review.topAds.map((ad, i) => `
+        <div class="top-ad-item">
+          <div class="top-ad-rank">${i + 1}</div>
+          <div class="top-ad-content">
+            <h4>${esc(ad.name)} <span class="top-ad-score">${ad.score}/5</span></h4>
+            <p>${esc(ad.summary)}</p>
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+  }
+
+  function renderAdGallery(seg) {
+    if (!seg.adCopy?.concepts?.length) {
+      return `<div class="empty-state"><h2>No ad copy yet</h2><p>Run /write-copy to generate ads for this segment.</p></div>`;
+    }
+
+    let html = `<div class="section-title">Ad Gallery</div>`;
+
+    for (const concept of seg.adCopy.concepts) {
+      const priority = seg.concepts?.priority?.indexOf(concept.name);
+      const priorityLabel = priority >= 0 ? `#${priority + 1}` : '';
+
+      html += `<div class="ad-concept-group">
+        <div class="ad-concept-title">
+          ${esc(concept.name)}
+          ${priorityLabel ? `<span class="priority-badge">${priorityLabel}</span>` : ''}
+        </div>`;
+
+      // Feed ads
+      for (const ad of concept.feedAds) {
+        html += renderFeedAdCard(seg, concept.name, ad, 'feed');
+      }
+
+      // Stories/Reels
+      for (const ad of concept.storiesReels) {
+        html += renderStoryAdCard(seg, concept.name, ad);
+      }
+
+      html += `</div>`;
+    }
+
+    return html;
+  }
+
+  function renderFeedAdCard(seg, conceptName, ad, format) {
+    const review = findReview(seg, ad.header);
+    const image = findImage(seg, conceptName, 'feed');
+    const verdictClass = getVerdictClass(review?.verdict);
+
+    return `<div class="ad-card">
+      <div class="ad-card-header">
+        <span class="ad-card-name">${esc(ad.header)}</span>
+        <div class="ad-card-badges">
+          <span class="format-badge feed">Feed</span>
+          ${review?.verdict ? `<span class="verdict-badge ${verdictClass}">${esc(review.verdict.split(' \u2014 ')[0].split(' \u2013 ')[0])}</span>` : ''}
+        </div>
+      </div>
+      <div class="ad-card-body">
+        <div class="ad-card-image">
+          ${image
+            ? `<img src="../${seg.creativePath}/${image.filename}" alt="${esc(ad.header)}">`
+            : `<div class="no-image"><span class="no-image-icon">\u25A3</span>No image yet<br><small>/generate-creative</small></div>`
+          }
+        </div>
+        <div class="ad-card-copy">
+          <div class="ad-hook">${esc(ad.hook)}</div>
+          ${ad.body ? `<div class="ad-body-text">${esc(ad.body)}</div>` : ''}
+          ${ad.cta ? `<div class="ad-cta">${esc(ad.cta)}</div>` : ''}
+          ${ad.ctaButton ? `<div class="ad-cta-button">${esc(ad.ctaButton)}</div>` : ''}
+        </div>
+      </div>
+      ${review ? renderScoreBar(review) : ''}
+    </div>`;
+  }
+
+  function renderStoryAdCard(seg, conceptName, ad) {
+    const review = findReview(seg, ad.header);
+    const image = findImage(seg, conceptName, 'story');
+    const verdictClass = getVerdictClass(review?.verdict);
+
+    return `<div class="ad-card">
+      <div class="ad-card-header">
+        <span class="ad-card-name">${esc(ad.header)}</span>
+        <div class="ad-card-badges">
+          <span class="format-badge story">Story / Reel</span>
+          ${review?.verdict ? `<span class="verdict-badge ${verdictClass}">${esc(review.verdict.split(' \u2014 ')[0].split(' \u2013 ')[0])}</span>` : ''}
+        </div>
+      </div>
+      <div class="ad-card-body">
+        <div class="ad-card-image" style="width: 160px;">
+          ${image
+            ? `<img src="../${seg.creativePath}/${image.filename}" alt="${esc(ad.header)}">`
+            : `<div class="no-image"><span class="no-image-icon">\u25A3</span>9:16</div>`
+          }
+        </div>
+        <div class="story-frames">
+          ${ad.frames.map((f, i) => `
+            <div class="story-frame">
+              <span class="frame-number">${i + 1}</span>
+              <span>${esc(f)}</span>
+            </div>
+          `).join('')}
+          ${ad.visualDirection ? `<div class="visual-direction">${esc(ad.visualDirection)}</div>` : ''}
+        </div>
+      </div>
+      ${review ? renderScoreBar(review) : ''}
+    </div>`;
+  }
+
+  function renderScoreBar(review) {
+    const dims = Object.entries(review.scores);
+    if (!dims.length) return '';
+
+    return `<div class="score-bar">
+      ${dims.map(([dim, s], i) => `
+        ${i > 0 ? '<span class="score-divider"></span>' : ''}
+        <span class="score-pill">
+          <span class="score-label">${esc(dim)}</span>
+          <span class="score-value score-${s.score}">${s.score}/5</span>
+        </span>
+      `).join('')}
+      ${review.overall ? `
+        <span class="overall-score score-${review.overall}">Overall: ${review.overall}/5</span>
+      ` : ''}
+    </div>`;
+  }
+
+  function renderEmpathyDetail(seg) {
+    const emp = seg.empathy;
+    let inner = '';
+
+    // Key phrases
+    if (emp.keyPhrases) {
+      inner += Object.entries(emp.keyPhrases).map(([cat, phrases]) => `
+        <div class="phrase-category">
+          <h4>${esc(cat)}</h4>
+          <div class="phrase-list">
+            ${phrases.map(p => `<span class="phrase-tag">${esc(p)}</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Pain points
+    if (emp.painPoints?.length) {
+      inner += `<table class="pain-table">
+        <thead><tr><th>Pain</th><th>Desire</th><th>Fear</th></tr></thead>
+        <tbody>
+          ${emp.painPoints.map(pp => `
+            <tr>
+              <td>${esc(pp.pain)}</td>
+              <td>${esc(pp.desire)}</td>
+              <td>${esc(pp.fear)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>`;
+    }
+
+    // Quick mode
+    if (emp.quickMode) {
+      inner += `<div style="margin-top: 20px;">
+        <div class="section-subtitle">Quick Mode — First Person Voice</div>
+        <div class="quick-mode">${esc(emp.quickMode)}</div>
+      </div>`;
+    }
+
+    return `<div class="collapsible">
+      <div class="collapsible-header">
+        <span class="collapsible-arrow">\u25B6</span>
+        Empathy Work
+      </div>
+      <div class="collapsible-body">${inner}</div>
+    </div>`;
+  }
+
+  function renderConceptsList(seg) {
+    const concepts = seg.concepts;
+    return `<div class="collapsible">
+      <div class="collapsible-header">
+        <span class="collapsible-arrow">\u25B6</span>
+        Creative Concepts (${concepts.priority.length})
+      </div>
+      <div class="collapsible-body">
+        <ol class="concept-list">
+          ${concepts.priority.map((name, i) => {
+            const concept = concepts.concepts.find(c => c.name === name);
+            return `<li>
+              <span class="concept-rank">${i + 1}</span>
+              <div>
+                <div class="concept-name">${esc(name)}</div>
+                ${concept?.angle ? `<div class="concept-insight">${esc(concept.angle)}</div>` : ''}
+              </div>
+            </li>`;
+          }).join('')}
+        </ol>
+      </div>
+    </div>`;
+  }
+
+  // --- Standout lines (in review top section) ---
+  // Included inside renderTopAds if standoutLines exist
+  // (Already handled via review.topAds)
+
+  // --- Helpers ---
+  function findReview(seg, adHeader) {
+    if (!seg.review?.ads) return null;
+    // Match by header name (fuzzy — remove leading ** and trim)
+    const clean = adHeader.replace(/^\*\*/,'').trim();
+    return seg.review.ads.find(a => {
+      return a.name === clean || a.name.startsWith(clean) || clean.startsWith(a.name);
+    });
+  }
+
+  function findImage(seg, conceptName, format) {
+    if (!seg.manifest?.images) return null;
+    return seg.manifest.images.find(img =>
+      img.concept === conceptName && img.format === format
+    );
+  }
+
+  function getVerdictClass(verdict) {
+    if (!verdict) return '';
+    const v = verdict.toLowerCase();
+    if (v.startsWith('ship')) return 'verdict-ship';
+    if (v.startsWith('polish')) return 'verdict-polish';
+    if (v.startsWith('rework') || v.startsWith('rewrite')) return 'verdict-rework';
+    return 'verdict-ship';
+  }
+
+  function esc(str) {
+    if (!str) return '';
+    const el = document.createElement('span');
+    el.textContent = str;
+    return el.innerHTML;
+  }
+
+  // --- Init ---
+  loadData();
+})();
+</script>
+</body>
+</html>
