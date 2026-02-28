@@ -756,6 +756,170 @@
     font-weight: 600;
   }
 
+  /* --- Image strip & thumbnails --- */
+  .image-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .main-image-area {
+    width: 100%;
+    min-height: 200px;
+    background: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .main-image-area img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .thumb-strip {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 2px;
+  }
+
+  .thumb-item {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid var(--light-gray);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .thumb-item:hover {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .thumb-item.active {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 2px var(--amber-light);
+  }
+
+  .thumb-item.review-approved { border-color: var(--green); }
+  .thumb-item.review-rejected { border-color: var(--red); }
+  .thumb-item.review-flagged { border-color: var(--gold); }
+
+  .thumb-item.active.review-approved { box-shadow: 0 0 0 2px rgba(91, 138, 94, 0.3); }
+  .thumb-item.active.review-rejected { box-shadow: 0 0 0 2px rgba(196, 85, 58, 0.3); }
+  .thumb-item.active.review-flagged { box-shadow: 0 0 0 2px rgba(184, 150, 62, 0.3); }
+
+  .thumb-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .thumb-type-label {
+    position: absolute;
+    bottom: 1px;
+    left: 1px;
+    right: 1px;
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: center;
+    background: rgba(44, 40, 38, 0.7);
+    color: var(--cream);
+    padding: 1px 2px;
+    line-height: 1.2;
+  }
+
+  /* --- Review controls --- */
+  .review-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 6px 0 2px;
+  }
+
+  .review-btn {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--light-gray);
+    background: transparent;
+    color: var(--warm-gray);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: var(--font-body);
+    line-height: 1.4;
+  }
+
+  .review-btn:hover {
+    border-color: var(--warm-gray);
+  }
+
+  .review-btn.review-btn-approve.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+  .review-btn.review-btn-reject.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
+  }
+
+  .review-btn.review-btn-flag.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #fff;
+  }
+
+  .review-note-input {
+    flex: 1;
+    min-width: 140px;
+    font-size: 12px;
+    font-family: var(--font-body);
+    padding: 5px 10px;
+    border: 1px solid var(--light-gray);
+    border-radius: 4px;
+    background: var(--warm-white);
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .review-note-input:focus {
+    border-color: var(--amber);
+  }
+
+  .review-note-input::placeholder {
+    color: var(--warm-gray);
+    opacity: 0.5;
+  }
+
+  .review-saving {
+    font-size: 11px;
+    color: var(--warm-gray);
+    font-style: italic;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .review-saving.visible {
+    opacity: 1;
+  }
+
   /* --- Responsive --- */
   @media (max-width: 768px) {
     .sidebar { display: none; }
@@ -764,6 +928,263 @@
     .ad-card-body { flex-direction: column; }
     .ad-card-image { width: 100%; min-height: 160px; }
     .segment-meta { gap: 16px; }
+  }
+
+  /* --- View tabs --- */
+  .topbar-tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+  }
+
+  .topbar-tab {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    color: var(--cream);
+    opacity: 0.5;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 16px 12px 14px;
+    cursor: pointer;
+    transition: opacity 0.15s, border-color 0.15s;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .topbar-tab:hover {
+    opacity: 0.8;
+  }
+
+  .topbar-tab.active {
+    opacity: 1;
+    border-bottom-color: var(--amber);
+    font-weight: 600;
+  }
+
+  /* --- Creative page --- */
+  .creative-page {
+    animation: fadeIn 0.3s ease-out both;
+  }
+
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .filter-pill {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--light-gray);
+    background: transparent;
+    color: var(--warm-gray);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .filter-pill:hover {
+    border-color: var(--warm-gray);
+    color: var(--charcoal);
+  }
+
+  .filter-pill.active {
+    background: var(--charcoal);
+    border-color: var(--charcoal);
+    color: var(--cream);
+  }
+
+  .creative-concept-group {
+    margin-bottom: 40px;
+  }
+
+  .creative-concept-heading {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--light-gray);
+  }
+
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 1200px) {
+    .image-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .image-grid { grid-template-columns: 1fr; }
+  }
+
+  .creative-card {
+    background: var(--warm-white);
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+    animation: fadeIn 0.3s ease-out both;
+  }
+
+  .creative-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .creative-card.hidden {
+    display: none;
+  }
+
+  .creative-card-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--light-gray);
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .creative-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s;
+  }
+
+  .creative-card-image:hover img {
+    transform: scale(1.03);
+  }
+
+  .creative-card-info {
+    padding: 12px 14px;
+  }
+
+  .creative-card-filename {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--warm-gray);
+    margin-bottom: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .creative-card-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .type-badge {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  .type-badge.base {
+    background: #E8EAF0;
+    color: #4A5568;
+  }
+
+  .type-badge.composited {
+    background: #F0E8F0;
+    color: #6B4A6B;
+  }
+
+  .status-badge {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  .status-badge.approved {
+    background: #E8F0E8;
+    color: var(--green);
+  }
+
+  .status-badge.rejected {
+    background: #FDE8E8;
+    color: var(--red);
+  }
+
+  .status-badge.flagged {
+    background: #FFF3E0;
+    color: var(--gold);
+  }
+
+  .creative-card .review-controls {
+    padding: 4px 0 0;
+  }
+
+  .creative-card .review-note-input {
+    min-width: 0;
+    width: 100%;
+    margin-top: 6px;
+  }
+
+  /* --- Lightbox --- */
+  .lightbox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(44, 40, 38, 0.85);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    animation: fadeIn 0.2s ease-out both;
+  }
+
+  .lightbox-overlay img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    cursor: default;
+  }
+
+  /* --- Creative page empty state --- */
+  .creative-empty {
+    text-align: center;
+    padding: 60px 40px;
+    color: var(--warm-gray);
+  }
+
+  .creative-empty h3 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    color: var(--charcoal);
+  }
+
+  .creative-empty p {
+    font-size: 14px;
+    max-width: 360px;
+    margin: 0 auto;
   }
 
   /* --- Animations --- */
@@ -786,6 +1207,10 @@
 
 <div class="topbar">
   <div class="topbar-brand">Come Join Us <span>Creative Review</span></div>
+  <div class="topbar-tabs" id="topbar-tabs">
+    <button class="topbar-tab active" data-view="gallery">Ad Gallery</button>
+    <button class="topbar-tab" data-view="creative">Creative</button>
+  </div>
   <div class="topbar-meta" id="topbar-meta"></div>
 </div>
 
@@ -799,18 +1224,20 @@
 (function() {
   let DATA = null;
   let activeSegment = null;
+  let activeView = 'gallery';
+  let activeCreativeFilter = 'all';
 
   // --- Load data ---
   async function loadData() {
     try {
-      const res = await fetch('data.json');
+      const res = await fetch('/api/data');
       DATA = await res.json();
       init();
     } catch (e) {
       document.getElementById('main').innerHTML = `
         <div class="empty-state">
           <h2>No data found</h2>
-          <p>Run <code>node app/build.js</code> to generate data.json from the segment files.</p>
+          <p>Run <code>node app/server.js</code> to start the server, or <code>node app/build.js</code> to generate data.json.</p>
         </div>
       `;
     }
@@ -875,8 +1302,29 @@
     document.querySelectorAll('.sidebar-item').forEach(el => {
       el.classList.toggle('active', el.dataset.slug === slug);
     });
-    renderSegment(slug);
+    renderActiveView(slug);
     window.scrollTo({ top: 0 });
+  }
+
+  function renderActiveView(slug) {
+    if (activeView === 'creative') {
+      renderCreativePage(slug);
+    } else {
+      renderSegment(slug);
+    }
+  }
+
+  function switchView(view) {
+    if (view === activeView) return;
+    activeView = view;
+    activeCreativeFilter = 'all';
+    document.querySelectorAll('.topbar-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.view === view);
+    });
+    if (activeSegment) {
+      renderActiveView(activeSegment);
+      window.scrollTo({ top: 0 });
+    }
   }
 
   // --- Segment renderer ---
@@ -1030,10 +1478,11 @@
 
   function renderFeedAdCard(seg, conceptName, ad, format) {
     const review = findReview(seg, ad.header);
-    const image = findImage(seg, conceptName, 'feed');
+    const images = findImages(seg, conceptName, 'feed');
     const verdictClass = getVerdictClass(review?.verdict);
+    const firstImage = images.length > 0 ? images[0] : null;
 
-    return `<div class="ad-card">
+    return `<div class="ad-card" data-slug="${esc(seg.slug)}">
       <div class="ad-card-header">
         <span class="ad-card-name">${esc(ad.header)}</span>
         <div class="ad-card-badges">
@@ -1043,8 +1492,8 @@
       </div>
       <div class="ad-card-body">
         <div class="ad-card-image">
-          ${image
-            ? `<img src="../${seg.creativePath}/${image.filename}" alt="${esc(ad.header)}">`
+          ${images.length > 0
+            ? renderImageStrip(seg, images, firstImage)
             : `<div class="no-image"><span class="no-image-icon">\u25A3</span>No image yet<br><small>/generate-creative</small></div>`
           }
         </div>
@@ -1061,10 +1510,11 @@
 
   function renderStoryAdCard(seg, conceptName, ad) {
     const review = findReview(seg, ad.header);
-    const image = findImage(seg, conceptName, 'story');
+    const images = findImages(seg, conceptName, 'story');
     const verdictClass = getVerdictClass(review?.verdict);
+    const firstImage = images.length > 0 ? images[0] : null;
 
-    return `<div class="ad-card">
+    return `<div class="ad-card" data-slug="${esc(seg.slug)}">
       <div class="ad-card-header">
         <span class="ad-card-name">${esc(ad.header)}</span>
         <div class="ad-card-badges">
@@ -1074,8 +1524,8 @@
       </div>
       <div class="ad-card-body">
         <div class="ad-card-image" style="width: 160px;">
-          ${image
-            ? `<img src="../${seg.creativePath}/${image.filename}" alt="${esc(ad.header)}">`
+          ${images.length > 0
+            ? renderImageStrip(seg, images, firstImage)
             : `<div class="no-image"><span class="no-image-icon">\u25A3</span>9:16</div>`
           }
         </div>
@@ -1090,6 +1540,40 @@
         </div>
       </div>
       ${review ? renderScoreBar(review) : ''}
+    </div>`;
+  }
+
+  function renderImageStrip(seg, images, activeImage) {
+    const slug = seg.slug;
+    const activeFilename = activeImage ? activeImage.filename : '';
+    const imgSrc = activeImage ? `/${seg.creativePath}/${activeImage.filename}` : '';
+
+    const thumbs = images.map(img => {
+      const reviewClass = img.review?.status ? `review-${img.review.status}` : '';
+      const isActive = img.filename === activeFilename ? 'active' : '';
+      return `<div class="thumb-item ${isActive} ${reviewClass}" data-filename="${esc(img.filename)}" data-slug="${esc(slug)}">
+        <img src="/${seg.creativePath}/${img.filename}" alt="${esc(img.filename)}">
+        <span class="thumb-type-label">${img.type === 'composited' ? 'comp' : 'base'}</span>
+      </div>`;
+    }).join('');
+
+    // Review controls for the active image
+    const activeReview = activeImage?.review;
+    const activeStatus = activeReview?.status || '';
+    const activeNote = activeReview?.note || '';
+
+    return `<div class="image-strip" data-slug="${esc(slug)}" data-active-filename="${esc(activeFilename)}">
+      <div class="main-image-area">
+        ${imgSrc ? `<img src="${imgSrc}" alt="${esc(activeFilename)}">` : ''}
+      </div>
+      ${images.length > 1 ? `<div class="thumb-strip">${thumbs}</div>` : ''}
+      <div class="review-controls" data-slug="${esc(slug)}" data-filename="${esc(activeFilename)}">
+        <button class="review-btn review-btn-approve${activeStatus === 'approved' ? ' active' : ''}" data-status="approved">Approve</button>
+        <button class="review-btn review-btn-reject${activeStatus === 'rejected' ? ' active' : ''}" data-status="rejected">Reject</button>
+        <button class="review-btn review-btn-flag${activeStatus === 'flagged' ? ' active' : ''}" data-status="flagged">Flag</button>
+        <input class="review-note-input" type="text" placeholder="Add a note..." value="${esc(activeNote)}">
+        <span class="review-saving">Saved</span>
+      </div>
     </div>`;
   }
 
@@ -1184,6 +1668,122 @@
     </div>`;
   }
 
+  // --- Creative review page ---
+  function renderCreativePage(slug) {
+    const seg = DATA.segments.find(s => s.slug === slug);
+    if (!seg) return;
+
+    const main = document.getElementById('main');
+    const images = seg.images || [];
+
+    if (!images.length) {
+      main.innerHTML = renderHeader(seg) + `
+        <div class="creative-empty">
+          <h3>No creative yet</h3>
+          <p>Run /generate-creative to create images for this segment.</p>
+        </div>`;
+      return;
+    }
+
+    // Group images by concept
+    const conceptGroups = {};
+    for (const img of images) {
+      const key = img.concept || 'Uncategorised';
+      if (!conceptGroups[key]) conceptGroups[key] = [];
+      conceptGroups[key].push(img);
+    }
+
+    // Count for filter bar
+    const baseCount = images.filter(i => i.type === 'base').length;
+    const compCount = images.filter(i => i.type === 'composited').length;
+    const unapprovedCount = images.filter(i => !i.review?.status || i.review.status !== 'approved').length;
+
+    let html = renderHeader(seg);
+
+    // Filter bar
+    html += `<div class="filter-bar">
+      <button class="filter-pill${activeCreativeFilter === 'all' ? ' active' : ''}" data-filter="all">All (${images.length})</button>
+      <button class="filter-pill${activeCreativeFilter === 'base' ? ' active' : ''}" data-filter="base">Bases (${baseCount})</button>
+      <button class="filter-pill${activeCreativeFilter === 'composited' ? ' active' : ''}" data-filter="composited">Composited (${compCount})</button>
+      <button class="filter-pill${activeCreativeFilter === 'unapproved' ? ' active' : ''}" data-filter="unapproved">Unapproved (${unapprovedCount})</button>
+    </div>`;
+
+    html += `<div class="creative-page">`;
+
+    for (const [conceptName, conceptImages] of Object.entries(conceptGroups)) {
+      // Sort: bases first, then composited, then by filename
+      conceptImages.sort((a, b) => {
+        if (a.type === 'base' && b.type !== 'base') return -1;
+        if (a.type !== 'base' && b.type === 'base') return 1;
+        return a.filename.localeCompare(b.filename);
+      });
+
+      html += `<div class="creative-concept-group">
+        <div class="creative-concept-heading">${esc(conceptName)}</div>
+        <div class="image-grid">`;
+
+      for (const img of conceptImages) {
+        const imgSrc = `/${seg.creativePath}/${img.filename}`;
+        const reviewStatus = img.review?.status || '';
+        const reviewNote = img.review?.note || '';
+
+        // Determine hidden state based on active filter
+        let hidden = false;
+        if (activeCreativeFilter === 'base' && img.type !== 'base') hidden = true;
+        if (activeCreativeFilter === 'composited' && img.type !== 'composited') hidden = true;
+        if (activeCreativeFilter === 'unapproved' && reviewStatus === 'approved') hidden = true;
+
+        html += `<div class="creative-card${hidden ? ' hidden' : ''}" data-type="${esc(img.type || '')}" data-status="${esc(reviewStatus)}">
+          <div class="creative-card-image" data-src="${esc(imgSrc)}">
+            <img src="${imgSrc}" alt="${esc(img.filename)}" loading="lazy">
+          </div>
+          <div class="creative-card-info">
+            <div class="creative-card-filename" title="${esc(img.filename)}">${esc(img.filename)}</div>
+            <div class="creative-card-badges">
+              <span class="type-badge ${esc(img.type || 'base')}">${img.type === 'composited' ? 'composited' : 'base'}</span>
+              ${img.format ? `<span class="format-badge ${img.format === 'feed' ? 'feed' : 'story'}">${esc(img.format)}</span>` : ''}
+              ${reviewStatus ? `<span class="status-badge ${esc(reviewStatus)}">${esc(reviewStatus)}</span>` : ''}
+            </div>
+            <div class="review-controls" data-slug="${esc(seg.slug)}" data-filename="${esc(img.filename)}">
+              <button class="review-btn review-btn-approve${reviewStatus === 'approved' ? ' active' : ''}" data-status="approved">Approve</button>
+              <button class="review-btn review-btn-reject${reviewStatus === 'rejected' ? ' active' : ''}" data-status="rejected">Reject</button>
+              <button class="review-btn review-btn-flag${reviewStatus === 'flagged' ? ' active' : ''}" data-status="flagged">Flag</button>
+              <input class="review-note-input" type="text" placeholder="Add a note..." value="${esc(reviewNote)}">
+              <span class="review-saving">Saved</span>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      html += `</div></div>`;
+    }
+
+    html += `</div>`;
+    main.innerHTML = html;
+  }
+
+  function applyCreativeFilter(filter) {
+    activeCreativeFilter = filter;
+
+    // Update pill states
+    document.querySelectorAll('.filter-pill').forEach(pill => {
+      pill.classList.toggle('active', pill.dataset.filter === filter);
+    });
+
+    // Show/hide cards
+    document.querySelectorAll('.creative-card').forEach(card => {
+      const type = card.dataset.type;
+      const status = card.dataset.status;
+      let hidden = false;
+
+      if (filter === 'base' && type !== 'base') hidden = true;
+      if (filter === 'composited' && type !== 'composited') hidden = true;
+      if (filter === 'unapproved' && status === 'approved') hidden = true;
+
+      card.classList.toggle('hidden', hidden);
+    });
+  }
+
   // --- Standout lines (in review top section) ---
   // Included inside renderTopAds if standoutLines exist
   // (Already handled via review.topAds)
@@ -1198,11 +1798,16 @@
     });
   }
 
-  function findImage(seg, conceptName, format) {
-    if (!seg.manifest?.images) return null;
-    return seg.manifest.images.find(img =>
-      img.concept === conceptName && img.format === format
-    );
+  function findImages(seg, conceptName, format) {
+    if (!seg.images || !seg.images.length) return [];
+    return seg.images
+      .filter(img => img.concept === conceptName && img.format === format)
+      .sort((a, b) => {
+        // bases first, then composited, then by filename
+        if (a.type === 'base' && b.type !== 'base') return -1;
+        if (a.type !== 'base' && b.type === 'base') return 1;
+        return a.filename.localeCompare(b.filename);
+      });
   }
 
   function getVerdictClass(verdict) {
@@ -1219,6 +1824,260 @@
     const el = document.createElement('span');
     el.textContent = str;
     return el.innerHTML;
+  }
+
+  // --- Review API ---
+  async function saveReview(slug, filename, status, note) {
+    try {
+      const res = await fetch(`/api/segments/${encodeURIComponent(slug)}/reviews/${encodeURIComponent(filename)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: status || null, note: note || '' }),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      return await res.json();
+    } catch (e) {
+      console.error('Failed to save review:', e);
+      return null;
+    }
+  }
+
+  // Update the in-memory image review data
+  function updateLocalImageReview(slug, filename, status, note) {
+    const seg = DATA.segments.find(s => s.slug === slug);
+    if (!seg || !seg.images) return;
+    const img = seg.images.find(i => i.filename === filename);
+    if (img) {
+      img.review = { status: status || null, note: note || '' };
+    }
+  }
+
+  // Get image review data from local state
+  function getLocalImageReview(slug, filename) {
+    const seg = DATA.segments.find(s => s.slug === slug);
+    if (!seg || !seg.images) return null;
+    const img = seg.images.find(i => i.filename === filename);
+    return img?.review || null;
+  }
+
+  // Flash the "Saved" indicator
+  function flashSaved(controls) {
+    const indicator = controls.querySelector('.review-saving');
+    if (indicator) {
+      indicator.textContent = 'Saved';
+      indicator.classList.add('visible');
+      setTimeout(() => indicator.classList.remove('visible'), 1200);
+    }
+  }
+
+  // Refresh review status classes on a thumbnail
+  function refreshThumbStatus(strip, filename, status) {
+    const thumb = strip.querySelector(`.thumb-item[data-filename="${filename}"]`);
+    if (!thumb) return;
+    thumb.classList.remove('review-approved', 'review-rejected', 'review-flagged');
+    if (status) {
+      thumb.classList.add(`review-${status}`);
+    }
+  }
+
+  // Update review controls to reflect current state
+  function syncReviewControls(controls, status, note) {
+    controls.querySelectorAll('.review-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.status === status);
+    });
+    const input = controls.querySelector('.review-note-input');
+    if (input && input !== document.activeElement) {
+      input.value = note || '';
+    }
+  }
+
+  // --- Event delegation for image strip + review controls ---
+  document.getElementById('main').addEventListener('click', function(e) {
+    // Thumbnail click — swap main image
+    const thumb = e.target.closest('.thumb-item');
+    if (thumb) {
+      const strip = thumb.closest('.image-strip');
+      if (!strip) return;
+
+      const slug = strip.dataset.slug;
+      const filename = thumb.dataset.filename;
+
+      // Update active thumbnail
+      strip.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+
+      // Swap main image
+      const mainArea = strip.querySelector('.main-image-area');
+      const seg = DATA.segments.find(s => s.slug === slug);
+      if (mainArea && seg) {
+        mainArea.innerHTML = `<img src="/${seg.creativePath}/${filename}" alt="${esc(filename)}">`;
+      }
+
+      // Update strip active filename
+      strip.dataset.activeFilename = filename;
+
+      // Update review controls to reflect this image's review
+      const controls = strip.querySelector('.review-controls');
+      if (controls) {
+        controls.dataset.filename = filename;
+        const review = getLocalImageReview(slug, filename);
+        syncReviewControls(controls, review?.status || '', review?.note || '');
+      }
+
+      return;
+    }
+
+    // Review button click
+    const reviewBtn = e.target.closest('.review-btn');
+    if (reviewBtn) {
+      const controls = reviewBtn.closest('.review-controls');
+      if (!controls) return;
+
+      const slug = controls.dataset.slug;
+      const filename = controls.dataset.filename;
+      if (!slug || !filename) return;
+
+      const currentReview = getLocalImageReview(slug, filename);
+      const currentStatus = currentReview?.status || '';
+      const clickedStatus = reviewBtn.dataset.status;
+
+      // Toggle: if clicking the already-active status, clear it
+      const newStatus = (clickedStatus === currentStatus) ? null : clickedStatus;
+      const note = controls.querySelector('.review-note-input')?.value || '';
+
+      // Update buttons immediately
+      controls.querySelectorAll('.review-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.status === newStatus);
+      });
+
+      // Update local data
+      updateLocalImageReview(slug, filename, newStatus, note);
+
+      // Update thumbnail border (gallery view)
+      const strip = controls.closest('.image-strip');
+      if (strip) {
+        refreshThumbStatus(strip, filename, newStatus);
+      }
+
+      // Update creative card badge and data attr (creative view)
+      const card = controls.closest('.creative-card');
+      if (card) {
+        card.dataset.status = newStatus || '';
+        const badgesEl = card.querySelector('.creative-card-badges');
+        if (badgesEl) {
+          const existingBadge = badgesEl.querySelector('.status-badge');
+          if (existingBadge) existingBadge.remove();
+          if (newStatus) {
+            const badge = document.createElement('span');
+            badge.className = `status-badge ${newStatus}`;
+            badge.textContent = newStatus;
+            badgesEl.appendChild(badge);
+          }
+        }
+        // Re-apply filter visibility
+        if (activeView === 'creative') {
+          let hidden = false;
+          if (activeCreativeFilter === 'base' && card.dataset.type !== 'base') hidden = true;
+          if (activeCreativeFilter === 'composited' && card.dataset.type !== 'composited') hidden = true;
+          if (activeCreativeFilter === 'unapproved' && newStatus === 'approved') hidden = true;
+          card.classList.toggle('hidden', hidden);
+        }
+      }
+
+      // Save to server
+      saveReview(slug, filename, newStatus, note).then(result => {
+        if (result) flashSaved(controls);
+      });
+
+      return;
+    }
+  });
+
+  // Note input — save on blur
+  document.getElementById('main').addEventListener('focusout', function(e) {
+    if (!e.target.classList.contains('review-note-input')) return;
+
+    const controls = e.target.closest('.review-controls');
+    if (!controls) return;
+
+    const slug = controls.dataset.slug;
+    const filename = controls.dataset.filename;
+    if (!slug || !filename) return;
+
+    const note = e.target.value;
+    const review = getLocalImageReview(slug, filename);
+    const status = review?.status || null;
+
+    // Only save if note actually changed
+    const oldNote = review?.note || '';
+    if (note === oldNote) return;
+
+    updateLocalImageReview(slug, filename, status, note);
+
+    saveReview(slug, filename, status, note).then(result => {
+      if (result) flashSaved(controls);
+    });
+  });
+
+  // Also save on Enter key in note input
+  document.getElementById('main').addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    if (!e.target.classList.contains('review-note-input')) return;
+
+    e.target.blur(); // triggers focusout handler above
+  });
+
+  // --- View tab switching ---
+  document.getElementById('topbar-tabs').addEventListener('click', function(e) {
+    const tab = e.target.closest('.topbar-tab');
+    if (tab) switchView(tab.dataset.view);
+  });
+
+  // --- Filter bar clicks ---
+  document.getElementById('main').addEventListener('click', function(e) {
+    const pill = e.target.closest('.filter-pill');
+    if (pill) {
+      applyCreativeFilter(pill.dataset.filter);
+      return;
+    }
+
+    // Creative card image click — open lightbox
+    const cardImage = e.target.closest('.creative-card-image');
+    if (cardImage) {
+      const src = cardImage.dataset.src;
+      if (src) openLightbox(src);
+      return;
+    }
+
+    // Lightbox close
+    if (e.target.closest('.lightbox-overlay')) {
+      closeLightbox();
+      return;
+    }
+  });
+
+  function openLightbox(src) {
+    const overlay = document.createElement('div');
+    overlay.className = 'lightbox-overlay';
+    overlay.innerHTML = `<img src="${src}" alt="Full size">`;
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) closeLightbox();
+    });
+    document.body.appendChild(overlay);
+
+    // Close on Escape
+    overlay._escHandler = function(e) {
+      if (e.key === 'Escape') closeLightbox();
+    };
+    document.addEventListener('keydown', overlay._escHandler);
+  }
+
+  function closeLightbox() {
+    const overlay = document.querySelector('.lightbox-overlay');
+    if (overlay) {
+      if (overlay._escHandler) document.removeEventListener('keydown', overlay._escHandler);
+      overlay.remove();
+    }
   }
 
   // --- Init ---

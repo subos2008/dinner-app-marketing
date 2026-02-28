@@ -400,19 +400,142 @@ function parseManifest(segmentPath) {
   }
 }
 
-// --- List creative images ---
+// --- List creative images (returns rich image objects) ---
 function listCreativeImages(segmentPath) {
   const creativePath = path.join(segmentPath, 'creative');
+
+  // Get all image files
+  let imageFiles;
   try {
-    return fs.readdirSync(creativePath)
-      .filter(f => /\.(png|jpg|jpeg|webp)$/i.test(f));
+    imageFiles = fs.readdirSync(creativePath)
+      .filter(f => /\.(png|jpg|jpeg|webp)$/i.test(f))
+      .sort();
   } catch {
     return [];
   }
+
+  if (imageFiles.length === 0) return [];
+
+  // Read manifest.json if it exists
+  let manifestEntries = {};
+  try {
+    const manifest = JSON.parse(fs.readFileSync(path.join(creativePath, 'manifest.json'), 'utf-8'));
+    if (manifest.images && Array.isArray(manifest.images)) {
+      for (const entry of manifest.images) {
+        manifestEntries[entry.filename] = entry;
+      }
+    }
+  } catch {
+    // No manifest — will fall back to inference
+  }
+
+  // Read reviews.json if it exists
+  let reviews = {};
+  try {
+    const reviewData = JSON.parse(fs.readFileSync(path.join(creativePath, 'reviews.json'), 'utf-8'));
+    if (reviewData && typeof reviewData === 'object') {
+      // Support both { "filename": { status, note } } and array format
+      if (Array.isArray(reviewData)) {
+        for (const entry of reviewData) {
+          if (entry.filename) {
+            reviews[entry.filename] = { status: entry.status, note: entry.note || null };
+          }
+        }
+      } else {
+        reviews = reviewData;
+      }
+    }
+  } catch {
+    // No reviews — that's fine
+  }
+
+  return imageFiles.map(filename => {
+    const manifestEntry = manifestEntries[filename];
+
+    if (manifestEntry) {
+      // Use manifest metadata
+      return {
+        filename,
+        concept: manifestEntry.concept || null,
+        format: manifestEntry.format || null,
+        aspect_ratio: manifestEntry.aspect_ratio || null,
+        type: manifestEntry.type || 'base',
+        parent: manifestEntry.parent || null,
+        copy_variant: manifestEntry.copy_variant || null,
+        review: reviews[filename] || null,
+      };
+    }
+
+    // Fallback: infer from filename
+    return inferImageMetadata(filename, reviews[filename] || null);
+  });
 }
 
-// --- Main build ---
-function build() {
+// --- Infer image metadata from filename ---
+function inferImageMetadata(filename, review) {
+  const baseName = filename.replace(/\.(png|jpg|jpeg|webp)$/i, '');
+
+  // Determine format
+  let format = null;
+  if (baseName.includes('-feed-')) format = 'feed';
+  else if (baseName.includes('-story-')) format = 'story';
+
+  // Determine aspect ratio from filename
+  let aspect_ratio = null;
+  const ratioMatch = baseName.match(/(\d+)x(\d+)/);
+  if (ratioMatch) {
+    aspect_ratio = `${ratioMatch[1]}:${ratioMatch[2]}`;
+  }
+
+  // Determine type: composited if ends with -copy or -v followed by digits
+  const isComposited = /-copy$/.test(baseName) || /-v\d+$/.test(baseName);
+  const type = isComposited ? 'composited' : 'base';
+
+  // Determine parent for composited images
+  let parent = null;
+  if (isComposited) {
+    const parentBase = baseName.replace(/-(copy|v\d+)$/, '');
+    const ext = filename.match(/\.(png|jpg|jpeg|webp)$/i);
+    parent = ext ? parentBase + ext[0] : parentBase + '.png';
+  }
+
+  // Extract concept slug: everything before the format marker
+  let concept = null;
+  const formatMarker = baseName.match(/-(feed|story)-/);
+  if (formatMarker) {
+    const slug = baseName.slice(0, formatMarker.index);
+    concept = slugToConceptName(slug);
+  }
+
+  return {
+    filename,
+    concept,
+    format,
+    aspect_ratio,
+    type,
+    parent,
+    copy_variant: null,
+    review: review || null,
+  };
+}
+
+// --- Convert a slug like "wednesday-night-problem" to a concept name ---
+function slugToConceptName(slug) {
+  // Title-case each word
+  const words = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1));
+  const name = words.join(' ');
+
+  // Prefix with "The" for known patterns that start with "The"
+  const thePatterns = ['Wednesday', 'Google', 'Quiet', 'Transplant', 'Explorer', 'Outgrower', 'Sober', 'Plant', 'Healthy', 'Hippy'];
+  if (thePatterns.some(p => name.startsWith(p))) {
+    return 'The ' + name;
+  }
+
+  return name;
+}
+
+// --- Build data (returns object, does not write to disk) ---
+function buildData() {
   const folders = getSegmentFolders();
   const segments = [];
 
@@ -460,17 +583,22 @@ function build() {
     return 0;
   });
 
-  const data = {
+  return {
     generatedAt: new Date().toISOString(),
     segmentCount: segments.length,
     segments,
   };
+}
+
+// --- Write data.json to disk (backward compat for CLI usage) ---
+function build() {
+  const data = buildData();
 
   fs.writeFileSync(OUTPUT_PATH, JSON.stringify(data, null, 2));
-  console.log(`Built data.json with ${segments.length} segments → ${OUTPUT_PATH}`);
+  console.log(`Built data.json with ${data.segments.length} segments → ${OUTPUT_PATH}`);
 
   // Summary
-  for (const seg of segments) {
+  for (const seg of data.segments) {
     const adCount = seg.adCopy?.concepts?.reduce((sum, c) => sum + c.feedAds.length + c.storiesReels.length, 0) || 0;
     const imageCount = seg.images.length;
     const reviewCount = seg.review?.ads?.length || 0;
@@ -478,4 +606,9 @@ function build() {
   }
 }
 
-build();
+// CLI usage
+if (require.main === module) {
+  build();
+}
+
+module.exports = { buildData };

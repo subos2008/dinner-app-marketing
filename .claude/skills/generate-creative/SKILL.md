@@ -97,19 +97,29 @@ If generation fails or quality is poor, iterate on the prompt — adjust specifi
 
 ### 4. Save images
 
+**CRITICAL: Images are append-only. NEVER overwrite or delete an existing image file.** If a filename already exists, add a version suffix (`-v2`, `-v3`, etc.). Old images stay — they may be referenced elsewhere or preferred later.
+
 Save to `<segment-folder>/creative/` with this naming convention:
 
 ```
 <concept-slug>-<format>-<ratio>.png
 ```
 
+If that file already exists:
+```
+<concept-slug>-<format>-<ratio>-v2.png
+<concept-slug>-<format>-<ratio>-v3.png
+```
+
 **Examples:**
 - `wednesday-night-problem-feed-1x1.png`
+- `wednesday-night-problem-feed-1x1-v2.png` (regenerated variant)
 - `wednesday-night-problem-story-9x16.png`
 - `google-search-feed-4x5.png`
-- `real-questions-feed-1x1.png`
 
 ### 5. Write manifest
+
+**Append new entries to the manifest — never remove existing ones.** The manifest is the full history of generated images.
 
 Create or update `<segment-folder>/creative/manifest.json`:
 
@@ -124,11 +134,26 @@ Create or update `<segment-folder>/creative/manifest.json`:
       "ad_variant": "Variant B",
       "format": "feed",
       "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
       "prompt": "the actual prompt sent to Nano Banana",
       "style": "photorealistic, warm tones, editorial",
       "visual_type": "solo person in city"
     }
   ]
+}
+```
+
+For composited images (base + ad copy text overlaid via edit_image):
+```json
+{
+  "filename": "wednesday-night-problem-feed-1x1-copy.png",
+  "concept": "The Wednesday Night Problem",
+  "type": "composited",
+  "parent": "wednesday-night-problem-feed-1x1.png",
+  "copy_variant": "Variant B",
+  "format": "feed",
+  "aspect_ratio": "1:1"
 }
 ```
 
@@ -161,7 +186,7 @@ After generation, report:
 **Manifest:** Updated at <segment-folder>/creative/manifest.json
 
 ### Next steps
-- Review images in the creative review app (`node app/build.js && open app/index.html`)
+- Review images in the creative review app (`cd app && node server.js`, open http://localhost:8642)
 - Regenerate any that don't pass quality bar
 - Run `/deploy-campaign` when ready
 ```

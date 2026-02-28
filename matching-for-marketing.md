@@ -39,7 +39,7 @@ The algorithm uses a **penalty-based scoring system**. It doesn't hard-partition
 
 3. **Budget** — People who selected similar price tiers are grouped together. The group's restaurant is matched to the lowest budget preference in the group, so nobody is taken somewhere they can't afford.
 
-4. **Gender balance** — The algorithm aims for a balanced mix of men and women. Non-binary members are included naturally without affecting the M/F balance calculation.
+4. **Gender balance (with female-first priority)** — Women are always placed on well-balanced mixed tables. When there are more men than women in the pool, the extra men are grouped into men-only tables rather than spreading women thin. A woman will never be the only woman at a table of men — minimum 2 women per mixed group. Non-binary members are included naturally without affecting the M/F balance calculation.
 
 5. **Age** — People of similar ages are preferred. There's a soft 15-year threshold during initial grouping, but the optimizer will stretch this rather than leave someone out.
 
