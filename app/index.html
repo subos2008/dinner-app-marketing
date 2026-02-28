@@ -1247,9 +1247,58 @@
     document.getElementById('topbar-meta').textContent =
       DATA.segmentCount + ' segments \u00B7 ' + new Date(DATA.generatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     renderSidebar();
-    // Select first segment
-    if (DATA.segments.length) selectSegment(DATA.segments[0].slug);
+
+    // Parse URL for segment + view
+    const route = parseRoute(window.location.pathname);
+    if (route && DATA.segments.find(s => s.slug === route.slug)) {
+      activeView = route.view;
+      document.querySelectorAll('.topbar-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.view === activeView);
+      });
+      selectSegment(route.slug, true);
+    } else if (DATA.segments.length) {
+      selectSegment(DATA.segments[0].slug);
+    }
   }
+
+  function parseRoute(pathname) {
+    const match = pathname.match(/^\/segment\/([^/]+)\/(gallery|creative)$/);
+    if (match) return { slug: match[1], view: match[2] };
+    return null;
+  }
+
+  function updateURL() {
+    if (activeSegment) {
+      const url = '/segment/' + activeSegment + '/' + activeView;
+      if (window.location.pathname !== url) {
+        history.pushState({ slug: activeSegment, view: activeView }, '', url);
+      }
+    }
+  }
+
+  window.addEventListener('popstate', function(e) {
+    if (e.state && e.state.slug && e.state.view) {
+      activeView = e.state.view;
+      activeCreativeFilter = 'all';
+      document.querySelectorAll('.topbar-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.view === activeView);
+      });
+      activeSegment = e.state.slug;
+      document.querySelectorAll('.sidebar-item').forEach(el => {
+        el.classList.toggle('active', el.dataset.slug === e.state.slug);
+      });
+      renderActiveView(e.state.slug);
+    } else {
+      const route = parseRoute(window.location.pathname);
+      if (route) {
+        activeView = route.view;
+        document.querySelectorAll('.topbar-tab').forEach(tab => {
+          tab.classList.toggle('active', tab.dataset.view === activeView);
+        });
+        selectSegment(route.slug, true);
+      }
+    }
+  });
 
   // --- Sidebar ---
   function renderSidebar() {
@@ -1297,13 +1346,14 @@
     </div>`;
   }
 
-  function selectSegment(slug) {
+  function selectSegment(slug, skipPush) {
     activeSegment = slug;
     document.querySelectorAll('.sidebar-item').forEach(el => {
       el.classList.toggle('active', el.dataset.slug === slug);
     });
     renderActiveView(slug);
     window.scrollTo({ top: 0 });
+    if (!skipPush) updateURL();
   }
 
   function renderActiveView(slug) {
@@ -1325,6 +1375,7 @@
       renderActiveView(activeSegment);
       window.scrollTo({ top: 0 });
     }
+    updateURL();
   }
 
   // --- Segment renderer ---
@@ -2080,8 +2131,34 @@
     }
   }
 
+  // --- Live reload via SSE ---
+  function connectSSE() {
+    const es = new EventSource('/api/events');
+    es.onmessage = async function(e) {
+      if (e.data === 'reload' && DATA) {
+        const scrollY = window.scrollY;
+        try {
+          const res = await fetch('/api/data');
+          DATA = await res.json();
+          renderSidebar();
+          if (activeSegment) {
+            selectSegment(activeSegment, true);
+            requestAnimationFrame(() => window.scrollTo(0, scrollY));
+          }
+        } catch (err) {
+          console.error('Live reload fetch failed:', err);
+        }
+      }
+    };
+    es.onerror = function() {
+      es.close();
+      setTimeout(connectSSE, 3000);
+    };
+  }
+
   // --- Init ---
   loadData();
+  connectSSE();
 })();
 </script>
 </body>

@@ -88,6 +88,35 @@ app.put('/api/segments/:slug/reviews/:filename', (req, res) => {
   }
 });
 
+// --- SSE live reload ---
+const sseClients = new Set();
+
+app.get('/api/events', (req, res) => {
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    Connection: 'keep-alive'
+  });
+  res.write('data: connected\n\n');
+  sseClients.add(res);
+  req.on('close', () => sseClients.delete(res));
+});
+
+let debounceTimer = null;
+fs.watch(path.join(ROOT, 'segments'), { recursive: true }, () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    for (const client of sseClients) {
+      client.write('data: reload\n\n');
+    }
+  }, 500);
+});
+
+// --- URL routing: serve index.html for /segment/:slug/:view paths ---
+app.get('/segment/:slug/:view', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Creative review app: http://localhost:${PORT}`);
 });
