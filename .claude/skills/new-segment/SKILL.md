@@ -5,7 +5,7 @@ description: "Run the full Come Join Us creative process for a new customer segm
 
 # New Segment Pipeline
 
-You are running the full creative process for a new Come Join Us customer segment. This skill orchestrates the complete pipeline: profile → empathy → concepts → copy → review.
+You are running the full creative process for a new Come Join Us customer segment. This skill orchestrates the complete pipeline: profile → empathy → concepts → copy → score.
 
 ## Invocation
 
@@ -57,16 +57,17 @@ Follow the `/concepts` skill instructions (read from `.claude/skills/concepts/SK
 
 ### 5. Write copy
 
-Follow the `/write-copy` skill instructions (read from `.claude/skills/write-copy/SKILL.md`):
+Follow the `/write` skill instructions (read from `.claude/skills/write/SKILL.md`):
 - Read concepts.md + creative-brief.md + matching-for-marketing.md + empathy.md
 - Write feed ads and Stories/Reels for top concepts
 - Write ad-copy.md
 
-### 6. Review copy
+### 6. Score copy
 
-Follow the `/review-copy` skill instructions (read from `.claude/skills/review-copy/SKILL.md`):
+Follow the `/score` skill instructions (read from `.claude/skills/score/SKILL.md`):
 - Score every ad against persona, empathy, and brief
 - Write review.md
+- Update creative/ad-status.json with verdict-based statuses
 
 ### 7. Update strategy
 
@@ -80,6 +81,10 @@ When complete, the segment folder should contain:
 - concepts.md
 - ad-copy.md
 - review.md
-- creative/ (empty, ready for visual assets)
+- creative/ad-status.json (populated by the scoring step)
+- creative/ (ready for visual assets)
 
-Present a summary of the segment and the top 3 ads from the review.
+Present a summary of the segment and the top 3 ads from the review. Remind the user that the next steps are:
+1. Review and approve ads in the creative review app
+2. Run `/creative` to generate images
+3. Run `/deploy` when ads are approved

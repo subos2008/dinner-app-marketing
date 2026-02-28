@@ -1,6 +1,6 @@
 ---
-name: audience-research
-description: "Research Meta targeting options and audience sizes for Come Join Us campaigns. Use this skill when the user wants to explore targeting, find audience sizes, research Meta interests, check targeting feasibility, or says /audience-research. This uses the Meta Ads MCP to pull real targeting data."
+name: audience
+description: "Research Meta targeting options and audience sizes for Come Join Us campaigns. Use this skill when the user wants to explore targeting, find audience sizes, research Meta interests, check targeting feasibility, or says /audience. This uses the Meta Ads MCP to pull real targeting data."
 ---
 
 # Audience Research
@@ -10,12 +10,12 @@ You are researching Meta advertising targeting options to build audience specs f
 ## Invocation
 
 ```
-/audience-research <segment-folder> [<city>]
+/audience <segment-folder> [<city>]
 ```
 
 **Examples:**
-- `/audience-research segments/the-transplant manchester`
-- `/audience-research segments/the-sober-one`
+- `/audience segments/the-transplant manchester`
+- `/audience segments/the-sober-one`
 
 ## What to read
 

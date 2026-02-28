@@ -1,21 +1,21 @@
 ---
-name: review-performance
-description: "Pull campaign performance data from Meta and analyze results for Come Join Us campaigns. Use this skill when the user asks to check campaign performance, review ad results, analyze metrics, see how ads are doing, pull Meta data, or says /review-performance."
+name: performance
+description: "Pull campaign performance data from Meta and analyze results for Come Join Us campaigns. Use this skill when the user asks to check campaign performance, review ad results, analyze metrics, see how ads are doing, pull Meta data, or says /performance."
 ---
 
-# Review Campaign Performance
+# Campaign Performance
 
 You are analyzing Come Join Us campaign performance data from Meta to inform creative iteration and budget decisions.
 
 ## Invocation
 
 ```
-/review-performance <campaign-id-or-segment>
+/performance <campaign-id-or-segment>
 ```
 
 **Examples:**
-- `/review-performance DM-Transplant-Manchester-2026-03`
-- `/review-performance segments/the-transplant`
+- `/performance DM-Transplant-Manchester-2026-03`
+- `/performance segments/the-transplant`
 
 ## What to pull
 
@@ -40,6 +40,15 @@ Use the Meta Ads MCP tools to retrieve:
 - Which hook is winning?
 - Which creative is winning?
 - Engagement rate (likes, comments, shares, saves)
+
+## Ad status context
+
+Read `<segment-folder>/creative/ad-status.json` to cross-reference ad statuses with performance data. When presenting results:
+
+- Include the ad status (`live`, `approved`, etc.) alongside each ad's metrics
+- Flag any discrepancies — e.g. an ad marked `live` in ad-status.json that isn't showing impressions (may not have been deployed correctly)
+- Note any `approved` ads that haven't been deployed yet — these are ready to go and could be added to the campaign
+- This gives the user the full picture: what's running, what's waiting, and how everything is performing
 
 ## Analysis framework
 
@@ -89,11 +98,20 @@ Identify the bottom 2-3 performing ads. For each:
 - **Conversions:** [number]
 - **CPA:** [amount]
 
+## Ad Performance & Status
+
+| Ad | Status | Impressions | CTR | CPC | Conversions | CPA |
+|----|--------|-------------|-----|-----|-------------|-----|
+| [ad name] | live | [n] | [%] | [£] | [n] | [£] |
+
 ## Top Performers
 [analysis of best ads with specific metrics]
 
 ## Underperformers
 [analysis with recommendations: pause, iterate, or investigate]
+
+## Approved but Not Deployed
+[list any approved ads not yet live — these could be added to the campaign]
 
 ## Audience Insights
 [demographic and placement breakdowns]

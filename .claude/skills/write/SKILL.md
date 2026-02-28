@@ -1,6 +1,6 @@
 ---
-name: write-copy
-description: "Write ad copy variants for Come Join Us campaigns from approved creative concepts. Use this skill when the user asks to write ad copy, generate ads, create campaign copy, write Meta ads, or says /write-copy. This takes creative concepts and turns them into ready-to-run ad copy for Meta (Facebook/Instagram) feed ads and Stories/Reels."
+name: write
+description: "Write ad copy variants for Come Join Us campaigns from approved creative concepts. Use this skill when the user asks to write ad copy, generate ads, create campaign copy, write Meta ads, or says /write. This takes creative concepts and turns them into ready-to-run ad copy for Meta (Facebook/Instagram) feed ads and Stories/Reels."
 ---
 
 # Write Ad Copy
@@ -10,10 +10,10 @@ You are a copywriter turning creative concepts into finished ad copy for Come Jo
 ## Invocation
 
 ```
-/write-copy <segment-folder>
+/write <segment-folder>
 ```
 
-**Example:** `/write-copy segments/the-transplant`
+**Example:** `/write segments/the-transplant`
 
 ## What to read first
 
@@ -155,3 +155,12 @@ Read every ad out loud (or imagine reading it aloud). Check:
 - Are all product claims backed by matching-for-marketing.md?
 - Have you written at least one "spicy" variant and one clean variant where swearing is used?
 - Would this person — the real person from empathy.md — feel seen by this ad? Not marketed to. Seen.
+
+## What happens next
+
+New ads will appear as **"unreviewed"** in the creative review app. The next step in the pipeline:
+
+1. Run `/score` to get AI scoring and feedback on the copy
+2. Review and approve ads in the creative review app (`cd app && node server.js`, open http://localhost:8642)
+3. Run `/creative` to generate images for approved concepts
+4. Run `/deploy` when ads are approved and ready to go live

@@ -1,6 +1,6 @@
 ---
-name: generate-creative
-description: "Generate ad images for Come Join Us campaigns using Nano Banana (Google Gemini image generation) MCP. Use this skill when the user wants to generate creative, make ad images, create visuals for a segment, fill the creative/ folder, or says /generate-creative. Reads ad copy + concepts + empathy → generates images → saves to creative/ with manifest."
+name: creative
+description: "Generate ad images for Come Join Us campaigns using Nano Banana (Google Gemini image generation) MCP. Use this skill when the user wants to generate creative, make ad images, create visuals for a segment, fill the creative/ folder, or says /creative. Reads ad copy + concepts + empathy → generates images → saves to creative/ with manifest."
 ---
 
 # Generate Creative
@@ -10,17 +10,17 @@ You are generating ad images for Come Join Us's Meta campaigns using the Nano Ba
 ## Invocation
 
 ```
-/generate-creative <segment-folder> [--concepts <list>] [--formats <list>]
+/creative <segment-folder> [--concepts <list>] [--formats <list>]
 ```
 
 **Examples:**
-- `/generate-creative segments/the-transplant` — generate for top 3 concepts
-- `/generate-creative segments/the-transplant --concepts "The Wednesday Night Problem,The Google Search"`
-- `/generate-creative segments/the-sober-one --formats feed` — feed images only
+- `/creative segments/the-transplant` — generate for top 3 concepts
+- `/creative segments/the-transplant --concepts "The Wednesday Night Problem,The Google Search"`
+- `/creative segments/the-sober-one --formats feed` — feed images only
 
 ## What to read first
 
-1. **`<segment-folder>/review.md`** — use the Top 3 Strongest Ads to prioritise which concepts to generate for (required — if missing, tell user to run `/review-copy`)
+1. **`<segment-folder>/review.md`** — use the Top 3 Strongest Ads to prioritise which concepts to generate for (required — if missing, tell user to run `/score`)
 2. **`<segment-folder>/ad-copy.md`** — the copy that'll sit alongside the images
 3. **`<segment-folder>/concepts.md`** — visual direction hints, concept angles
 4. **`<segment-folder>/empathy.md`** — for emotional tone and persona details
@@ -188,7 +188,8 @@ After generation, report:
 ### Next steps
 - Review images in the creative review app (`cd app && node server.js`, open http://localhost:8642)
 - Regenerate any that don't pass quality bar
-- Run `/deploy-campaign` when ready
+- Run `/score` to score the copy, then approve ads in the review app
+- Run `/deploy` when ads are approved and ready
 ```
 
 ## Notes
