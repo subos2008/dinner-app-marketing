@@ -68,7 +68,7 @@
 
 **Emotional lever:** The exhaustion of the mentorship-industrial complex. Every "networking" opportunity is either transactional (name badges, warm white wine, people scanning for utility) or hierarchical (pay-to-play masterminds where a guru dispenses wisdom). What he actually wants is lateral: people at his level, building their own thing, willing to think out loud together.
 
-**Angle:** Position against both mentors and networking. Not up, not sideways — across. Frame Dinner Matcher as the thing that creates peer relationships: the management consultant who pokes holes in your proposal, the freelance designer who just went through what you're going through.
+**Angle:** Position against both mentors and networking. Not up, not sideways — across. Frame Come Join Us as the thing that creates peer relationships: the management consultant who pokes holes in your proposal, the freelance designer who just went through what you're going through.
 
 **Headline directions:**
 - "You don't need a mentor. You need a table."
@@ -87,7 +87,7 @@
 
 **Emotional lever:** The fatigue of code-switching. Not between cultures or workplaces — between the person you're becoming and the person your old life expects you to still be. He says "yeah, good" at the pub. He says "ticking along" about a business that did 40k last quarter. He's performing smallness to keep the peace.
 
-**Angle:** Call out the split directly. You shouldn't have to be two people. The ad doesn't promise that Dinner Matcher fixes this — it promises a table where you don't have to edit yourself. Where talking about what you're building is the whole point, not something to downplay.
+**Angle:** Call out the split directly. You shouldn't have to be two people. The ad doesn't promise that Come Join Us fixes this — it promises a table where you don't have to edit yourself. Where talking about what you're building is the whole point, not something to downplay.
 
 **Headline directions:**
 - "You talk about your business differently depending on who's in the room. That's exhausting."

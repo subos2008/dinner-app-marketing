@@ -1,6 +1,6 @@
 ---
 name: iterate
-description: "Generate new ad copy variants based on performance data from live Dinner Matcher campaigns. Use this skill when the user wants to iterate on ads, create new variants from winners, refresh creative, or says /iterate. This takes what's working and produces more of it — plus new angles to test."
+description: "Generate new ad copy variants based on performance data from live Come Join Us campaigns. Use this skill when the user wants to iterate on ads, create new variants from winners, refresh creative, or says /iterate. This takes what's working and produces more of it — plus new angles to test."
 ---
 
 # Iterate Copy from Performance

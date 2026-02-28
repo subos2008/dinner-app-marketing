@@ -120,7 +120,7 @@ The flat is quiet. It's always quiet.
 *It's three days later, Tuesday night, scrolling Instagram. An ad. Simple. Something like: "You don't have to be a social person to want connection." I stop. Not because of the design or the branding. Because of the word "have." You don't HAVE to be. Like it's granting permission. I read the rest. Dinner with 5 matched strangers. Every Wednesday. Restaurant chosen for you. I don't tap through. Not yet. But I screenshot it. That's significant. I don't screenshot things.*
 
 **Consideration**
-*I go back to the screenshot on Thursday. Tap through this time. The sign-up asks questions: do you drink, dietary requirements, budget range, age. "What do you want more of in your life?" I read the options. Sports. Art. Business. Meditation. Socialise. The word "socialise" shouldn't make me feel something, but it does. Then I read that a real person reviews every group. Not an algorithm. A person looks at the six names and decides if it works. That detail. That one detail. It means someone gives a shit about whether this is good. I close the tab but I don't close the thought.*
+*I go back to the screenshot on Thursday. Tap through this time. The sign-up asks questions: do you drink, dietary requirements, budget range, age. "What do you want more of in your life?" I read the options. Sports. Art. Business. Meditation. Socialise. The word "socialise" shouldn't make me feel something, but it does. Then I read that every group is matched deliberately based on your answers. Not an algorithm guessing. Matched specifically, on purpose, because someone gives a shit about whether this is good. I close the tab but I don't close the thought.*
 
 **Objections**
 *This is where I live for a week. I think about it on my run. I think about it while cooking. I think about it at 3pm on the next Saturday when the flat goes quiet again. The objections come in waves. What if I'm the awkward one. What if everyone else is more social than me and I'm the charity case. What if they can tell I haven't had a proper conversation with someone in weeks. What if I sit there and can't think of anything to say. What if they're all friends by the end and I'm still on the outside. What if this is just another thing I try that confirms what I already suspect about myself. The objections aren't rational. I know that. But they're loud. I open the screenshot four more times. On the fifth time, I think: the alternative is another Saturday of eating alone and bookmarking walks I'll never do. That thought is worse than any of the objections.*
@@ -132,13 +132,13 @@ The flat is quiet. It's always quiet.
 *Monday is normal. Tuesday afternoon I get a notification. My dinner is confirmed: a restaurant in the Northern Quarter, 7:30pm Wednesday. No names. No photos. Just a place and a time. My stomach does something. I look up the restaurant — it's got 4.4 on Google, small, looks warm. The menu's on their website. I read the entire menu. I'm not choosing in advance. I'm just giving myself something to do with the nervousness. I lay out clothes on Tuesday night. I change the jumper three times. I feel ridiculous. I also feel more alive than I have in weeks.*
 
 **Showing up**
-*Wednesday. I leave the flat at 7:05 even though it's a twelve-minute drive because if I sit in the flat any longer I'll talk myself out of it. I park. I walk to the restaurant. I'm early. I stand on the street pretending to look at my phone. A woman arrives at 7:25, looks at the door, looks at her phone, looks at me. "Dinner Matcher?" she says, and I nod, and she says "I'm Sarah" and I say "Brendan" and she says "I'm absolutely terrified" and I laugh — a real laugh — and say "same" and we walk in together. That small exchange. That admission of shared nervousness. It undoes something.*
+*Wednesday. I leave the flat at 7:05 even though it's a twelve-minute drive because if I sit in the flat any longer I'll talk myself out of it. I park. I walk to the restaurant. I'm early. I stand on the street pretending to look at my phone. A woman arrives at 7:25, looks at the door, looks at her phone, looks at me. "Come Join Us?" she says, and I nod, and she says "I'm Sarah" and I say "Brendan" and she says "I'm absolutely terrified" and I laugh — a real laugh — and say "same" and we walk in together. That small exchange. That admission of shared nervousness. It undoes something.*
 
 **During dinner**
 *Six of us. The table is round, which helps — no head of table, no hierarchy. There are questions on the table, printed on cards. The first one is "What's something you've been watching or reading that you'd recommend?" I answer. A nature documentary about octopuses. The guy across from me lights up — "the Netflix one? I watched that three times." And suddenly we're talking and it's not hard. It's not hard. Someone else mentions a book. Someone asks where I'm from. I say Chorlton, born and raised, and a woman named Amira says she's in Chorlton too. The food comes and it's good and the conversation doesn't stop and I realise, about an hour in, that I've said more words tonight than I normally say in a full weekend. Nobody is performing. Nobody is trying to impress anyone. We're just eating and talking and it's so ordinary and I could cry from how ordinary it is.*
 
 **After dinner**
-*I drive home at 10:15. The flat is quiet but it's different now. I put the kettle on. I sit at the two-person table and drink tea and think about the evening. I don't romanticise it — it wasn't a film. One of the guys was a bit dull, honestly. But Amira was interesting and the octopus guy was funny and Sarah asked me about my running and actually listened. I didn't perform. I was just there, being Brendan, and it was enough. I pick up my phone and open the Dinner Matcher app and opt in for next Wednesday. Then I open WhatsApp, find my mum's chat, and type: "Went for dinner with some people tonight. It was really nice." She'll be delighted. She'll ask a hundred questions. I don't mind. For once, I have answers.*
+*I drive home at 10:15. The flat is quiet but it's different now. I put the kettle on. I sit at the two-person table and drink tea and think about the evening. I don't romanticise it — it wasn't a film. One of the guys was a bit dull, honestly. But Amira was interesting and the octopus guy was funny and Sarah asked me about my running and actually listened. I didn't perform. I was just there, being Brendan, and it was enough. I pick up my phone and open the Come Join Us app and opt in for next Wednesday. Then I open WhatsApp, find my mum's chat, and type: "Went for dinner with some people tonight. It was really nice." She'll be delighted. She'll ask a hundred questions. I don't mind. For once, I have answers.*
 
 ---
 
@@ -155,7 +155,7 @@ The flat is quiet. It's always quiet.
 ### Body Copy / Emotional Truths
 
 - "You've thought about it. The running clubs, the meetups, the apps. They all require you to walk into a room and perform. This doesn't."
-- "We match you with 5 people based on real things — not algorithms, not personality quizzes. Age, interests, dietary needs, budget. A real person reviews every group."
+- "We match you with 5 people based on real things — not algorithms, not personality quizzes. Age, interests, dietary needs, budget. Every group matched deliberately based on your answers."
 - "It's dinner. One dinner. The worst case is an awkward two hours and a good meal."
 - "You don't have to be outgoing. You don't have to be the funny one. You just have to sit down."
 - "The questions on the table mean nobody sits in silence. The matching means you're not random strangers. The restaurant is chosen for you. All you do is show up."
@@ -174,7 +174,7 @@ The flat is quiet. It's always quiet.
 - "The first thing someone said was 'I'm terrified too' and I knew it was going to be OK."
 - "I said more at that dinner than I normally say in a full weekend."
 - "Nobody asked what I do for a living for the first forty minutes. We talked about real things."
-- "A real person reviews every group. That's the detail that made me trust it."
+- "Every group is matched deliberately based on your answers. That's the detail that made me trust it."
 
 ---
 ---

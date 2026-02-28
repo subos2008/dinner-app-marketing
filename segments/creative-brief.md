@@ -21,7 +21,7 @@ Shared context for all ad copy and creative across segments.
 - Budget matching — nobody gets taken somewhere they can't afford
 - Gender-balanced groups
 - Icebreaker questions sent on the evening
-- Human reviews every group before confirmation
+- Algorithm matches groups based on answers — no random allocation
 - Who's coming is a surprise
 - Onboarding asks "what do you want more of in your life?" (sports, meditation, art, business, adventure, etc.)
 - Interest options: Sports, Meditation, Outdoors, Gym, Socialise, Book Clubs, Board Games, Adventure, Art, Business, Gigs, Sober Events, Nightlife + freetext
@@ -42,6 +42,6 @@ Shared context for all ad copy and creative across segments.
 - **Emotional hook first vs product explanation first** — "You moved here for a reason" vs "Every Wednesday, 6 strangers, 1 restaurant"
 - **Segment-specific vs cross-segment** — do the Wednesday Ritual ads (generic) perform differently to segment-targeted ads?
 - **The surprise angle** — does "you don't know who's coming" intrigue people or scare them?
-- **Safety/trust copy** — does The Quiet One convert better with "a real person reviews every group" or is it too much detail for an ad?
+- **Safety/trust copy** — does The Quiet One convert better with trust-building detail ("matched on what you told us") or is it too much for an ad?
 - **"What do you want more of?" as a standalone hook** — test this question as the opening line across segments. It's disarming and immediately different from typical ad copy.
 - **Our questions vs their questions** — the side-by-side comparison (star signs vs "do you drink?") is a strong format for reels. Test whether the competitor dig lands or feels petty.

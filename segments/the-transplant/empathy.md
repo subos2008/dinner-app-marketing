@@ -115,7 +115,7 @@ Wednesday night. She ate dinner alone.
 *Something on Instagram stops my thumb. It's not the usual "find your tribe!" cringe. It says something about dinner with 5 strangers, matched on what actually matters. Matched. Not random. There's a line about Wednesday nights. I re-read it. It sounds like someone just... organises a dinner for me? With people who've been selected to be compatible? That's — different.*
 
 **Consideration**
-*I tap through. They ask questions when you sign up: do you drink, what do you eat, what's your budget, what do you want more of in your life. These are real questions. Not star signs or personality types. The budget thing is smart — I don't want to end up at a £60-a-head place. And they pick the restaurant. And someone actually reviews the groups before confirming. OK. This is thoughtful.*
+*I tap through. They ask questions when you sign up: do you drink, what do you eat, what's your budget, what do you want more of in your life. These are real questions. Not star signs or personality types. The budget thing is smart — I don't want to end up at a £60-a-head place. And they pick the restaurant. And the groups are matched deliberately based on your answers. OK. This is thoughtful.*
 
 **Objections**
 *But what if it's weird? What if I'm the only one who's there because they're lonely? What if everyone else already knows each other? What if I have nothing to say? What if — OK, stop. It's dinner. It's one dinner. The worst case is an awkward two hours and a decent meal. I've had worse Tuesdays.*

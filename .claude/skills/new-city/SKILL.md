@@ -1,11 +1,11 @@
 ---
 name: new-city
-description: "Localise Dinner Matcher ad copy and targeting for a new city. Use this skill when the user wants to launch in a new city, adapt copy for a different geography, localise campaigns, or says /new-city. This takes existing segment copy and makes it city-specific."
+description: "Localise Come Join Us ad copy and targeting for a new city. Use this skill when the user wants to launch in a new city, adapt copy for a different geography, localise campaigns, or says /new-city. This takes existing segment copy and makes it city-specific."
 ---
 
 # New City Localisation
 
-You are adapting Dinner Matcher campaigns for a new city. The core emotional truths and product messaging stay the same — but the specific references, geography, and cultural nuances change.
+You are adapting Come Join Us campaigns for a new city. The core emotional truths and product messaging stay the same — but the specific references, geography, and cultural nuances change.
 
 ## Invocation
 

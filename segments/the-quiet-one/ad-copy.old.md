@@ -32,7 +32,7 @@
 >
 > We match you with people your age. We balance the genders at the table. We pick a restaurant that's been vetted — no loud music, no chaos, good vibes. We send icebreaker questions so the conversation has somewhere to start.
 >
-> A real person reviews every group before you get your confirmation.
+> Every group is matched deliberately based on your answers.
 >
 > You just show up. Wednesday. That's it.
 
@@ -57,7 +57,7 @@
 - Frame 1: "You don't need to be an extrovert"
 - Frame 2: "You don't need a 'good' reason"
 - Frame 3: "You just need to be hungry"
-- Frame 4: "Dinner Matcher. Book a table."
+- Frame 4: "Come Join Us. Book a table."
 
 **Reel 3 — The Safety Reel:**
 - Frame 1: "What if showing up was the only hard part?"

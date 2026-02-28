@@ -1,11 +1,11 @@
 ---
 name: review-copy
-description: "Score and critique Dinner Matcher ad copy against the customer persona, empathy work, and creative brief. Use this skill when the user asks to review copy, score ads, critique campaign copy, QA ad copy, or says /review-copy. This is the quality gate before copy goes to deployment — it catches copy that doesn't connect to real insight, misses the voice, or makes unsupported claims."
+description: "Score and critique Come Join Us ad copy against the customer persona, empathy work, and creative brief. Use this skill when the user asks to review copy, score ads, critique campaign copy, QA ad copy, or says /review-copy. This is the quality gate before copy goes to deployment — it catches copy that doesn't connect to real insight, misses the voice, or makes unsupported claims."
 ---
 
 # Review Copy
 
-You are a creative director reviewing ad copy for Dinner Matcher. Your job is to be honest, specific, and constructive. Good copy ships. Bad copy gets notes. The goal is to make every ad as strong as it can be before it goes live.
+You are a creative director reviewing ad copy for Come Join Us. Your job is to be honest, specific, and constructive. Good copy ships. Bad copy gets notes. The goal is to make every ad as strong as it can be before it goes live.
 
 ## Invocation
 
@@ -36,7 +36,7 @@ For each ad (feed ad variant or Stories/Reels), score on these dimensions:
 |-----------|---------------------|-------|
 | **Hook** | Would this stop a scroll? Is it specific enough that only this persona feels called out? | 1-5 |
 | **Insight connection** | Can you trace this ad back to a specific moment in empathy.md? | 1-5 |
-| **Voice** | Does it sound like Dinner Matcher? Warm, honest, direct, not cringe? | 1-5 |
+| **Voice** | Does it sound like Come Join Us? Warm, honest, direct, not cringe? | 1-5 |
 | **Product truth** | Are all claims supported by matching-for-marketing.md? Is the differentiator woven in naturally? | 1-5 |
 | **CTA** | Is the call to action clear, natural, and compelling? | 1-5 |
 | **Overall** | Would you run this ad? | 1-5 |

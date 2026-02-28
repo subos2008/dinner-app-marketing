@@ -9,7 +9,7 @@
 >
 > Here's what we do: you tell us about yourself — what you eat, whether you drink, your budget, what you want more of in your life. Then we match you with 5 people who make sense at the same table.
 >
-> We pick the restaurant. We balance the group. We send icebreaker questions so the conversation starts easy. A real person reviews every group before you get your confirmation.
+> We pick the restaurant. We balance the group. We send icebreaker questions so the conversation starts easy. Every group is checked before you get your confirmation.
 >
 > You just show up.
 
@@ -56,7 +56,7 @@
 ## Stories / Reels
 
 **Reel 1 — The Breakdown:**
-- Frame 1: "How Dinner Matcher works"
+- Frame 1: "How Come Join Us works"
 - Frame 2: "You answer a few real questions"
 - Frame 3: "We match you with 5 people on age, diet, budget, and more"
 - Frame 4: "We pick the restaurant. We send icebreakers."
@@ -66,7 +66,7 @@
 - Frame 1: "Monday: work. Tuesday: work."
 - Frame 2: "Wednesday: dinner with 5 interesting strangers"
 - Frame 3: "Thursday: still thinking about that conversation"
-- Frame 4: "Dinner Matcher. Every Wednesday. Book a seat."
+- Frame 4: "Come Join Us. Every Wednesday. Book a seat."
 
 **Reel 3 — Our Questions vs Theirs:**
 - Frame 1: "Them: 'What's your star sign?'"

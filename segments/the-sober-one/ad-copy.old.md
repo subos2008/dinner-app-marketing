@@ -9,7 +9,7 @@
 >
 > Four words that make every night out harder than it needs to be.
 >
-> Dinner Matcher asks you upfront: do you drink? And we actually use your answer. We'll seat you with 5 people who won't make it weird, at a dinner where alcohol isn't the main event.
+> Come Join Us asks you upfront: do you drink? And we actually use your answer. We'll seat you with 5 people who won't make it weird, at a dinner where alcohol isn't the main event.
 >
 > Just good food, good people, no explaining yourself.
 
@@ -36,7 +36,7 @@
 >
 > But it's a big deal to every social situation you've ever been in.
 >
-> Dinner Matcher seats you with 5 people matched on the things that matter — including this one. No pressure. No explaining. Just dinner.
+> Come Join Us seats you with 5 people matched on the things that matter — including this one. No pressure. No explaining. Just dinner.
 
 **Ad 5 — The Wednesday Sober**
 > Every Wednesday, we run sober dinners.
@@ -54,14 +54,14 @@
 - Frame 2: "'Oh go on, just have one'"
 - Frame 3: "'You're not drinking? Why?'"
 - Frame 4: "How about a dinner where nobody asks?"
-- Frame 5: "Dinner Matcher. Matched on what actually matters. Book a seat."
+- Frame 5: "Come Join Us. Matched on what actually matters. Book a seat."
 
 **Reel 2:**
 - Frame 1: "Sobriety gave you your life back"
 - Frame 2: "But it took your social life with it"
 - Frame 3: "Not because you can't go out"
 - Frame 4: "But because 'going out' always means drinks"
-- Frame 5: "Dinner Matcher. 5 people. No pressure. Book yours."
+- Frame 5: "Come Join Us. 5 people. No pressure. Book yours."
 
 **Reel 3:**
 - Frame 1: "Other apps match you on star signs"

@@ -15,7 +15,7 @@ Everyone at the table doesn't drink.
 
 That's not a coincidence. When you sign up, we ask: do you drink? If you say no, you're matched with 5 other people who also said no. Not "sober-friendly" where you're nursing a water while everyone else orders wine. An actual table where sobriety is just the ambient default.
 
-Every Wednesday. A restaurant we picked for the group. A real person reviews every match before it's confirmed. You just show up and have the dinner you've been wishing existed.
+Every Wednesday. A restaurant we picked for the group. Matched deliberately based on your answers. You just show up and have the dinner you've been wishing existed.
 
 No explaining. No compromising. Just dinner with people who live the same way you do.
 
@@ -45,9 +45,9 @@ CTA button: Book Now
 
 You don't drink. You're tired of explaining it.
 
-Every Wednesday, Dinner Matcher puts you at a table with 5 people who also don't drink. Not because they're in recovery. Not because it's a sober event. Because they answered "no" to the same question you did, and the algorithm matched you together.
+Every Wednesday, Come Join Us puts you at a table with 5 people who also don't drink. Not because they're in recovery. Not because it's a sober event. Because they answered "no" to the same question you did, and the algorithm matched you together.
 
-We pick the restaurant. A real person checks every group. The menu is good. The conversation is better.
+We pick the restaurant. The menu is good. The conversation is better.
 
 Stop explaining. Start eating.
 
@@ -63,7 +63,7 @@ Frame 1: "You don't drink."
 Frame 2: "Neither does anyone else at the table."
 Frame 3: "That's not a coincidence. It's matching."
 Frame 4: "6 strangers. Matched on what you eat, drink, budget & what you want more of in life."
-Frame 5: "Dinner Matcher → Book your Wednesday"
+Frame 5: "Come Join Us → Book your Wednesday"
 
 Visual direction: Frame 1 — close-up of a glass of water at a dinner table (warm lighting, no wine in shot). Frame 2 — pull back to reveal the full table, six people, no alcohol anywhere. Frame 3 — text overlay on the same warm scene. Frame 4 — quick cut showing the onboarding questions. Frame 5 — logo, CTA.
 
@@ -81,7 +81,7 @@ No explaining why you don't drink. No explaining why you meditate. No explaining
 
 Just dinner. With 5 people who were matched to be there with you — based on what you eat, what you drink, your budget, and what you want more of in your life.
 
-We pick the restaurant. A real person reviews every group. You just show up and be the version of yourself you don't usually get to be at social events.
+We pick the restaurant. You just show up and be the version of yourself you don't usually get to be at social events.
 
 Book a dinner →
 
@@ -95,7 +95,7 @@ The last time you went out, you spent half the evening explaining yourself.
 
 Why you're not drinking. Why you don't eat that. Why you went to a sound bath instead of the pub. Your friends are lovely. They just don't get it. And you're tired of translating your life into something palatable for people who live differently.
 
-Dinner Matcher sits you at a table with 5 strangers every Wednesday — matched on what actually matters. If you don't drink, nobody at your table drinks. If you're plant-based, the restaurant fits. And the questions we ask during sign-up include: "What do you want more of in your life?" — meditation, outdoors, sober events are all options.
+Come Join Us sits you at a table with 5 strangers every Wednesday — matched on what actually matters. If you don't drink, nobody at your table drinks. If you're plant-based, the restaurant fits. And the questions we ask during sign-up include: "What do you want more of in your life?" — meditation, outdoors, sober events are all options.
 
 One dinner where you don't have to explain a thing.
 
@@ -111,7 +111,7 @@ Frame 1: "No explaining why you don't drink."
 Frame 2: "No explaining why you meditate."
 Frame 3: "No explaining why Saturday was a retreat, not a pub crawl."
 Frame 4: "Just dinner. 5 strangers. Matched on what actually matters."
-Frame 5: "Dinner Matcher → Book your Wednesday"
+Frame 5: "Come Join Us → Book your Wednesday"
 
 Visual direction: Frames 1-3 — text on screen with quick cuts, each statement landing with a beat. Warm, muted palette. Frame 4 — restaurant table, six people mid-conversation, natural and warm. Frame 5 — CTA. The rhythm should feel like a list being crossed off — burdens being dropped.
 
@@ -145,7 +145,7 @@ Other apps ask your star sign. We ask what you want more of in your life.
 
 Meditation. Outdoors. Sober events. Book clubs. Adventure. — These aren't aspirational labels. They're matching criteria. Your answer determines who you're sat with at dinner every Wednesday.
 
-6 strangers. 1 restaurant. Matched on what you eat, what you drink, your budget, and what you actually care about. A real person reviews every group. We pick the restaurant. You just show up.
+6 strangers. 1 restaurant. Matched on what you eat, what you drink, your budget, and what you actually care about. We pick the restaurant. You just show up.
 
 Not random. Deliberately matched. Based on what you told us.
 
@@ -161,7 +161,7 @@ Frame 1: "What do you want more of in your life?"
 Frame 2: Checkboxes appearing: "Meditation / Outdoors / Sober Events / Adventure / Art"
 Frame 3: "We match you with 5 people who answered the same way."
 Frame 4: "Every Wednesday. Restaurant picked for the group. No alcohol at sober tables."
-Frame 5: "Dinner Matcher → Answer the question"
+Frame 5: "Come Join Us → Answer the question"
 
 Visual direction: Frame 1 — the question on a clean, warm background, like a real onboarding screen. Frame 2 — the checkboxes animate in, ticked one by one. Frame 3 — transition to a restaurant table, warm candlelight. Frame 4 — detail shot of the table, food, people. Frame 5 — CTA. The feel should be honest and unhurried, not slick.
 
@@ -179,7 +179,7 @@ You know the feeling. Three days of silence, or an evening of breathwork, or a w
 
 The people who get you exist. You've met them. You just never see them again.
 
-Every Wednesday, Dinner Matcher puts 6 strangers at a table — matched on what you eat, what you drink, your budget, and what you want more of in your life. Sober tables. Plant-based restaurants. Conversations that go deeper than surface because the people at the table have already done the work.
+Every Wednesday, Come Join Us puts 6 strangers at a table — matched on what you eat, what you drink, your budget, and what you want more of in your life. Sober tables. Plant-based restaurants. Conversations that go deeper than surface because the people at the table have already done the work.
 
 The workshop feeling. But weekly. At a restaurant. With people who were matched to be there with you.
 
@@ -195,7 +195,7 @@ You've done the breathwork. The sound baths. The silent retreat. The cacao cerem
 
 And then everyone put on their coats and went home.
 
-Connection shouldn't only happen in workshops. Dinner Matcher sits you at a table every Wednesday with 5 strangers — matched on what actually matters. If you don't drink, nobody at your table drinks. We ask what you want more of in your life: meditation, outdoors, sober events. Then we use your answers.
+Connection shouldn't only happen in workshops. Come Join Us sits you at a table every Wednesday with 5 strangers — matched on what actually matters. If you don't drink, nobody at your table drinks. We ask what you want more of in your life: meditation, outdoors, sober events. Then we use your answers.
 
 No facilitator. No circle. No ceremony. Just dinner with people who get it.
 
@@ -211,6 +211,6 @@ Frame 1: "You come home from the retreat feeling connected."
 Frame 2: "By bedtime, it's gone."
 Frame 3: "What if that connection happened every Wednesday?"
 Frame 4: "6 strangers. Matched on what you eat, drink, budget & what you want more of."
-Frame 5: "Dinner Matcher → Book your Wednesday"
+Frame 5: "Come Join Us → Book your Wednesday"
 
 Visual direction: Frame 1 — warm, golden, nature/retreat aesthetic. A person looking peaceful. Frame 2 — same person, now in a dark car park or quiet flat. The warmth drains. Frame 3 — transition to a restaurant table, candlelight, six people mid-laugh. Frame 4 — text overlay on the dinner scene. Frame 5 — CTA. The contrast between the retreat high and the everyday low is the visual hook.

@@ -161,7 +161,7 @@
 
 1. **The Wednesday Night Problem** — The most direct concept. Names the exact night, offers the exact solution. Should be the first ad written and tested because it's the simplest to execute and the clearest to measure.
 
-2. **The Real Questions** — The strongest differentiator play. "What do you want more of in your life?" is the line that separates Dinner Matcher from everything else. High priority because it works as both brand building and direct response.
+2. **The Real Questions** — The strongest differentiator play. "What do you want more of in your life?" is the line that separates Come Join Us from everything else. High priority because it works as both brand building and direct response.
 
 3. **The Google Search** — Universal, specific, slightly uncomfortable (in a good way). Everyone who's moved cities has done this search. It's the most "scroll-stopping" hook because it calls out private behaviour.
 

@@ -122,7 +122,7 @@ She puts the phone down and goes inside.
 *Something on Instagram catches me. It's not a wellness event. It's not "raise your vibration." It says something about dinner with 5 strangers, matched on what actually matters. Matched. The word sticks. I read on. They ask about alcohol — and if you don't drink, you're matched with other people who don't drink. Every person at the table. Not just you politely nursing a water while everyone else orders wine. Everyone.*
 
 **Consideration**
-*I tap through. The sign-up asks about drinking — yes, no, don't mind. Diet. Budget. And then: "What do you want more of in your life?" The options include meditation, outdoors, sober events. These are my words. I keep reading. They pick the restaurant. A real person reviews the group. It's every Wednesday. I feel something — not excitement exactly. Relief. Somebody built the thing I've been wishing existed.*
+*I tap through. The sign-up asks about drinking — yes, no, don't mind. Diet. Budget. And then: "What do you want more of in your life?" The options include meditation, outdoors, sober events. These are my words. I keep reading. They pick the restaurant. Every group is matched deliberately based on your answers. It's every Wednesday. I feel something — not excitement exactly. Relief. Somebody built the thing I've been wishing existed.*
 
 **Objections**
 *But what if the people are boring? What if they're sober but corporate? What if it's just another awkward social thing where I'm performing normality? What if "matched" just means random? And then I think: the worst case is a mediocre dinner with people who at least don't drink. That's already better than sitting alone in my flat. And the best case — the best case is a table where I don't have to explain myself.*
@@ -134,7 +134,7 @@ She puts the phone down and goes inside.
 *Tuesday. Restaurant confirmed. No names. I look up the restaurant — it's a plant-based place in the Northern Quarter with good reviews. The fact they picked a plant-based restaurant because the group needed one makes me trust this more. I tell no one. My friends would think it's weird. My mum would worry. I'll just go.*
 
 **Showing up**
-*I arrive at 7:25. There's a woman outside looking at her phone, and when she sees me she says "Dinner Matcher?" and I say yes and she laughs and says "I was scared I'd be the only one." We walk in together. The table is set for six. Candles. Water, no wine list. Already different.*
+*I arrive at 7:25. There's a woman outside looking at her phone, and when she sees me she says "Come Join Us?" and I say yes and she laughs and says "I was scared I'd be the only one." We walk in together. The table is set for six. Candles. Water, no wine list. Already different.*
 
 **During dinner**
 *There are six of us. The first thing I notice: nobody orders alcohol. Nobody even mentions it. It's just not part of the evening. The icebreaker questions help — within fifteen minutes someone mentions they've just come back from a retreat and two others lean in. I say I do breathwork and nobody's eyes glaze over. Someone asks me what kind. We talk about morning routines, about purpose, about what we want to build. It's the conversation I have at retreats, but at a restaurant, on a Wednesday night, with food I'd actually choose to eat. One person says "I've been looking for this exact thing" and the table goes quiet for a moment because we all have.*

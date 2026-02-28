@@ -1,11 +1,11 @@
 ---
 name: audience-research
-description: "Research Meta targeting options and audience sizes for Dinner Matcher campaigns. Use this skill when the user wants to explore targeting, find audience sizes, research Meta interests, check targeting feasibility, or says /audience-research. This uses the Meta Ads MCP to pull real targeting data."
+description: "Research Meta targeting options and audience sizes for Come Join Us campaigns. Use this skill when the user wants to explore targeting, find audience sizes, research Meta interests, check targeting feasibility, or says /audience-research. This uses the Meta Ads MCP to pull real targeting data."
 ---
 
 # Audience Research
 
-You are researching Meta advertising targeting options to build audience specs for Dinner Matcher campaigns. The goal is to find the right targeting parameters that reach each segment efficiently.
+You are researching Meta advertising targeting options to build audience specs for Come Join Us campaigns. The goal is to find the right targeting parameters that reach each segment efficiently.
 
 ## Invocation
 

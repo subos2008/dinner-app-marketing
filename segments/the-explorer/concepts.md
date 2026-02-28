@@ -151,7 +151,7 @@
 - "There's another version of your Wednesday night."
 - "Same apartment, same meal, same screen. Or — dinner with 5 people who were matched to be there with you."
 
-**Format fit:** Feed ad (before/after needs text space). Split-screen Reel (solo Wednesday vs Dinner Matcher Wednesday).
+**Format fit:** Feed ad (before/after needs text space). Split-screen Reel (solo Wednesday vs Come Join Us Wednesday).
 
 **Test variable:** Detailed "bad Wednesday" description vs simple contrast. Does spelling out the solo evening in detail feel empathetic or patronising?
 

@@ -14,13 +14,13 @@
 | Hook | 5/5 | "You didn't fly here to eat dinner alone." — Direct, uses the travel distance to create emotional leverage. Six words that name the core absurdity. |
 | Insight connection | 5/5 | Maps directly to the quick mode closer: "I have built an entire life around the idea of freedom, and I am using that freedom to eat a kebab alone." The YouTube detail is from the day-in-the-life. |
 | Voice | 4/5 | Warm and honest. "Who goes to a restaurant alone?" is a natural aside that earns trust. The product paragraph is slightly long — three things listed where two would suffice. |
-| Product truth | 5/5 | Matching dimensions accurate. Human review mentioned. Restaurant curation included. All claims supported by matching-for-marketing.md. |
+| Product truth | 5/5 | Matching dimensions accurate. Restaurant curation included. All claims supported by matching-for-marketing.md. |
 | CTA | 4/5 | "You came here for the life. This is the part that's been missing." — Good emotional close. "Book a dinner" is clear. Slightly less punchy than it could be. |
 | **Overall** | **5/5** | The lead ad for the Explorer segment. The hook is the strongest single line. The YouTube video detail grounds it in lived reality. |
 
 **Verdict:** Ship
 
-Minor note: the product paragraph could lose one sentence. "A real person reviews every group before it's confirmed" is strong but could move to body copy in retargeting rather than carrying the weight here.
+Minor note: the product paragraph could be slightly tighter — consider moving one detail to retargeting body copy.
 
 ---
 
@@ -31,7 +31,7 @@ Minor note: the product paragraph could lose one sentence. "A real person review
 | Hook | 5/5 | "Beautiful apartment. Incredible city. Table for one." — Three-beat structure, escalating contrast. The third beat lands because the first two set up the expectation. |
 | Insight connection | 5/5 | "Four locations. A city of half a million people and your world is a four-stop loop." — Directly from the empathy map's See quadrant: "the same four walls of his coworking desk, his apartment, his usual cafe, his usual supermarket." |
 | Voice | 5/5 | "Not a networking event. Not hostel pub crawl drinks. Dinner." — Clean, anti-positioning without being preachy. The cadence is right. |
-| Product truth | 5/5 | All matching dimensions, human review, restaurant curation. Accurate. |
+| Product truth | 5/5 | All matching dimensions, restaurant curation. Accurate. |
 | CTA | 5/5 | "One night a week where you're at the table, not walking past it." — This is the CTA line. It echoes the empathy map pain point about walking past restaurants full of groups. Emotional and specific. |
 | **Overall** | **5/5** | Tied for lead ad. The four-stop loop detail is the kind of specificity that makes an Explorer think "they know my life." |
 
@@ -47,8 +47,8 @@ Minor note: the product paragraph could lose one sentence. "A real person review
 |-----------|-------|-------|
 | Hook | 4/5 | "You moved to another country for freedom. You're using that freedom to eat a kebab alone on your terrace for the third time this week." — Funny, self-aware, slightly confrontational. The kebab detail is straight from quick mode. |
 | Insight connection | 5/5 | Kebab on the terrace is from quick mode. WhatsApp group / sunset drinks are from the empathy map. "Where are you based?" is the exact nomad small talk from the day-in-the-life. |
-| Voice | 5/5 | The most Dinner Matcher voice in the set. "Great life. Really glad you reorganised everything for this." — sarcastic without being mean. "What you give a shit about" is on-brand but may limit Meta reach. |
-| Product truth | 5/5 | "6 strangers at a restaurant every Wednesday" — accurate. Matching dimensions listed. Human review mentioned. |
+| Voice | 5/5 | The most Come Join Us voice in the set. "Great life. Really glad you reorganised everything for this." — sarcastic without being mean. "What you give a shit about" is on-brand but may limit Meta reach. |
+| Product truth | 5/5 | "6 strangers at a restaurant every Wednesday" — accurate. Matching dimensions listed. |
 | CTA | 4/5 | "Book a seat. See what happens." — Low-commitment, matches the irreverent tone. Works for this variant. |
 | **Overall** | **5/5** | Strong alternate. The tone is distinctive and will stand out in a feed. Needs a clean backup variant for Meta content policies on "give a shit." |
 
@@ -78,7 +78,7 @@ Minor note: the product paragraph could lose one sentence. "A real person review
 | Hook | 5/5 | "You know 400 people in a WhatsApp group and none of their last names." — Specific, immediately recognisable for any nomad. The number makes it concrete. |
 | Insight connection | 5/5 | Directly from empathy map: "WhatsApp groups for 'Digital Nomads in Lisbon' with 400 members and zero depth." The sunset drinks detail is from the day-in-the-life. |
 | Voice | 5/5 | "You've tried. It doesn't stick." — Short, honest, no judgment. Then: "Here's the difference." — Simple pivot. No overselling. |
-| Product truth | 5/5 | Matching dimensions, curated restaurant, human review. All accurate. |
+| Product truth | 5/5 | Matching dimensions, curated restaurant. All accurate. |
 | CTA | 5/5 | "Sunset drinks with 40 strangers isn't the answer. Dinner with 5 is." — Contrast structure with specific numbers. This is the line of the concept. |
 | **Overall** | **5/5** | One of the best ads in the set. The stacking of failed attempts creates instant credibility before the product is introduced. |
 
@@ -168,7 +168,7 @@ Minor note: the product paragraph could lose one sentence. "A real person review
 | Hook | 5/5 | "Freedom looks amazing on Instagram. How's Wednesday night?" — Names the performance gap in one question. The question mark is the hook. |
 | Insight connection | 5/5 | Fado music through the wall, fire emojis, "never another person in the frame" — all directly from empathy map and quick mode. The terrace/beer/phone detail is lifted almost verbatim from the day-in-the-life. |
 | Voice | 5/5 | "You'll be too busy talking" as the closing line — warm, confident, not preachy. The tone throughout is empathetic without wallowing. |
-| Product truth | 5/5 | Accurate matching dimensions, human review, restaurant curation. |
+| Product truth | 5/5 | Accurate matching dimensions, restaurant curation. |
 | CTA | 4/5 | "Book a dinner" is clear. The emotional close ("you probably won't post — you'll be too busy talking") does the real CTA work. |
 | **Overall** | **5/5** | The most emotionally layered ad in the set. The fado music detail is the kind of specificity that transcends targeting — it makes the reader feel known. |
 

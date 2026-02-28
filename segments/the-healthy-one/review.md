@@ -14,7 +14,7 @@
 | Hook | 5/5 | "You check the menu before you say yes to dinner." — Calls out a private behaviour the target does every time. Immediate recognition. |
 | Insight connection | 5/5 | Directly from empathy map (Say & Do): "Immediately checks the menu online to see if there's anything he can eat." |
 | Voice | 4/5 | Warm and direct. "No menu panic. No negotiation." is clean. Product section could be one line tighter. |
-| Product truth | 5/5 | Dietary matching, budget matching, restaurant curation, human review — all accurate per matching doc. |
+| Product truth | 5/5 | Dietary matching, budget matching, restaurant curation — all accurate per matching doc. |
 | CTA | 4/5 | "No menu panic. No negotiation. Just dinner with people who get it." — works as both emotional close and action prompt. |
 | **Overall** | **5/5** | Strong lead ad for the segment. The behaviour callout is the scroll-stopper. |
 
@@ -45,7 +45,7 @@
 |-----------|-------|-------|
 | Hook | 4/5 | "You've turned down more dinners than you've gone to this year." — Strong opening. Slightly less specific than A/B's menu-checking callout. |
 | Insight connection | 4/5 | "A side salad at a pizza place" is a specific, painful image pulled from the empathy work. The sarcasm ("Cool. Really healthy social life") adds edge. |
-| Voice | 5/5 | The most Dinner Matcher voice of the three. Direct, slightly irreverent, honest. "A meal you don't have to apologise for" is a killer line. |
+| Voice | 5/5 | The most Come Join Us voice of the three. Direct, slightly irreverent, honest. "A meal you don't have to apologise for" is a killer line. |
 | Product truth | 5/5 | All claims accurate. "The questions your mates never think to" is a nice way to frame the matching without listing it mechanically. |
 | CTA | 4/5 | "Stop eating alone because it's easier. Start eating with people who eat like you." — Clear, direct, good contrast. |
 | **Overall** | **4/5** | Strong spicy variant. "A meal you don't have to apologise for" is reusable across the campaign. |
@@ -76,7 +76,7 @@
 | Hook | 5/5 | "Eating healthy shouldn't mean eating alone." — The campaign line. Simple, true, devastating for the target. |
 | Insight connection | 5/5 | Quick mode: "I never thought getting healthy would make me lonely." Direct translation. |
 | Voice | 5/5 | "You didn't get disciplined to sit at home." — Respects the reader's effort while naming the problem. No condescension. |
-| Product truth | 5/5 | All claims supported. Restaurant curation, human review, dietary matching. |
+| Product truth | 5/5 | All claims supported. Restaurant curation, dietary matching. |
 | CTA | 5/5 | "You didn't get disciplined to sit at home. Book a dinner." — Emotional close that's also a call to action. |
 | **Overall** | **5/5** | Top-tier ad. The hook alone is worth running as a headline test. |
 
@@ -181,7 +181,7 @@
 | Hook | 4/5 | "We ask what you eat. Then we match you with 5 people who eat the same way." — Clear, product-forward. Less emotional than the other concepts but very specific. |
 | Insight connection | 4/5 | From matching-for-marketing: dietary matching groups people by preference and influences restaurant choice. The mechanism IS the insight for this segment. |
 | Voice | 4/5 | "A dinner you don't have to negotiate." — Good line. Slightly more formal/product-y than the other ads. |
-| Product truth | 5/5 | The most product-accurate ad in the set. 4.3+ rating, matching dimensions, human review — everything sourced from the matching doc. |
+| Product truth | 5/5 | The most product-accurate ad in the set. 4.3+ rating, matching dimensions — everything sourced from the matching doc. |
 | CTA | 4/5 | "Matched on what actually matters." — The brand line. Works here, but it's doing slightly less work for this specific segment than for Transplant. |
 | **Overall** | **4/5** | Solid product ad. Best for people who are further in the funnel and want to know HOW it works. |
 
@@ -194,7 +194,7 @@
 | Dimension | Score | Notes |
 |-----------|-------|-------|
 | Hook | 4/5 | "Other dinner invitations ask: 'Where should we go?'" — Nice contrast setup. The "where should we go" frustration is real for this audience. |
-| Insight connection | 4/5 | The contrast between normal dinner logistics and Dinner Matcher's questions mirrors the onboarding experience from the emotional journey. |
+| Insight connection | 4/5 | The contrast between normal dinner logistics and Come Join Us's questions mirrors the onboarding experience from the emotional journey. |
 | Voice | 4/5 | "You've spent months watching what you eat. This is a dinner that watches with you." — Slightly trying hard on the wordplay. Might land, might feel forced. |
 | Product truth | 5/5 | Accurate. Matching dimensions listed clearly. |
 | CTA | 3/5 | The "watches with you" close is clever but not a clear action prompt. |

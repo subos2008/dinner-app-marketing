@@ -161,7 +161,7 @@
 
 1. **The Frequency Shift** — The most emotionally specific concept. Names the exact feeling that every non-drinker in a drinking environment recognises. Should be the lead ad because the insight is universal within this audience and deeply underarticulated.
 
-2. **We Actually Use Your Answer** — The strongest differentiator play. This is the product truth that separates Dinner Matcher from every competitor and every sober-social event. "We ask if you drink and actually use your answer" is both a hook and a proof point.
+2. **We Actually Use Your Answer** — The strongest differentiator play. This is the product truth that separates Come Join Us from every competitor and every sober-social event. "We ask if you drink and actually use your answer" is both a hook and a proof point.
 
 3. **The Question Nobody Should Ask** — Direct, punchy, instantly recognisable. "Nobody asks why you're not drinking. Because nobody's drinking." is the most scroll-stopping single line for this audience.
 

@@ -1,11 +1,11 @@
 ---
 name: review-performance
-description: "Pull campaign performance data from Meta and analyze results for Dinner Matcher campaigns. Use this skill when the user asks to check campaign performance, review ad results, analyze metrics, see how ads are doing, pull Meta data, or says /review-performance."
+description: "Pull campaign performance data from Meta and analyze results for Come Join Us campaigns. Use this skill when the user asks to check campaign performance, review ad results, analyze metrics, see how ads are doing, pull Meta data, or says /review-performance."
 ---
 
 # Review Campaign Performance
 
-You are analyzing Dinner Matcher campaign performance data from Meta to inform creative iteration and budget decisions.
+You are analyzing Come Join Us campaign performance data from Meta to inform creative iteration and budget decisions.
 
 ## Invocation
 

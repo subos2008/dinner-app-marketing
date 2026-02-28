@@ -14,13 +14,13 @@
 | Hook | 4/5 | "Last Wednesday you ate dinner alone." — Direct, specific, calls out the behaviour. Loses a point because it's a statement, not a gut-punch. |
 | Insight connection | 5/5 | Directly from the day-in-the-life closer: "Wednesday night. She ate dinner alone." |
 | Voice | 4/5 | Warm and honest. "You've probably got a flatmate" is natural. Slightly long in the product section — could tighten. |
-| Product truth | 5/5 | All claims supported. Matching dimensions, human review, restaurant selection — all accurate per matching doc. |
+| Product truth | 5/5 | All claims supported. Matching dimensions, restaurant selection — all accurate per matching doc. |
 | CTA | 4/5 | "Your next Wednesday doesn't have to look like your last one" is good. "Book a dinner" is clear. |
 | **Overall** | **4/5** | Strong, reliable, clear. This is the workhorse ad. |
 
 **Verdict:** Ship
 
-Minor note: the body paragraph starting "Dinner Matcher changes one night a week" could be tighter. "Changes one night a week" is slightly awkward phrasing.
+Minor note: the body paragraph starting "Come Join Us changes one night a week" could be tighter. "Changes one night a week" is slightly awkward phrasing.
 
 ---
 
@@ -31,7 +31,7 @@ Minor note: the body paragraph starting "Dinner Matcher changes one night a week
 | Hook | 5/5 | "Wednesday night. Reheated pasta. The flat's quiet enough to hear the fridge." — Cinematic. Specific. Sensory. This is a scroll-stopper. |
 | Insight connection | 5/5 | Pulls directly from the day-in-the-life and quick mode — the fridge detail, the pasta, the quiet. |
 | Voice | 5/5 | "The evenings haven't caught up to the ambition" — this is the line. Natural, honest, no cringe. |
-| Product truth | 5/5 | "Matched on what actually matters" — true. "Chosen to be there with you" — accurate (human review + algorithm). |
+| Product truth | 5/5 | "Matched on what actually matters" — true. "Chosen to be there with you" — accurate (deliberate matching based on answers). |
 | CTA | 5/5 | "One dinner. That's all it takes to prove this city has space for you." — Emotional and specific. |
 | **Overall** | **5/5** | The best ad in the set. Ship immediately. |
 
@@ -47,7 +47,7 @@ Minor note: the body paragraph starting "Dinner Matcher changes one night a week
 |-----------|-------|-------|
 | Hook | 4/5 | "Wednesday night and you're eating leftover pasta in your pants" — funny, relatable, self-aware. May limit reach on Meta (informal language). |
 | Insight connection | 4/5 | Same day-in-the-life foundation. The sarcasm ("Cool life. Really glad you moved cities for this.") adds a new layer. |
-| Voice | 5/5 | This is the most Dinner Matcher voice of all variants. Direct, slightly irreverent, not mean. "What you give a shit about" is perfectly on-brand. |
+| Voice | 5/5 | This is the most Come Join Us voice of all variants. Direct, slightly irreverent, not mean. "What you give a shit about" is perfectly on-brand. |
 | Product truth | 5/5 | All claims accurate. "6 strangers" is correct (matching doc confirms target group size of 6). |
 | CTA | 4/5 | "Book a seat. See what happens." — Low commitment, inviting. Works for the tone. |
 | **Overall** | **4/5** | Ship with awareness that Meta may restrict reach on "give a shit" and "in your pants." Write a clean variant if needed. |
@@ -77,7 +77,7 @@ Minor note: the body paragraph starting "Dinner Matcher changes one night a week
 |-----------|-------|-------|
 | Hook | 5/5 | "What do you want more of in your life?" — The single strongest brand line. Stops the scroll because it demands an internal answer. |
 | Insight connection | 5/5 | From the emotional journey and creative brief. The question IS the insight. |
-| Voice | 4/5 | Strong opening. "It's called Dinner Matcher" in the last paragraph feels slightly salesy — could cut the brand name and let the CTA handle it. |
+| Voice | 4/5 | Strong opening. "It's called Come Join Us" in the last paragraph feels slightly salesy — could cut the brand name and let the CTA handle it. |
 | Product truth | 5/5 | All matching dimensions accurately listed. |
 | CTA | 4/5 | "And it starts with a question worth answering" — clever but slightly tryhard. Simpler would be stronger. |
 | **Overall** | **4/5** | Strong differentiator ad. The hook does the heavy lifting. |
@@ -93,7 +93,7 @@ Minor note: the body paragraph starting "Dinner Matcher changes one night a week
 | Hook | 5/5 | "Other apps ask your star sign." — Instant competitor differentiation in one line. |
 | Insight connection | 4/5 | From the empathy journey: "Not star signs or personality types." Clean execution. |
 | Voice | 5/5 | "Not randomly. Not algorithmically in a way nobody can explain. Specifically, deliberately, based on what you told us." — this is exceptional copy. Builds trust through precision. |
-| Product truth | 5/5 | Human review, restaurant selection, matching — all accurate. |
+| Product truth | 5/5 | Restaurant selection, matching — all accurate. |
 | CTA | 3/5 | "New to the city? This is where it starts." — Good but this CTA is segment-specific (Transplant only). Won't work across segments. |
 | **Overall** | **4/5** | Strong. The middle paragraph is the best piece of product writing in the whole set. |
 
@@ -234,8 +234,8 @@ No ads scored below 3. Minor fixes:
 
 - **Google Search B:** Replace `[city]` with the specific city name for each deployment market
 - **Google Search Reels:** Add a clear CTA ("Book a dinner") alongside "Delete the search history"
-- **Real Questions A:** Trim the last paragraph — "It's called Dinner Matcher" is unnecessary, the CTA handles the brand intro
-- **Wednesday Night Problem A:** Tighten "Dinner Matcher changes one night a week" → "Dinner Matcher is one night a week" or similar
+- **Real Questions A:** Trim the last paragraph — "It's called Come Join Us" is unnecessary, the CTA handles the brand intro
+- **Wednesday Night Problem A:** Tighten "Come Join Us changes one night a week" → "Come Join Us is one night a week" or similar
 
 ### Lines from Archived Copy (ad-copy.old.md) Worth Testing
 

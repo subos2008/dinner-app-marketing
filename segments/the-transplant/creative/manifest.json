@@ -1,0 +1,66 @@
+{
+  "segment": "the-transplant",
+  "generated_at": "2026-02-27T20:41:00Z",
+  "images": [
+    {
+      "filename": "wednesday-night-problem-feed-1x1.png",
+      "concept": "The Wednesday Night Problem",
+      "ad_variant": "Variant B",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "prompt": "A woman in her late 20s sitting alone on a sofa in a modern apartment, eating reheated pasta from a container. Evening light through the window, the flat is clean but empty. She's scrolling her phone absently, TV casting a soft glow. The mood is quiet and melancholy but not dramatic — just another Wednesday night alone. Photorealistic, warm but slightly desaturated tones, editorial candid feel. Shot on 35mm film. Urban Manchester apartment. Not a stock photo. Square 1:1 aspect ratio composition.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "solo person in apartment"
+    },
+    {
+      "filename": "wednesday-night-problem-story-9x16.png",
+      "concept": "The Wednesday Night Problem",
+      "ad_variant": "Stories/Reels",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "prompt": "A young woman in her late 20s walking alone through a city at dusk, passing a restaurant with warm light spilling from the windows. Inside the restaurant, a group of people are visible laughing at a long table. She glances toward them as she walks past, hands in coat pockets, AirPods in. The contrast between the warm interior and her solitary walk is the emotional core. Red brick buildings, canal-side, Manchester Northern Quarter energy. Photorealistic, warm amber and cool blue contrast, editorial cinematic feel. Shot on 35mm film. Not a stock photo. Vertical 9:16 aspect ratio composition for Instagram Stories.",
+      "style": "photorealistic, warm/cool contrast, cinematic",
+      "visual_type": "solo person passing restaurant window"
+    },
+    {
+      "filename": "google-search-feed-1x1.png",
+      "concept": "The Google Search",
+      "ad_variant": "Variant A",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "prompt": "Over-the-shoulder shot of a woman's hand holding a phone, Google search bar visible with \"how to make friends in Manchester\" typed out. She's sitting on a bed in a dim bedroom, evening light from a window. The mood is private and slightly vulnerable — a search nobody admits to making. Photorealistic, warm tones, natural lighting, editorial candid feel. Shot on 35mm film. Not a stock photo. Square 1:1 aspect ratio composition.",
+      "style": "photorealistic, warm tones, intimate",
+      "visual_type": "phone screen with search"
+    },
+    {
+      "filename": "google-search-story-9x16.png",
+      "concept": "The Google Search",
+      "ad_variant": "Stories/Reels",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "prompt": "A phone screen showing a Google search results page for \"how to make friends in Manchester\" with generic results visible: \"Join a running club\", \"Try a pottery class\", \"Volunteer\". The phone is held in one hand, the background is a dim apartment. The screen light illuminates the person's fingers. Photorealistic, warm tones, intimate over-shoulder angle, editorial feel. Shot on 35mm film. Not a stock photo. Vertical 9:16 aspect ratio composition for Instagram Stories.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "phone screen with search results"
+    },
+    {
+      "filename": "nobody-tells-you-feed-1x1.png",
+      "concept": "Nobody Tells You",
+      "ad_variant": "Variant A",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "prompt": "A young woman in her late 20s sitting at a kitchen counter alone in a modern apartment, staring out the window at a city skyline at blue hour. She has a mug of tea in her hands. The apartment is nice but sparse — she moved in recently. The mood is contemplative, not desperate — the quiet accumulation of solitary evenings. Photorealistic, warm interior light mixed with cool blue from outside, editorial candid feel. Shot on 35mm film. Manchester skyline visible. Not a stock photo. Square 1:1 aspect ratio composition.",
+      "style": "photorealistic, warm/cool light, editorial",
+      "visual_type": "solo person in apartment, contemplative"
+    },
+    {
+      "filename": "nobody-tells-you-story-9x16.png",
+      "concept": "Nobody Tells You",
+      "ad_variant": "Stories/Reels",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "prompt": "A solo person walking through a beautiful city at golden hour, wide cinematic shot. Canal-side path with red brick warehouses and modern apartments. The person is small in the frame, emphasising the scale of the city around them — gorgeous but alone in it. Coat on, hands in pockets, walking away from camera. The city is stunning but the solitude is unmistakable. Photorealistic, warm amber golden hour tones, cinematic editorial feel. Shot on 35mm film. Manchester canal-side. Not a stock photo. Vertical 9:16 aspect ratio composition for Instagram Stories.",
+      "style": "photorealistic, golden hour, cinematic",
+      "visual_type": "solo person in beautiful city, wide shot"
+    }
+  ]
+}

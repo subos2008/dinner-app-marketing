@@ -1,7 +1,7 @@
-# Dinner Matcher - Marketing
+# Come Join Us - Marketing
 
 ## What is this?
-Marketing repo for Dinner Matcher — an app that solves loneliness by connecting people over dinner. Groups of 6 strangers are matched and booked into dinners together.
+Marketing repo for Come Join Us — an app that solves loneliness by connecting people over dinner. Groups of 6 strangers are matched and booked into dinners together.
 
 ## The Problem
 Loneliness. People struggle to meet the *right* people who can move their lives forward.

@@ -7,7 +7,7 @@
 **Ad 1 — The Sad Salad**
 > You love eating out. You hate being the person scanning the menu for the one thing you can eat while everyone else orders the full page.
 >
-> Dinner Matcher seats you with 5 other plant-based people at a plant-based restaurant. The whole menu is yours. The whole table gets it.
+> Come Join Us seats you with 5 other plant-based people at a plant-based restaurant. The whole menu is yours. The whole table gets it.
 >
 > No compromising. No explaining. Just a great dinner.
 
@@ -27,7 +27,7 @@
 >
 > 5 people. One restaurant. All on the same page.
 >
-> Dinner Matcher. Book a table.
+> Come Join Us. Book a table.
 
 **Ad 4 — The Compromise**
 > You've done the steakhouse with friends. You've ordered the chips. You've said "no honestly, it's fine."
@@ -52,7 +52,7 @@
 - Frame 2: "*checks menu*"
 - Frame 3: "One vegan option. It's chips."
 - Frame 4: "How about a dinner where the whole menu is yours?"
-- Frame 5: "Dinner Matcher. Plant-based people. Plant-based restaurant. Book a seat."
+- Frame 5: "Come Join Us. Plant-based people. Plant-based restaurant. Book a seat."
 
 **Reel 2:**
 - Frame 1: "Being vegan at a group dinner:"

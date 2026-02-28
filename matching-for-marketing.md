@@ -94,7 +94,7 @@ Groups aren't just matched by people — they're matched to a restaurant that fi
 
 1. **Opt in** for an upcoming Wednesday (proactive, not automatic — reduces no-shows)
 2. **Matching runs** behind the scenes on Tuesday
-3. **Admin reviews** the proposed groups (human oversight, not fully automated)
+3. **Groups are reviewed** before confirmation (quality checks on every match)
 4. **Confirmation sent** with: restaurant name, address, Google Maps link, time, reservation name, cancel link
 5. **Who's coming is a surprise** — we intentionally don't reveal group members beforehand
 6. **Icebreaker questions** sent on the evening to help kick off conversation

@@ -45,8 +45,8 @@ The line "You go home and eat actual food" is a subtle nod to Concept 5 (eating 
 |-----------|-------|-------|
 | Hook | 4/5 | "Let's be honest about what 'they have vegan options' actually means." — Conversational, direct. Less punchy than Variants A and B but sets up the rant well. |
 | Insight connection | 4/5 | Draws from multiple empathy sources — the menu research, the performing, the gap between "vegan-friendly" and vegan. |
-| Voice | 5/5 | The most Dinner Matcher voice of the three. "Not 'they can probably do something.' Vegan." is direct without being aggressive. "Stop performing. Start eating." is the best CTA line in the set. |
-| Product truth | 5/5 | All claims accurate. "A real person reviews every group" — confirmed in matching doc. |
+| Voice | 5/5 | The most Come Join Us voice of the three. "Not 'they can probably do something.' Vegan." is direct without being aggressive. "Stop performing. Start eating." is the best CTA line in the set. |
+| Product truth | 5/5 | All claims accurate. Matching process confirmed in matching doc. |
 | CTA | 5/5 | "Stop performing. Start eating." — Two words each, perfect parallel structure. This line could be tested as a standalone hook. |
 | **Overall** | **4/5** | Strong alternate. The CTA line elevates it. May need a clean version — "stop performing" could read as unclear to people outside the segment. |
 

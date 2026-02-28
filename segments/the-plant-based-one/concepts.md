@@ -163,7 +163,7 @@
 
 2. **The Whole Menu Is Yours** — The aspirational counterweight to Concept 1. Where the salad is the pain, the whole menu is the promise. Together they form the before/after of the campaign.
 
-3. **Not Vegan-Friendly. Vegan.** — The strongest product-truth ad. Draws a clear line between what exists everywhere and what Dinner Matcher specifically delivers. Good for people who already know the problem and need to trust the solution.
+3. **Not Vegan-Friendly. Vegan.** — The strongest product-truth ad. Draws a clear line between what exists everywhere and what Come Join Us specifically delivers. Good for people who already know the problem and need to trust the solution.
 
 4. **The Explaining Tax** — Universal recognition for anyone who's been the vegan at a mixed table. The micro-aggressions stack creates solidarity fast. Strong second-wave ad.
 

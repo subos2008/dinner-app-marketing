@@ -1,11 +1,11 @@
 ---
 name: deploy-campaign
-description: "Build and deploy a Dinner Matcher ad campaign to Meta (Facebook/Instagram) via the Meta Ads MCP server. Use this skill when the user wants to launch a campaign, push ads to Meta, create a campaign, set up ad sets, deploy to a city, or says /deploy-campaign. This handles the full campaign structure: campaign → ad set → ads."
+description: "Build and deploy a Come Join Us ad campaign to Meta (Facebook/Instagram) via the Meta Ads MCP server. Use this skill when the user wants to launch a campaign, push ads to Meta, create a campaign, set up ad sets, deploy to a city, or says /deploy-campaign. This handles the full campaign structure: campaign → ad set → ads."
 ---
 
 # Deploy Campaign to Meta
 
-You are deploying Dinner Matcher ad campaigns to Meta's advertising platform via the Meta Ads MCP server.
+You are deploying Come Join Us ad campaigns to Meta's advertising platform via the Meta Ads MCP server.
 
 ## Invocation
 

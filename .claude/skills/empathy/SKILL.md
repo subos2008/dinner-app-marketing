@@ -1,6 +1,6 @@
 ---
 name: empathy
-description: "Take on the persona of a Dinner Matcher customer segment and produce deep empathy work — empathy maps, day-in-the-life narratives, emotional journeys, and key phrases for copy. Use this skill whenever the user asks for empathy work, persona deep-dives, day-in-the-life exercises, empathy mapping, or wants to understand a customer segment at a deeper emotional level before writing copy. Also use when the user says /empathy."
+description: "Take on the persona of a Come Join Us customer segment and produce deep empathy work — empathy maps, day-in-the-life narratives, emotional journeys, and key phrases for copy. Use this skill whenever the user asks for empathy work, persona deep-dives, day-in-the-life exercises, empathy mapping, or wants to understand a customer segment at a deeper emotional level before writing copy. Also use when the user says /empathy."
 ---
 
 # Empathy Deep-Dive
@@ -54,7 +54,7 @@ Each quadrant should have 5-8 specific, concrete items. Not generic statements �
 
 #### 3. Day in the life — the triggering day
 
-Walk through ONE specific day, moment by moment, from waking up to going to bed. This should be the day that would make this person receptive to seeing a Dinner Matcher ad. Not the worst day of their life — just a day where the loneliness becomes undeniable.
+Walk through ONE specific day, moment by moment, from waking up to going to bed. This should be the day that would make this person receptive to seeing a Come Join Us ad. Not the worst day of their life — just a day where the loneliness becomes undeniable.
 
 Write it in present tense, close third person. Make it cinematic and specific. Include:
 - The mundane (breakfast alone, commute, work chat that stays surface-level)

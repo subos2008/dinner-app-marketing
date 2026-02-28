@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Build script for the Dinner Matcher Creative Review App.
+ * Build script for the Come Join Us Creative Review App.
  *
  * Reads all segment markdown files + creative manifests,
  * outputs app/data.json for the review UI to consume.

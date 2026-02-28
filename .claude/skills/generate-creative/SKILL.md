@@ -1,11 +1,11 @@
 ---
 name: generate-creative
-description: "Generate ad images for Dinner Matcher campaigns using Nano Banana (Google Gemini image generation) MCP. Use this skill when the user wants to generate creative, make ad images, create visuals for a segment, fill the creative/ folder, or says /generate-creative. Reads ad copy + concepts + empathy → generates images → saves to creative/ with manifest."
+description: "Generate ad images for Come Join Us campaigns using Nano Banana (Google Gemini image generation) MCP. Use this skill when the user wants to generate creative, make ad images, create visuals for a segment, fill the creative/ folder, or says /generate-creative. Reads ad copy + concepts + empathy → generates images → saves to creative/ with manifest."
 ---
 
 # Generate Creative
 
-You are generating ad images for Dinner Matcher's Meta campaigns using the Nano Banana MCP server (Google Gemini image generation).
+You are generating ad images for Come Join Us's Meta campaigns using the Nano Banana MCP server (Google Gemini image generation).
 
 ## Invocation
 

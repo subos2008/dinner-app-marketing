@@ -9,7 +9,7 @@
 >
 > But here you are. Third night in a row. Great restaurant. Table for one.
 >
-> Dinner Matcher puts you at a table with 5 locals and travellers who are done eating solo. Matched on the things that actually make a good dinner — what you eat, what you drink, what you give a shit about.
+> Come Join Us puts you at a table with 5 locals and travellers who are done eating solo. Matched on the things that actually make a good dinner — what you eat, what you drink, what you give a shit about.
 >
 > You're here for a month. Make it count.
 
@@ -18,7 +18,7 @@
 >
 > — every coworking space, before you spend 8 hours in headphones next to strangers you'll never speak to.
 >
-> Dinner Matcher. 5 real people. One dinner. Actually talking.
+> Come Join Us. 5 real people. One dinner. Actually talking.
 >
 > Book a seat before you leave [city].
 
@@ -48,7 +48,7 @@
 - Frame 1: "The Instagram: golden hour in Lisbon"
 - Frame 2: "The reality: party of one at the restaurant again"
 - Frame 3: "Being a nomad doesn't mean being alone"
-- Frame 4: "Dinner Matcher. Book a table in [city]."
+- Frame 4: "Come Join Us. Book a table in [city]."
 
 **Reel 3:**
 - Frame 1: "You're brave enough to move to a country where you know no one"

@@ -24,22 +24,22 @@
 
 ---
 
-## Concept 2: A Real Person Reviews Every Group
+## Concept 2: Every Group Is Matched Deliberately
 
-**Insight:** From the emotional journey, consideration phase: "Then I read that a real person reviews every group. Not an algorithm. A person looks at the six names and decides if it works. That detail. That one detail. It means someone gives a shit about whether this is good." This is the detail that converts The Quiet One. Not the food, not the matching — the human oversight.
+**Insight:** From the emotional journey, consideration phase: "Then I read that every group is matched deliberately based on your answers. Matched specifically, on purpose, because someone gives a shit about whether this is good." This is the detail that converts The Quiet One. Not the food, not the generic matching — the deliberate care.
 
-**Emotional lever:** Safety. Trust. The fear isn't just "will I have a bad time" — it's "will I be thrown into chaos and expected to perform." Knowing a human curated the group means someone cared enough to make it work. That's what gets this person over the line.
+**Emotional lever:** Safety. Trust. The fear isn't just "will I have a bad time" — it's "will I be thrown into chaos and expected to perform." Knowing the group was matched deliberately based on real answers means someone cared enough to make it work. That's what gets this person over the line.
 
-**Angle:** Lead with the human review detail. Make it the headline, not a body copy line. For this segment, the safety signal IS the hook.
+**Angle:** Lead with the deliberate matching detail. Make it the headline, not a body copy line. For this segment, the safety signal IS the hook.
 
 **Headline directions:**
-- "A real person reviews every group before you're confirmed."
-- "Not an algorithm. A real person looks at who's at your table and makes sure it works."
+- "Every group is matched deliberately based on your answers."
+- "Not an algorithm guessing. Matched specifically, on purpose, because someone cares."
 - "Someone actually cares who you're sitting with. That's the difference."
 
 **Format:** Feed ad (the trust-building needs room). Stories with a "behind the scenes" feel — showing the curation process.
 
-**Test:** Human review as the headline vs human review buried in body copy. Hypothesis: for this segment, leading with the safety signal outperforms leading with the emotional hook.
+**Test:** Deliberate matching as the headline vs matching detail buried in body copy. Hypothesis: for this segment, leading with the safety signal outperforms leading with the emotional hook.
 
 ---
 
@@ -161,7 +161,7 @@
 
 1. **You Don't Have to Be a Social Person** — The most direct-to-segment concept. This is the line the empathy work surfaced as the moment Brendan stops scrolling. It grants permission before selling anything, which is essential for this audience. Lead ad.
 
-2. **A Real Person Reviews Every Group** — The trust signal that converts this segment. Every other segment might skim past this detail. For The Quiet One, it's the reason they book. High priority because it addresses the deepest objection: "will I be safe?"
+2. **Every Group Is Matched Deliberately** — The trust signal that converts this segment. Every other segment might skim past this detail. For The Quiet One, it's the reason they book. High priority because it addresses the deepest objection: "will I be safe?"
 
 3. **The Hardest Part Is Showing Up** — Names every friction point and removes them one by one. This is the ad that turns consideration into action by making the ask feel small.
 

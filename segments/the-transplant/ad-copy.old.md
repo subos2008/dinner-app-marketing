@@ -9,7 +9,7 @@
 >
 > But nobody warned you about Sundays.
 >
-> Dinner Matcher puts you at a table with 5 other people who actually want to connect. Not network. Not small talk. Real conversation over real food.
+> Come Join Us puts you at a table with 5 other people who actually want to connect. Not network. Not small talk. Real conversation over real food.
 >
 > Book your first dinner.
 
@@ -66,7 +66,7 @@
 - Frame 1: "POV: you've been in [city] for a year"
 - Frame 2: "and your mum is still your most recent call"
 - Frame 3: "It's not weird. It's normal. But it doesn't have to stay that way."
-- Frame 4: "Dinner Matcher. Book a table."
+- Frame 4: "Come Join Us. Book a table."
 
 **Reel 3:**
 - Frame 1: "Nobody tells you the hardest part of moving to a new city"

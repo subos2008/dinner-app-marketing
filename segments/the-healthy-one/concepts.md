@@ -49,7 +49,7 @@
 
 **Emotional lever:** The paradox. You did the hard thing — changed your habits, got healthier — and the reward is eating alone on a Saturday night. The gap between health and social life is the emotional core.
 
-**Angle:** Name the paradox directly. Discipline shouldn't cost you your social life. Dinner Matcher is the place where the two things stop being in conflict — health-conscious people eating together at a restaurant that works for all of them.
+**Angle:** Name the paradox directly. Discipline shouldn't cost you your social life. Come Join Us is the place where the two things stop being in conflict — health-conscious people eating together at a restaurant that works for all of them.
 
 **Headline directions:**
 - "Eating healthy shouldn't mean eating alone."

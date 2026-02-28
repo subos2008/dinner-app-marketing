@@ -9,7 +9,7 @@
 >
 > But if you hear the same story one more time, you're going to lose it.
 >
-> Dinner Matcher seats you with 5 people matched on what you care about right now — not who you were at uni.
+> Come Join Us seats you with 5 people matched on what you care about right now — not who you were at uni.
 >
 > One dinner. New perspectives. Book yours.
 
@@ -68,7 +68,7 @@
 - Frame 1: "Your Spotify Wrapped says personal development"
 - Frame 2: "Your bookshelf says self-improvement"
 - Frame 3: "Your Friday night says... the same group chat from 2019"
-- Frame 4: "Dinner Matcher. Meet people who match where you're heading."
+- Frame 4: "Come Join Us. Meet people who match where you're heading."
 
 **Reel 3 — The Question:**
 - Frame 1: "'What do you want more of in your life?'"

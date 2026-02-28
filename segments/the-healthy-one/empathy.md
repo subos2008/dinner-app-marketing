@@ -122,7 +122,7 @@ Saturday night. He ate dinner alone. Because it was easier.
 *It's Tuesday. I get a message: restaurant name, address, 7:30pm tomorrow. I google the restaurant immediately. The menu has grilled options, protein-heavy dishes, actual variety. It's not a burger joint. I don't have to strategise. I can just... pick something and eat it. I haven't felt like that about a restaurant in months.*
 
 **Showing up**
-*I'm outside at 7:25, which is too early, so I walk around the block once. When I come back there's a woman standing near the door looking at her phone. "Dinner Matcher?" she says. "Yeah." She laughs. "I nearly didn't come. But I figured one dinner is one dinner." We walk in together. I already feel less ridiculous.*
+*I'm outside at 7:25, which is too early, so I walk around the block once. When I come back there's a woman standing near the door looking at her phone. "Come Join Us?" she says. "Yeah." She laughs. "I nearly didn't come. But I figured one dinner is one dinner." We walk in together. I already feel less ridiculous.*
 
 **During dinner**
 *There are six of us. Everyone orders like I do — considered, intentional, not ashamed. One person's doing keto, two are calorie-counting, one's flexitarian, one just "tries to eat clean." Nobody orders a burger and chips. Nobody says "go on, live a little." The conversation starts with food — someone asks what app I use for tracking — but within 20 minutes we're talking about work, about the gym, about moving to Manchester, about whether anyone's hiked Kinder Scout. I eat grilled sea bass and vegetables. It's good. Nobody looks at my plate.*

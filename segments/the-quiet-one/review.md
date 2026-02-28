@@ -14,7 +14,7 @@
 | Hook | 5/5 | "You don't have to be a social person to want connection." — This is the line the empathy work identified as the scroll-stopper. It grants permission before selling anything. |
 | Insight connection | 5/5 | Directly from the profile messaging hook and the emotional journey discovery moment: "Like it's granting permission." |
 | Voice | 4/5 | Warm and honest. "You just have to be someone who's tired of eating every meal alone" is strong. The product paragraph could be slightly tighter. |
-| Product truth | 5/5 | All claims supported — matching dimensions, human review, conversation starters, restaurant selection. |
+| Product truth | 5/5 | All claims supported — matching dimensions, conversation starters, restaurant selection. |
 | CTA | 4/5 | "You don't have to be outgoing. You just have to show up." is the right close for this segment. "Book a seat" is clear. |
 | **Overall** | **5/5** | The lead ad for the segment. The permission angle is precisely what the empathy work says this person needs to hear before anything else. |
 
@@ -31,7 +31,7 @@ The opening three lines are exceptional. The product paragraph is accurate but s
 | Hook | 4/5 | "You're not bad at friendship. It's just hard to start from scratch." — Empathetic and true. Slightly less scroll-stopping than Variant A because it's a statement about the reader, not a permission grant. |
 | Insight connection | 5/5 | From the pain points: running clubs, board game nights, every option assumes a baseline confidence he doesn't have. This names the gap perfectly. |
 | Voice | 5/5 | "They all assume a confidence you don't have right now" — the "right now" is doing critical work. It's temporary, not permanent. Dignifying, not diagnosing. |
-| Product truth | 5/5 | All claims accurate. Human review, icebreaker questions, matching dimensions all present. |
+| Product truth | 5/5 | All claims accurate. Icebreaker questions, matching dimensions all present. |
 | CTA | 5/5 | "The hardest part is walking through the door. Everything else is already done." — This is the best CTA in the entire set. Acknowledges the difficulty without minimising it. |
 | **Overall** | **5/5** | Strongest body copy in the set. The CTA line should be tested as a standalone hook. |
 
@@ -48,7 +48,7 @@ The opening three lines are exceptional. The product paragraph is accurate but s
 | Hook | 5/5 | "This ad is for the person eating dinner alone tonight." — Direct, specific, and the empathy work names this as a key headline. Stops the scroll by saying out loud what most ads dance around. |
 | Insight connection | 5/5 | From the quick mode: "It's eating dinner at a table with an empty chair opposite you." The empty chair is the whole segment. |
 | Voice | 5/5 | "Your social life didn't collapse — it just never quite formed, or it eroded so slowly you didn't notice." This is the most insightful line in the set. It captures both sub-types of The Quiet One: never-had and gradually-lost. |
-| Product truth | 5/5 | Accurate. "A real person looks at every group" is correctly worded. |
+| Product truth | 5/5 | Accurate. Deliberate matching claim is correctly worded. |
 | CTA | 4/5 | "You don't have to be a social person. You just have to be tired of this." — Strong emotional close. "One Wednesday. See what happens" is appropriately low-commitment. |
 | **Overall** | **5/5** | The most emotionally precise ad in the set. The "never quite formed, or eroded so slowly" line is exceptional. |
 
@@ -65,7 +65,7 @@ Risk note: "This ad is for the person eating dinner alone tonight" could feel co
 | Hook | 5/5 | "You don't have to be a social person." as frame 1 is the strongest possible opening for this segment. |
 | Insight connection | 4/5 | Condenses the core permission angle well. |
 | Voice | 4/5 | "You just have to be tired of eating alone" is the right frame 3 — it's the emotional turn. |
-| Product truth | 4/5 | Compressed but accurate. "A real person reviews every group" is included, which matters for this segment. |
+| Product truth | 4/5 | Compressed but accurate. Deliberate matching is included, which matters for this segment. |
 | CTA | 3/5 | "Book a seat" is functional. Could be warmer — "One Wednesday. See what happens" from Variant C might work better here. |
 | **Overall** | **4/5** | Solid. The visual direction note about slow pacing is correct — fast cuts would lose this audience. |
 
@@ -77,10 +77,10 @@ Risk note: "This ad is for the person eating dinner alone tonight" could feel co
 
 | Dimension | Score | Notes |
 |-----------|-------|-------|
-| Hook | 5/5 | "Before you sit down at that table, a real person has already looked at who's going to be there." — Leads with the trust signal. For this segment, that's the right instinct. |
+| Hook | 5/5 | "Before you sit down at that table, every person there has been matched deliberately based on what they told us." — Leads with the trust signal. For this segment, that's the right instinct. |
 | Insight connection | 5/5 | Directly from the emotional journey: "That detail. That one detail. It means someone gives a shit about whether this is good." |
 | Voice | 4/5 | Strong and warm. "We know you are, because we built this for you" is slightly on the nose — risks feeling patronising. |
-| Product truth | 5/5 | All matching dimensions, human review, icebreakers, restaurant curation — fully accurate. |
+| Product truth | 5/5 | All matching dimensions, icebreakers, restaurant curation — fully accurate. |
 | CTA | 4/5 | "Someone gave a shit about whether this would be good. That's the difference." — The swearing is on-brand but may limit Meta reach. Write a clean variant. |
 | **Overall** | **4/5** | Strong trust-building ad. The "we built this for you" line needs softening — this segment recoils from being singled out as the target. |
 
@@ -219,7 +219,7 @@ This ad will have a narrower audience than the permission ads — not everyone i
 | Hook | 4/5 | "3pm. Saturday. The flat goes quiet." — Clean, atmospheric. |
 | Insight connection | 4/5 | Core insight condensed. "You're not sad. You're just alone. Again." nails it. |
 | Voice | 4/5 | "We can't fix Saturdays. But we can give you a Wednesday." is the best copywriting in the Reels set. Honest about limitations while offering something real. |
-| Product truth | 3/5 | Compressed. "A real person reviews every group" is included, which is essential for this segment. Missing matching detail. |
+| Product truth | 3/5 | Compressed. Deliberate matching is included, which is essential for this segment. Missing matching detail. |
 | CTA | 4/5 | "One evening where you're expected somewhere" — pulls the strongest line from the feed ad. Good instinct. |
 | **Overall** | **4/5** | Strong. "We can't fix Saturdays. But we can give you a Wednesday" should be tested as a standalone hook across formats. |
 

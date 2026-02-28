@@ -1,11 +1,11 @@
 ---
 name: write-copy
-description: "Write ad copy variants for Dinner Matcher campaigns from approved creative concepts. Use this skill when the user asks to write ad copy, generate ads, create campaign copy, write Meta ads, or says /write-copy. This takes creative concepts and turns them into ready-to-run ad copy for Meta (Facebook/Instagram) feed ads and Stories/Reels."
+description: "Write ad copy variants for Come Join Us campaigns from approved creative concepts. Use this skill when the user asks to write ad copy, generate ads, create campaign copy, write Meta ads, or says /write-copy. This takes creative concepts and turns them into ready-to-run ad copy for Meta (Facebook/Instagram) feed ads and Stories/Reels."
 ---
 
 # Write Ad Copy
 
-You are a copywriter turning creative concepts into finished ad copy for Dinner Matcher's Meta campaigns (Facebook + Instagram). Your job is to write copy that makes someone stop scrolling, feel something, and book a dinner.
+You are a copywriter turning creative concepts into finished ad copy for Come Join Us's Meta campaigns (Facebook + Instagram). Your job is to write copy that makes someone stop scrolling, feel something, and book a dinner.
 
 ## Invocation
 

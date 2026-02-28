@@ -14,7 +14,7 @@
 | Hook | 5/5 | "You pause the episode to think about what you'd say if you were in the room." — Immediately specific. Anyone who listens to podcasts obsessively will feel caught. |
 | Insight connection | 5/5 | Directly from the empathy deep-dive: "Pauses episodes to think about what he'd say if he was in the room. Presses play again." Near-verbatim from the source material. |
 | Voice | 5/5 | "You're eavesdropping on the friendship you wish you had." — This is the line. Warm, honest, zero cringe. The whole ad maintains that register. |
-| Product truth | 5/5 | All claims accurate per matching doc. Matching dimensions, human review, restaurant selection — all supported. |
+| Product truth | 5/5 | All claims accurate per matching doc. Matching dimensions, restaurant selection — all supported. |
 | CTA | 5/5 | "Stop listening to the conversation. Be in it." — Mirrors the insight perfectly. The CTA IS the concept. |
 | **Overall** | **5/5** | The strongest ad in the set. The insight is unique to this segment, the hook is a genuine scroll-stopper, and the CTA lands the concept cleanly. |
 
@@ -74,7 +74,7 @@
 | Hook | 5/5 | "'You've changed.'" — Two words. Loaded. Every person in this segment has heard this. The quotation marks make it feel like a memory landing. |
 | Insight connection | 5/5 | Direct from empathy map, Hear quadrant: "'You've changed.' Said lightly, but it lands heavy." |
 | Voice | 5/5 | "You say 'yeah, good' when they ask about the business. Two words for the biggest thing in your life." — This line earns the whole ad. |
-| Product truth | 5/5 | Matching dimensions, human review, restaurant — all accurate. |
+| Product truth | 5/5 | Matching dimensions, restaurant — all accurate. |
 | CTA | 4/5 | "A table where the full version of you is welcome" — emotionally right but slightly wordy. Could be tighter. |
 | **Overall** | **5/5** | The second-strongest ad in the set. The hook is visceral and the "two words" detail is the kind of specificity that makes someone think "this is about me." |
 
@@ -224,7 +224,7 @@ Note: This is the most emotionally delicate concept in the set. It works because
 
 ### Biggest Gap
 
-**The empathy work surfaced a strong "after dinner" narrative that isn't reflected in any finished ad.** Marcus's emotional journey ends with him texting the lads' group chat "pub Friday I'm in" — because having something new made him appreciate what he already had. This is a powerful reframe: Dinner Matcher doesn't replace your old friends, it makes you better at being with them. The insight that "I don't want to replace them, I just needed somewhere else too" is the emotional resolution of this entire segment, and it's sitting unused. Consider writing a dedicated social proof ad in first-person voice using the after-dinner arc — particularly the management consultant poking holes in his proposal and the realisation that he's not alone in having outgrown his circle ("Three people at my dinner had the same feeling").
+**The empathy work surfaced a strong "after dinner" narrative that isn't reflected in any finished ad.** Marcus's emotional journey ends with him texting the lads' group chat "pub Friday I'm in" — because having something new made him appreciate what he already had. This is a powerful reframe: Come Join Us doesn't replace your old friends, it makes you better at being with them. The insight that "I don't want to replace them, I just needed somewhere else too" is the emotional resolution of this entire segment, and it's sitting unused. Consider writing a dedicated social proof ad in first-person voice using the after-dinner arc — particularly the management consultant poking holes in his proposal and the realisation that he's not alone in having outgrown his circle ("Three people at my dinner had the same feeling").
 
 A secondary gap: no ad directly addresses the "performing smallness" behaviour — the specific moment of saying "yeah, good" when the business did 40k last quarter. Variant A of You've Changed touches it, but a dedicated ad built around the gap between what you say and what's true could be the most visceral creative for this segment.
 

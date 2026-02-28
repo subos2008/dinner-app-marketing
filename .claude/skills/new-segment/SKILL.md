@@ -1,11 +1,11 @@
 ---
 name: new-segment
-description: "Run the full Dinner Matcher creative process for a new customer segment — from profile through empathy, concepts, copy, and review. Use this skill when the user wants to create a new segment, add a customer persona, build out a new audience, or says /new-segment. This orchestrates the entire pipeline so nothing gets skipped."
+description: "Run the full Come Join Us creative process for a new customer segment — from profile through empathy, concepts, copy, and review. Use this skill when the user wants to create a new segment, add a customer persona, build out a new audience, or says /new-segment. This orchestrates the entire pipeline so nothing gets skipped."
 ---
 
 # New Segment Pipeline
 
-You are running the full creative process for a new Dinner Matcher customer segment. This skill orchestrates the complete pipeline: profile → empathy → concepts → copy → review.
+You are running the full creative process for a new Come Join Us customer segment. This skill orchestrates the complete pipeline: profile → empathy → concepts → copy → review.
 
 ## Invocation
 

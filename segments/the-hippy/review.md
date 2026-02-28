@@ -14,7 +14,7 @@
 | Hook | 5/5 | "Everyone at the table doesn't drink." — Immediately specific. The simplicity is the scroll-stopper. You read it and think "wait, what?" |
 | Insight connection | 5/5 | Directly from the profile: "Sober matching is the unlock." And from the emotional journey: "Nobody orders alcohol. Nobody even mentions it." |
 | Voice | 5/5 | Warm, direct, not preachy. "Ambient default" is a perfect phrase — it says what this segment actually wants without being woo-woo. "No explaining. No compromising." lands as relief, not aggression. |
-| Product truth | 5/5 | All claims accurate. Non-drinkers matched together per matching doc. Human review confirmed. Restaurant selection confirmed. |
+| Product truth | 5/5 | All claims accurate. Non-drinkers matched together per matching doc. Restaurant selection confirmed. |
 | CTA | 4/5 | "No explaining. No compromising. Just dinner with people who live the same way you do." — Strong emotional close. "Book a dinner" is clear but could be more specific to the sober angle. |
 | **Overall** | **5/5** | The strongest ad in the set. The product truth IS the emotional hook. Ship immediately. |
 
@@ -43,7 +43,7 @@
 |-----------|-------|-------|
 | Hook | 5/5 | "You don't drink. You're tired of explaining it." — Two sentences, completely disarming. Names the exact fatigue this segment carries. |
 | Insight connection | 5/5 | From pain points: "always the one explaining, always the one leaving early." From key phrases: "You're not judgemental. You just want a table where you don't have to explain." |
-| Voice | 5/5 | The most Dinner Matcher voice of the three variants. "Not because they're in recovery. Not because it's a sober event. Because they answered 'no' to the same question you did." — This distinction is critical for this segment. They're not recovering; they just don't drink. Naming that is trust-building. |
+| Voice | 5/5 | The most Come Join Us voice of the three variants. "Not because they're in recovery. Not because it's a sober event. Because they answered 'no' to the same question you did." — This distinction is critical for this segment. They're not recovering; they just don't drink. Naming that is trust-building. |
 | Product truth | 5/5 | Accurate. Algorithm matching is correctly described. |
 | CTA | 5/5 | "Stop explaining. Start eating." — Punchy, active, perfectly on-brand. Best CTA in the set. |
 | **Overall** | **5/5** | Tied with Variant A. Different appeal — A is warm, C is sharp. Test both. |
@@ -74,7 +74,7 @@
 | Hook | 5/5 | "Wednesday dinner. No alcohol. No small talk. No explaining yourself." — The stacking rhythm is excellent. Each "no" drops a weight. |
 | Insight connection | 5/5 | From the emotional journey: "I didn't have to translate my life into something palatable." The "no explaining" list directly mirrors the empathy work. |
 | Voice | 4/5 | Strong throughout. "Be the version of yourself you don't usually get to be at social events" is a good line but slightly long for its position. Could tighten. |
-| Product truth | 5/5 | All matching dimensions present. Human review, restaurant selection — accurate. |
+| Product truth | 5/5 | All matching dimensions present. Restaurant selection — accurate. |
 | CTA | 4/5 | "Book a dinner" is clean but the body's emotional close does more work than the CTA itself. |
 | **Overall** | **5/5** | Excellent concept execution. The stacking format is native to this audience's experience — the list of things they're tired of explaining. |
 

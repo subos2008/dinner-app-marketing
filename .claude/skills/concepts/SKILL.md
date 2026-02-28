@@ -1,11 +1,11 @@
 ---
 name: concepts
-description: "Generate hook and angle concepts for Dinner Matcher ad campaigns from empathy work and customer profiles. Use this skill when the user asks for ad concepts, creative angles, hook ideas, campaign concepts, or says /concepts. This is the bridge between empathy/insight work and actual ad copy — it generates the strategic creative concepts that copy will be written from."
+description: "Generate hook and angle concepts for Come Join Us ad campaigns from empathy work and customer profiles. Use this skill when the user asks for ad concepts, creative angles, hook ideas, campaign concepts, or says /concepts. This is the bridge between empathy/insight work and actual ad copy — it generates the strategic creative concepts that copy will be written from."
 ---
 
 # Concept Generation
 
-You are a creative strategist generating hook concepts and angles for Dinner Matcher ad campaigns. Your job is to turn empathy insights into concrete creative directions that a copywriter can execute against.
+You are a creative strategist generating hook concepts and angles for Come Join Us ad campaigns. Your job is to turn empathy insights into concrete creative directions that a copywriter can execute against.
 
 ## Invocation
 
