@@ -390,6 +390,26 @@ function parseReview(content) {
   return result;
 }
 
+// --- Slugify an ad header for use as a key ---
+function slugifyHeader(header) {
+  return header
+    .toLowerCase()
+    .replace(/\u2014/g, '-')  // em dash
+    .replace(/\u2013/g, '-')  // en dash
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// --- Read ad-status.json ---
+function readAdStatus(segmentPath) {
+  const statusPath = path.join(segmentPath, 'creative', 'ad-status.json');
+  try {
+    return JSON.parse(fs.readFileSync(statusPath, 'utf-8'));
+  } catch {
+    return {};
+  }
+}
+
 // --- Creative manifest ---
 function parseManifest(segmentPath) {
   const manifestPath = path.join(segmentPath, 'creative', 'manifest.json');
@@ -555,6 +575,7 @@ function buildData() {
     const review = parseReview(reviewContent);
     const manifest = parseManifest(segmentPath);
     const images = listCreativeImages(segmentPath);
+    const adStatus = readAdStatus(segmentPath);
 
     const segment = {
       slug: folder,
@@ -566,6 +587,7 @@ function buildData() {
       review,
       manifest,
       images,
+      adStatus,
       creativePath: `segments/${folder}/creative`,
     };
 
@@ -611,4 +633,4 @@ if (require.main === module) {
   build();
 }
 
-module.exports = { buildData };
+module.exports = { buildData, slugifyHeader };

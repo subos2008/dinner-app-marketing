@@ -920,6 +920,168 @@
     opacity: 1;
   }
 
+  /* --- Ad status badges --- */
+  .ad-status-badge {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+
+  .ad-status-badge.unreviewed {
+    background: var(--light-gray);
+    color: var(--warm-gray);
+  }
+
+  .ad-status-badge.feedback {
+    background: #FFF3E0;
+    color: #C8801C;
+  }
+
+  .ad-status-badge.approved {
+    background: #E8F0E8;
+    color: var(--green);
+  }
+
+  .ad-status-badge.live {
+    background: #E0EEF4;
+    color: #3A7CA5;
+  }
+
+  /* --- Ad status controls --- */
+  .ad-status-section {
+    padding: 12px 20px;
+    border-top: 1px solid var(--light-gray);
+    background: rgba(0,0,0,0.015);
+  }
+
+  .ad-status-buttons {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .ad-status-btn {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--light-gray);
+    background: transparent;
+    color: var(--warm-gray);
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1.4;
+  }
+
+  .ad-status-btn:hover {
+    border-color: var(--warm-gray);
+  }
+
+  .ad-status-btn.active-unreviewed {
+    background: var(--light-gray);
+    border-color: var(--warm-gray);
+    color: var(--charcoal);
+  }
+
+  .ad-status-btn.active-feedback {
+    background: #C8801C;
+    border-color: #C8801C;
+    color: #fff;
+  }
+
+  .ad-status-btn.active-approved {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+  .ad-status-btn.active-live {
+    background: #3A7CA5;
+    border-color: #3A7CA5;
+    color: #fff;
+  }
+
+  .ad-feedback-input {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 13px;
+    padding: 8px 12px;
+    border: 1px solid var(--light-gray);
+    border-radius: 4px;
+    background: var(--warm-white);
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.15s;
+    resize: vertical;
+    min-height: 36px;
+    line-height: 1.5;
+  }
+
+  .ad-feedback-input:focus {
+    border-color: var(--amber);
+  }
+
+  .ad-feedback-input::placeholder {
+    color: var(--warm-gray);
+    opacity: 0.5;
+  }
+
+  .ad-status-saving {
+    font-size: 11px;
+    color: var(--warm-gray);
+    font-style: italic;
+    opacity: 0;
+    transition: opacity 0.2s;
+    margin-left: 8px;
+  }
+
+  .ad-status-saving.visible {
+    opacity: 1;
+  }
+
+  /* --- Gallery status filter bar --- */
+  .gallery-filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .gallery-filter-pill {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--light-gray);
+    background: transparent;
+    color: var(--warm-gray);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .gallery-filter-pill:hover {
+    border-color: var(--warm-gray);
+    color: var(--charcoal);
+  }
+
+  .gallery-filter-pill.active {
+    background: var(--charcoal);
+    border-color: var(--charcoal);
+    color: var(--cream);
+  }
+
+  .ad-card.ad-hidden {
+    display: none;
+  }
+
   /* --- Responsive --- */
   @media (max-width: 768px) {
     .sidebar { display: none; }
@@ -1226,6 +1388,7 @@
   let activeSegment = null;
   let activeView = 'gallery';
   let activeCreativeFilter = 'all';
+  let activeStatusFilter = 'all';
 
   // --- Load data ---
   async function loadData() {
@@ -1280,6 +1443,7 @@
     if (e.state && e.state.slug && e.state.view) {
       activeView = e.state.view;
       activeCreativeFilter = 'all';
+      activeStatusFilter = 'all';
       document.querySelectorAll('.topbar-tab').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.view === activeView);
       });
@@ -1338,11 +1502,12 @@
   }
 
   function sidebarItem(seg, type) {
-    const adCount = seg.adCopy?.concepts?.reduce((sum, c) => sum + c.feedAds.length + c.storiesReels.length, 0) || 0;
+    const counts = countAdsByStatus(seg);
+    const actionable = counts.unreviewed + counts.feedback;
     return `<div class="sidebar-item" data-slug="${seg.slug}">
       <span class="dot dot-${type}"></span>
       ${seg.name}
-      <span class="badge">${adCount}</span>
+      <span class="badge">${actionable > 0 ? actionable : ''}</span>
     </div>`;
   }
 
@@ -1368,6 +1533,7 @@
     if (view === activeView) return;
     activeView = view;
     activeCreativeFilter = 'all';
+    activeStatusFilter = 'all';
     document.querySelectorAll('.topbar-tab').forEach(tab => {
       tab.classList.toggle('active', tab.dataset.view === view);
     });
@@ -1499,7 +1665,16 @@
       return `<div class="empty-state"><h2>No ad copy yet</h2><p>Run /write-copy to generate ads for this segment.</p></div>`;
     }
 
+    const counts = countAdsByStatus(seg);
+
     let html = `<div class="section-title">Ad Gallery</div>`;
+    html += `<div class="gallery-filter-bar" id="gallery-filter-bar">
+      <button class="gallery-filter-pill${activeStatusFilter === 'all' ? ' active' : ''}" data-status-filter="all">All (${counts.all})</button>
+      <button class="gallery-filter-pill${activeStatusFilter === 'unreviewed' ? ' active' : ''}" data-status-filter="unreviewed">Unreviewed (${counts.unreviewed})</button>
+      <button class="gallery-filter-pill${activeStatusFilter === 'feedback' ? ' active' : ''}" data-status-filter="feedback">Feedback (${counts.feedback})</button>
+      <button class="gallery-filter-pill${activeStatusFilter === 'approved' ? ' active' : ''}" data-status-filter="approved">Approved (${counts.approved})</button>
+      <button class="gallery-filter-pill${activeStatusFilter === 'live' ? ' active' : ''}" data-status-filter="live">Live (${counts.live})</button>
+    </div>`;
 
     for (const concept of seg.adCopy.concepts) {
       const priority = seg.concepts?.priority?.indexOf(concept.name);
@@ -1532,13 +1707,18 @@
     const images = findImages(seg, conceptName, 'feed');
     const verdictClass = getVerdictClass(review?.verdict);
     const firstImage = images.length > 0 ? images[0] : null;
+    const adId = slugifyHeader(ad.header);
+    const adStatusEntry = getAdStatus(seg, adId);
+    const adStatusLabel = adStatusEntry?.status || 'unreviewed';
+    const adFeedback = adStatusEntry?.feedback || '';
 
-    return `<div class="ad-card" data-slug="${esc(seg.slug)}">
+    return `<div class="ad-card" data-slug="${esc(seg.slug)}" data-ad-id="${esc(adId)}" data-ad-status="${esc(adStatusLabel)}">
       <div class="ad-card-header">
         <span class="ad-card-name">${esc(ad.header)}</span>
         <div class="ad-card-badges">
           <span class="format-badge feed">Feed</span>
           ${review?.verdict ? `<span class="verdict-badge ${verdictClass}">${esc(review.verdict.split(' \u2014 ')[0].split(' \u2013 ')[0])}</span>` : ''}
+          <span class="ad-status-badge ${esc(adStatusLabel)}">${esc(adStatusLabel)}</span>
         </div>
       </div>
       <div class="ad-card-body">
@@ -1556,6 +1736,7 @@
         </div>
       </div>
       ${review ? renderScoreBar(review) : ''}
+      ${renderAdStatusControls(seg.slug, adId, adStatusLabel, adFeedback)}
     </div>`;
   }
 
@@ -1564,13 +1745,18 @@
     const images = findImages(seg, conceptName, 'story');
     const verdictClass = getVerdictClass(review?.verdict);
     const firstImage = images.length > 0 ? images[0] : null;
+    const adId = slugifyHeader(ad.header);
+    const adStatusEntry = getAdStatus(seg, adId);
+    const adStatusLabel = adStatusEntry?.status || 'unreviewed';
+    const adFeedback = adStatusEntry?.feedback || '';
 
-    return `<div class="ad-card" data-slug="${esc(seg.slug)}">
+    return `<div class="ad-card" data-slug="${esc(seg.slug)}" data-ad-id="${esc(adId)}" data-ad-status="${esc(adStatusLabel)}">
       <div class="ad-card-header">
         <span class="ad-card-name">${esc(ad.header)}</span>
         <div class="ad-card-badges">
           <span class="format-badge story">Story / Reel</span>
           ${review?.verdict ? `<span class="verdict-badge ${verdictClass}">${esc(review.verdict.split(' \u2014 ')[0].split(' \u2013 ')[0])}</span>` : ''}
+          <span class="ad-status-badge ${esc(adStatusLabel)}">${esc(adStatusLabel)}</span>
         </div>
       </div>
       <div class="ad-card-body">
@@ -1591,6 +1777,7 @@
         </div>
       </div>
       ${review ? renderScoreBar(review) : ''}
+      ${renderAdStatusControls(seg.slug, adId, adStatusLabel, adFeedback)}
     </div>`;
   }
 
@@ -1643,6 +1830,19 @@
       ${review.overall ? `
         <span class="overall-score score-${review.overall}">Overall: ${review.overall}/5</span>
       ` : ''}
+    </div>`;
+  }
+
+  function renderAdStatusControls(slug, adId, status, feedback) {
+    return `<div class="ad-status-section" data-slug="${esc(slug)}" data-ad-id="${esc(adId)}">
+      <div class="ad-status-buttons">
+        <button class="ad-status-btn${status === 'unreviewed' ? ' active-unreviewed' : ''}" data-ad-status="unreviewed">Unreviewed</button>
+        <button class="ad-status-btn${status === 'feedback' ? ' active-feedback' : ''}" data-ad-status="feedback">Feedback</button>
+        <button class="ad-status-btn${status === 'approved' ? ' active-approved' : ''}" data-ad-status="approved">Approved</button>
+        <button class="ad-status-btn${status === 'live' ? ' active-live' : ''}" data-ad-status="live">Live</button>
+        <span class="ad-status-saving">Saved</span>
+      </div>
+      <textarea class="ad-feedback-input" placeholder="Leave feedback on this ad..." rows="1">${esc(feedback)}</textarea>
     </div>`;
   }
 
@@ -1835,6 +2035,49 @@
     });
   }
 
+  function applyGalleryStatusFilter(filter) {
+    activeStatusFilter = filter;
+
+    // Update pill states
+    document.querySelectorAll('.gallery-filter-pill').forEach(pill => {
+      pill.classList.toggle('active', pill.dataset.statusFilter === filter);
+    });
+
+    // Show/hide ad cards
+    document.querySelectorAll('.ad-card[data-ad-id]').forEach(card => {
+      if (filter === 'all') {
+        card.classList.remove('ad-hidden');
+      } else {
+        card.classList.toggle('ad-hidden', card.dataset.adStatus !== filter);
+      }
+    });
+  }
+
+  function updateGalleryFilterCounts() {
+    const seg = DATA.segments.find(s => s.slug === activeSegment);
+    if (!seg) return;
+    const counts = countAdsByStatus(seg);
+    const bar = document.getElementById('gallery-filter-bar');
+    if (!bar) return;
+    bar.querySelectorAll('.gallery-filter-pill').forEach(pill => {
+      const f = pill.dataset.statusFilter;
+      const count = counts[f] || 0;
+      const label = f === 'all' ? 'All' : f.charAt(0).toUpperCase() + f.slice(1);
+      pill.textContent = `${label} (${count})`;
+    });
+  }
+
+  function updateSidebarBadge(slug) {
+    const seg = DATA.segments.find(s => s.slug === slug);
+    if (!seg) return;
+    const counts = countAdsByStatus(seg);
+    const actionable = counts.unreviewed + counts.feedback;
+    const sidebarItem = document.querySelector(`.sidebar-item[data-slug="${slug}"] .badge`);
+    if (sidebarItem) {
+      sidebarItem.textContent = actionable > 0 ? actionable : '';
+    }
+  }
+
   // --- Standout lines (in review top section) ---
   // Included inside renderTopAds if standoutLines exist
   // (Already handled via review.topAds)
@@ -1940,6 +2183,72 @@
     if (input && input !== document.activeElement) {
       input.value = note || '';
     }
+  }
+
+  // --- Ad status helpers ---
+  function slugifyHeader(header) {
+    return header
+      .toLowerCase()
+      .replace(/\u2014/g, '-')  // em dash
+      .replace(/\u2013/g, '-')  // en dash
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  function getAdStatus(seg, adId) {
+    return seg.adStatus?.[adId] || null;
+  }
+
+  function getAdStatusLabel(seg, adId) {
+    const entry = getAdStatus(seg, adId);
+    return entry?.status || 'unreviewed';
+  }
+
+  async function saveAdStatus(slug, adId, status, feedback) {
+    try {
+      const res = await fetch(`/api/segments/${encodeURIComponent(slug)}/ad-status/${encodeURIComponent(adId)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: status || 'unreviewed', feedback: feedback || '' }),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      return await res.json();
+    } catch (e) {
+      console.error('Failed to save ad status:', e);
+      return null;
+    }
+  }
+
+  function updateLocalAdStatus(slug, adId, status, feedback) {
+    const seg = DATA.segments.find(s => s.slug === slug);
+    if (!seg) return;
+    if (!seg.adStatus) seg.adStatus = {};
+    seg.adStatus[adId] = {
+      status: status || 'unreviewed',
+      feedback: feedback || '',
+      updatedAt: new Date().toISOString()
+    };
+  }
+
+  // Count ads by status for a segment
+  function countAdsByStatus(seg) {
+    const counts = { all: 0, unreviewed: 0, feedback: 0, approved: 0, live: 0 };
+    if (!seg.adCopy?.concepts) return counts;
+    for (const concept of seg.adCopy.concepts) {
+      for (const ad of concept.feedAds) {
+        const adId = slugifyHeader(ad.header);
+        const status = getAdStatusLabel(seg, adId);
+        counts.all++;
+        counts[status] = (counts[status] || 0) + 1;
+      }
+      for (const ad of concept.storiesReels) {
+        const adId = slugifyHeader(ad.header);
+        const status = getAdStatusLabel(seg, adId);
+        counts.all++;
+        counts[status] = (counts[status] || 0) + 1;
+      }
+    }
+    return counts;
   }
 
   // --- Event delegation for image strip + review controls ---
@@ -2078,6 +2387,98 @@
     e.target.blur(); // triggers focusout handler above
   });
 
+  // --- Ad status button click ---
+  document.getElementById('main').addEventListener('click', function(e) {
+    const statusBtn = e.target.closest('.ad-status-btn');
+    if (!statusBtn) return;
+
+    const section = statusBtn.closest('.ad-status-section');
+    if (!section) return;
+
+    const slug = section.dataset.slug;
+    const adId = section.dataset.adId;
+    if (!slug || !adId) return;
+
+    const newStatus = statusBtn.dataset.adStatus;
+    const feedback = section.querySelector('.ad-feedback-input')?.value || '';
+
+    // Update button active states
+    section.querySelectorAll('.ad-status-btn').forEach(btn => {
+      btn.classList.remove('active-unreviewed', 'active-feedback', 'active-approved', 'active-live');
+      if (btn.dataset.adStatus === newStatus) {
+        btn.classList.add(`active-${newStatus}`);
+      }
+    });
+
+    // Update the badge in the card header
+    const card = section.closest('.ad-card');
+    if (card) {
+      card.dataset.adStatus = newStatus;
+      const badge = card.querySelector('.ad-status-badge');
+      if (badge) {
+        badge.className = `ad-status-badge ${newStatus}`;
+        badge.textContent = newStatus;
+      }
+      // Re-apply gallery filter
+      if (activeView === 'gallery' && activeStatusFilter !== 'all') {
+        card.classList.toggle('ad-hidden', newStatus !== activeStatusFilter);
+      }
+    }
+
+    // Update local data
+    updateLocalAdStatus(slug, adId, newStatus, feedback);
+
+    // Update filter bar counts
+    updateGalleryFilterCounts();
+
+    // Update sidebar badge
+    updateSidebarBadge(slug);
+
+    // Save to server
+    saveAdStatus(slug, adId, newStatus, feedback).then(result => {
+      if (result) {
+        const indicator = section.querySelector('.ad-status-saving');
+        if (indicator) {
+          indicator.textContent = 'Saved';
+          indicator.classList.add('visible');
+          setTimeout(() => indicator.classList.remove('visible'), 1200);
+        }
+      }
+    });
+  });
+
+  // --- Ad feedback textarea — save on blur ---
+  document.getElementById('main').addEventListener('focusout', function(e) {
+    if (!e.target.classList.contains('ad-feedback-input')) return;
+
+    const section = e.target.closest('.ad-status-section');
+    if (!section) return;
+
+    const slug = section.dataset.slug;
+    const adId = section.dataset.adId;
+    if (!slug || !adId) return;
+
+    const feedback = e.target.value;
+    const seg = DATA.segments.find(s => s.slug === slug);
+    const oldEntry = getAdStatus(seg, adId);
+    const oldFeedback = oldEntry?.feedback || '';
+    if (feedback === oldFeedback) return;
+
+    const status = oldEntry?.status || 'unreviewed';
+    updateLocalAdStatus(slug, adId, status, feedback);
+
+    saveAdStatus(slug, adId, status, feedback).then(result => {
+      if (result) {
+        const indicator = section.querySelector('.ad-status-saving');
+        if (indicator) {
+          indicator.textContent = 'Saved';
+          indicator.classList.add('visible');
+          setTimeout(() => indicator.classList.remove('visible'), 1200);
+        }
+      }
+    });
+  });
+
   // --- View tab switching ---
   document.getElementById('topbar-tabs').addEventListener('click', function(e) {
     const tab = e.target.closest('.topbar-tab');
@@ -2089,6 +2490,13 @@
     const pill = e.target.closest('.filter-pill');
     if (pill) {
       applyCreativeFilter(pill.dataset.filter);
+      return;
+    }
+
+    // Gallery filter pill click
+    const galleryPill = e.target.closest('.gallery-filter-pill');
+    if (galleryPill) {
+      applyGalleryStatusFilter(galleryPill.dataset.statusFilter);
       return;
     }
 

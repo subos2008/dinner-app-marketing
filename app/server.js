@@ -88,6 +88,62 @@ app.put('/api/segments/:slug/reviews/:filename', (req, res) => {
   }
 });
 
+// GET /api/segments/:slug/ad-status — read all ad statuses for a segment
+app.get('/api/segments/:slug/ad-status', (req, res) => {
+  const { slug } = req.params;
+  if (!isSafeParam(slug)) {
+    return res.status(400).json({ error: 'Invalid slug' });
+  }
+
+  const statusPath = path.join(ROOT, 'segments', slug, 'creative', 'ad-status.json');
+  try {
+    if (fs.existsSync(statusPath)) {
+      const data = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+      res.json(data);
+    } else {
+      res.json({});
+    }
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// PUT /api/segments/:slug/ad-status/:adId — upsert status + feedback for one ad
+app.put('/api/segments/:slug/ad-status/:adId', (req, res) => {
+  const { slug, adId } = req.params;
+  if (!isSafeParam(slug) || !isSafeParam(adId)) {
+    return res.status(400).json({ error: 'Invalid slug or adId' });
+  }
+
+  const statusPath = path.join(ROOT, 'segments', slug, 'creative', 'ad-status.json');
+  const { status, feedback } = req.body;
+
+  // Validate status
+  const validStatuses = ['unreviewed', 'feedback', 'approved', 'live', null];
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ error: 'Invalid status. Must be one of: unreviewed, feedback, approved, live, or null' });
+  }
+
+  try {
+    let adStatuses = {};
+    if (fs.existsSync(statusPath)) {
+      adStatuses = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+    }
+
+    const entry = {
+      status: status || 'unreviewed',
+      feedback: feedback || '',
+      updatedAt: new Date().toISOString()
+    };
+    adStatuses[adId] = entry;
+
+    fs.writeFileSync(statusPath, JSON.stringify(adStatuses, null, 2) + '\n');
+    res.json(entry);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // --- SSE live reload ---
 const sseClients = new Set();
 
