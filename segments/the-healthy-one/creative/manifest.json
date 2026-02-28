@@ -1,0 +1,72 @@
+{
+  "segment": "the-healthy-one",
+  "generated_at": "2026-02-28T18:02:00Z",
+  "images": [
+    {
+      "filename": "live-a-little-feed-1x1.png",
+      "concept": "Live a Little",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A group of friends at a restaurant table, one person with a carefully chosen healthy meal while others have indulgent dishes. Someone across the table is gesturing toward their plate with a joking expression, clearly saying 'go on, live a little.' The healthy eater has a patient, slightly tired smile — they've heard this before. Warm restaurant lighting. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "group dinner, healthy eater being pressured"
+    },
+    {
+      "filename": "live-a-little-story-9x16.png",
+      "concept": "Live a Little",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their early 30s at a beautiful restaurant table, genuinely enjoying a well-prepared healthy meal — grilled fish with vegetables, quinoa, colourful sides. They look content and present, not restricted. The food looks delicious, not punishing. Warm candlelit atmosphere, the person is mid-conversation with someone just out of frame. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "person enjoying healthy meal, content"
+    },
+    {
+      "filename": "menu-minefield-feed-1x1.png",
+      "concept": "The Menu Minefield",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Over-the-shoulder shot of a person scrolling a restaurant menu on their phone screen, late at night in bed. The phone illuminates their face in the dark room. They're checking if there's anything they can eat before agreeing to dinner plans. The screen shows a restaurant menu website. Warm phone glow against dark room. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "phone screen with restaurant menu in dark room"
+    },
+    {
+      "filename": "menu-minefield-story-9x16.png",
+      "concept": "The Menu Minefield",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person at a restaurant table, studying a menu with visible concentration while their friends chat casually around them. They're mentally calculating, planning, strategising what to order. Others have already closed their menus. The person looks focused, not stressed — this is routine for them. Warm restaurant lighting. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "person studying menu while friends chat"
+    },
+    {
+      "filename": "discipline-shouldnt-be-lonely-feed-1x1.png",
+      "concept": "Discipline Shouldn't Be Lonely",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person eating a meal-prepped lunch from a container at their office desk while colleagues walk past in the background heading to a restaurant together for a team lunch. The person watches them go, container open on the desk. Clean, modern office, warm natural light through windows. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "person at desk with meal prep, colleagues leaving"
+    },
+    {
+      "filename": "discipline-shouldnt-be-lonely-story-9x16.png",
+      "concept": "Discipline Shouldn't Be Lonely",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their early 30s at a dinner table with five other people, all eating well-prepared healthy food together — grilled proteins, fresh salads, grain bowls. Everyone is eating the same quality of food, nobody is the odd one out. They look relaxed and connected. Warm restaurant lighting, candlelit, intimate. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "group dinner, everyone eating healthy together"
+    }
+  ]
+}

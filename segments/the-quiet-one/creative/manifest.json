@@ -1,0 +1,72 @@
+{
+  "segment": "the-quiet-one",
+  "generated_at": "2026-02-28T17:55:00.000Z",
+  "images": [
+    {
+      "filename": "you-dont-have-to-be-social-feed-1x1.png",
+      "concept": "You Don't Have to Be a Social Person",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A man in his mid-30s sitting on a sofa in a tidy, minimal living room, reading a book with a cup of tea. The flat is clean and organised but clearly lived in alone — one mug, one plate in the drying rack, one pair of shoes by the door. Warm afternoon light through the window. He looks peaceful but isolated. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "Someone who is clearly introverted, alone but not dramatically sad — just quietly existing in their own space. The ad should feel like a hand extended, not a spotlight shone."
+    },
+    {
+      "filename": "you-dont-have-to-be-social-story-9x16.png",
+      "concept": "You Don't Have to Be a Social Person",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A man in his mid-30s standing at a kitchen counter in a small flat, carefully plating a meal he cooked for himself. One plate, one glass of water, one set of cutlery laid out on a small table for two — the other chair empty. Evening light, warm but quiet. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "Someone who is clearly introverted, alone but not dramatically sad — just quietly existing in their own space. The ad should feel like a hand extended, not a spotlight shone."
+    },
+    {
+      "filename": "hardest-part-showing-up-feed-1x1.png",
+      "concept": "The Hardest Part Is Showing Up",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person standing outside a warm, inviting restaurant at evening, hand reaching for the door handle. Through the window you can see a group of people already seated at a candlelit table, laughing. The person outside looks nervous but determined. Warm restaurant glow contrasting with the cooler evening street. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "The threshold moment — someone about to walk through a restaurant door. The anxiety and courage of arriving."
+    },
+    {
+      "filename": "hardest-part-showing-up-story-9x16.png",
+      "concept": "The Hardest Part Is Showing Up",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A view from inside a warm restaurant looking toward the entrance door. Through the glass door, a person is visible approaching from outside — slightly hesitant but walking forward. Inside, the restaurant is warm and welcoming — candlelit tables, other diners, soft ambient lighting. The contrast between the dark street outside and the warm glow inside. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "The threshold moment — someone about to walk through a restaurant door. The anxiety and courage of arriving."
+    },
+    {
+      "filename": "3pm-saturday-feeling-feed-1x1.png",
+      "concept": "The 3pm Saturday Feeling",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A tidy living room on a Saturday afternoon. Afternoon sunlight streaming through the window, dust motes visible in the light beam. A sofa with one indent, a closed laptop on the coffee table, a half-drunk cup of tea gone cold. No person visible — just the evidence of one person living alone. The stillness is the subject. Photorealistic, warm but muted tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm but muted tones, editorial",
+      "visual_type": "The quiet emptiness of a Saturday afternoon alone. Not dramatic — just flat, still, real."
+    },
+    {
+      "filename": "3pm-saturday-feeling-story-9x16.png",
+      "concept": "The 3pm Saturday Feeling",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A man in his mid-30s sitting by a window in his flat on a Saturday afternoon, looking out at the street below where groups of people are walking together, couples holding hands, friends heading to brunch. He's holding a mug, watching. The contrast between the life outside and the stillness inside. Warm afternoon light. Photorealistic, warm but contemplative tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm but contemplative tones, editorial candid",
+      "visual_type": "The quiet emptiness of a Saturday afternoon alone. Not dramatic — just flat, still, real."
+    }
+  ]
+}

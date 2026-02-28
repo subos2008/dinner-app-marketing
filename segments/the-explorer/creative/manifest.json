@@ -1,0 +1,72 @@
+{
+  "segment": "the-explorer",
+  "generated_at": "2026-02-28T17:54:00.000Z",
+  "images": [
+    {
+      "filename": "whatsapp-group-feed-1x1.png",
+      "concept": "The WhatsApp Group With 400 Strangers",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A phone screen showing a WhatsApp group notification with '400+ unread messages' from a 'Digital Nomads' group chat. The phone is sitting on a cafe table next to a half-finished coffee. Warm afternoon light, slightly lonely atmosphere. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "Phone on cafe table showing chaotic WhatsApp group chat, lonely atmosphere"
+    },
+    {
+      "filename": "whatsapp-group-story-9x16.png",
+      "concept": "The WhatsApp Group With 400 Strangers",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their late 20s standing at a crowded rooftop sunset drinks event, holding a drink but looking slightly disconnected while everyone around them has surface-level conversations. Golden hour light, urban European city background. Photorealistic, warm but melancholy tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm but melancholy tones, editorial candid",
+      "visual_type": "Person disconnected at crowded rooftop drinks event, golden hour"
+    },
+    {
+      "filename": "you-didnt-travel-this-far-feed-1x1.png",
+      "concept": "You Didn't Travel This Far to Eat Alone",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A man in his early 30s sitting alone at a small kitchen table in a modern European apartment, eating takeaway food from a container. Through the window behind him, a beautiful European city skyline at dusk — terracotta rooftops, warm evening sky. The apartment is nice but empty. He's scrolling his phone. Photorealistic, warm but melancholy tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm but melancholy tones, editorial",
+      "visual_type": "Man eating takeaway alone in beautiful European apartment at dusk"
+    },
+    {
+      "filename": "you-didnt-travel-this-far-story-9x16.png",
+      "concept": "You Didn't Travel This Far to Eat Alone",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A beautiful European city street at evening — cobblestone, warm string lights, restaurant terraces full of groups laughing and eating together. In the foreground, a single person walks past alone, grocery bag in hand, heading home. Photorealistic, warm tones, slightly editorial, candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "Solo person walking past full restaurant terraces on European cobblestone street"
+    },
+    {
+      "filename": "instagram-version-feed-1x1.png",
+      "concept": "The Instagram Version vs The Actual Evening",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A phone propped up on a balcony railing showing a beautiful sunset photo being posted to Instagram. Behind the phone, the real scene: a small terrace with one chair, one beer, and no one else there. Beautiful European rooftop view at golden hour. The phone screen shows hearts and comments. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "Phone posting sunset to Instagram on empty solo terrace, European rooftop"
+    },
+    {
+      "filename": "instagram-version-story-9x16.png",
+      "concept": "The Instagram Version vs The Actual Evening",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their late 20s sitting alone on a beautiful apartment terrace at sunset in a European city, beer in hand, phone face-down on the table. The view is stunning but they're staring into space. One plate, one glass, one chair. Photorealistic, warm but contemplative tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm but contemplative tones, editorial candid",
+      "visual_type": "Person alone on beautiful European terrace at sunset, staring into space"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "segment": "the-outgrower",
+  "generated_at": "2026-02-28T17:55:00.000Z",
+  "images": [
+    {
+      "filename": "podcast-substitute-feed-1x1.png",
+      "concept": "The Podcast Substitute",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A man in his early 30s sitting at a desk in a home office, AirPods in, staring at the wall while a podcast plays. His laptop is open but he's not looking at it — he's paused mid-thought, imagining himself in the conversation. Evening light, slightly messy desk with books and a coffee mug. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "Someone listening to a podcast alone, AirPods in, looking thoughtful — the substitute for real conversation."
+    },
+    {
+      "filename": "podcast-substitute-story-9x16.png",
+      "concept": "The Podcast Substitute",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Close-up of a man in his late 20s walking through a city street at dusk, AirPods in, hands in jacket pockets. He looks contemplative — listening to a podcast, mentally replying to a conversation he's not part of. Urban background slightly blurred, warm streetlights. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "Someone listening to a podcast alone, AirPods in, looking thoughtful — the substitute for real conversation."
+    },
+    {
+      "filename": "youve-changed-feed-1x1.png",
+      "concept": "You've Changed",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A group of four friends in their early 30s at a pub table. Three of them are laughing at something on a phone. The fourth person sits slightly back, beer untouched, looking like they're somewhere else entirely. The gap between him and the group is subtle but visible. Warm pub lighting, exposed brick, wooden table. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "The emotional weight of being told 'you've changed' — a moment of disconnection from old friends."
+    },
+    {
+      "filename": "youve-changed-story-9x16.png",
+      "concept": "You've Changed",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A man in his early 30s walking home alone at night after leaving a pub, hands in pockets, breath visible in the cold air. Behind him through the pub window, his friends are still laughing inside. He doesn't look sad — just separate. City street, warm pub glow contrasting with cool night air. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "The emotional weight of being told 'you've changed' — a moment of disconnection from old friends."
+    },
+    {
+      "filename": "peers-not-mentors-feed-1x1.png",
+      "concept": "Peers Not Mentors",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "An awkward networking event in a generic conference room — people wearing lanyards, holding glasses of warm white wine, scanning the room. One person stands slightly apart, looking uncomfortable, clearly not finding what they came for. Harsh fluorescent lighting mixed with warm side light. Photorealistic, slightly cold tones contrasting with warm accents, editorial feel. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, cold tones with warm accents, editorial",
+      "visual_type": "The contrast between empty networking events and real dinner conversation."
+    },
+    {
+      "filename": "peers-not-mentors-story-9x16.png",
+      "concept": "Peers Not Mentors",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Six diverse people in their late 20s and early 30s at a warm restaurant table, leaning in to a conversation. One person is making a point with their hands while others listen intently. No laptops, no name badges — just dinner and real conversation. Candlelit, exposed brick, warm amber tones. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "The contrast between empty networking events and real dinner conversation."
+    }
+  ]
+}

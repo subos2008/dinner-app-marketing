@@ -1,0 +1,72 @@
+{
+  "segment": "the-sober-one",
+  "generated_at": "2026-02-28T18:01:00.000Z",
+  "images": [
+    {
+      "filename": "frequency-shift-feed-1x1.png",
+      "concept": "The Frequency Shift",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A group of friends in their late 20s at a busy bar at night. Most of them are leaning in, laughing loudly, drinks in hand, getting progressively more animated. One person sits slightly apart, nursing a glass of sparkling water, watching the energy shift around them — not sad, just separate. Warm bar lighting, slightly blurry background suggesting the loosening atmosphere. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "The moment at a social gathering where everyone else gets drunk and you're left behind — the divergence point."
+    },
+    {
+      "filename": "frequency-shift-story-9x16.png",
+      "concept": "The Frequency Shift",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their late 20s walking home alone at night from a bar, coat pulled tight, peaceful expression. Behind them through the bar window, the party continues — silhouettes dancing, loud energy. They chose to leave. The street is quiet and calm compared to the chaos inside. Photorealistic, warm tones contrasting with cool night air, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "The moment at a social gathering where everyone else gets drunk and you're left behind — the divergence point."
+    },
+    {
+      "filename": "question-nobody-should-ask-feed-1x1.png",
+      "concept": "The Question Nobody Should Ask",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Close-up of a dinner table scene. A person holds a glass of water while others around them have wine glasses. One person across the table is looking at them with curiosity, mouth slightly open as if asking a question. The water-drinker has a practiced, patient expression — they've answered this before. Warm restaurant lighting, intimate table setting. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "The awkward moment of being asked 'why aren't you drinking?' — the social interrogation."
+    },
+    {
+      "filename": "question-nobody-should-ask-story-9x16.png",
+      "concept": "The Question Nobody Should Ask",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Six diverse people in their late 20s and early 30s at a warm restaurant table, all with non-alcoholic drinks — sparkling water, mocktails, tea. Nobody is explaining anything. They're mid-conversation, laughing, relaxed. The table has beautiful food. No wine bottles, no beer glasses. Candlelit, warm amber tones, exposed brick. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "The awkward moment of being asked 'why aren't you drinking?' — the social interrogation."
+    },
+    {
+      "filename": "sober-isnt-the-headline-feed-1x1.png",
+      "concept": "Sober Isn't the Headline",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their early 30s at a beautiful restaurant table, animatedly telling a story to a group of engaged listeners. On the table: sparkling water, great food, candles. The focus is on the conversation and connection, not on what's in the glasses. Everyone is present, leaning in. Warm restaurant lighting, intimate atmosphere. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "A person living their full life — their sobriety is incidental, not the main story."
+    },
+    {
+      "filename": "sober-isnt-the-headline-story-9x16.png",
+      "concept": "Sober Isn't the Headline",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Overhead shot of a beautifully set restaurant table for six. Plates of delicious food, bread, candles, and glasses filled with various non-alcoholic drinks — sparkling water with lime, craft sodas, herbal tea. Hands reaching for bread, mid-conversation energy. The table looks abundant and celebratory without a single alcoholic drink. Photorealistic, warm tones, editorial overhead angle. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "A person living their full life — their sobriety is incidental, not the main story."
+    }
+  ]
+}

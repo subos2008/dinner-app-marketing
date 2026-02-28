@@ -1,0 +1,72 @@
+{
+  "segment": "the-hippy",
+  "generated_at": "2026-02-28T18:01:00Z",
+  "images": [
+    {
+      "filename": "sober-table-feed-1x1.png",
+      "concept": "The Sober Table",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Six diverse people in their late 20s and early 30s at a warm restaurant table, all fully engaged in conversation. On the table: herbal teas, sparkling water with lemon, kombucha, beautiful plant-based food. No alcohol anywhere. The vibe is warm, present, connected — nobody is performing wellness, they're just living it. Candlelit, warm amber tones, natural materials. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo. Square 1:1 aspect ratio composition.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "group dinner table, no alcohol"
+    },
+    {
+      "filename": "sober-table-story-9x16.png",
+      "concept": "The Sober Table",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Close-up of a restaurant table surface showing the drinks: a glass of kombucha, sparkling water with cucumber, a pot of herbal tea, a craft soda. Beautiful food plates visible around the edges. Candlelight reflecting off the glasses. No alcohol. The table looks abundant and celebratory. Warm, amber tones, overhead angle. Photorealistic, warm tones, editorial food photography feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial food photography",
+      "visual_type": "table surface close-up, non-alcoholic drinks"
+    },
+    {
+      "filename": "no-explaining-yourself-feed-1x1.png",
+      "concept": "No Explaining Yourself",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A woman in her early 30s at a dinner table, laughing freely with the group around her. She's wearing a crystal necklace and has a natural, bohemian style. Everyone at the table looks comfortable and authentic — no one is performing or explaining. The food is plant-based, the drinks are non-alcoholic. Warm, intimate restaurant with exposed wood and plants. Photorealistic, warm tones, slightly editorial. Shot on 35mm film. Not a stock photo. Square 1:1 aspect ratio composition.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "bohemian woman laughing at dinner table"
+    },
+    {
+      "filename": "no-explaining-yourself-story-9x16.png",
+      "concept": "No Explaining Yourself",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Two people at a restaurant table leaning toward each other in deep, genuine conversation. One has a meditation mala bracelet visible on their wrist. They look completely at ease — the kind of conversation where you don't have to translate yourself. Warm candlelight, intimate framing, the rest of the table slightly blurred. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "two people in intimate conversation, mala bracelet"
+    },
+    {
+      "filename": "retreat-comedown-feed-1x1.png",
+      "concept": "The Retreat Comedown",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person sitting in a parked car in a dark car park at night, hands on the steering wheel, staring forward. They've just left somewhere meaningful — the car interior is dark and quiet. Through the windscreen, streetlights and an empty road. The expression is wistful, contemplative — the feeling of a special experience ending. Photorealistic, cool-warm contrast, slightly editorial. Shot on 35mm film. Not a stock photo. Square 1:1 aspect ratio composition.",
+      "style": "photorealistic, cool-warm contrast, editorial",
+      "visual_type": "person alone in parked car at night"
+    },
+    {
+      "filename": "retreat-comedown-story-9x16.png",
+      "concept": "The Retreat Comedown",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A warm dinner table scene that echoes the feeling of a wellness retreat — six people in deep, present conversation, candles, warm lighting, plant-based food, herbal teas. The atmosphere is intimate and intentional, not casual. Everyone is fully there. It feels like a retreat dinner but it's a Wednesday in a restaurant. Photorealistic, warm golden tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm golden tones, editorial candid",
+      "visual_type": "retreat-like dinner table, six people, intentional atmosphere"
+    }
+  ]
+}

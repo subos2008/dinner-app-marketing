@@ -10,3 +10,6 @@ dist/
 app/data.json
 .nano-banana-config.json
 generated_imgs/
+
+# Creative images (tracked via manifest.json, not in git)
+segments/*/creative/*.png
