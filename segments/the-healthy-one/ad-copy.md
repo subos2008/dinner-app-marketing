@@ -226,3 +226,72 @@ Frame 4: "Then we pick the restaurant. Curated. Matched to your group."
 Frame 5: "Come Join Us → Matched on what actually matters. Book now."
 
 Visual direction: Frames 1-2: clean, bold text — feels like a sign-up flow, simple and direct. Frame 3: transition to a group at a restaurant table. Frame 4: close-up of food being served — grilled, fresh, considered (not pizza and chips). Frame 5: warm CTA.
+
+---
+
+## Iteration 2 — Positive Emotion — 2026-02-28
+
+*Focus: warmth, belonging, dinner scenes, the "after" moment*
+*These complement the existing "before" ads with aspirational creative*
+
+---
+
+### Feed Ads
+
+**Nobody Bats an Eye — Variant A**
+
+Six people at a table. Everyone orders intentionally. Nobody says a word about it.
+
+That's it. That's the whole thing. Someone gets the grilled sea bass. Someone else asks for the chicken without the sauce. A third person orders sparkling water. And the conversation just — keeps going. Nobody asks why. Nobody offers you a chip. Nobody says "is that ALL you're having?" It's a dinner where how you eat is just how everyone eats.
+
+Come Join Us matches you with 5 people based on what you eat, what you drink, and your budget. We pick the restaurant — curated, 4.3+ rated, matched to your group's dietary needs. You show up and eat a meal you don't have to explain.
+
+The first dinner where your order isn't a talking point. That's what this feels like.
+
+Book a seat →
+
+CTA button: Book Now
+
+---
+
+**Nobody Bats an Eye — Variant B**
+
+You ordered the grilled chicken and nobody said a word.
+
+Not "are you sure?" Not "go on, treat yourself." Not the look. Just — nothing. Because everyone at the table was eating the same way. Intentionally. Carefully. Happily. And for the first time in months, you weren't the exception. You were the table.
+
+Every Wednesday, Come Join Us sits you with 5 people matched on what they eat, what they drink, and their budget. We pick the restaurant — quality-checked, matched to the group. You don't scan the menu beforehand. You don't negotiate. You just eat.
+
+This is what a normal dinner feels like when the table actually fits you.
+
+CTA button: Book Now
+
+---
+
+**Living a Lot — Variant A**
+
+You walk home from dinner at 10:15 and you're not doing the thing.
+
+You know the thing. The mental audit. Opening MyFitnessPal. Calculating the damage. Working out how many extra minutes on the treadmill tomorrow to make up for tonight. You're not doing it — because there's nothing to make up for. You ate well. You ate exactly what you wanted. And you spent the evening with five people who didn't once make you feel like caring about food was weird.
+
+That's what Come Join Us is. 5 people matched on what they eat, their budget, and whether they drink. A restaurant chosen for the group. Every Wednesday.
+
+This is what living a lot actually looks like. Not a cheat day. Not "going on, having a dessert." A proper dinner with people who eat like you do and a walk home with nothing to regret.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+### Stories/Reels
+
+**The Walk Home — Stories/Reels**
+
+Frame 1: "Walking home from dinner. 10:15pm."
+Frame 2: "Ate exactly what I wanted. Grilled fish, good veg, sparkling water."
+Frame 3: "Five people at the table. All eating intentionally. Nobody made it weird."
+Frame 4: "Didn't open MyFitnessPal on the way home. Nothing to calculate."
+Frame 5: "Come Join Us → Matched on what you eat. A restaurant that works. Book a seat."
+
+Visual direction: Frame 1: warm city street at night, someone walking — relaxed, coat on, headphones in. Not rushed, not anxious. Frame 2-3: quick flashbacks to the dinner — food on plates (grilled, fresh, considered), people laughing, no stressed faces. Frame 4: phone in pocket, not in hand. A small detail but it says everything. Frame 5: logo + CTA on warm background.

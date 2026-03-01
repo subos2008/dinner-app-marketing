@@ -67,6 +67,72 @@
       "prompt": "A man in his mid-30s sitting by a window in his flat on a Saturday afternoon, looking out at the street below where groups of people are walking together, couples holding hands, friends heading to brunch. He's holding a mug, watching. The contrast between the life outside and the stillness inside. Warm afternoon light. Photorealistic, warm but contemplative tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
       "style": "photorealistic, warm but contemplative tones, editorial candid",
       "visual_type": "The quiet emptiness of a Saturday afternoon alone. Not dramatic — just flat, still, real."
+    },
+    {
+      "filename": "just-being-there-positive-feed-1x1.png",
+      "concept": "Just Being There Was Enough",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A warm restaurant table with six people. One person — quieter than the others — is listening with a gentle smile, not performing, just present. Others are talking and laughing around them but the quiet person isn't left out — they're comfortable. Candlelit, warm amber tones, intimate restaurant. The feeling of belonging without having to be loud. Photorealistic, warm tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "Positive emotion — belonging without performing. Quiet comfort at a dinner table, warmth and inclusion."
+    },
+    {
+      "filename": "just-being-there-positive-story-9x16.png",
+      "concept": "Just Being There Was Enough",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their mid-30s at a dinner table, holding a cup of tea, listening to someone across the table with a warm, genuine expression. They look at ease — not anxious, not performing. The restaurant is warm and intimate. Close framing on their face showing quiet contentment. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "Positive emotion — belonging without performing. Quiet comfort at a dinner table, warmth and inclusion."
+    },
+    {
+      "filename": "someone-said-same-positive-feed-1x1.png",
+      "concept": "Someone Said Same",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Two people at a dinner table having a quiet moment of connection — one has just said something vulnerable and the other is nodding with recognition. The expressions are subtle but real — understanding without judgment. Warm candlelight, intimate framing, other diners slightly blurred in background. Photorealistic, warm amber tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm amber tones, editorial candid",
+      "visual_type": "Positive emotion — a moment of genuine understanding between two people. Quiet recognition, not loud bonding."
+    },
+    {
+      "filename": "someone-said-same-positive-story-9x16.png",
+      "concept": "Someone Said Same",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A group of six at a warm restaurant table, several people laughing gently at something. The laughter is warm, not loud — the kind of laughter that includes everyone. Candles, good food, the atmosphere of people who are comfortable together. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "Positive emotion — gentle, inclusive laughter at a dinner table. Warmth and ease among a group."
+    },
+    {
+      "filename": "more-words-positive-feed-1x1.png",
+      "concept": "More Words Than a Weekend",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their mid-30s walking home at night through a quiet residential street, slight smile, looking reflective and content. They're holding their jacket, walking slowly — not rushing. The street is calm, warm porch lights visible on houses. The face of someone who just had a surprisingly good evening. Photorealistic, warm tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "Positive emotion — the afterglow of a good evening. Quiet contentment walking home, life feels different."
+    },
+    {
+      "filename": "more-words-positive-story-9x16.png",
+      "concept": "More Words Than a Weekend",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person sitting at their kitchen table at home, cup of tea in hand, looking out the window with a gentle smile. It's late evening. The flat that was lonely in the 'before' ads now feels different — the same flat, but the person in it has changed. Warm kitchen light, quiet contentment. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "Positive emotion — the same flat, but the person has changed. Quiet contentment at home after connection."
     }
   ]
 }

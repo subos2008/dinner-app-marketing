@@ -218,3 +218,78 @@ Frame 4: "Dinner with 5 strangers, matched on what actually matters. Every Wedne
 Frame 5: "Come Join Us → An evening worth more than a Story"
 
 Visual direction: Frame 1 is shot like an actual Instagram Story — vertical, warm filter, aspirational. Frame 2 is the same scene but from a wider angle, showing the person alone, the performance stripped away. Frame 3 is text on black — a beat, a pause. Frames 4-5 shift to a restaurant table, warmth, people. The format is meta-commentary: the ad is on the same platform as the performance it names.
+
+---
+
+## Iteration 2 — Positive Emotion — 2026-02-28
+
+*Focus: warmth, belonging, dinner scenes, the "after" moment*
+*These complement the existing "before" ads with aspirational creative*
+
+---
+
+### Feed Ads
+
+**The Walk Home — Variant A**
+
+Walking home from dinner at 10:45 through streets you've only ever walked alone.
+
+But tonight's different. Tonight you took the long way — through Bairro Alto, past the bars spilling onto the pavement, down the hill toward the river. Not because you needed to. Because you wanted the feeling to last. The feeling of having just been at a table where someone poured you wine, where someone asked what actually brought you here and you told the real version, where someone said "same time next week?" and four people said yes before you'd even finished nodding.
+
+Six of you. Three nationalities. Shared plates. Two hours of conversation where nobody asked your job title, nobody mentioned their startup, nobody pulled out a LinkedIn QR code. Just dinner. Actual dinner. The kind you imagined having when you pictured your life in this city.
+
+Come Join Us matches you with 5 people every Wednesday — based on what you eat, what you drink, your budget, and what you want more of in your life. We pick the restaurant. You show up.
+
+You've been walking past restaurants for weeks. Last night you were inside one.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+**The Table Where Nobody Asks "Where Are You Based?" — Variant B**
+
+Imagine a dinner where nobody asks "so where are you based?"
+
+Nobody asks what your wifi speed is. Nobody asks about your Notion setup. Nobody pitches you their SaaS idea over shared starters. Instead, someone asks what brought you here — and actually listens. Someone orders wine for the table, not just a glass for themselves. Someone tells a story about their family and you tell one about yours and by the main course you've talked about things you haven't talked about in weeks.
+
+That's what Wednesday looks like with Come Join Us. 6 people at a curated restaurant, matched on diet, drinking, budget, and what you actually want more of in your life. Groups matched deliberately based on your answers. The restaurant chosen for you — somewhere you've probably walked past but never tried.
+
+Not a meetup. Not a networking event. Not forty strangers on a rooftop. One table. Five people. The kind of evening that makes the city feel like it's actually yours.
+
+Book your Wednesday →
+
+CTA button: Book Now
+
+---
+
+**The City Changes — Variant C**
+
+Something shifts when you have people in a city.
+
+It's not dramatic. It's walking to the coworking space on Thursday morning and texting someone from last night's dinner to say "that restaurant was incredible." It's passing a bookshop and thinking of the woman at your table who said she'd just finished the best novel of her life — and going in. It's the waiter at your usual lunch spot asking what you did last night and actually having an answer.
+
+The streets are the same streets. The apartment is the same apartment. But the city you wake up in on Thursday isn't the same city you woke up in on Wednesday. Because now there are people in it who know your name.
+
+Come Join Us. Every Wednesday. 5 strangers, matched on what you eat, what you drink, your budget, and what you want more of in your life. Restaurant curated. Group matched deliberately based on your answers. One dinner, and the whole week changes shape around it.
+
+The city was always good. It just needed people in it.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+### Stories/Reels
+
+**The After Dinner — Stories/Reels**
+
+Frame 1: "10:45pm. Walking home from dinner."
+Frame 2: "Taking the long way because you want the feeling to last."
+Frame 3: "Five strangers who now know your name, your story, your terrible joke about the wine."
+Frame 4: "Matched on what you eat, drink, spend & what you want more of in life. Every Wednesday."
+Frame 5: "Come Join Us → Your next Wednesday"
+
+Visual direction: Frame 1: warm, slightly blurred streetscape at night — cobblestones, restaurant light spilling through windows, a person walking with a slight smile. The energy is content, not lonely. Frame 2: same person, wider shot, taking a longer route home through a lit-up neighbourhood — this should feel indulgent, not sad. Frame 3: quick, warm flashbacks of the dinner — someone pouring wine, a shared plate, mid-laugh faces, six people at a table. Frame 4: text on warm background. Frame 5: CTA. The whole thing should feel like the end of a really good evening. The emotion is afterglow, not anticipation.

@@ -218,3 +218,85 @@ Frame 4: "Imagine a table where nobody says any of this. Because they already ge
 Frame 5: "Come Join Us → 5 vegans. 1 vegan restaurant. Every Wednesday. → Book now"
 
 Visual direction: Frames 1-3 are text-on-screen in a casual, slightly exasperated tone — think group chat aesthetic, each quote appearing like a message. Frame 4 is a beat of silence — clean, warm, a dinner table with no text except the line. Frame 5 is the product shot and CTA.
+
+---
+
+## Iteration 2 — Positive Emotion — 2026-02-28
+
+*Focus: warmth, belonging, dinner scenes, the "after" moment*
+*These complement the existing "before" ads with aspirational creative*
+
+---
+
+### Feed Ads
+
+**The Whole Menu Is Yours (Joy) — Variant A**
+
+You sit down. The waiter hands you a menu. You open it.
+
+And every single thing on it is yours.
+
+Not one section at the bottom. Not one asterisk next to a cauliflower. Every starter, every main, every side, every dessert — designed by a chef who was thinking about what you actually want to eat. You don't scan. You don't do the maths. You just read it like everyone else reads a menu: with appetite.
+
+That's what happens when Come Join Us matches vegans together and books a vegan restaurant for the group. A restaurant we curated — 4.3+ on Google, chosen specifically for how your table eats. You show up and you choose. Between dishes, not between the one thing you can have and the bread.
+
+The woman next to you orders the mushroom ragu. You order the coconut curry. Someone across the table asks if anyone wants to share the starters. Everyone does. Every plate on the table is something you'd eat. Every plate on the table is something you'd want.
+
+5 plant-based people. 1 plant-based restaurant. Every Wednesday.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+**Sharing Plates — Variant B**
+
+Here's something you've probably never done at a restaurant: ordered sharing plates with the whole table.
+
+Not because you don't want to. Because at every other dinner, sharing means watching everyone tear into a platter you can't touch while your single dish sits on its own plate, clearly separate, clearly the accommodation. Sharing, for you, has always meant sharing in one direction.
+
+Now imagine a table where every dish is plant-based. Where someone orders too many starters and pushes them into the middle and says "everyone try this" and you can. Where the plates move around the table and nothing needs checking, nothing needs asking, nothing needs a quiet "is there dairy in that?" before you reach across.
+
+Come Join Us groups vegans together at vegan restaurants every Wednesday. The restaurant is matched to the group — curated, quality-checked, entirely plant-based. Your dietary status is one of the first things we ask during sign-up, and we actually use the answer to build your table.
+
+A dinner where every plate is everyone's plate.
+
+Book your Wednesday →
+
+CTA button: Book Now
+
+---
+
+**No Explaining Required — Variant C**
+
+Nobody at this table will ask how you get your protein.
+
+Nobody will say "I could never go vegan." Nobody will make a face when you order. Nobody will tell you about the time they tried it for two weeks. Nobody will ask if you can eat bread.
+
+Because everyone at this table already gets it.
+
+There are six of you. The conversation is about the documentary someone watched last week, someone's terrible landlord, the best holiday anyone's been on this year. It's about flavour — not restriction. Someone orders dessert and it's chocolate and salted caramel and nobody says a word about "vegan chocolate." It's just chocolate. It's just dinner. It's just people eating together without anyone having to perform.
+
+Come Join Us asks what you eat during sign-up — not as a footnote, as one of the core matching questions. Vegans are matched with vegans. The restaurant is vegan. And the evening is just an evening. No explaining. No defending. No quiet gratitude for being accommodated.
+
+Your food. Your people. Your Wednesday.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+### Stories/Reels
+
+**The After-Dinner Feeling — Stories/Reels**
+
+Frame 1: "10:15pm. Walking home from dinner."
+Frame 2: "I didn't check the menu before I said yes."
+Frame 3: "I didn't explain my food to anyone."
+Frame 4: "I ordered three courses — because every dish on the menu was mine."
+Frame 5: "I'm smiling. Not performing smiling. Actually smiling."
+Frame 6: "Come Join Us → 5 vegans. 1 vegan restaurant. Every Wednesday. → Book a seat"
+
+Visual direction: Warm, golden tones throughout — no desaturated "before" frames. Frame 1 is a city street at night, warm light from restaurant windows, someone walking with a slight smile. Frames 2-5 are text over soft, close-up dinner footage: hands passing plates, wine being poured, candlelight on faces, a full table of shared dishes. Frame 6 is a wide shot of a table — six people, mid-laugh, plates everywhere, the kind of dinner you'd photograph. The whole sequence should feel like a memory you want to have.

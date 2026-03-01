@@ -67,6 +67,72 @@
       "prompt": "A person in their late 20s sitting alone on a beautiful apartment terrace at sunset in a European city, beer in hand, phone face-down on the table. The view is stunning but they're staring into space. One plate, one glass, one chair. Photorealistic, warm but contemplative tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
       "style": "photorealistic, warm but contemplative tones, editorial candid",
       "visual_type": "Person alone on beautiful European terrace at sunset, staring into space"
+    },
+    {
+      "filename": "walk-home-positive-feed-1x1.png",
+      "concept": "The Walk Home",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their early 30s walking through a European city street at night, smiling gently, taking the long way home. Warm string lights, cobblestone, restaurant terraces visible behind them. They look like someone who just had a genuinely good evening in a city they chose to live in. Photorealistic, warm golden tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm golden tones, editorial candid",
+      "visual_type": "Person walking home through European cobblestone street at night, smiling, warm string lights"
+    },
+    {
+      "filename": "walk-home-positive-story-9x16.png",
+      "concept": "The Walk Home",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person walking along a European waterfront at night, city lights reflecting on the water, phone in pocket, genuine contentment on their face. The city feels alive and welcoming, not empty. Warm evening light, other people visible but the person is comfortably alone — alone-after-connection, not alone-alone. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "Person walking along European waterfront at night, content, city lights reflecting on water"
+    },
+    {
+      "filename": "table-nobody-asks-positive-feed-1x1.png",
+      "concept": "The Table Where Nobody Asks",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Six diverse people from different countries, late 20s-early 30s, at a warm restaurant table in a European city. Deep conversation, genuine laughter, sharing food. No laptops, no networking energy — just dinner. Candlelit, warm amber lighting, Mediterranean or Portuguese restaurant feel. Photorealistic, warm tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm amber tones, editorial candid",
+      "visual_type": "Six diverse people sharing dinner at candlelit Portuguese restaurant, genuine laughter"
+    },
+    {
+      "filename": "table-nobody-asks-positive-story-9x16.png",
+      "concept": "The Table Where Nobody Asks",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Two people at a dinner table leaning toward each other in genuine conversation, one person's hand on the table gesturing, both fully engaged. Behind them, others at the table are laughing. Candlelight, warm tones, the intimacy of a real conversation between people who just met but clicked. Photorealistic, warm amber tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm amber tones, editorial",
+      "visual_type": "Two people in deep conversation at candlelit dinner table, others laughing behind them"
+    },
+    {
+      "filename": "city-changes-positive-feed-1x1.png",
+      "concept": "The City Changes",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person sitting at a sunny cafe terrace on a Thursday morning, texting someone with a smile. The European city street is alive around them — other people, shops, movement. They look like they belong here now. Morning light, warm tones, the feeling of a city that has people in it who know your name. Photorealistic, warm tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "Person texting with a smile at sunny European cafe terrace, belonging in the city"
+    },
+    {
+      "filename": "city-changes-positive-story-9x16.png",
+      "concept": "The City Changes",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person walking into a bookshop in a European city with a purposeful, happy expression — like they're following up on something someone recommended. Warm natural light through the shop window, colourful book spines visible. The feeling of a city becoming richer because of the people you've met. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "Person entering European bookshop with purposeful happy expression, warm natural light"
     }
   ]
 }

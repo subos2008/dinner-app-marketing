@@ -214,3 +214,76 @@ Frame 4: "You just don't have anyone to call about your day."
 Frame 5: "Come Join Us — 5 strangers, matched for you, every Wednesday → Book now"
 
 Visual direction: Slow, cinematic. Single person in a beautiful city — wide shots, golden hour, but alone. Frame 5 shifts to warmth: restaurant table, group, candles.
+
+---
+
+## Iteration 2 — Positive Emotion — 2026-02-28
+
+*Focus: warmth, belonging, dinner scenes, the "after" moment*
+*These complement the existing "before" ads with aspirational creative*
+
+---
+
+### Feed Ads
+
+**The Table — Variant A**
+
+Last Wednesday at 7:30, six strangers sat down at a candlelit table in the Northern Quarter.
+
+By 8:15, someone was telling the worst flat-viewing story anyone had ever heard and the whole table was crying laughing. By 9, two people had realised they'd moved from the same city. By 10, nobody wanted to leave.
+
+That's it. That's the whole product.
+
+Come Join Us matches you with 5 people for dinner every Wednesday — based on what you eat, what you drink, your budget, and what you actually care about. We pick the restaurant. You just show up.
+
+You already live in this city. Come sit at its table.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+**Walking Home — Variant B**
+
+It's 10:30 on a Wednesday night and you're walking home from a restaurant and you feel lighter than you have in months.
+
+Not because anything dramatic happened. Nobody proposed a lifelong friendship. Nobody exchanged numbers on the spot. You just sat at a table with five people you'd never met, ate good food, had real conversation, and laughed until your face hurt.
+
+That's what Come Join Us does. Every Wednesday, we match you with 5 strangers for dinner — based on what you eat, what you drink, your budget, and what you want more of in your life. We pick the restaurant. The groups are matched deliberately based on your answers.
+
+One dinner. That's all it took to remember what this city was supposed to feel like.
+
+Book your Wednesday →
+
+CTA button: Book Now
+
+---
+
+**Not the Only One — Variant C**
+
+There were six of us at the table. Two had moved to Manchester in the last year. One had been here three years and still felt new. One grew up here but had lost touch with most of her friends after a breakup.
+
+Nobody said the word "lonely." Nobody had to. We were all just people who wanted a Wednesday night that looked different from the last one.
+
+Come Join Us puts you at a table with 5 strangers every Wednesday. Matched on what you eat, what you drink, your budget, and what matters to you. We pick the restaurant. Who's coming is a surprise. Turns out, that's the best part.
+
+You're not the only one looking for this.
+
+Book a seat →
+
+CTA button: Book Now
+
+---
+
+### Stories/Reels
+
+**The After — Stories/Reels**
+
+Frame 1: "10:30pm. Walking home from dinner."
+Frame 2: "Six strangers. A candlelit table. Icebreakers that actually worked."
+Frame 3: "Laughed more in two hours than I have in weeks."
+Frame 4: "Matched on what I eat, drink, budget & what I care about. Every Wednesday."
+Frame 5: "Come Join Us → Book your next Wednesday"
+
+Visual direction: Warm, golden-hour city walking shots — someone on their phone texting a friend "just had dinner with 5 strangers and it was actually amazing." Restaurant table flashbacks intercut: candlelight, people leaning in, genuine laughter. No posed shots. The energy is afterglow, not advertisement. Frame 5 is warm and simple — restaurant exterior at night, glow from the windows.

@@ -67,6 +67,78 @@
       "prompt": "A person in their early 30s at a dinner table with five other people, all eating well-prepared healthy food together — grilled proteins, fresh salads, grain bowls. Everyone is eating the same quality of food, nobody is the odd one out. They look relaxed and connected. Warm restaurant lighting, candlelit, intimate. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
       "style": "photorealistic, warm tones, editorial candid",
       "visual_type": "group dinner, everyone eating healthy together"
+    },
+    {
+      "filename": "nobody-bats-eye-positive-feed-1x1.png",
+      "concept": "Nobody Bats an Eye",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Six people at a warm restaurant table, all eating well-prepared healthy food — grilled fish, salads, grain bowls. Nobody is commenting on anyone's order. The conversation is about everything except food choices. Warm candlelit restaurant, relaxed atmosphere. Photorealistic, warm amber tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm amber tones, editorial candid",
+      "visual_type": "group dinner, nobody commenting on food, positive emotion",
+      "emotion": "positive"
+    },
+    {
+      "filename": "nobody-bats-eye-positive-story-9x16.png",
+      "concept": "Nobody Bats an Eye",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Close-up of a person at a dinner table taking a bite of a beautifully plated healthy meal — grilled sea bass with vegetables. They look genuinely happy, not restricted. The food looks delicious. Warm restaurant lighting, intimate framing. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "close-up person enjoying healthy meal, genuine happiness",
+      "emotion": "positive"
+    },
+    {
+      "filename": "living-a-lot-positive-feed-1x1.png",
+      "concept": "Living a Lot",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their early 30s at a restaurant table with friends, all eating healthy, beautiful food and laughing. Sparkling water on the table. The energy is vibrant and alive — this is what living fully looks like. Nobody is depriving themselves. Warm restaurant lighting, candles, the joy of good food and good company. Photorealistic, warm amber tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm amber tones, editorial candid",
+      "visual_type": "group dinner, laughing, vibrant energy, living fully",
+      "emotion": "positive"
+    },
+    {
+      "filename": "living-a-lot-positive-story-9x16.png",
+      "concept": "Living a Lot",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person walking home at night after dinner, looking energised and content. They're not checking their phone or a calorie app — just walking, satisfied, present. Warm streetlights, relaxed posture, the face of someone who ate exactly what they wanted and had a great night. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "person walking home at night, content and energised",
+      "emotion": "positive"
+    },
+    {
+      "filename": "walk-home-positive-feed-1x1.png",
+      "concept": "The Walk Home",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person sitting at their kitchen table at home late evening, cup of herbal tea, looking out the window with a satisfied expression. They just got home from a great dinner. No food guilt, no anxiety — just the warm afterglow of a good evening. Warm kitchen light. Photorealistic, warm tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "person at home with tea, satisfied afterglow of good evening",
+      "emotion": "positive"
+    },
+    {
+      "filename": "walk-home-positive-story-9x16.png",
+      "concept": "The Walk Home",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Overhead shot of a restaurant table for six with healthy, beautiful food — colourful grain bowls, grilled proteins, fresh salads, sparkling water. The table looks abundant and celebratory. Hands reaching for food, mid-conversation energy. Photorealistic, warm golden tones, editorial overhead. Vertical 9:16.",
+      "style": "photorealistic, warm golden tones, editorial overhead",
+      "visual_type": "overhead abundant table, hands reaching, celebratory energy",
+      "emotion": "positive"
     }
   ]
 }

@@ -67,6 +67,72 @@
       "prompt": "Overhead shot of a beautifully set restaurant table for six. Plates of delicious food, bread, candles, and glasses filled with various non-alcoholic drinks — sparkling water with lime, craft sodas, herbal tea. Hands reaching for bread, mid-conversation energy. The table looks abundant and celebratory without a single alcoholic drink. Photorealistic, warm tones, editorial overhead angle. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
       "style": "photorealistic, warm tones, editorial",
       "visual_type": "A person living their full life — their sobriety is incidental, not the main story."
+    },
+    {
+      "filename": "table-that-stays-positive-feed-1x1.png",
+      "concept": "The Table That Stays",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Six diverse people in their late 20s at a restaurant table at 10pm, all fully present and engaged. On the table: sparkling water, mocktails, herbal tea — no alcohol. Nobody looks tired or drifting. The energy is the same as the start of the evening. Warm candlelit atmosphere, everyone leaning in. Photorealistic, warm amber tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm amber tones, editorial candid",
+      "visual_type": "Positive emotion — joyful sober socialising, warmth and presence without alcohol."
+    },
+    {
+      "filename": "table-that-stays-positive-story-9x16.png",
+      "concept": "The Table That Stays",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Close-up of a restaurant table showing drinks: sparkling water with lime, a beautiful mocktail, craft ginger beer. No wine, no beer. The drinks look intentional and appealing, not like compromise options. Candle glow reflecting off the glasses, food plates visible. Photorealistic, warm tones, editorial food photography. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial food photography",
+      "visual_type": "Positive emotion — non-alcoholic drinks that look intentional and appealing, not like compromise."
+    },
+    {
+      "filename": "same-choice-positive-feed-1x1.png",
+      "concept": "Same Choice",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person at a dinner table looking relaxed and happy, holding a glass of sparkling water. Around them, everyone else also has non-alcoholic drinks. Nobody is explaining anything. The person looks at ease — the expression of someone who isn't the odd one out for once. Warm restaurant lighting, beautiful food. Photorealistic, warm amber tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm amber tones, editorial candid",
+      "visual_type": "Positive emotion — the relief and ease of not being the odd one out."
+    },
+    {
+      "filename": "same-choice-positive-story-9x16.png",
+      "concept": "Same Choice",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Six people at a warm restaurant table, all laughing at something. Glasses of sparkling water, mocktails, sodas on the table. The energy is high and warm — fully present, not drunk-loud. Everyone is there. Candlelit, warm amber tones. Photorealistic, editorial candid. Vertical 9:16.",
+      "style": "photorealistic, warm amber tones, editorial candid",
+      "visual_type": "Positive emotion — high-energy connection without alcohol, everyone fully present."
+    },
+    {
+      "filename": "walking-home-present-positive-feed-1x1.png",
+      "concept": "Walking Home Present",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their late 20s walking home at night, fully present and clear-eyed, genuine smile. They remember everything from tonight. The street is quiet, warm streetlights. They look content and alert — not tired, not winding down, just satisfied. Photorealistic, warm tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "Positive emotion — the satisfaction of walking home clear-eyed, remembering everything."
+    },
+    {
+      "filename": "walking-home-present-positive-story-9x16.png",
+      "concept": "Walking Home Present",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person checking their phone walking home at night, screen showing a text message conversation. They're smiling at the phone — following up on something from dinner. Clear eyes, present, remembering every conversation. Warm phone glow, city streetlights. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "Positive emotion — following up after dinner, present and remembering every conversation."
     }
   ]
 }

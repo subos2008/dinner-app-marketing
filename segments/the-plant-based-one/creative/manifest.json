@@ -67,6 +67,72 @@
       "prompt": "A woman in her late 20s at a restaurant table, eyes wide with genuine delight as she reads a menu. She's smiling — the expression of someone who can order anything. A glass of water and candle on the table. Warm restaurant lighting, intimate atmosphere. The joy of choice after years of limitation. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
       "style": "photorealistic, warm tones, editorial candid",
       "visual_type": "woman delighted reading menu, joy of choice"
+    },
+    {
+      "filename": "whole-menu-joy-positive-feed-1x1.png",
+      "concept": "The Whole Menu Joy",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A woman in her late 20s at a restaurant, holding a menu open with a genuine expression of delight and anticipation. She can order anything — no scanning for the one vegan option. Warm restaurant lighting, candles on the table, the joy of choice. Photorealistic, warm tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm tones, editorial candid",
+      "visual_type": "woman delighted with full menu, joy of choice"
+    },
+    {
+      "filename": "whole-menu-joy-positive-story-9x16.png",
+      "concept": "The Whole Menu Joy",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A beautifully plated vegan dish arriving at a restaurant table — colourful, abundant, creative. Hands reaching for it with excitement. Other beautiful plates already on the table. The food is the star. Warm, intimate lighting. Photorealistic, warm tones, editorial food photography. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial food photography",
+      "visual_type": "beautiful vegan dish arriving, hands reaching with excitement"
+    },
+    {
+      "filename": "sharing-plates-positive-feed-1x1.png",
+      "concept": "Sharing Plates",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Six diverse people at a restaurant table sharing multiple plant-based dishes — colourful bowls, sharing plates, bread, dips. Everyone is reaching in, serving each other, eating with genuine enthusiasm. The table is abundant and communal. Warm candlelit atmosphere, wooden table. Photorealistic, warm amber tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm amber tones, editorial candid",
+      "visual_type": "six people sharing abundant plant-based dishes"
+    },
+    {
+      "filename": "sharing-plates-positive-story-9x16.png",
+      "concept": "Sharing Plates",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Overhead shot of a plant-based restaurant table mid-meal. Multiple sharing plates, colourful salads, grain bowls, fresh bread, hummus, roasted vegetables. Hands reaching from all sides. The abundance is the point — every dish is vegan and every dish is gorgeous. Warm golden candlelight. Photorealistic, warm tones, editorial overhead. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial overhead",
+      "visual_type": "overhead abundant plant-based table, hands reaching"
+    },
+    {
+      "filename": "no-explaining-positive-feed-1x1.png",
+      "concept": "No Explaining Required",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A woman at a dinner table laughing with the group, fork in hand, mid-bite of beautiful food. She looks completely relaxed — no tension about what she's eating, no explaining. Others at the table are equally at ease with their plant-based meals. Warm restaurant lighting, natural joy. Photorealistic, warm amber tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm amber tones, editorial candid",
+      "visual_type": "woman laughing at dinner, completely relaxed eating"
+    },
+    {
+      "filename": "no-explaining-positive-story-9x16.png",
+      "concept": "No Explaining Required",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person walking home at night, slight smile, looking satisfied and happy. They're carrying a takeaway coffee cup — oat milk, no need to specify. The walk home from a dinner where everything was easy. Warm streetlights, content expression. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "person walking home content after easy dinner"
     }
   ]
 }

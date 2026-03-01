@@ -230,3 +230,86 @@ Frame 5: "Come Join Us → Find your table"
 Visual direction: Frames 1-3: quick cuts of things being rejected — lanyard tossed, laptop closed on a Zoom grid, phone screen with LinkedIn swiped away. Frame 4-5: warm transition to restaurant table, real food, real people, no branding on the table. The visual rhythm is rejection → rejection → rejection → yes.
 
 ---
+
+## Iteration 2 — Positive Emotion — 2026-02-28
+
+*Focus: warmth, belonging, dinner scenes, the "after" moment*
+*These complement the existing "before" ads with aspirational creative*
+
+---
+
+### Feed Ads
+
+**The Table Where You Don't Downplay It — Variant A**
+
+By the main course you're explaining the proposal to a management consultant you met forty-five minutes ago, and she's poking holes in it.
+
+Good holes. Useful holes. The kind your girlfriend is too kind to poke and your mates are too disinterested to find.
+
+She says "the pricing is weak — what if you led with the case study instead?" and you feel this thing you haven't felt in months. Not excitement. Recognition. You're in a conversation where you don't have to translate. Where saying "I started a business" doesn't make anyone go quiet or change the subject to the football.
+
+There's a graphic designer across the table who just went freelance. A developer building a side project. A woman who runs a food truck and is two years ahead of you on every problem you're currently facing. None of them asked for your LinkedIn. Nobody scanned the room for someone more useful. You just sat down and started being honest.
+
+Every Wednesday, Come Join Us puts 6 people at a restaurant table — matched on what you eat, what you drink, your budget, and what you want more of in your life. We pick the restaurant.
+
+This is what it feels like when the conversation fits.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+**The Table Where You Don't Downplay It — Variant B**
+
+Three people at your table just nodded when you said "I started something and realised I don't have anyone to talk to about it."
+
+Not politely. Not the way your mates nod before changing the subject. They nodded because they came here for the same reason.
+
+One of them runs a food truck and has been through everything you're about to go through. One is a management consultant who just took apart your pricing structure over starters — and you're grateful, actually grateful, because nobody in your life has cared enough to do that. One is a developer who said "I've been thinking about that too" and meant it.
+
+You haven't had to explain yourself once. You haven't said "yeah, ticking along." You haven't performed the smaller version. You've just been talking — the way you talk in your own head, except someone's finally across the table.
+
+Come Join Us. 6 people. Every Wednesday. Matched on what you eat, what you drink, your budget, and what you want more of in your life. A curated restaurant. A group matched deliberately based on your answers.
+
+You don't have to downplay it at this table.
+
+Book your Wednesday →
+
+CTA button: Book Now
+
+---
+
+**The Group Chat After — Variant C**
+
+You're walking to your car at 10:45 on a Wednesday and the air is cold and you're wide awake.
+
+Not because the evening was life-changing. It was just dinner. Six people, a restaurant in the Northern Quarter, food that was good and conversation that was better. But something shifted. The management consultant who pulled your proposal apart. The freelance designer who's three months into the exact fear you've been sitting on for a year. The moment someone said "I've been thinking about that too" and the whole table leaned in.
+
+You get in the car. Sit there for a second. Then you do something you didn't expect: you text the lads' group chat. "Pub Friday I'm in."
+
+Because here's the thing — you don't want to replace them. You never did. You just needed somewhere else too. And now that you've got it, the pub sounds great again. The pressure's gone. You can just be there without needing it to be everything.
+
+Every Wednesday, Come Join Us matches you with 5 people for dinner — based on what you eat, what you drink, your budget, and what you want more of in your life. We pick the restaurant.
+
+Having something new made you appreciate what you already had.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+### Stories/Reels
+
+**Not The Only One — Stories/Reels**
+
+Frame 1: "You said 'I outgrew the conversation' and braced yourself."
+Frame 2: "Three people at the table said 'me too.'"
+Frame 3: "Nobody judged you. Nobody called you arrogant. They just got it."
+Frame 4: "Then someone took apart your business plan over the main course — and it was the most useful conversation you've had in months."
+Frame 5: "Come Join Us — 6 people, matched on what matters. Every Wednesday → Book now"
+
+Visual direction: Frame 1: warm restaurant lighting, close-up of someone mid-sentence, slightly nervous. Frame 2: wider shot of the table — people leaning in, nodding, real recognition on faces. Frame 3: candlelight, wine glasses, the easy body language of people who are actually listening. Frame 4: animated conversation, someone gesturing with their fork, the energy of a good argument between people who respect each other. Frame 5: the full table from above — six people, food half-eaten, the kind of mess that means nobody's thinking about leaving yet. Audio: ambient restaurant sounds throughout — cutlery, low music, overlapping conversation, laughter that's real and not performed.
+
+---

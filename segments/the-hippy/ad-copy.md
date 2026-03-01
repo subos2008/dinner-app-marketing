@@ -214,3 +214,78 @@ Frame 4: "6 strangers. Matched on what you eat, drink, budget & what you want mo
 Frame 5: "Come Join Us → Book your Wednesday"
 
 Visual direction: Frame 1 — warm, golden, nature/retreat aesthetic. A person looking peaceful. Frame 2 — same person, now in a dark car park or quiet flat. The warmth drains. Frame 3 — transition to a restaurant table, candlelight, six people mid-laugh. Frame 4 — text overlay on the dinner scene. Frame 5 — CTA. The contrast between the retreat high and the everyday low is the visual hook.
+
+---
+
+## Iteration 2 — Positive Emotion — 2026-02-28
+
+*Focus: warmth, belonging, dinner scenes, the "after" moment*
+*These complement the existing "before" ads with aspirational creative*
+
+---
+
+### Feed Ads
+
+**The Retreat Feeling, But Weekly — Variant A**
+
+You know the feeling. The one from the last night of a retreat — when someone says the thing you've been thinking for months and the whole table leans in and you think: this is what I've been missing.
+
+That feeling isn't reserved for retreats.
+
+Every Wednesday, Come Join Us sits you at a table with 5 strangers who live the way you do. If you don't drink, nobody at your table drinks. If you're plant-based, the restaurant is plant-based. The group is matched deliberately — on what you eat, what you drink, and your budget. We pick the restaurant. You just show up.
+
+Within fifteen minutes someone mentions breathwork and two people lean in instead of glazing over. Someone says "I've been looking for exactly this" and the table goes quiet for a second — because everyone has.
+
+It's the best night of a retreat. But it's a Wednesday. At a restaurant. And it happens every week.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+**No Translating — Variant B**
+
+Imagine sitting at a dinner table where your crystal necklace isn't a conversation piece. Your sobriety isn't a talking point. Your plant-based order doesn't need a disclaimer. Everything about the way you live is just... normal here.
+
+That's what happens when everyone at the table was matched to be there.
+
+Come Join Us groups 6 strangers every Wednesday — matched on what you eat, what you drink, and your budget. If you don't drink, nobody drinks. If you're vegan, the restaurant is vegan. No explaining. No translating your life into something palatable for people who live differently.
+
+You mention a sound bath and someone asks which one. You say you meditate and nobody says "I could never." You're just yourself — the full, unedited version — at a table where that's the default.
+
+One dinner. Every Wednesday. No translation required.
+
+CTA button: Book Now
+
+---
+
+**The Ambient Default — Variant C**
+
+There's a version of dinner where sobriety isn't brave. Where eating plants isn't a lifestyle choice. Where Saturday morning at a retreat isn't unusual. Where everything about how you live is just the ambient default of the table.
+
+That's not a fantasy. It's a Wednesday.
+
+Every week, Come Join Us matches 6 strangers based on what they eat, what they drink, and their budget — then books them into a restaurant chosen for the group. If everyone's sober, there's no wine list to navigate. If everyone's plant-based, the menu just works. The restaurant is curated, quality-checked, and matched to the group.
+
+You don't walk in hoping it'll be good. You walk in and it already feels like yours.
+
+Book your Wednesday →
+
+CTA button: Book Now
+
+---
+
+### Stories/Reels
+
+**Walking Home — Stories/Reels**
+
+Frame 1: "10:15 on a Wednesday. Walking home from dinner."
+Frame 2: "Full — not just from the food."
+Frame 3: "From two hours where nobody needed you to explain why you don't drink."
+Frame 4: "Or why you meditate. Or why you'd rather be here than the pub."
+Frame 5: "6 strangers. Matched on what you eat, drink & budget. Restaurant picked for the group."
+Frame 6: "You book next Wednesday before you've unlocked your front door."
+Frame 7: "Come Join Us → Book your Wednesday"
+
+Visual direction: Frame 1 — a person walking down a warmly lit street at night, relaxed, content, not in a rush. Not stylised — real, ordinary, warm. Frame 2 — close-up on their face, soft smile, the look of someone who just had a genuinely good time. Frames 3-4 — brief warm flashbacks to the dinner table: candlelight, laughter, no wine glasses, food being shared. Frame 5 — text overlay, clean. Frame 6 — the person on their phone outside a front door, booking the next dinner, still half-smiling. Frame 7 — logo, CTA. The feel is quiet satisfaction. Not hype. Not "best night ever." Just the warmth of having found something that fits.

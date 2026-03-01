@@ -67,6 +67,72 @@
       "prompt": "Six diverse people in their late 20s and early 30s at a warm restaurant table, leaning in to a conversation. One person is making a point with their hands while others listen intently. No laptops, no name badges — just dinner and real conversation. Candlelit, exposed brick, warm amber tones. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
       "style": "photorealistic, warm tones, editorial candid",
       "visual_type": "The contrast between empty networking events and real dinner conversation."
+    },
+    {
+      "filename": "dont-downplay-positive-feed-1x1.png",
+      "concept": "The Table Where You Don't Downplay It",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Six people in their early 30s at a warm restaurant table, one person explaining something with passionate hand gestures while the others listen with genuine interest and engagement. The listener expressions show real curiosity, not polite tolerance. Warm candlelit restaurant, exposed brick, good food on the table. The energy of people who take each other seriously. Photorealistic, warm amber tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm amber tones, editorial candid",
+      "visual_type": "Positive emotion — group dinner where someone is passionately explaining and others listen with genuine interest."
+    },
+    {
+      "filename": "dont-downplay-positive-story-9x16.png",
+      "concept": "The Table Where You Don't Downplay It",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Two people at a dinner table, one leaning forward making a point about something they're building, the other nodding with recognition — the 'I've been thinking about that too' expression. Candlelight, warm tones, intimate framing. The relief of being understood. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "Positive emotion — two people at dinner sharing a moment of mutual recognition and understanding."
+    },
+    {
+      "filename": "group-chat-after-positive-feed-1x1.png",
+      "concept": "The Group Chat After",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person sitting in their car at night outside a restaurant, texting on their phone with a slight smile. Through the car window, the warm glow of the restaurant they just left is visible. They look energised, not tired — the face of someone who just had a conversation that meant something. Cool car interior contrasting with warm restaurant light. Photorealistic, warm-cool contrast, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm-cool contrast, editorial candid",
+      "visual_type": "Positive emotion — person in car after dinner, energised, texting with a smile, restaurant glowing behind."
+    },
+    {
+      "filename": "group-chat-after-positive-story-9x16.png",
+      "concept": "The Group Chat After",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person walking home at night through a city street, phone in hand, typing a message with a smile. The screen glow illuminates their face warmly. They look animated, alive — like they have something to say to someone. Warm streetlights, urban evening. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "Positive emotion — person walking home after dinner, animated and alive, texting someone with warmth."
+    },
+    {
+      "filename": "not-the-only-one-positive-feed-1x1.png",
+      "concept": "Not the Only One",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A warm restaurant table with six people mid-conversation, several of them laughing at something someone said. One person has the expression of surprised recognition — the 'you too?' moment. Good food, candles, the warmth of people who get each other. Photorealistic, warm amber tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm amber tones, editorial candid",
+      "visual_type": "Positive emotion — group dinner with laughing and the 'you too?' moment of surprised recognition."
+    },
+    {
+      "filename": "not-the-only-one-positive-story-9x16.png",
+      "concept": "Not the Only One",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Overhead shot of a dinner table for six, mid-meal. Beautiful food, bread being torn, hands reaching. The table looks alive — not posed, not Instagram-perfect, just real people eating together. Warm golden candlelight from above. Photorealistic, warm tones, editorial overhead. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial overhead",
+      "visual_type": "Positive emotion — overhead view of a living dinner table, hands reaching, bread being torn, real togetherness."
     }
   ]
 }

@@ -127,6 +127,78 @@
       "aspect_ratio": "9:16",
       "type": "composited",
       "parent": "nobody-tells-you-story-9x16.png"
+    },
+    {
+      "filename": "the-table-positive-feed-1x1.png",
+      "concept": "The Table (Positive)",
+      "ad_variant": "Positive - Feed",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Six diverse people in their late 20s and early 30s laughing around a candlelit restaurant table. Warm amber lighting, exposed brick wall. Mid-conversation, natural poses, plates of food and glasses on the table. One person is gesturing while telling a story, others are leaning in with genuine smiles. The energy is warm and connected. Photorealistic, warm golden tones, editorial candid feel. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm golden tones, editorial",
+      "visual_type": "group dinner table, warmth and laughter"
+    },
+    {
+      "filename": "the-table-positive-story-9x16.png",
+      "concept": "The Table (Positive)",
+      "ad_variant": "Positive - Stories",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Close-up of two people at a dinner table, one telling a story with animated hand gestures, the other listening with genuine delight. Candlelight, wine glasses, the background blurred with warm restaurant glow. The intimacy of real conversation. Photorealistic, warm amber tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm amber tones, editorial",
+      "visual_type": "two people in intimate conversation at dinner"
+    },
+    {
+      "filename": "walking-home-positive-feed-1x1.png",
+      "concept": "Walking Home (Positive)",
+      "ad_variant": "Positive - Feed",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their late 20s walking home through a city street at night with a slight smile, looking content and warm. They've just left a restaurant — warm glow behind them. The city streets feel alive and friendly, not lonely. String lights, other people walking, urban warmth. Photorealistic, warm golden tones, editorial candid feel. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm golden tones, editorial",
+      "visual_type": "person walking home content after dinner"
+    },
+    {
+      "filename": "walking-home-positive-story-9x16.png",
+      "concept": "Walking Home (Positive)",
+      "ad_variant": "Positive - Stories",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person walking along a canal at night in Manchester, hands in pockets, genuine smile. The city lights reflect on the water. They look like someone who just had a great evening — not rushing home, taking the long way. Warm streetlights, red brick buildings. Photorealistic, warm tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "person walking along Manchester canal at night, content"
+    },
+    {
+      "filename": "not-the-only-one-positive-feed-1x1.png",
+      "concept": "Not The Only One (Positive)",
+      "ad_variant": "Positive - Feed",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A warm restaurant table with six people mid-dinner. The focus is on one person who looks pleasantly surprised — the expression of someone discovering they belong. Others around the table are engaged and welcoming. Beautiful food, candles, warm lighting. The feeling of 'I found my people.' Photorealistic, warm amber tones, editorial candid feel. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm amber tones, editorial",
+      "visual_type": "person discovering belonging at group dinner"
+    },
+    {
+      "filename": "not-the-only-one-positive-story-9x16.png",
+      "concept": "Not The Only One (Positive)",
+      "ad_variant": "Positive - Stories",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Overhead shot of a beautifully set restaurant table for six, mid-dinner. Plates of food, bread being shared, glasses, candles. Hands reaching, serving, the evidence of a meal being enjoyed together. Warm, abundant, convivial. Photorealistic, warm golden tones, editorial overhead angle. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
+      "style": "photorealistic, warm golden tones, editorial overhead",
+      "visual_type": "overhead dinner table, shared meal, convivial"
     }
   ]
 }

@@ -244,3 +244,80 @@ Frame 4: "Dinner with 5 people where nobody mentions it." [tick]
 Frame 5: "Come Join Us → Not a sober event. Just dinner. Book now."
 
 Visual direction: Frames 1-3 use the same quick-cut rejection format — each label appears and gets crossed out. The aesthetic is bright, slightly over-the-top for the rejected options (wellness pinks, neon AF branding). Frame 4 shifts to a warm, understated restaurant table — candles, good food, no branding. Frame 5: clean CTA. The visual contrast between "branded sobriety" and "just a normal dinner" does the work.
+
+---
+
+## Iteration 2 — Positive Emotion — 2026-02-28
+
+*Focus: warmth, belonging, dinner scenes, the "after" moment*
+*These complement the existing "before" ads with aspirational creative*
+
+---
+
+### Feed Ads
+
+**The Table That Stays — Variant A**
+
+Forty minutes in and nobody's mentioned alcohol. Not once.
+
+Someone's explaining why every city in England has the same three chain restaurants. Someone else is arguing back with a theory so unhinged the whole table is crying laughing. The food arrived ten minutes ago and half the table forgot to start eating because the conversation was too good.
+
+And here's the thing you notice at about the one-hour mark: nobody has drifted. Nobody's louder than they were when they sat down. Nobody's repeating themselves. Everyone at this table is exactly as present as they were at the start — because everyone at this table made the same choice you did.
+
+This is what a Wednesday night sounds like when the whole table is on the same frequency. Not a sober event. Just dinner where six people are clear-headed, engaged, and actually listening to each other from the first course to the last.
+
+Come Join Us matches non-drinkers together. Every Wednesday. A restaurant with a proper non-alcoholic menu, chosen because we actually thought about it.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+**Same Choice — Variant B**
+
+You're not the odd one out tonight. For the first time in longer than you can remember, you're not the only person at the table holding something different.
+
+Everyone here said "I don't drink" during sign-up. Not as a confession. Not as a story. Just a tick on a form, same as budget and dietary. And now you're at a table with five people who ticked the same box, and nobody thinks it's remarkable. Nobody's being polite about it. Nobody's performing respect. It's just — normal.
+
+Someone orders a second round of mocktails. Someone else asks the waiter which one's best. There's a brief, genuine debate about ginger vs passionfruit. It's the most boring, beautiful conversation about drinks you've ever had.
+
+You chose this. They chose this. And tonight, that shared choice is the least interesting thing at the table.
+
+Come Join Us. Every Wednesday. Non-drinkers matched together — not as a special accommodation, as the default.
+
+Book a seat →
+
+CTA button: Book Now
+
+---
+
+**Walking Home Present — Variant C**
+
+It's 10:45pm and you're walking home. Same streets you always walk. Same warm evening. People heading to bars, couples holding hands, someone laughing too loud outside a pub.
+
+But something's different tonight. You remember every conversation. All of them. The woman who's renovating her kitchen and has a theory about why all landlords are the same person. The guy who moved here from Glasgow and is aggressively passionate about sourdough. The moment everyone went quiet because someone said something honest about what they actually want from their life, and nobody rushed to fill the silence.
+
+You remember all of it because you were there for all of it. And so were they.
+
+That's what dinner is like when six people stay present the whole night. No drift. No shift. No moment where the room changes and you don't. Just three hours of people being people over good food and better conversation.
+
+Come Join Us. Every Wednesday. Non-drinkers matched together at a restaurant we chose because the food and the non-alcoholic menu are both worth showing up for.
+
+You don't have an early start tomorrow. You stayed till the end.
+
+CTA button: Book Now
+
+---
+
+### Stories/Reels
+
+**The After — Stories/Reels**
+
+Frame 1: "10:47pm. Walking home."
+Frame 2: "I remember every conversation."
+Frame 3: "Nobody drifted. Nobody got loud. Nobody asked about my glass."
+Frame 4: "Six people, fully present, the whole night."
+Frame 5: "Come Join Us → Non-drinkers matched together. Every Wednesday. Book now."
+
+Visual direction: Frame 1 opens on a quiet street scene — someone walking, warm streetlights, unhurried. Not lonely. Content. Frame 2-3 use quick, warm flashbacks to a dinner table — close-ups of food, people leaning in to listen, genuine laughter, mocktails in proper glassware. The mood is soft, golden, intimate — not staged. Frame 4 pulls back to the full table — everyone still there, still engaged, no empty seats. Frame 5: clean CTA on a warm background. The whole sequence should feel like a memory you want to have.

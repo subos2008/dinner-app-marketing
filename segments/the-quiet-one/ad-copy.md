@@ -243,3 +243,78 @@ Frame 4: "But we can give you a Wednesday. Dinner with 5 matched strangers. Matc
 Frame 5: "One evening where you're expected somewhere → Come Join Us"
 
 Visual direction: Quiet, almost still. Afternoon light in an empty flat. A person at a window, a kettle, a book they're not really reading. Not cinematic sadness — just stillness. Frame 4-5 shifts to warm evening light, a restaurant, people at a table. The transition is the emotional turn.
+
+---
+
+## Iteration 2 — Positive Emotion — 2026-02-28
+
+*Focus: warmth, belonging, dinner scenes, the "after" moment*
+*These complement the existing "before" ads with aspirational creative*
+
+---
+
+### Feed Ads
+
+**Just Being There Was Enough — Variant A**
+
+I didn't perform. I was just there, being myself, and it was enough.
+
+That's the thing nobody tells you about the dinners that actually work. You don't have to be the funny one. You don't have to have stories. You don't have to fill silences or earn your place at the table. You just sit down, and the food comes, and someone mentions a documentary about octopuses, and the guy across from you lights up — "the Netflix one? I watched that three times" — and suddenly you're talking and it's not hard. It's not hard.
+
+Come Join Us matches you with 5 people every Wednesday. Matched on diet, drinking preferences, budget, and what you want more of in your life. Every group matched deliberately based on your answers. The restaurant is chosen for you. There are conversation starters on the table so nobody has to break the ice alone.
+
+You don't have to be someone else to belong somewhere. You just have to show up as yourself.
+
+Book a seat →
+
+CTA button: Book Now
+
+---
+
+**Someone Said "Same" — Variant B**
+
+There's a moment at dinner when someone says "same" and the whole table shifts.
+
+Not a big moment. Not cinematic. Someone mentions they spend most weekends alone and someone else just goes "same" — quietly, like it costs them something to admit it — and you realise you're not the only one. You're sitting at a table with five people who were also eating dinner alone last Wednesday. Five people who also almost didn't come. Five people who are also just figuring this out.
+
+That's what matched groups feel like. Not a room of extroverts you have to keep up with. Just people who wanted to be somewhere on a Wednesday night and trusted someone else to organise it.
+
+Every group matched deliberately based on your answers — diet, drinking preferences, budget, what you want more of in your life. Restaurant chosen and quality-checked. Icebreaker questions on the table.
+
+Nobody at that table is performing. That's the whole point.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+**More Words Than a Weekend — Variant C**
+
+I said more at that dinner than I normally say in a full weekend.
+
+Not because I forced it. Not because I was trying to impress anyone. Because someone asked about my week and actually listened. Because there were questions on the table that gave the conversation somewhere to start. Because six people at a round table means you're never one-on-one with nowhere to hide — and you're never lost in a crowd either. It's just the right number of people for a real conversation.
+
+I drove home at 10:15. The flat was quiet, same as always, but it was different. I put the kettle on. I sat at the table. And I thought: I could do this again next Wednesday.
+
+Come Join Us. 6 people, matched deliberately based on your answers — what you eat, what you drink, your budget, what you want more of in your life. Restaurant picked for you. Icebreaker questions so nobody sits in silence.
+
+The quiet doesn't go away. But now there's a Wednesday in the middle of it.
+
+One dinner. See what happens →
+
+CTA button: Book Now
+
+---
+
+### Stories/Reels
+
+**A Table Where Quiet Is Fine — Stories/Reels**
+
+Frame 1: "Nobody asked me to be louder."
+Frame 2: "Nobody asked me to be funnier, or more outgoing, or someone I'm not."
+Frame 3: "I just sat down. The food came. Someone mentioned a documentary I'd watched."
+Frame 4: "We talked for two hours. It was the most ordinary thing in the world."
+Frame 5: "A table where quiet is fine. Matched deliberately based on your answers. → Come Join Us"
+
+Visual direction: Warm, intimate, evening restaurant light. Not a loud group — a calm table. Frame 1-3: close on one person, comfortable, not performing. Maybe a small smile at someone off-camera. Frame 4: pull back to the table — six people, mid-conversation, plates half-finished, nothing staged. Frame 5: the same table, slightly later, coats going on, warmth still visible. The whole thing should feel like a memory you'd want to keep. Slow pace. No fast cuts. The quiet is the point — it's not anxious quiet, it's comfortable quiet.

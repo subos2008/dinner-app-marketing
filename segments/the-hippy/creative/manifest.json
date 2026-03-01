@@ -67,6 +67,72 @@
       "prompt": "A warm dinner table scene that echoes the feeling of a wellness retreat — six people in deep, present conversation, candles, warm lighting, plant-based food, herbal teas. The atmosphere is intimate and intentional, not casual. Everyone is fully there. It feels like a retreat dinner but it's a Wednesday in a restaurant. Photorealistic, warm golden tones, editorial candid feel. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
       "style": "photorealistic, warm golden tones, editorial candid",
       "visual_type": "retreat-like dinner table, six people, intentional atmosphere"
+    },
+    {
+      "filename": "retreat-feeling-positive-feed-1x1.png",
+      "concept": "Retreat Feeling Weekly",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Six people at a warm, intimate restaurant table that feels like the best night of a wellness retreat. Plant-based food, herbal teas, candles, natural materials. Everyone is present and deeply engaged in conversation. No phones. The atmosphere is intentional and warm, not casual. Exposed wood, trailing plants, warm amber lighting. Photorealistic, warm golden tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm golden tones, editorial candid",
+      "visual_type": "retreat-like dinner table, six people, warm intentional atmosphere"
+    },
+    {
+      "filename": "retreat-feeling-positive-story-9x16.png",
+      "concept": "Retreat Feeling Weekly",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Close-up of hands cradling a ceramic cup of herbal tea at a candlelit dinner table. Beautiful plant-based food visible on plates nearby. The warmth and intentionality of the moment — this feels like a retreat but it's a Wednesday. Warm amber tones, natural textures. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "hands cradling herbal tea, candlelit dinner table close-up"
+    },
+    {
+      "filename": "no-translating-positive-feed-1x1.png",
+      "concept": "No Translating",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A woman with bohemian style — crystal necklace, natural fabric clothing — laughing freely at a dinner table with five other people. Everyone looks authentic and at ease. Plant-based food on the table, no alcohol. The comfort of being yourself without translation. Warm restaurant with exposed wood, plants, candles. Photorealistic, warm amber tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm amber tones, editorial candid",
+      "visual_type": "bohemian woman laughing freely at dinner, group at ease"
+    },
+    {
+      "filename": "no-translating-positive-story-9x16.png",
+      "concept": "No Translating",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Two people at a dinner table in deep, genuine conversation. One wears a meditation mala bracelet. They're both leaning in, completely at ease — the body language of people who don't need to explain their lifestyle. Warm candlelight, intimate framing, background blurred. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "two people in deep conversation, mala bracelet, candlelight"
+    },
+    {
+      "filename": "ambient-default-positive-feed-1x1.png",
+      "concept": "Ambient Default",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A warm restaurant table with six people, all with non-alcoholic drinks and plant-based food. The table feels natural, abundant, celebratory — not restrictive. Everyone's lifestyle is the default here. Candles, natural materials, the warm energy of people who live the same way finding each other. Photorealistic, warm amber tones, editorial candid. Shot on 35mm film. Not a stock photo.",
+      "style": "photorealistic, warm amber tones, editorial candid",
+      "visual_type": "celebratory dinner table, six people, non-alcoholic plant-based"
+    },
+    {
+      "filename": "ambient-default-positive-story-9x16.png",
+      "concept": "Ambient Default",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person walking home at night after dinner, peaceful expression, hands in pockets. They look grounded and content — the way you feel after a retreat, but it's just a Wednesday. Warm streetlights, quiet street, the afterglow of genuine connection. Photorealistic, warm tones, editorial. Vertical 9:16.",
+      "style": "photorealistic, warm tones, editorial",
+      "visual_type": "person walking home at night, peaceful afterglow of connection"
     }
   ]
 }
