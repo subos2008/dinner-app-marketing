@@ -133,6 +133,72 @@
       "prompt": "A person walking home at night, slight smile, looking satisfied and happy. They're carrying a takeaway coffee cup — oat milk, no need to specify. The walk home from a dinner where everything was easy. Warm streetlights, content expression. Photorealistic, warm tones, editorial. Vertical 9:16.",
       "style": "photorealistic, warm tones, editorial",
       "visual_type": "person walking home content after easy dinner"
+    },
+    {
+      "filename": "one-sad-salad-stylized-feed-1x1.png",
+      "concept": "The One Sad Salad",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A lonely roasted cauliflower with pomegranate seeds sitting on a large white plate, surrounded by other diners' generous, abundant plates of food. The cauliflower looks sad and uninspired while the plates around it overflow with delicious dishes. Warm restaurant lighting, candlelit table, the isolation of being the vegan at the table captured through the one small plate. Square 1:1 composition. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue",
+      "visual_type": "sad lonely cauliflower plate vs abundant others, editorial illustration"
+    },
+    {
+      "filename": "one-sad-salad-stylized-story-9x16.png",
+      "concept": "The One Sad Salad",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A woman in her late 20s at a restaurant, looking down at a menu with quiet resignation. She has found the one vegan option at the bottom of the page under a tiny 'Dietary' heading. Her friends around her are animated and excited about their choices. The contrast between her isolation and their enthusiasm. Warm restaurant candlelight. Tall vertical 9:16 composition. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue",
+      "visual_type": "woman resigned at menu while friends are excited, editorial illustration"
+    },
+    {
+      "filename": "not-vegan-friendly-vegan-stylized-feed-1x1.png",
+      "concept": "Not Vegan-Friendly. Vegan.",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Split composition: on the left side, a sad lonely plate with a small mushroom risotto and a tiny (V) symbol, desaturated and cold. On the right side, a vibrant abundant spread of beautiful creative vegan dishes — colourful, intentional, every plate a celebration. The contrast between 'vegan-friendly' (a concession) and 'vegan' (a celebration). Square 1:1 composition. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue",
+      "visual_type": "split composition: sad vegan-friendly plate vs abundant vegan celebration"
+    },
+    {
+      "filename": "not-vegan-friendly-vegan-stylized-story-9x16.png",
+      "concept": "Not Vegan-Friendly. Vegan.",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A tall vertical scene of a vegan restaurant interior. A warm, intimate restaurant with a beautiful chalkboard menu where EVERY dish is plant-based — no asterisks, no separate sections, just a full menu of thoughtful dishes. A table of six diverse people in their late 20s, all eating enthusiastically from abundant colourful plates. The chef in the background takes pride in their work. The feeling of a place that was BUILT for you, not accommodating you. Candlelight, warm atmosphere. Tall vertical 9:16 composition. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue",
+      "visual_type": "vegan restaurant with chalkboard menu, six people dining, chef in background"
+    },
+    {
+      "filename": "whole-menu-is-yours-stylized-feed-1x1.png",
+      "concept": "The Whole Menu Is Yours",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Close-up of hands holding an open restaurant menu. Every single item on the page is available — no asterisks, no tiny 'V' symbols, no separate 'Dietary' section. Just a full beautiful menu of plant-based dishes. The hands are relaxed, not anxiously scanning. One finger hovers between choices with pleasure, not necessity. Warm candlelight illuminates the menu. The feeling of abundance and choice after years of limitation. Square 1:1 composition. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue",
+      "visual_type": "hands holding all-vegan menu by candlelight, relaxed choosing"
+    },
+    {
+      "filename": "whole-menu-is-yours-stylized-story-9x16.png",
+      "concept": "The Whole Menu Is Yours",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A woman sitting at a warm restaurant table, eyes lit up with genuine delight as she reads a menu where everything is hers. She's choosing between dishes she wants, not scanning for the one thing she can eat. Around her, other diners at separate tables, warm candlelight, the atmosphere of a beautiful vegan restaurant. A glass of wine, bread on the table. The pure joy of abundance after years of restriction. The emotional moment of opening a menu and seeing it's all for you. Tall vertical 9:16 composition. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue",
+      "visual_type": "woman delighted reading menu at restaurant, joy of choice, editorial illustration"
     }
   ]
 }

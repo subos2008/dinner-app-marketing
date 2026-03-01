@@ -133,6 +133,72 @@
       "prompt": "A person sitting at their kitchen table at home, cup of tea in hand, looking out the window with a gentle smile. It's late evening. The flat that was lonely in the 'before' ads now feels different — the same flat, but the person in it has changed. Warm kitchen light, quiet contentment. Photorealistic, warm tones, editorial. Vertical 9:16.",
       "style": "photorealistic, warm tones, editorial",
       "visual_type": "Positive emotion — the same flat, but the person has changed. Quiet contentment at home after connection."
+    },
+    {
+      "filename": "you-dont-have-to-be-social-stylized-feed-1x1.png",
+      "concept": "You Don't Have to Be a Social Person",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A man in his mid-30s sitting alone on a sofa in a tidy, minimal flat, reading a book with a cup of tea. One mug, one plate on the drying rack, one pair of shoes by the door. Warm afternoon light streams through the window. He looks peaceful but quietly isolated — not dramatic sadness, just stillness. The empty chair opposite him is prominent. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration, painterly brushstrokes, textured surfaces. Square 1:1 composition.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue palette",
+      "visual_type": "Someone who is clearly introverted, alone but not dramatically sad — just quietly existing in their own space. The empty chair is the visual anchor. Stylized illustration version."
+    },
+    {
+      "filename": "you-dont-have-to-be-social-stylized-story-9x16.png",
+      "concept": "You Don't Have to Be a Social Person",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A man in his mid-30s standing at a kitchen counter in a small flat, carefully plating a meal he cooked for one person. One plate, one glass, one set of cutlery laid out on a small dining table — the chair opposite is empty. Evening light casts long warm shadows. The flat is tidy and well-kept but clearly lived in alone. A single pair of shoes by the door. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration, painterly brushstrokes, textured surfaces. Tall vertical 9:16 composition.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue palette",
+      "visual_type": "Someone who is clearly introverted, alone but not dramatically sad — cooking for one, the empty chair opposite. Stylized illustration version."
+    },
+    {
+      "filename": "hardest-part-showing-up-stylized-feed-1x1.png",
+      "concept": "The Hardest Part Is Showing Up",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person standing alone outside a warm, inviting restaurant at evening, their hand hesitating near the door handle. Through the large window, you can see a group of people already seated at a candlelit table inside, warm golden light spilling outward. The person outside looks nervous but determined — the courage of arrival. Cool evening air on the street contrasts with the warm restaurant glow. Bold geometric shapes for the architecture. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration, painterly brushstrokes, textured surfaces. Square 1:1 composition.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue palette",
+      "visual_type": "The threshold moment — someone about to walk through a restaurant door. The anxiety and courage of arriving. Stylized illustration version."
+    },
+    {
+      "filename": "hardest-part-showing-up-stylized-story-9x16.png",
+      "concept": "The Hardest Part Is Showing Up",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "View from inside a warm, candlelit restaurant looking toward the glass entrance door. Through the door, a person is visible approaching from the dark street outside — slightly hesitant but walking forward into the light. Inside the restaurant: warm amber glow, candles on tables, other diners visible in the periphery, soft intimate atmosphere. The contrast between the deep blue evening outside and the warm terracotta and amber glow inside creates a threshold between isolation and belonging. No text overlays. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration, painterly brushstrokes, textured surfaces. Tall vertical 9:16 composition.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue palette",
+      "visual_type": "The threshold moment — view from inside the warm restaurant as someone approaches from the cold outside. Stylized illustration version."
+    },
+    {
+      "filename": "3pm-saturday-feeling-stylized-feed-1x1.png",
+      "concept": "The 3pm Saturday Feeling",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A tidy living room on a Saturday afternoon, bathed in golden afternoon sunlight streaming through a window. Dust motes float in the light beams. A sofa with one indent where someone has been sitting. A closed laptop on a coffee table. A half-drunk cup of tea gone cold. No person visible — just the evidence of one person living alone. The stillness itself is the subject. Afternoon shadows stretch across the floor. The silence is almost visible. No text overlays. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration, painterly brushstrokes, textured surfaces. Square 1:1 composition.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue palette",
+      "visual_type": "The quiet emptiness of a Saturday afternoon alone. No person — just the evidence of solitude. Stillness as subject. Stylized illustration version."
+    },
+    {
+      "filename": "3pm-saturday-feeling-stylized-story-9x16.png",
+      "concept": "The 3pm Saturday Feeling",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A man in his mid-30s sitting by a tall window in his flat on a Saturday afternoon, looking out at the street below. Through the window, you can see groups of people walking together — couples, friends heading somewhere. He holds a mug, watching quietly. The contrast between the bustling life outside and the stillness of his flat is the subject. Warm afternoon light falls across the room. A book lies open face-down on the arm of the chair, not really being read. The flat is tidy, one person's home. No text overlays. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration, painterly brushstrokes, textured surfaces. Tall vertical 9:16 composition.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue palette",
+      "visual_type": "The quiet emptiness of a Saturday afternoon alone — watching life happen outside through the window. Stylized illustration version."
     }
   ]
 }

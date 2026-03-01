@@ -133,6 +133,72 @@
       "prompt": "A person checking their phone walking home at night, screen showing a text message conversation. They're smiling at the phone — following up on something from dinner. Clear eyes, present, remembering every conversation. Warm phone glow, city streetlights. Photorealistic, warm tones, editorial. Vertical 9:16.",
       "style": "photorealistic, warm tones, editorial",
       "visual_type": "Positive emotion — following up after dinner, present and remembering every conversation."
+    },
+    {
+      "filename": "frequency-shift-stylized-feed-1x1.png",
+      "concept": "The Frequency Shift",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Square 1:1 format. A group of friends at a crowded bar late at night. Most are leaning together, animated, loose and blurry — drinks in hand, mouths open laughing. One person sits slightly apart to the right, still and clear-eyed, holding a glass of water, watching the energy change around them. They are calm, composed, not sad — just on a different wavelength. The room dissolves into warm abstract shapes around the rowdy group. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker or NYT Magazine illustration — textured brushstrokes, bold composition, evocative mood. The divergence between the sober person's stillness and the room's blur is the visual tension. Absolutely no text, no words, no titles, no labels anywhere in the image.",
+      "style": "stylized editorial illustration, warm amber/terracotta, deep blue accents",
+      "visual_type": "The moment at a social gathering where everyone else gets drunk and you're left behind — the divergence point."
+    },
+    {
+      "filename": "frequency-shift-stylized-story-9x16.png",
+      "concept": "The Frequency Shift",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Vertical 9:16 format. A person walking home alone at night from a bar, coat pulled close, peaceful expression, clear-eyed. Behind them through the bar window, warm abstract shapes of a party continuing — silhouettes, loose gestures, golden chaos. The street ahead is quiet, cool deep blue tones. The contrast between the warm chaos behind and the calm clarity ahead. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker or NYT Magazine illustration — textured brushstrokes, bold composition, evocative mood. Tall vertical composition.",
+      "style": "stylized editorial illustration, warm amber/terracotta, deep blue accents",
+      "visual_type": "The moment at a social gathering where everyone else gets drunk and you're left behind — the divergence point."
+    },
+    {
+      "filename": "question-nobody-should-ask-stylized-feed-1x1.png",
+      "concept": "The Question Nobody Should Ask",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Square 1:1 format. A dinner table scene. One person holds a glass of water, composed and patient, while someone across the table leans toward them with an inquisitive expression — the moment of being asked 'why don't you drink?' The water-drinker's face shows quiet weariness, not anger. Around them, the table is warm and social, wine glasses catching light. The spotlight feeling of being singled out. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker or NYT Magazine illustration — textured brushstrokes, bold composition, evocative. No text or words in the image.",
+      "style": "stylized editorial illustration, warm amber/terracotta, deep blue accents",
+      "visual_type": "The awkward moment of being asked 'why aren't you drinking?' — the social interrogation."
+    },
+    {
+      "filename": "question-nobody-should-ask-stylized-story-9x16.png",
+      "concept": "The Question Nobody Should Ask",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Tall vertical 9:16 format, portrait orientation. A warm restaurant table with six diverse people in their late 20s, all with non-alcoholic drinks — sparkling water, mocktails, herbal tea. Nobody is explaining anything. They are mid-conversation, laughing, relaxed, genuinely enjoying each other. Beautiful food on the table. Warm candlelight. No wine bottles, no beer. The feeling of relief and normalcy — nobody being singled out. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker or NYT Magazine illustration — textured brushstrokes, bold composition, evocative. No text or words in the image. Vertical tall composition.",
+      "style": "stylized editorial illustration, warm amber/terracotta, deep blue accents",
+      "visual_type": "The relief of normalcy — a table where nobody asks because there's nothing to ask."
+    },
+    {
+      "filename": "sober-isnt-the-headline-stylized-feed-1x1.png",
+      "concept": "Sober Isn't the Headline",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Square 1:1 format. A split composition: on the left side, garish neon-lit 'sober events' — a wellness rave with glow sticks, an alcohol-free brunch with forced smiles, overly branded and performative. On the right side, a simple warm restaurant table — candles, good food, people just talking normally, no branding, no labels. The contrast between commodified sobriety and genuine normalcy. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker or NYT Magazine illustration — textured brushstrokes, bold composition, evocative. No text or words in the image.",
+      "style": "stylized editorial illustration, warm amber/terracotta, deep blue accents",
+      "visual_type": "The contrast between branded sobriety events and genuine normalcy — not a sober dinner, just dinner."
+    },
+    {
+      "filename": "sober-isnt-the-headline-stylized-story-9x16.png",
+      "concept": "Sober Isn't the Headline",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Tall vertical 9:16 portrait orientation. A warm, understated restaurant table for six people at night. Candles glowing, beautiful plates of food, and various non-alcoholic drinks — sparkling water with herbs, craft mocktails in elegant glassware, herbal tea. The people are mid-conversation, animated and genuine, nobody performing, nobody labeling anything. The feeling of normalcy — sobriety is incidental, not the headline. Warm intimate atmosphere, exposed brick, soft lighting. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker or NYT Magazine illustration — textured brushstrokes, bold composition, evocative mood. No text or words in the image. Vertical tall composition.",
+      "style": "stylized editorial illustration, warm amber/terracotta, deep blue accents",
+      "visual_type": "Normalcy and warmth — sobriety is incidental, not the headline. Just dinner with present people."
     }
   ]
 }

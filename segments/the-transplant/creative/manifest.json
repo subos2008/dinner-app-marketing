@@ -199,6 +199,78 @@
       "prompt": "Overhead shot of a beautifully set restaurant table for six, mid-dinner. Plates of food, bread being shared, glasses, candles. Hands reaching, serving, the evidence of a meal being enjoyed together. Warm, abundant, convivial. Photorealistic, warm golden tones, editorial overhead angle. Shot on 35mm film. Not a stock photo. Vertical composition 9:16.",
       "style": "photorealistic, warm golden tones, editorial overhead",
       "visual_type": "overhead dinner table, shared meal, convivial"
+    },
+    {
+      "filename": "wednesday-night-problem-stylized-feed-1x1.png",
+      "concept": "The Wednesday Night Problem",
+      "ad_variant": "Variant B",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A woman sitting alone on a sofa in a modern apartment, eating reheated pasta from a container. Evening light through the window, the flat is clean but empty. She's scrolling her phone absently. The mood is quiet melancholy — just another Wednesday night alone. The quiet accumulation of solitary evenings in a new city. Urban apartment with warm lamp light against a blue-hour window. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration. Square 1:1 aspect ratio composition.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue",
+      "visual_type": "solo person in apartment, eating alone"
+    },
+    {
+      "filename": "wednesday-night-problem-stylized-story-9x16.png",
+      "concept": "The Wednesday Night Problem",
+      "ad_variant": "Variant B",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A young woman walking alone through a city at dusk, passing a restaurant with warm light spilling from the windows. Inside the restaurant, a group of people are visible laughing at a long table. She glances toward them as she walks past, hands in coat pockets, AirPods in. The contrast between the warm interior and her solitary walk is the emotional core. Red brick buildings, canal-side, Northern Quarter energy. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration. Vertical 9:16 aspect ratio composition for Instagram Stories.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue",
+      "visual_type": "solo person passing restaurant window, warm/cold contrast"
+    },
+    {
+      "filename": "google-search-stylized-feed-1x1.png",
+      "concept": "The Google Search",
+      "ad_variant": "Variant A",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Over-the-shoulder view of a person's hand holding a phone, the screen showing a Google search bar with \"how to make friends in Manchester\" typed out. They're sitting on a bed in a dim bedroom, evening light from a window. The mood is private and vulnerable — a search nobody admits to making. A solitary moment of reaching out through a screen. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration. Square 1:1 aspect ratio composition.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue",
+      "visual_type": "phone screen with search, intimate bedroom"
+    },
+    {
+      "filename": "google-search-stylized-story-9x16.png",
+      "concept": "The Google Search",
+      "ad_variant": "Variant A",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A phone screen showing Google search results page for \"how to make friends in Manchester\" with generic unhelpful results visible like \"Join a running club\" and \"Try a pottery class.\" The phone is held in one hand, the background is a dim apartment at night. The screen light illuminates the person's fingers and face. The feeling is isolation meeting the internet's hollow advice. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration. Vertical 9:16 aspect ratio composition for Instagram Stories.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue",
+      "visual_type": "phone screen with search results, dim apartment"
+    },
+    {
+      "filename": "nobody-tells-you-stylized-feed-1x1.png",
+      "concept": "Nobody Tells You",
+      "ad_variant": "Variant A",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A young woman sitting at a kitchen counter alone in a modern apartment, staring out the window at a city skyline at blue hour. She has a mug of tea in her hands, contemplative. The apartment is nice but sparse — she moved in recently, boxes still half-unpacked. The mood is the quiet accumulation of solitary months — not desperate, just the slow realization at month nine that the evenings haven't caught up. Contemplative, not dramatic. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration. Square 1:1 aspect ratio composition.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue",
+      "visual_type": "solo person in apartment, contemplative, moving boxes"
+    },
+    {
+      "filename": "nobody-tells-you-stylized-story-9x16.png",
+      "concept": "Nobody Tells You",
+      "ad_variant": "Variant A",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A solo figure walking through a beautiful city at golden hour, wide cinematic composition. Canal-side path with red brick warehouses and modern apartments visible. The person is small in the frame, emphasizing the scale and beauty of the city around them — gorgeous but alone in it. Coat on, hands in pockets, walking away from camera. The city is stunning but the solitude is unmistakable. The feeling of month nine in a new city — when the excitement has faded but the connections haven't formed. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration. Vertical 9:16 aspect ratio composition for Instagram Stories.",
+      "style": "stylized editorial illustration, warm textured painterly, amber/terracotta/deep blue",
+      "visual_type": "solo person walking canal-side, beautiful city, wide shot"
     }
   ]
 }

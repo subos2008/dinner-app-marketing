@@ -139,6 +139,72 @@
       "style": "photorealistic, warm golden tones, editorial overhead",
       "visual_type": "overhead abundant table, hands reaching, celebratory energy",
       "emotion": "positive"
+    },
+    {
+      "filename": "live-a-little-stylized-feed-1x1.png",
+      "concept": "Live a Little",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A group dinner scene at a warm restaurant. One person at the table has a carefully prepared grilled meal while others around them gesture at their plate with encouraging, slightly patronising expressions — clearly saying 'go on, live a little.' The healthy eater has a patient, knowing look. Warm candlelit restaurant. Square composition 1:1. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration — textured brushstrokes, bold forms, evocative mood.",
+      "style": "stylized editorial illustration, warm amber and terracotta, deep blue accents, textured painterly",
+      "visual_type": "group dinner, healthy eater being pressured, illustrated"
+    },
+    {
+      "filename": "live-a-little-stylized-story-9x16.png",
+      "concept": "Live a Little",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their early 30s at a beautiful restaurant, genuinely enjoying a well-prepared healthy meal — grilled fish, fresh vegetables, sparkling water. They look content and present, not restricted. The food looks delicious, not punishing. Warm intimate atmosphere, mid-conversation with someone just out of frame. Vertical composition 9:16 portrait orientation. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration — textured brushstrokes, bold forms, evocative mood.",
+      "style": "stylized editorial illustration, warm amber and terracotta, deep blue accents, textured painterly",
+      "visual_type": "person enjoying healthy meal, content, illustrated"
+    },
+    {
+      "filename": "menu-minefield-stylized-feed-1x1.png",
+      "concept": "The Menu Minefield",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "Over-the-shoulder view of a person in bed at night, scrolling through a restaurant menu on their phone. The phone screen glows against the dark room, illuminating their face with a worried, calculating expression. They're checking if there's anything they can eat before agreeing to dinner plans. The room is dim and intimate. Square composition 1:1. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration — textured brushstrokes, bold forms, evocative mood.",
+      "style": "stylized editorial illustration, warm amber and terracotta, deep blue accents, textured painterly",
+      "visual_type": "phone screen with restaurant menu in dark room, illustrated"
+    },
+    {
+      "filename": "menu-minefield-stylized-story-9x16.png",
+      "concept": "The Menu Minefield",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person at a restaurant table, intensely studying a menu while their friends chat and laugh casually around them, menus already closed. The person is mentally calculating, planning what to order. Their brow is slightly furrowed in concentration. Others at the table are relaxed and social. Warm restaurant lighting, intimate setting. Vertical composition 9:16 portrait orientation. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration — textured brushstrokes, bold forms, evocative mood.",
+      "style": "stylized editorial illustration, warm amber and terracotta, deep blue accents, textured painterly",
+      "visual_type": "person studying menu while friends chat, illustrated"
+    },
+    {
+      "filename": "discipline-shouldnt-be-lonely-stylized-feed-1x1.png",
+      "concept": "Discipline Shouldn't Be Lonely",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person eating alone from a meal-prep container at their kitchen counter on a Saturday night. Their phone lights up with group chat notifications on the counter beside them. Through the window, the city lights suggest life happening elsewhere. The scene captures the paradox of health discipline and social isolation — they've done the right thing for their body but it cost them their social life. Quiet, contemplative mood. Square composition 1:1. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration — textured brushstrokes, bold forms, evocative mood.",
+      "style": "stylized editorial illustration, warm amber and terracotta, deep blue accents, textured painterly",
+      "visual_type": "person eating alone, meal prep, phone notifications, illustrated"
+    },
+    {
+      "filename": "discipline-shouldnt-be-lonely-stylized-story-9x16.png",
+      "concept": "Discipline Shouldn't Be Lonely",
+      "format": "story",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Split composition: top half shows a person's disciplined life — gym bag, running shoes, meal prep containers neatly stacked, the tools of health and routine. Bottom half shows the same person sitting alone at a kitchen table at night, eating from a container, empty chair across from them. The contrast between achievement and isolation. Warm but melancholic. Vertical composition 9:16 portrait orientation. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration — textured brushstrokes, bold forms, evocative mood.",
+      "style": "stylized editorial illustration, warm amber and terracotta, deep blue accents, textured painterly",
+      "visual_type": "split composition, discipline vs isolation, illustrated"
     }
   ]
 }

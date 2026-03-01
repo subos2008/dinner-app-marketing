@@ -133,6 +133,72 @@
       "prompt": "Overhead shot of a dinner table for six, mid-meal. Beautiful food, bread being torn, hands reaching. The table looks alive — not posed, not Instagram-perfect, just real people eating together. Warm golden candlelight from above. Photorealistic, warm tones, editorial overhead. Vertical 9:16.",
       "style": "photorealistic, warm tones, editorial overhead",
       "visual_type": "Positive emotion — overhead view of a living dinner table, hands reaching, bread being torn, real togetherness."
+    },
+    {
+      "filename": "podcast-substitute-stylized-feed-1x1.png",
+      "concept": "The Podcast Substitute",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person sitting alone at a desk, AirPods in, eyes closed, pausing mid-thought while a podcast plays. One hand hovers near the pause button. They are imagining themselves at a dinner table with others, a faint ghostly vision of a warm dinner scene reflected in the window behind them. The desk has a laptop, coffee mug, scattered books. Evening light streams through the window. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration. Textured brushstrokes, slightly abstracted figures. Square 1:1 composition.",
+      "style": "stylized editorial illustration, warm amber/terracotta with deep blue accents",
+      "visual_type": "Person at desk with AirPods, pausing podcast mid-thought, imagining a dinner table conversation — the substitute for real connection."
+    },
+    {
+      "filename": "podcast-substitute-stylized-story-9x16.png",
+      "concept": "The Podcast Substitute",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A solitary figure walking through a city street at dusk, earbuds in, hands in jacket pockets, lost in thought. They are surrounded by warm streetlights but isolated in their own world of podcast conversation. The city around them is abstracted into bold shapes — buildings as amber and terracotta blocks, the sky a deep blue. The figure is contemplative, mentally replying to a conversation they are not part of. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality illustration. No text or titles. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Textured brushstrokes, slightly abstracted figures. Vertical 9:16 tall portrait composition.",
+      "style": "stylized editorial illustration, warm amber/terracotta with deep blue accents",
+      "visual_type": "Solitary figure walking through city at dusk with earbuds, lost in podcast conversation, surrounded by abstracted warm buildings and deep blue sky."
+    },
+    {
+      "filename": "youve-changed-stylized-feed-1x1.png",
+      "concept": "You've Changed",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A group of four friends at a pub table, three of them leaning together laughing at a phone screen, while the fourth person sits slightly apart, beer untouched, gazing somewhere else entirely — feeling the distance between who they are now and who their friends expect them to be. Warm pub lighting, exposed brick wall behind, wooden table. The emotional gap between the group and the one person is subtle but unmistakable. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality illustration. No text or titles. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Textured brushstrokes, slightly abstracted figures. Square 1:1 composition.",
+      "style": "stylized editorial illustration, warm amber/terracotta with deep blue accents",
+      "visual_type": "Four friends at a pub — three laughing together, one sitting apart feeling the distance of having changed."
+    },
+    {
+      "filename": "youve-changed-stylized-story-9x16.png",
+      "concept": "You've Changed",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their early 30s walking home alone at night after leaving a pub, seen from behind. Through the pub window behind them, warm golden light spills out and friends are visible inside, still laughing. The person walks into the cool deep blue night, not sad but separate — carrying a feeling that doesn't have a name. Urban street, cold night air suggested by the colour temperature shift from warm pub interior to cool exterior. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality illustration. No text or titles. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Textured brushstrokes, slightly abstracted figures. Vertical 9:16 tall portrait composition.",
+      "style": "stylized editorial illustration, warm amber/terracotta with deep blue accents",
+      "visual_type": "Person walking away from a pub at night — warm golden light and laughing friends visible through the window, while they walk into the cool blue night, separate but not sad."
+    },
+    {
+      "filename": "peers-not-mentors-stylized-feed-1x1.png",
+      "concept": "Peers Not Mentors",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A sterile networking event in a conference room — people wearing lanyards and holding plastic cups of wine, scanning the room over each other's shoulders. One person stands alone near the edge, visibly uncomfortable, looking toward the exit. The room feels hollow, transactional, fluorescent. Bold contrast between the cold overhead lighting and the warm amber yearning of the isolated person. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality illustration. No text or titles. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. The networking event should feel cold and sterile while the isolated person radiates warmth. Textured brushstrokes, slightly abstracted figures. Square 1:1 composition.",
+      "style": "stylized editorial illustration, warm amber/terracotta with deep blue accents",
+      "visual_type": "Cold sterile networking event with lanyards and plastic wine — one warm figure standing apart, looking toward the exit."
+    },
+    {
+      "filename": "peers-not-mentors-stylized-story-9x16.png",
+      "concept": "Peers Not Mentors",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "Six diverse people in their late 20s and early 30s seated around a warm candlelit restaurant table, leaning into an animated conversation. One person is making a point with expressive hand gestures while the others listen with genuine interest and engagement — not polite tolerance but real connection. Food and wine on the table, exposed brick wall, warm amber candlelight. The energy of peers who take each other seriously — no hierarchy, no lanyards, no name badges. Just honest conversation over good food. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality illustration. No text or titles. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Textured brushstrokes, slightly abstracted figures. Vertical 9:16 tall portrait composition.",
+      "style": "stylized editorial illustration, warm amber/terracotta with deep blue accents",
+      "visual_type": "Six peers at a warm candlelit dinner table, leaning into animated conversation — the opposite of a networking event."
     }
   ]
 }
