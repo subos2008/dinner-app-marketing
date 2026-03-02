@@ -199,6 +199,72 @@
       "prompt": "IMPORTANT: Generate this as a tall VERTICAL image with 9:16 portrait aspect ratio, much taller than wide. A person sitting alone on a beautiful European apartment terrace at sunset, beer in hand, phone face-down on the small table beside them. The view is stunning — terracotta rooftops cascading down a hillside, a warm amber-orange sky, the sea glimmering in the distance. But the person stares into space, contemplative, lost. One plate, one glass, one chair. An empty second chair across the table. The beauty of the setting makes the solitude more poignant. Portrait orientation, very tall and narrow. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Painterly brushstrokes, textured, evocative. No text, no words, no letters.",
       "style": "stylized editorial illustration, warm amber/terracotta palette, deep blue accents, painterly textured",
       "visual_type": "Person alone on European terrace at sunset, beer in hand, empty chair, terracotta rooftops cascading to sea"
+    },
+    {
+      "filename": "coworking-closes-feed-1x1.png",
+      "concept": "The Coworking Closes at 7",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person in their early 30s packing up their laptop in an emptying coworking space at golden hour. The open-plan space has long shared desks with a few abandoned coffee cups and closed laptops. Other chairs are pushed back, people have already left. Late afternoon golden light streams through large windows, casting long warm shadows. The person is putting their laptop into a backpack with a quiet, resigned expression — everyone else has somewhere to go. The space feels like it's exhaling. Warm but melancholy atmosphere. Photorealistic, shot on 35mm film, warm tones, slightly grainy, editorial candid feel. Square 1:1 composition. Not a stock photo. No text, no words, no letters in the image.",
+      "style": "photorealistic, warm tones, editorial candid, 35mm film",
+      "visual_type": "Person packing laptop in emptying coworking space at golden hour, resigned expression"
+    },
+    {
+      "filename": "coworking-closes-story-9x16.png",
+      "concept": "The Coworking Closes at 7",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "IMPORTANT: Generate this as a tall VERTICAL image with 9:16 portrait aspect ratio, much taller than wide. A person in their early 30s walking home alone on a European cobblestone street at dusk, carrying a small grocery bag in one hand, laptop bag slung over shoulder. On both sides, restaurant terraces are filling up with groups of friends and couples sitting down for dinner — warm light spilling from doorways, laughter implied, wine being poured. The person walks past all of it, headphones in, heading home to cook for one. Golden hour fading to blue hour. The contrast between the social warmth of the restaurants and the solitary walk home. Photorealistic, shot on 35mm film, warm but melancholy tones, slightly grainy, editorial candid feel. Portrait vertical 9:16 composition. Not a stock photo. No text, no words, no letters in the image.",
+      "style": "photorealistic, warm but melancholy tones, editorial candid, 35mm film",
+      "visual_type": "Person walking home alone past full restaurant terraces at dusk, grocery bag and laptop bag"
+    },
+    {
+      "filename": "coworking-closes-positive-feed-1x1.png",
+      "concept": "The Coworking Closes at 7",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A warm Wednesday evening dinner scene at a candlelit restaurant. Six diverse people in their late 20s to early 30s sitting around a restaurant table, sharing food and wine, genuinely engaged in conversation and laughing. The person who was previously alone at the coworking space is now among friends — relaxed, animated, belonging. Warm amber candlelight, Mediterranean restaurant ambiance, small plates being shared, a bottle of wine on the table. The evening is no longer empty. The energy is intimate, not performative — real conversation, not networking. Photorealistic, shot on 35mm film, warm amber tones, slightly grainy, editorial candid feel. Square 1:1 composition. Not a stock photo. No text, no words, no letters in the image.",
+      "style": "photorealistic, warm amber tones, editorial candid, 35mm film",
+      "visual_type": "Six diverse people sharing candlelit dinner, genuine laughter, Mediterranean restaurant"
+    },
+    {
+      "filename": "coworking-closes-positive-story-9x16.png",
+      "concept": "The Coworking Closes at 7",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "IMPORTANT: Generate this as a tall VERTICAL image with 9:16 portrait aspect ratio, much taller than wide. A warm intimate dinner scene shot from one end of a restaurant table. Two people leaning toward each other in deep genuine conversation across a candlelit table, one gesturing with their hands while talking, both fully present. Behind them, four others at the same table are laughing and sharing small plates. Wine glasses catching the candlelight, shared food across the table. The atmosphere is warm, amber-lit, Mediterranean restaurant with stone walls and hanging plants. This is connection — the evening is alive. Photorealistic, shot on 35mm film, warm amber tones, slightly grainy, editorial candid feel. Portrait vertical 9:16 composition. Not a stock photo. No text, no words, no letters in the image.",
+      "style": "photorealistic, warm amber tones, editorial candid, 35mm film",
+      "visual_type": "Two people in deep conversation at candlelit dinner, others laughing behind, stone walls and plants"
+    },
+    {
+      "filename": "coworking-closes-stylized-feed-1x1.png",
+      "concept": "The Coworking Closes at 7",
+      "format": "feed",
+      "aspect_ratio": "1:1",
+      "type": "base",
+      "parent": null,
+      "prompt": "A person sitting alone in an emptying coworking space, packing up their laptop as the last of the golden light fades through large windows. Empty chairs pushed back, abandoned coffee cups, the space has that end-of-day hollow feeling. Through the windows, the city is transitioning from day to night — warm amber sky becoming deep blue. The person is the last one left, heading nowhere in particular. The contrast between the structured daytime and the unstructured evening ahead. Square 1:1 composition. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration — textured brushstrokes, confident shapes, evocative atmosphere. No text, no words, no letters in the image.",
+      "style": "stylized editorial illustration, warm amber/terracotta palette, deep blue accents, painterly textured",
+      "visual_type": "Person packing up in emptying coworking space, arched windows, amber sky fading to deep blue"
+    },
+    {
+      "filename": "coworking-closes-stylized-story-9x16.png",
+      "concept": "The Coworking Closes at 7",
+      "format": "stories",
+      "aspect_ratio": "9:16",
+      "type": "base",
+      "parent": null,
+      "prompt": "IMPORTANT: Generate this as a tall VERTICAL image with 9:16 portrait aspect ratio, much taller than wide. A solitary figure walking down a European cobblestone street at dusk, laptop bag over one shoulder, heading home from the coworking space. The street is framed by buildings with warm light glowing from restaurant windows — inside, groups of people are visible, eating together, animated. The figure walks alone between these pools of warm light, heading toward the dark end of the street where the residential apartments are. Above, the sky transitions from warm amber at the horizon to deep blue overhead. The contrast between the vibrant social spaces and the solitary walk home. Tall vertical 9:16 composition. Editorial illustration style, warm textured painterly, bold shapes, slightly abstract, magazine quality. Not photorealistic. Not cartoonish. Warm amber and terracotta palette with deep blue accents. Think New Yorker magazine illustration — textured brushstrokes, confident shapes, evocative loneliness. No text, no words, no letters in the image.",
+      "style": "stylized editorial illustration, warm amber/terracotta palette, deep blue accents, painterly textured",
+      "visual_type": "Solitary figure walking between warm restaurant windows on cobblestone street at dusk, deep blue sky above"
     }
   ]
 }

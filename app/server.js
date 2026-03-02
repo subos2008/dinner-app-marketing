@@ -63,9 +63,9 @@ app.put('/api/segments/:slug/reviews/:filename', (req, res) => {
   const { status, note } = req.body;
 
   // Validate status
-  const validStatuses = ['approved', 'rejected', 'flagged', null];
+  const validStatuses = ['approved', 'rejected', 'flagged', 'liked', null];
   if (!validStatuses.includes(status)) {
-    return res.status(400).json({ error: 'Invalid status. Must be one of: approved, rejected, flagged, or null' });
+    return res.status(400).json({ error: 'Invalid status. Must be one of: approved, rejected, flagged, liked, or null' });
   }
 
   try {

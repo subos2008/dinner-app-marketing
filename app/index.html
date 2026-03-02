@@ -18,6 +18,7 @@
     --light-gray: #E8E2DC;
     --red: #C4553A;
     --green: #5B8A5E;
+    --pink: #D4668E;
     --gold: #B8963E;
     --blue-gray: #7A8B8F;
     --shadow-sm: 0 1px 3px rgba(44, 40, 38, 0.08);
@@ -811,6 +812,7 @@
   .thumb-item.review-approved { border-color: var(--green); }
   .thumb-item.review-rejected { border-color: var(--red); }
   .thumb-item.review-flagged { border-color: var(--gold); }
+  .thumb-item.review-liked { border-color: var(--pink); }
 
   .thumb-item.active.review-approved { box-shadow: 0 0 0 2px rgba(91, 138, 94, 0.3); }
   .thumb-item.active.review-rejected { box-shadow: 0 0 0 2px rgba(196, 85, 58, 0.3); }
@@ -882,6 +884,12 @@
   .review-btn.review-btn-flag.active {
     background: var(--gold);
     border-color: var(--gold);
+    color: #fff;
+  }
+
+  .review-btn.review-btn-like.active {
+    background: var(--pink);
+    border-color: var(--pink);
     color: #fff;
   }
 
@@ -1291,6 +1299,11 @@
   .status-badge.flagged {
     background: #FFF3E0;
     color: var(--gold);
+  }
+
+  .status-badge.liked {
+    background: #F8E8F0;
+    color: var(--pink);
   }
 
   .creative-card .review-controls {
@@ -1806,6 +1819,7 @@
       </div>
       ${images.length > 1 ? `<div class="thumb-strip">${thumbs}</div>` : ''}
       <div class="review-controls" data-slug="${esc(slug)}" data-filename="${esc(activeFilename)}">
+        <button class="review-btn review-btn-like${activeStatus === 'liked' ? ' active' : ''}" data-status="liked">Like</button>
         <button class="review-btn review-btn-approve${activeStatus === 'approved' ? ' active' : ''}" data-status="approved">Approve</button>
         <button class="review-btn review-btn-reject${activeStatus === 'rejected' ? ' active' : ''}" data-status="rejected">Reject</button>
         <button class="review-btn review-btn-flag${activeStatus === 'flagged' ? ' active' : ''}" data-status="flagged">Flag</button>
@@ -1947,6 +1961,7 @@
     // Count for filter bar
     const baseCount = images.filter(i => i.type === 'base').length;
     const compCount = images.filter(i => i.type === 'composited').length;
+    const likedCount = images.filter(i => i.review?.status === 'liked').length;
     const unapprovedCount = images.filter(i => !i.review?.status || i.review.status !== 'approved').length;
 
     let html = renderHeader(seg);
@@ -1956,6 +1971,7 @@
       <button class="filter-pill${activeCreativeFilter === 'all' ? ' active' : ''}" data-filter="all">All (${images.length})</button>
       <button class="filter-pill${activeCreativeFilter === 'base' ? ' active' : ''}" data-filter="base">Bases (${baseCount})</button>
       <button class="filter-pill${activeCreativeFilter === 'composited' ? ' active' : ''}" data-filter="composited">Composited (${compCount})</button>
+      <button class="filter-pill${activeCreativeFilter === 'liked' ? ' active' : ''}" data-filter="liked">Liked (${likedCount})</button>
       <button class="filter-pill${activeCreativeFilter === 'unapproved' ? ' active' : ''}" data-filter="unapproved">Unapproved (${unapprovedCount})</button>
     </div>`;
 
@@ -1996,6 +2012,7 @@
               ${reviewStatus ? `<span class="status-badge ${esc(reviewStatus)}">${esc(reviewStatus)}</span>` : ''}
             </div>
             <div class="review-controls" data-slug="${esc(seg.slug)}" data-filename="${esc(img.filename)}">
+              <button class="review-btn review-btn-like${reviewStatus === 'liked' ? ' active' : ''}" data-status="liked">Like</button>
               <button class="review-btn review-btn-approve${reviewStatus === 'approved' ? ' active' : ''}" data-status="approved">Approve</button>
               <button class="review-btn review-btn-reject${reviewStatus === 'rejected' ? ' active' : ''}" data-status="rejected">Reject</button>
               <button class="review-btn review-btn-flag${reviewStatus === 'flagged' ? ' active' : ''}" data-status="flagged">Flag</button>
@@ -2029,6 +2046,7 @@
 
       if (filter === 'base' && type !== 'base') hidden = true;
       if (filter === 'composited' && type !== 'composited') hidden = true;
+      if (filter === 'liked' && status !== 'liked') hidden = true;
       if (filter === 'unapproved' && status === 'approved') hidden = true;
 
       card.classList.toggle('hidden', hidden);
@@ -2168,7 +2186,7 @@
   function refreshThumbStatus(strip, filename, status) {
     const thumb = strip.querySelector(`.thumb-item[data-filename="${filename}"]`);
     if (!thumb) return;
-    thumb.classList.remove('review-approved', 'review-rejected', 'review-flagged');
+    thumb.classList.remove('review-approved', 'review-rejected', 'review-flagged', 'review-liked');
     if (status) {
       thumb.classList.add(`review-${status}`);
     }
@@ -2339,6 +2357,7 @@
           let hidden = false;
           if (activeCreativeFilter === 'base' && card.dataset.type !== 'base') hidden = true;
           if (activeCreativeFilter === 'composited' && card.dataset.type !== 'composited') hidden = true;
+          if (activeCreativeFilter === 'liked' && newStatus !== 'liked') hidden = true;
           if (activeCreativeFilter === 'unapproved' && newStatus === 'approved') hidden = true;
           card.classList.toggle('hidden', hidden);
         }
