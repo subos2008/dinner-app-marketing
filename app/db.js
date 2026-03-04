@@ -66,7 +66,7 @@ async function getAllData(token) {
 
   const { data: reviewRows, error: revErr } = await client
     .from('image_review')
-    .select('*');
+    .select('*, creative_image:creative_image_id(filename, segment_slug)');
   if (revErr) throw revErr;
 
   const { data: statusRows, error: statErr } = await client
@@ -77,8 +77,10 @@ async function getAllData(token) {
   // Index reviews and statuses by segment
   const reviewsBySegment = {};
   for (const r of reviewRows) {
-    if (!reviewsBySegment[r.segment_slug]) reviewsBySegment[r.segment_slug] = {};
-    reviewsBySegment[r.segment_slug][r.filename] = {
+    const img = r.creative_image;
+    if (!img) continue;
+    if (!reviewsBySegment[img.segment_slug]) reviewsBySegment[img.segment_slug] = {};
+    reviewsBySegment[img.segment_slug][img.filename] = {
       status: r.status,
       note: r.note || '',
       updatedAt: r.updated_at
@@ -166,12 +168,14 @@ async function getReviews(slug, token) {
   const client = clientForRequest(token);
   const { data, error } = await client
     .from('image_review')
-    .select('*')
-    .eq('segment_slug', slug);
+    .select('*, creative_image:creative_image_id(filename, segment_slug)')
+    .eq('creative_image.segment_slug', slug);
   if (error) throw error;
   const result = {};
   for (const r of data) {
-    result[r.filename] = {
+    const img = r.creative_image;
+    if (!img || img.segment_slug !== slug) continue;
+    result[img.filename] = {
       status: r.status,
       note: r.note || '',
       updatedAt: r.updated_at
@@ -182,17 +186,26 @@ async function getReviews(slug, token) {
 
 async function upsertReview(slug, filename, status, note, token) {
   const client = clientForRequest(token);
+
+  // Look up the creative_image row
+  const { data: img, error: imgErr } = await client
+    .from('creative_image')
+    .select('id')
+    .eq('segment_slug', slug)
+    .eq('filename', filename)
+    .single();
+  if (imgErr || !img) throw new Error(`No image found for ${slug}/${filename}`);
+
   const { data, error } = await client
     .from('image_review')
     .upsert(
       {
-        segment_slug: slug,
-        filename,
+        creative_image_id: img.id,
         status: status || null,
         note: note || '',
         updated_at: new Date().toISOString()
       },
-      { onConflict: 'segment_slug,filename' }
+      { onConflict: 'creative_image_id' }
     )
     .select()
     .single();

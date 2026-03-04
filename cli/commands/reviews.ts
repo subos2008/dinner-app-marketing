@@ -23,15 +23,17 @@ async function list(segment: string) {
 
   const { data, error } = await supabase
     .from("image_review")
-    .select("filename, status, note, updated_at")
-    .eq("segment_slug", segment);
+    .select("status, note, updated_at, creative_image:creative_image_id(filename, segment_slug)")
+    .eq("creative_image.segment_slug", segment);
 
   if (error) throw new Error(error.message);
 
   // Reshape to { [filename]: { status, note, updatedAt } }
   const result: Record<string, { status: string; note: string; updatedAt: string }> = {};
   for (const row of data || []) {
-    result[row.filename] = {
+    const img = row.creative_image as unknown as { filename: string; segment_slug: string } | null;
+    if (!img || img.segment_slug !== segment) continue;
+    result[img.filename] = {
       status: row.status,
       note: row.note || "",
       updatedAt: row.updated_at,
@@ -57,9 +59,21 @@ async function set(segment: string, filename: string, rest: string[]) {
     Deno.exit(1);
   }
 
+  // Look up the creative_image row
+  const { data: img, error: imgErr } = await supabase
+    .from("creative_image")
+    .select("id")
+    .eq("segment_slug", segment)
+    .eq("filename", filename)
+    .single();
+
+  if (imgErr || !img) {
+    console.error(`reviews set: no image found for ${segment}/${filename}`);
+    Deno.exit(1);
+  }
+
   const row: Record<string, unknown> = {
-    segment_slug: segment,
-    filename: filename,
+    creative_image_id: img.id,
     status: flags.status,
     updated_at: new Date().toISOString(),
   };
@@ -69,8 +83,8 @@ async function set(segment: string, filename: string, rest: string[]) {
 
   const { data, error } = await supabase
     .from("image_review")
-    .upsert(row, { onConflict: "segment_slug,filename" })
-    .select("filename, status, note, updated_at")
+    .upsert(row, { onConflict: "creative_image_id" })
+    .select("status, note, updated_at")
     .single();
 
   if (error) throw new Error(error.message);

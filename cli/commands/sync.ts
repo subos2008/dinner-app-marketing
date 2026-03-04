@@ -131,20 +131,32 @@ async function syncData(data: BuildData) {
   }
   console.error(`Images (metadata): ${imageCount} synced`);
 
-  // 3. Upsert reviews
+  // 3. Upsert reviews (look up creative_image_id first)
   for (const seg of data.segments) {
     for (const img of seg.images || []) {
       if (!img.review) continue;
 
+      // Find the creative_image row
+      const { data: ciRow, error: ciErr } = await supabase
+        .from("creative_image")
+        .select("id")
+        .eq("segment_slug", seg.slug)
+        .eq("filename", img.filename)
+        .single();
+
+      if (ciErr || !ciRow) {
+        console.error(`  review ${seg.slug}/${img.filename}: no matching creative_image`);
+        continue;
+      }
+
       const { error } = await supabase
         .from("image_review")
         .upsert({
-          segment_slug: seg.slug,
-          filename: img.filename,
+          creative_image_id: ciRow.id,
           status: img.review.status || null,
           note: img.review.note || "",
           updated_at: img.review.updatedAt || new Date().toISOString(),
-        }, { onConflict: "segment_slug,filename" });
+        }, { onConflict: "creative_image_id" });
 
       if (error) {
         console.error(`  review ${seg.slug}/${img.filename}: ${error.message}`);
