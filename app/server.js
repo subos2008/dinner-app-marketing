@@ -13,7 +13,8 @@ app.use(express.json());
 app.get('/api/config', (req, res) => {
   res.json({
     supabaseUrl: process.env.SUPABASE_URL,
-    supabaseAnonKey: process.env.SUPABASE_ANON_KEY
+    supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+    storageBaseUrl: db.getStorageBaseUrl()
   });
 });
 
@@ -46,91 +47,195 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// API: full data payload
-app.get('/api/data', requireAuth, async (req, res) => {
-  try {
-    const data = await db.getAllData(req.token);
-    res.json(data);
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
+// --- Tags ---
+
+app.get('/api/tags', requireAuth, async (req, res) => {
+  try { res.json(await db.getTags(req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// Validate that a param is a safe path segment (no traversal)
-function isSafeParam(param) {
-  return !param.includes('..') && !param.includes('/');
-}
-
-// GET /api/segments/:slug/reviews
-app.get('/api/segments/:slug/reviews', requireAuth, async (req, res) => {
-  const { slug } = req.params;
-  if (!isSafeParam(slug)) {
-    return res.status(400).json({ error: 'Invalid slug' });
-  }
-
-  try {
-    const data = await db.getReviews(slug, req.token);
-    res.json(data);
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
+app.post('/api/tags', requireAuth, async (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: 'name is required' });
+  try { res.json(await db.createTag(name, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// PUT /api/segments/:slug/reviews/:filename
-app.put('/api/segments/:slug/reviews/:filename', requireAuth, async (req, res) => {
-  const { slug, filename } = req.params;
-  if (!isSafeParam(slug) || !isSafeParam(filename)) {
-    return res.status(400).json({ error: 'Invalid slug or filename' });
-  }
-
-  const { status, note } = req.body;
-  const validStatuses = ['approved', 'rejected', 'flagged', 'liked', null];
-  if (!validStatuses.includes(status)) {
-    return res.status(400).json({ error: 'Invalid status. Must be one of: approved, rejected, flagged, liked, or null' });
-  }
-
-  try {
-    const entry = await db.upsertReview(slug, filename, status, note, req.token);
-    res.json(entry);
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
+app.delete('/api/tags/:id', requireAuth, async (req, res) => {
+  try { await db.deleteTag(req.params.id, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// GET /api/segments/:slug/ad-status
-app.get('/api/segments/:slug/ad-status', requireAuth, async (req, res) => {
-  const { slug } = req.params;
-  if (!isSafeParam(slug)) {
-    return res.status(400).json({ error: 'Invalid slug' });
-  }
+// --- Images ---
 
-  try {
-    const data = await db.getAdStatuses(slug, req.token);
-    res.json(data);
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
+app.get('/api/images', requireAuth, async (req, res) => {
+  try { res.json(await db.getImages(req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// PUT /api/segments/:slug/ad-status/:adId
-app.put('/api/segments/:slug/ad-status/:adId', requireAuth, async (req, res) => {
-  const { slug, adId } = req.params;
-  if (!isSafeParam(slug) || !isSafeParam(adId)) {
-    return res.status(400).json({ error: 'Invalid slug or adId' });
-  }
+app.post('/api/images', requireAuth, async (req, res) => {
+  const { filename, storage_path, prompt } = req.body;
+  if (!filename || !storage_path) return res.status(400).json({ error: 'filename and storage_path are required' });
+  try { res.json(await db.createImage({ filename, storage_path, prompt }, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
 
-  const { status, feedback } = req.body;
-  const validStatuses = ['unreviewed', 'feedback', 'approved', 'live', null];
-  if (!validStatuses.includes(status)) {
-    return res.status(400).json({ error: 'Invalid status. Must be one of: unreviewed, feedback, approved, live, or null' });
-  }
+app.delete('/api/images/:id', requireAuth, async (req, res) => {
+  try { await db.deleteImage(req.params.id, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
 
-  try {
-    const entry = await db.upsertAdStatus(slug, adId, status, feedback, req.token);
-    res.json(entry);
-  } catch (e) {
-    res.status(500).json({ error: e.message });
+app.post('/api/images/:id/tags', requireAuth, async (req, res) => {
+  const { tag_id } = req.body;
+  if (!tag_id) return res.status(400).json({ error: 'tag_id is required' });
+  try { res.json(await db.addImageTag(req.params.id, tag_id, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/images/:id/tags/:tagId', requireAuth, async (req, res) => {
+  try { await db.removeImageTag(req.params.id, req.params.tagId, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// --- Captions ---
+
+app.get('/api/captions', requireAuth, async (req, res) => {
+  try { res.json(await db.getCaptions(req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/captions', requireAuth, async (req, res) => {
+  const { text } = req.body;
+  if (!text) return res.status(400).json({ error: 'text is required' });
+  try { res.json(await db.createCaption(text, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.put('/api/captions/:id', requireAuth, async (req, res) => {
+  const { text } = req.body;
+  if (!text) return res.status(400).json({ error: 'text is required' });
+  try { res.json(await db.updateCaption(req.params.id, text, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/captions/:id', requireAuth, async (req, res) => {
+  try { await db.deleteCaption(req.params.id, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/captions/:id/tags', requireAuth, async (req, res) => {
+  const { tag_id } = req.body;
+  if (!tag_id) return res.status(400).json({ error: 'tag_id is required' });
+  try { res.json(await db.addCaptionTag(req.params.id, tag_id, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/captions/:id/tags/:tagId', requireAuth, async (req, res) => {
+  try { await db.removeCaptionTag(req.params.id, req.params.tagId, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// --- Body Copy ---
+
+app.get('/api/body-copy', requireAuth, async (req, res) => {
+  try { res.json(await db.getBodyCopy(req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/body-copy', requireAuth, async (req, res) => {
+  const { text, headline } = req.body;
+  if (!text) return res.status(400).json({ error: 'text is required' });
+  try { res.json(await db.createBodyCopy({ text, headline }, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.put('/api/body-copy/:id', requireAuth, async (req, res) => {
+  const updates = {};
+  if (req.body.text !== undefined) updates.text = req.body.text;
+  if (req.body.headline !== undefined) updates.headline = req.body.headline;
+  try { res.json(await db.updateBodyCopy(req.params.id, updates, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/body-copy/:id', requireAuth, async (req, res) => {
+  try { await db.deleteBodyCopy(req.params.id, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/body-copy/:id/tags', requireAuth, async (req, res) => {
+  const { tag_id } = req.body;
+  if (!tag_id) return res.status(400).json({ error: 'tag_id is required' });
+  try { res.json(await db.addBodyCopyTag(req.params.id, tag_id, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/body-copy/:id/tags/:tagId', requireAuth, async (req, res) => {
+  try { await db.removeBodyCopyTag(req.params.id, req.params.tagId, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// --- Ad Sets ---
+
+app.get('/api/ad-sets', requireAuth, async (req, res) => {
+  try { res.json(await db.getAdSets(req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/ad-sets', requireAuth, async (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: 'name is required' });
+  try { res.json(await db.createAdSet(name, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.put('/api/ad-sets/:id', requireAuth, async (req, res) => {
+  const updates = {};
+  if (req.body.name !== undefined) updates.name = req.body.name;
+  if (req.body.status !== undefined) updates.status = req.body.status;
+  try { res.json(await db.updateAdSet(req.params.id, updates, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/ad-sets/:id', requireAuth, async (req, res) => {
+  try { await db.deleteAdSet(req.params.id, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// --- Ads ---
+
+app.get('/api/ads', requireAuth, async (req, res) => {
+  try { res.json(await db.getAds(req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/ads', requireAuth, async (req, res) => {
+  const { base_image_id, caption_id, body_copy_id, ad_set_id } = req.body;
+  if (!base_image_id) return res.status(400).json({ error: 'base_image_id is required' });
+  try { res.json(await db.createAd({ base_image_id, caption_id, body_copy_id, ad_set_id }, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.put('/api/ads/:id', requireAuth, async (req, res) => {
+  const allowedFields = [
+    'ad_set_id', 'caption_id', 'body_copy_id', 'desired_status',
+    'feedback', 'composited_image_path', 'generation_prompt',
+    'meta_status', 'meta_ad_id'
+  ];
+  const updates = {};
+  for (const field of allowedFields) {
+    if (req.body[field] !== undefined) updates[field] = req.body[field];
   }
+  try { res.json(await db.updateAd(req.params.id, updates, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/ads/:id', requireAuth, async (req, res) => {
+  try { await db.deleteAd(req.params.id, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
+  res.status(501).json({ error: 'Not implemented — generation coming soon' });
 });
 
 // --- SSE live reload via Supabase Realtime ---
@@ -155,18 +260,10 @@ function broadcastReload() {
 
 db.getRealtimeClient()
   .channel('marketing-changes')
-  .on('postgres_changes', { event: '*', schema: 'marketing', table: 'image_review' }, () => {
-    broadcastReload();
-  })
-  .on('postgres_changes', { event: '*', schema: 'marketing', table: 'ad_campaign_status' }, () => {
+  .on('postgres_changes', { event: '*', schema: 'marketing', table: 'ad' }, () => {
     broadcastReload();
   })
   .subscribe();
-
-// --- URL routing: serve index.html for /segment/:slug/:view paths ---
-app.get('/segment/:slug/:view', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
 
 app.listen(PORT, () => {
   console.log(`Creative review app: http://localhost:${PORT}`);
