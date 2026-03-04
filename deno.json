@@ -1,0 +1,8 @@
+{
+  "tasks": {
+    "cli": "deno run --allow-read --allow-net --allow-env --allow-run cli/main.ts"
+  },
+  "imports": {
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@^2"
+  }
+}

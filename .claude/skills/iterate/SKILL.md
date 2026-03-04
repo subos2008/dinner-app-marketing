@@ -19,7 +19,7 @@ You are generating new ad copy variants based on what's working (and not working
 
 1. **`<segment-folder>/review.md`** — the most recent performance review (from `/performance`)
 2. **`<segment-folder>/ad-copy.md`** — the current copy
-3. **`<segment-folder>/creative/ad-status.json`** — current status of all ads (see Ad Status Context below)
+3. **Ad statuses from Supabase** via `deno task cli ad-status list <segment-slug>` (see Ad Status Context below)
 4. **`<segment-folder>/concepts.md`** — the original concepts (are there unused concepts to try?)
 5. **`<segment-folder>/empathy.md`** — go back to the empathy work for fresh angles
 6. **`segments/creative-brief.md`** — voice and product details
@@ -28,7 +28,13 @@ If there's no performance review yet, tell the user to run `/performance` first.
 
 ## Ad status context
 
-Read `<segment-folder>/creative/ad-status.json` before planning iterations. Use ad statuses to inform decisions:
+Read ad statuses from Supabase before planning iterations:
+
+```bash
+deno task cli ad-status list <segment-slug>
+```
+
+Use ad statuses to inform decisions:
 
 - **`live` ads** — these are running. Check performance data to decide: double down (create variants) or retire?
 - **`approved` ads** — approved but not yet deployed. Consider deploying these before writing new ones.
@@ -88,7 +94,7 @@ Keep a clear record of what was tested, what worked, and what was retired. This 
 
 ## Update ad status
 
-After writing new variant ads, update `<segment-folder>/creative/ad-status.json`:
+After writing new variant ads, update ad statuses in Supabase via the CLI:
 
 ### How to compute ad IDs
 
@@ -108,4 +114,9 @@ slugify(header):
 - New variant ads → status `unreviewed`, empty feedback
 - Don't touch existing entries (especially `live`, `approved`, or manually-set statuses)
 
-After writing, report how many new ads were added to ad-status.json and remind the user to run `/score` on the new variants.
+```bash
+# Set each new variant to unreviewed
+deno task cli ad-status set <segment-slug> <ad-id> --status unreviewed
+```
+
+After writing, report how many new ads were added and remind the user to run `/score` on the new variants.

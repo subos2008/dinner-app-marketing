@@ -133,7 +133,7 @@ Write the result to `<segment-folder>/review.md`.
 
 ## Ad status update
 
-After writing review.md, update ad statuses in `<segment-folder>/creative/ad-status.json` based on the verdicts. This populates the creative review app with AI feedback so the human reviewer has a starting point.
+After writing review.md, update ad statuses in Supabase via the CLI based on the verdicts. This populates the creative review app with AI feedback so the human reviewer has a starting point.
 
 ### How to compute ad IDs
 
@@ -160,30 +160,28 @@ slugify(header):
 | **Rewrite** | 1-2 | `feedback` | The review notes for this ad (specific issues and rewrite directions) |
 | **Polish** | 3 | `feedback` | The polish notes for this ad (what needs work) |
 
-### Writing ad-status.json
+### Writing ad statuses
 
-Read the existing `<segment-folder>/creative/ad-status.json` if it exists (preserve any manually-set statuses like `approved` or `live` — don't overwrite those). Then merge in the new statuses:
+Read existing statuses from Supabase (preserve any manually-set statuses like `approved` or `live` — don't overwrite those):
 
-```json
-{
-  "the-wednesday-night-problem-variant-a": {
-    "status": "unreviewed",
-    "feedback": "",
-    "updatedAt": "2026-02-28T12:00:00.000Z"
-  },
-  "the-wednesday-night-problem-variant-b": {
-    "status": "feedback",
-    "feedback": "Hook is generic — needs to be more specific to the transplant persona. Body copy is strong but the CTA feels bolted on. Rewrite the hook to reference the specific Wednesday night feeling from empathy.md.",
-    "updatedAt": "2026-02-28T12:00:00.000Z"
-  }
-}
+```bash
+# Read current statuses for the segment
+deno task cli ad-status list <segment-slug>
+```
+
+Then set each ad's status:
+
+```bash
+# Ship verdict (score 4-5) — set to unreviewed, no feedback
+deno task cli ad-status set <segment-slug> <ad-id> --status unreviewed
+
+# Polish/Rewrite verdict (score 1-3) — set to feedback with notes
+deno task cli ad-status set <segment-slug> <ad-id> --status feedback --feedback "<review notes>"
 ```
 
 **Important:**
 - Do NOT overwrite ads with status `approved` or `live` — those have been manually promoted and should stay
 - For ads with status `feedback` that already exist, update the feedback text with the new review notes
-- Create the `creative/` directory if it doesn't exist
-- Ensure the `ad-status.json` file is valid JSON
 
 After writing, report how many ads were set to each status.
 

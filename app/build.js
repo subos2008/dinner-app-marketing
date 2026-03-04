@@ -400,137 +400,18 @@ function slugifyHeader(header) {
     .replace(/^-+|-+$/g, '');
 }
 
-// --- Read ad-status.json ---
-function readAdStatus(segmentPath) {
-  const statusPath = path.join(segmentPath, 'creative', 'ad-status.json');
-  try {
-    return JSON.parse(fs.readFileSync(statusPath, 'utf-8'));
-  } catch {
-    return {};
-  }
-}
-
-// --- Creative manifest ---
-function parseManifest(segmentPath) {
-  const manifestPath = path.join(segmentPath, 'creative', 'manifest.json');
-  try {
-    return JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
-  } catch {
-    return null;
-  }
-}
-
-// --- List creative images (returns rich image objects) ---
+// --- List creative images (filenames only — metadata lives in Supabase) ---
 function listCreativeImages(segmentPath) {
   const creativePath = path.join(segmentPath, 'creative');
 
-  // Get all image files
-  let imageFiles;
   try {
-    imageFiles = fs.readdirSync(creativePath)
+    return fs.readdirSync(creativePath)
       .filter(f => /\.(png|jpg|jpeg|webp)$/i.test(f))
-      .sort();
+      .sort()
+      .map(filename => ({ filename }));
   } catch {
     return [];
   }
-
-  if (imageFiles.length === 0) return [];
-
-  // Read manifest.json if it exists
-  let manifestEntries = {};
-  try {
-    const manifest = JSON.parse(fs.readFileSync(path.join(creativePath, 'manifest.json'), 'utf-8'));
-    if (manifest.images && Array.isArray(manifest.images)) {
-      for (const entry of manifest.images) {
-        manifestEntries[entry.filename] = entry;
-      }
-    }
-  } catch {
-    // No manifest — will fall back to inference
-  }
-
-  return imageFiles.map(filename => {
-    const manifestEntry = manifestEntries[filename];
-
-    if (manifestEntry) {
-      return {
-        filename,
-        concept: manifestEntry.concept || null,
-        format: manifestEntry.format || null,
-        aspect_ratio: manifestEntry.aspect_ratio || null,
-        type: manifestEntry.type || 'base',
-        parent: manifestEntry.parent || null,
-        copy_variant: manifestEntry.copy_variant || null,
-        review: null,
-      };
-    }
-
-    // Fallback: infer from filename
-    return inferImageMetadata(filename);
-  });
-}
-
-// --- Infer image metadata from filename ---
-function inferImageMetadata(filename) {
-  const baseName = filename.replace(/\.(png|jpg|jpeg|webp)$/i, '');
-
-  // Determine format
-  let format = null;
-  if (baseName.includes('-feed-')) format = 'feed';
-  else if (baseName.includes('-story-')) format = 'story';
-
-  // Determine aspect ratio from filename
-  let aspect_ratio = null;
-  const ratioMatch = baseName.match(/(\d+)x(\d+)/);
-  if (ratioMatch) {
-    aspect_ratio = `${ratioMatch[1]}:${ratioMatch[2]}`;
-  }
-
-  // Determine type: composited if ends with -copy or -v followed by digits
-  const isComposited = /-copy$/.test(baseName) || /-v\d+$/.test(baseName);
-  const type = isComposited ? 'composited' : 'base';
-
-  // Determine parent for composited images
-  let parent = null;
-  if (isComposited) {
-    const parentBase = baseName.replace(/-(copy|v\d+)$/, '');
-    const ext = filename.match(/\.(png|jpg|jpeg|webp)$/i);
-    parent = ext ? parentBase + ext[0] : parentBase + '.png';
-  }
-
-  // Extract concept slug: everything before the format marker
-  let concept = null;
-  const formatMarker = baseName.match(/-(feed|story)-/);
-  if (formatMarker) {
-    const slug = baseName.slice(0, formatMarker.index);
-    concept = slugToConceptName(slug);
-  }
-
-  return {
-    filename,
-    concept,
-    format,
-    aspect_ratio,
-    type,
-    parent,
-    copy_variant: null,
-    review: null,
-  };
-}
-
-// --- Convert a slug like "wednesday-night-problem" to a concept name ---
-function slugToConceptName(slug) {
-  // Title-case each word
-  const words = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1));
-  const name = words.join(' ');
-
-  // Prefix with "The" for known patterns that start with "The"
-  const thePatterns = ['Wednesday', 'Google', 'Quiet', 'Transplant', 'Explorer', 'Outgrower', 'Sober', 'Plant', 'Healthy', 'Hippy'];
-  if (thePatterns.some(p => name.startsWith(p))) {
-    return 'The ' + name;
-  }
-
-  return name;
 }
 
 // --- Build data (returns object, does not write to disk) ---
@@ -552,9 +433,7 @@ function buildData() {
     const concepts = parseConcepts(conceptsContent);
     const adCopy = parseAdCopy(adCopyContent);
     const review = parseReview(reviewContent);
-    const manifest = parseManifest(segmentPath);
     const images = listCreativeImages(segmentPath);
-    const adStatus = readAdStatus(segmentPath);
 
     const segment = {
       slug: folder,
@@ -564,9 +443,7 @@ function buildData() {
       concepts,
       adCopy,
       review,
-      manifest,
       images,
-      adStatus,
       creativePath: `segments/${folder}/creative`,
     };
 

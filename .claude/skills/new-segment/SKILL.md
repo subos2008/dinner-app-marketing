@@ -67,7 +67,7 @@ Follow the `/write` skill instructions (read from `.claude/skills/write/SKILL.md
 Follow the `/score` skill instructions (read from `.claude/skills/score/SKILL.md`):
 - Score every ad against persona, empathy, and brief
 - Write review.md
-- Update creative/ad-status.json with verdict-based statuses
+- Update ad statuses in Supabase via `deno task cli ad-status set`
 
 ### 7. Update strategy
 
@@ -81,7 +81,7 @@ When complete, the segment folder should contain:
 - concepts.md
 - ad-copy.md
 - review.md
-- creative/ad-status.json (populated by the scoring step)
+- Ad statuses in Supabase (populated by the scoring step via CLI)
 - creative/ (ready for visual assets)
 
 Present a summary of the segment and the top 3 ads from the review. Remind the user that the next steps are:

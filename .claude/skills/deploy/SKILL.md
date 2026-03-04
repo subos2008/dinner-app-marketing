@@ -29,9 +29,13 @@ Before deploying, verify these files exist:
 
 ## Ad status gate
 
-**Before deploying any ads, check `<segment-folder>/creative/ad-status.json`.**
+**Before deploying any ads, check ad statuses from Supabase:**
 
-Read the file and check the status of each ad:
+```bash
+deno task cli ad-status list <segment-slug>
+```
+
+Check the status of each ad:
 
 - **Only deploy ads with `approved` status.** These have been reviewed and explicitly approved in the creative review app.
 - **Skip ads with any other status** (`unreviewed`, `feedback`, `live`).
@@ -78,7 +82,7 @@ Use the Meta Ads MCP tools to verify the connection is working. If authenticatio
 
 ### 4. Create ads
 
-Deploy only the **approved** ads from ad-status.json:
+Deploy only the **approved** ads (from Supabase ad statuses):
 - Use feed ad copy for Feed placements
 - Use Stories/Reels copy for Stories and Reels placements
 - **Creative assets:** Check `<segment-folder>/creative/` for images. If none exist, warn the user — Meta ads need visuals.
@@ -86,10 +90,12 @@ Deploy only the **approved** ads from ad-status.json:
 
 ### 5. Update ad status
 
-After successful deployment, update `<segment-folder>/creative/ad-status.json`:
-- Set all successfully deployed ads to `live`
-- Preserve the existing feedback text
-- Update the `updatedAt` timestamp
+After successful deployment, update ad statuses in Supabase:
+
+```bash
+# Set each deployed ad to live
+deno task cli ad-status set <segment-slug> <ad-id> --status live
+```
 
 ### 6. Verify and report
 

@@ -43,10 +43,16 @@ Use the Meta Ads MCP tools to retrieve:
 
 ## Ad status context
 
-Read `<segment-folder>/creative/ad-status.json` to cross-reference ad statuses with performance data. When presenting results:
+Read ad statuses from Supabase to cross-reference with performance data:
+
+```bash
+deno task cli ad-status list <segment-slug>
+```
+
+When presenting results:
 
 - Include the ad status (`live`, `approved`, etc.) alongside each ad's metrics
-- Flag any discrepancies — e.g. an ad marked `live` in ad-status.json that isn't showing impressions (may not have been deployed correctly)
+- Flag any discrepancies — e.g. an ad marked `live` that isn't showing impressions (may not have been deployed correctly)
 - Note any `approved` ads that haven't been deployed yet — these are ready to go and could be added to the campaign
 - This gives the user the full picture: what's running, what's waiting, and how everything is performing
 

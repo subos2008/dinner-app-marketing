@@ -117,44 +117,30 @@ If that file already exists:
 - `wednesday-night-problem-story-9x16.png`
 - `google-search-feed-4x5.png`
 
-### 5. Write manifest
+### 5. Register images in Supabase
 
-**Append new entries to the manifest — never remove existing ones.** The manifest is the full history of generated images.
+**Image metadata is append-only — never remove existing entries.** The Supabase `creative_image` table is the full history of generated images.
 
-Create or update `<segment-folder>/creative/manifest.json`:
+First, check existing images to avoid duplicates and determine version suffixes:
 
-```json
-{
-  "segment": "<segment-slug>",
-  "generated_at": "<ISO date>",
-  "images": [
-    {
-      "filename": "wednesday-night-problem-feed-1x1.png",
-      "concept": "The Wednesday Night Problem",
-      "ad_variant": "Variant B",
-      "format": "feed",
-      "aspect_ratio": "1:1",
-      "type": "base",
-      "parent": null,
-      "prompt": "the actual prompt sent to Nano Banana",
-      "style": "photorealistic, warm tones, editorial",
-      "visual_type": "solo person in city"
-    }
-  ]
-}
+```bash
+deno task cli images list <segment-slug>
 ```
 
-For composited images (base + ad copy text overlaid via edit_image):
-```json
-{
-  "filename": "wednesday-night-problem-feed-1x1-copy.png",
-  "concept": "The Wednesday Night Problem",
-  "type": "composited",
-  "parent": "wednesday-night-problem-feed-1x1.png",
-  "copy_variant": "Variant B",
-  "format": "feed",
-  "aspect_ratio": "1:1"
-}
+Then register each new image:
+
+```bash
+# Base image
+deno task cli images add <segment-slug> --filename "wednesday-night-problem-feed-1x1.png" --concept "The Wednesday Night Problem" --format feed --aspect-ratio 1:1 --type base --prompt "the actual prompt sent to Nano Banana" --style "photorealistic, warm tones, editorial" --visual-type "solo person in city" --ad-variant "Variant B"
+
+# Composited image (base + ad copy text overlaid via edit_image)
+deno task cli images add <segment-slug> --filename "wednesday-night-problem-feed-1x1-copy.png" --concept "The Wednesday Night Problem" --format feed --aspect-ratio 1:1 --type composited --parent "wednesday-night-problem-feed-1x1.png" --ad-variant "Variant B"
+```
+
+After registering images, sync them to Supabase Storage:
+
+```bash
+deno task cli sync --images-only
 ```
 
 ## Quality checks
@@ -183,7 +169,7 @@ After generation, report:
 |-------|---------|--------|---------|
 | [filename] | [concept] | [format] | [brief note] |
 
-**Manifest:** Updated at <segment-folder>/creative/manifest.json
+**Images:** Registered in Supabase via `deno task cli images add`
 
 ### Next steps
 - Review images in the creative review app (`cd app && node server.js`, open http://localhost:8642)
@@ -196,5 +182,5 @@ After generation, report:
 
 - Nano Banana MCP must be configured in `.mcp.json` — if the tool isn't available, tell the user to check their MCP config and restart Claude Code
 - Generate conservatively — 2-3 images per concept is enough for testing. Don't generate 20 images upfront.
-- The manifest.json is what the review app reads — keep it accurate
+- The Supabase `creative_image` table is what the review app reads — keep it accurate
 - If generating for cross-segment, use generic visual types (restaurant tables, food, group shots) rather than segment-specific emotional hooks
