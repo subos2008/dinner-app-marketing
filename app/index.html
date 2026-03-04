@@ -879,6 +879,50 @@
     font-style: italic;
   }
 
+  /* --- Prompt group headers --- */
+  .prompt-group {
+    margin-bottom: 24px;
+  }
+
+  .prompt-group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--light-gray);
+  }
+
+  .prompt-group-text {
+    flex: 1;
+    font-size: 13px;
+    color: var(--warm-gray);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  .prompt-group-reuse {
+    flex-shrink: 0;
+    background: transparent;
+    border: 1px solid var(--light-gray);
+    color: var(--warm-gray);
+    font-size: 13px;
+    padding: 2px 8px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1;
+  }
+
+  .prompt-group-reuse:hover {
+    border-color: var(--amber);
+    color: var(--amber-dark);
+    background: rgba(200, 149, 108, 0.08);
+  }
+
   /* --- Utility --- */
   .hidden { display: none !important; }
 
@@ -1206,24 +1250,73 @@
       $panelImages.innerHTML = '<div class="empty-state"><p>No images yet.</p><p>Upload images via the CLI or API.</p></div>';
       return;
     }
-    let html = '<div class="image-grid">';
+
+    // Group images by generation_prompt_id
+    const groups = new Map(); // promptId -> { prompt, images }
+    const ungrouped = [];
     for (const img of STATE.images) {
-      const src = storageBaseUrl + '/' + img.storage_path;
-      const tagsHtml = (img.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t.name) + '</span>').join('');
-      html += '<div class="image-card" draggable="true" data-image-id="' + img.id + '">'
-        + '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(img.filename) + '" loading="lazy" />'
-        + '<div class="image-card-info">' + escapeHtml(img.filename) + '</div>'
-        + (tagsHtml ? '<div class="image-card-tags">' + tagsHtml + '</div>' : '')
+      const gp = img.generation_prompt;
+      if (gp && gp.id) {
+        if (!groups.has(gp.id)) {
+          groups.set(gp.id, { prompt: gp, images: [] });
+        }
+        groups.get(gp.id).images.push(img);
+      } else {
+        ungrouped.push(img);
+      }
+    }
+
+    let html = '';
+
+    function renderImageGrid(images) {
+      let g = '<div class="image-grid">';
+      for (const img of images) {
+        const src = storageBaseUrl + '/' + img.storage_path;
+        const tagsHtml = (img.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t.name) + '</span>').join('');
+        g += '<div class="image-card" draggable="true" data-image-id="' + img.id + '">'
+          + '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(img.filename) + '" loading="lazy" />'
+          + '<div class="image-card-info">' + escapeHtml(img.filename) + '</div>'
+          + (tagsHtml ? '<div class="image-card-tags">' + tagsHtml + '</div>' : '')
+          + '</div>';
+      }
+      g += '</div>';
+      return g;
+    }
+
+    // Render grouped
+    for (const [promptId, group] of groups) {
+      html += '<div class="prompt-group">'
+        + '<div class="prompt-group-header">'
+        + '<span class="prompt-group-text" title="' + escapeHtml(group.prompt.prompt) + '">' + escapeHtml(group.prompt.prompt) + '</span>'
+        + '<button class="prompt-group-reuse" data-prompt-text="' + escapeHtml(group.prompt.prompt) + '" data-prompt-type="' + escapeHtml(group.prompt.type) + '" title="Re-use this prompt">&#8635;</button>'
+        + '</div>'
+        + renderImageGrid(group.images)
         + '</div>';
     }
-    html += '</div>';
+
+    // Render ungrouped
+    if (ungrouped.length > 0) {
+      html += '<div class="prompt-group">';
+      if (groups.size > 0) {
+        html += '<div class="prompt-group-header"><span class="prompt-group-text">Ungrouped</span></div>';
+      }
+      html += renderImageGrid(ungrouped) + '</div>';
+    }
+
     $panelImages.innerHTML = html;
 
     // Attach drag handlers to image cards
-    document.querySelectorAll('.image-card[draggable]').forEach(card => {
+    $panelImages.querySelectorAll('.image-card[draggable]').forEach(card => {
       card.addEventListener('dragstart', (e) => {
         e.dataTransfer.setData('application/image-id', card.dataset.imageId);
         e.dataTransfer.effectAllowed = 'copy';
+      });
+    });
+
+    // Attach re-use handlers
+    $panelImages.querySelectorAll('.prompt-group-reuse').forEach(btn => {
+      btn.addEventListener('click', () => {
+        reusePrompt(btn.dataset.promptText, btn.dataset.promptType);
       });
     });
   }
@@ -1238,13 +1331,52 @@
     if (STATE.captions.length === 0) {
       html += '<div class="empty-state"><p>No captions yet.</p></div>';
     } else {
+      // Group captions by generation_prompt_id
+      const groups = new Map();
+      const ungrouped = [];
       for (const cap of STATE.captions) {
-        const tagsHtml = (cap.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t.name) + '</span>').join('');
-        html += '<div class="caption-card" draggable="true" data-caption-id="' + cap.id + '">'
-          + '<div class="caption-card-text">' + escapeHtml(cap.text) + '</div>'
-          + (tagsHtml ? '<div class="caption-card-tags">' + tagsHtml + '</div>' : '')
-          + '<button class="btn-delete" onclick="window.__deleteCaption(\'' + cap.id + '\')" title="Delete">&times;</button>'
+        const gp = cap.generation_prompt;
+        if (gp && gp.id) {
+          if (!groups.has(gp.id)) {
+            groups.set(gp.id, { prompt: gp, captions: [] });
+          }
+          groups.get(gp.id).captions.push(cap);
+        } else {
+          ungrouped.push(cap);
+        }
+      }
+
+      function renderCaptionCards(captions) {
+        let c = '';
+        for (const cap of captions) {
+          const tagsHtml = (cap.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t.name) + '</span>').join('');
+          c += '<div class="caption-card" draggable="true" data-caption-id="' + cap.id + '">'
+            + '<div class="caption-card-text">' + escapeHtml(cap.text) + '</div>'
+            + (tagsHtml ? '<div class="caption-card-tags">' + tagsHtml + '</div>' : '')
+            + '<button class="btn-delete" onclick="window.__deleteCaption(\'' + cap.id + '\')" title="Delete">&times;</button>'
+            + '</div>';
+        }
+        return c;
+      }
+
+      // Render grouped
+      for (const [promptId, group] of groups) {
+        html += '<div class="prompt-group">'
+          + '<div class="prompt-group-header">'
+          + '<span class="prompt-group-text" title="' + escapeHtml(group.prompt.prompt) + '">' + escapeHtml(group.prompt.prompt) + '</span>'
+          + '<button class="prompt-group-reuse" data-prompt-text="' + escapeHtml(group.prompt.prompt) + '" data-prompt-type="' + escapeHtml(group.prompt.type) + '" title="Re-use this prompt">&#8635;</button>'
+          + '</div>'
+          + renderCaptionCards(group.captions)
           + '</div>';
+      }
+
+      // Render ungrouped
+      if (ungrouped.length > 0) {
+        html += '<div class="prompt-group">';
+        if (groups.size > 0) {
+          html += '<div class="prompt-group-header"><span class="prompt-group-text">Ungrouped</span></div>';
+        }
+        html += renderCaptionCards(ungrouped) + '</div>';
       }
     }
     $panelCaptions.innerHTML = html;
@@ -1267,10 +1399,17 @@
     }
 
     // Attach drag handlers to caption cards
-    document.querySelectorAll('.caption-card[draggable]').forEach(card => {
+    $panelCaptions.querySelectorAll('.caption-card[draggable]').forEach(card => {
       card.addEventListener('dragstart', (e) => {
         e.dataTransfer.setData('application/caption-id', card.dataset.captionId);
         e.dataTransfer.effectAllowed = 'copy';
+      });
+    });
+
+    // Attach re-use handlers
+    $panelCaptions.querySelectorAll('.prompt-group-reuse').forEach(btn => {
+      btn.addEventListener('click', () => {
+        reusePrompt(btn.dataset.promptText, btn.dataset.promptType);
       });
     });
   }
@@ -1374,8 +1513,9 @@
       + '</div>';
 
     // Prompt
+    const promptFromStorage = localStorage.getItem('generate-prompt-' + generateType) || '';
     html += '<div class="generate-prompt">'
-      + '<textarea id="generate-prompt-text" placeholder="Describe what you want..."></textarea>'
+      + '<textarea id="generate-prompt-text" placeholder="Describe what you want...">' + escapeHtml(promptFromStorage) + '</textarea>'
       + '</div>';
 
     // Actions
@@ -1419,18 +1559,26 @@
     // Type toggle
     $panelGenerate.querySelectorAll('.generate-type-toggle button').forEach(btn => {
       btn.addEventListener('click', () => {
+        // Save current prompt before switching
+        localStorage.setItem('generate-prompt-' + generateType, $prompt.value);
         generateType = btn.dataset.genType;
         $panelGenerate.querySelectorAll('.generate-type-toggle button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        // Restore prompt for new type
+        $prompt.value = localStorage.getItem('generate-prompt-' + generateType) || '';
         updateGenBtn();
       });
     });
 
-    // Prompt input — enable/disable generate button
+    // Prompt input — enable/disable generate button + persist
     function updateGenBtn() {
       $genBtn.disabled = !$prompt.value.trim();
     }
-    $prompt.addEventListener('input', updateGenBtn);
+    $prompt.addEventListener('input', () => {
+      localStorage.setItem('generate-prompt-' + generateType, $prompt.value);
+      updateGenBtn();
+    });
+    updateGenBtn();
 
     // Generate button
     $genBtn.addEventListener('click', async () => {
@@ -1457,7 +1605,6 @@
         }
 
         $genStatus.textContent = '';
-        $prompt.value = '';
 
         // Reload data then switch to the appropriate tab
         await loadData();
@@ -1481,6 +1628,28 @@
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     const panel = document.getElementById('panel-' + tabName);
     if (panel) panel.classList.add('active');
+  }
+
+  function reusePrompt(text, type) {
+    switchToTab('generate');
+    // Set prompt text
+    const $prompt = document.getElementById('generate-prompt-text');
+    if ($prompt) {
+      $prompt.value = text;
+      localStorage.setItem('generate-prompt-' + (type || generateType), text);
+    }
+    // Set type toggle
+    if (type === 'image' || type === 'caption') {
+      generateType = type;
+      $panelGenerate.querySelectorAll('.generate-type-toggle button').forEach(b => {
+        b.classList.toggle('active', b.dataset.genType === type);
+      });
+    }
+    // Enable generate button
+    const $genBtn = document.getElementById('generate-btn');
+    if ($genBtn) $genBtn.disabled = !text;
+    // Focus the prompt field
+    if ($prompt) $prompt.focus();
   }
 
   // --- Ads panel ---

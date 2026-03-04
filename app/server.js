@@ -257,6 +257,13 @@ app.get('/api/creative-brief', requireAuth, (req, res) => {
   }
 });
 
+// --- Generation Prompts ---
+
+app.get('/api/generation-prompts', requireAuth, async (req, res) => {
+  try { res.json(await db.getGenerationPrompts(req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // --- Generate (images & captions via claude -p) ---
 
 app.post('/api/generate', requireAuth, async (req, res) => {
@@ -296,6 +303,10 @@ app.post('/api/generate', requireAuth, async (req, res) => {
   }
 
   try {
+    // Create generation_prompt row first
+    const genPrompt = await db.createGenerationPrompt({ type, prompt, brief }, req.token);
+    const genPromptId = genPrompt.id;
+
     if (type === 'image') {
       // Snapshot /tmp images before
       const tmpPngsBefore = new Set(
@@ -392,7 +403,7 @@ app.post('/api/generate', requireAuth, async (req, res) => {
       }
 
       // Create base_image row
-      const image = await db.createImage({ filename, storage_path: storagePath, prompt }, req.token);
+      const image = await db.createImage({ filename, storage_path: storagePath, prompt, generation_prompt_id: genPromptId }, req.token);
       console.log(`[generate] Image created: ${image.id}`);
       return res.json({ image });
 
@@ -437,7 +448,7 @@ app.post('/api/generate', requireAuth, async (req, res) => {
       // Create caption rows
       const created = [];
       for (const text of captions) {
-        const cap = await db.createCaption(text.trim(), req.token);
+        const cap = await db.createCaption(text.trim(), req.token, genPromptId);
         created.push(cap);
       }
       console.log(`[generate] Created ${created.length} captions`);

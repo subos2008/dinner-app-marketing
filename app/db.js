@@ -91,13 +91,36 @@ async function deleteTag(id, token) {
   if (error) throw error;
 }
 
+// --- Generation Prompts ---
+
+async function createGenerationPrompt({ type, prompt, brief }, token) {
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('generation_prompt')
+    .insert({ type, prompt, brief: brief || null })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function getGenerationPrompts(token) {
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('generation_prompt')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
 // --- Base Images ---
 
 async function getImages(token) {
   const client = clientForRequest(token);
   const { data, error } = await client
     .from('base_image')
-    .select('*, base_image_tag(tag_id, tag:tag_id(id, name))')
+    .select('*, base_image_tag(tag_id, tag:tag_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
     .order('created_at', { ascending: false });
   if (error) throw error;
   return data.map(row => {
@@ -109,9 +132,11 @@ async function getImages(token) {
 
 async function createImage(data, token) {
   const client = clientForRequest(token);
+  const insert = { filename: data.filename, storage_path: data.storage_path, prompt: data.prompt };
+  if (data.generation_prompt_id) insert.generation_prompt_id = data.generation_prompt_id;
   const { data: row, error } = await client
     .from('base_image')
-    .insert({ filename: data.filename, storage_path: data.storage_path, prompt: data.prompt })
+    .insert(insert)
     .select()
     .single();
   if (error) throw error;
@@ -167,7 +192,7 @@ async function getCaptions(token) {
   const client = clientForRequest(token);
   const { data, error } = await client
     .from('caption')
-    .select('*, caption_tag(tag_id, tag:tag_id(id, name))')
+    .select('*, caption_tag(tag_id, tag:tag_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
     .order('created_at', { ascending: false });
   if (error) throw error;
   return data.map(row => {
@@ -177,11 +202,13 @@ async function getCaptions(token) {
   });
 }
 
-async function createCaption(text, token) {
+async function createCaption(text, token, generationPromptId) {
   const client = clientForRequest(token);
+  const insert = { text };
+  if (generationPromptId) insert.generation_prompt_id = generationPromptId;
   const { data, error } = await client
     .from('caption')
-    .insert({ text })
+    .insert(insert)
     .select()
     .single();
   if (error) throw error;
@@ -401,6 +428,9 @@ module.exports = {
   clientForRequest,
   getServiceClient,
   getRealtimeClient,
+  // Generation Prompts
+  createGenerationPrompt,
+  getGenerationPrompts,
   // Tags
   getTags,
   createTag,
