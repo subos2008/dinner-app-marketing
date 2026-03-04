@@ -44,7 +44,7 @@ async function requireAuth(req, res, next) {
 
 // Serve index.html at root
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile('index.html', { root: __dirname, dotfiles: 'allow' });
 });
 
 // --- Tags ---

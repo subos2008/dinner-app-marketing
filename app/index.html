@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Come Join Us — Creative Review</title>
+<title>Come Join Us — Ad Manager</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&family=JetBrains+Mono:wght@400&display=swap');
 
@@ -18,9 +18,6 @@
     --light-gray: #E8E2DC;
     --red: #C4553A;
     --green: #5B8A5E;
-    --pink: #D4668E;
-    --gold: #B8963E;
-    --blue-gray: #7A8B8F;
     --shadow-sm: 0 1px 3px rgba(44, 40, 38, 0.08);
     --shadow-md: 0 4px 16px rgba(44, 40, 38, 0.1);
     --shadow-lg: 0 8px 32px rgba(44, 40, 38, 0.12);
@@ -31,7 +28,6 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
 
   body {
@@ -46,19 +42,16 @@
   /* --- Top bar --- */
   .topbar {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     z-index: 100;
     background: var(--charcoal);
     color: var(--cream);
-    padding: 0 32px;
+    padding: 0 24px;
     height: 52px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 13px;
-    letter-spacing: 0.03em;
   }
 
   .topbar-brand {
@@ -70,2620 +63,1376 @@
 
   .topbar-brand span { opacity: 0.5; font-weight: 300; }
 
-  .topbar-meta {
-    opacity: 0.5;
-    font-size: 12px;
-    font-family: var(--font-mono);
-  }
-
-  /* --- Sidebar --- */
-  .sidebar {
-    position: fixed;
-    top: 52px;
-    left: 0;
-    bottom: 0;
-    width: 260px;
-    background: var(--warm-white);
-    border-right: 1px solid var(--light-gray);
-    overflow-y: auto;
-    z-index: 90;
-    padding: 24px 0;
-  }
-
-  .sidebar-section {
-    padding: 0 20px;
-    margin-bottom: 24px;
-  }
-
-  .sidebar-section-title {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--warm-gray);
-    font-weight: 600;
-    margin-bottom: 10px;
-  }
-
-  .sidebar-item {
+  .topbar-right {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    border-radius: var(--radius);
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--charcoal);
-    transition: all 0.15s;
-    margin-bottom: 2px;
-  }
-
-  .sidebar-item:hover { background: var(--light-gray); }
-
-  .sidebar-item.active {
-    background: var(--charcoal);
-    color: var(--cream);
-  }
-
-  .sidebar-item .badge {
-    margin-left: auto;
-    font-size: 11px;
+    gap: 16px;
     font-family: var(--font-mono);
-    opacity: 0.5;
+    font-size: 12px;
+    opacity: 0.6;
   }
 
-  .sidebar-item .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
+  .topbar-right button {
+    background: transparent;
+    border: 1px solid rgba(250,246,241,0.25);
+    color: var(--cream);
+    padding: 4px 12px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+
+  .topbar-right button:hover { opacity: 1; }
+
+  /* --- Main layout --- */
+  .main {
+    display: grid;
+    grid-template-columns: 55% 45%;
+    margin-top: 52px;
+    height: calc(100vh - 52px);
+  }
+
+  .panel-library {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--light-gray);
+    overflow: hidden;
+  }
+
+  .panel-ads {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* --- Tabs --- */
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--light-gray);
+    background: var(--warm-white);
     flex-shrink: 0;
   }
 
-  .dot-life { background: var(--amber); }
-  .dot-lifestyle { background: var(--blue-gray); }
-  .dot-cross { background: var(--gold); }
-
-  /* --- Main content --- */
-  .main {
-    margin-left: 260px;
-    margin-top: 52px;
-    padding: 40px 48px;
-    max-width: 1100px;
-  }
-
-  /* --- Segment header --- */
-  .segment-header {
-    margin-bottom: 48px;
-    padding-bottom: 32px;
-    border-bottom: 1px solid var(--light-gray);
-  }
-
-  .segment-type {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--amber);
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-
-  .segment-title {
-    font-family: var(--font-display);
-    font-size: 42px;
+  .tab {
+    padding: 12px 24px;
+    font-size: 14px;
     font-weight: 400;
-    line-height: 1.15;
-    margin-bottom: 16px;
-  }
-
-  .segment-hook {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 20px;
-    color: var(--warm-gray);
-    line-height: 1.4;
-    max-width: 600px;
-  }
-
-  .segment-meta {
-    display: flex;
-    gap: 32px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-  }
-
-  .meta-item {
-    font-size: 13px;
-  }
-
-  .meta-item .label {
-    font-weight: 600;
-    color: var(--warm-gray);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 10px;
-    display: block;
-    margin-bottom: 2px;
-  }
-
-  /* --- Persona card --- */
-  .persona-card {
-    background: var(--warm-white);
-    border: 1px solid var(--light-gray);
-    border-radius: var(--radius);
-    padding: 28px 32px;
-    margin-bottom: 40px;
-    position: relative;
-  }
-
-  .persona-card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: var(--amber);
-    border-radius: var(--radius) 0 0 var(--radius);
-  }
-
-  .persona-card h3 {
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 400;
-    margin-bottom: 12px;
-    color: var(--amber-dark);
-  }
-
-  .persona-text {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--warm-gray);
-  }
-
-  /* --- Collapsible sections --- */
-  .collapsible {
-    margin-bottom: 12px;
-  }
-
-  .collapsible-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 0;
     cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    border-bottom: 2px solid transparent;
     color: var(--warm-gray);
-    border-bottom: 1px solid var(--light-gray);
+    transition: color 0.15s, border-color 0.15s;
     user-select: none;
   }
 
-  .collapsible-header:hover { color: var(--charcoal); }
+  .tab:hover { color: var(--charcoal); }
 
-  .collapsible-arrow {
-    transition: transform 0.2s;
-    font-size: 10px;
+  .tab.active {
+    color: var(--charcoal);
+    font-weight: 600;
+    border-bottom-color: var(--amber);
   }
 
-  .collapsible.open .collapsible-arrow { transform: rotate(90deg); }
-
-  .collapsible-body {
-    display: none;
-    padding: 16px 0;
+  /* --- Panel content area --- */
+  .tab-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    position: relative;
   }
 
-  .collapsible.open .collapsible-body { display: block; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
 
-  /* --- Concepts list --- */
-  .concept-list {
-    list-style: none;
-    padding: 0;
-  }
-
-  .concept-list li {
+  .panel-header {
     display: flex;
-    align-items: baseline;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.04);
-    font-size: 15px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--light-gray);
+    background: var(--warm-white);
+    flex-shrink: 0;
   }
 
-  .concept-rank {
+  .panel-header h2 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  .panel-header .count {
     font-family: var(--font-mono);
     font-size: 12px;
-    color: var(--amber);
-    min-width: 20px;
-  }
-
-  .concept-name { font-weight: 600; }
-
-  .concept-insight {
-    font-size: 13px;
     color: var(--warm-gray);
-    margin-top: 4px;
   }
 
-  /* --- Section titles --- */
-  .section-title {
-    font-family: var(--font-display);
-    font-size: 28px;
-    font-weight: 400;
-    margin: 48px 0 24px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid var(--charcoal);
+  .ads-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
   }
 
-  .section-subtitle {
+  /* --- Image grid --- */
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .image-card {
+    position: relative;
+    background: var(--warm-white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.15s, outline-color 0.15s;
+    outline: 3px dashed transparent;
+  }
+
+  .image-card:hover { box-shadow: var(--shadow-md); }
+
+  .image-card.drop-target {
+    outline: 3px dashed var(--amber);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .image-card img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+  }
+
+  .image-card-info {
+    padding: 8px 10px;
     font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
     color: var(--warm-gray);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .image-card-tags {
+    padding: 0 10px 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* --- Tag chips --- */
+  .tag-chip {
+    display: inline-block;
+    background: var(--amber-light);
+    color: var(--amber-dark);
+    font-size: 10px;
     font-weight: 600;
-    margin-bottom: 16px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  /* --- Caption strip (below images panel) --- */
+  .caption-strip {
+    border-top: 1px solid var(--light-gray);
+    background: var(--warm-white);
+    padding: 10px 24px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    flex-shrink: 0;
+  }
+
+  .caption-strip:empty { display: none; }
+
+  .caption-chip {
+    background: var(--amber-light);
+    color: var(--amber-dark);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 16px;
+    white-space: nowrap;
+    cursor: grab;
+    user-select: none;
+    flex-shrink: 0;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: box-shadow 0.15s;
+  }
+
+  .caption-chip:active { cursor: grabbing; }
+  .caption-chip:hover { box-shadow: var(--shadow-md); }
+
+  /* --- Caption cards --- */
+  .caption-card {
+    position: relative;
+    background: var(--warm-white);
+    padding: 14px 40px 14px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    box-shadow: var(--shadow-sm);
+    cursor: grab;
+    user-select: none;
+    transition: box-shadow 0.15s;
+  }
+
+  .caption-card:active { cursor: grabbing; }
+  .caption-card:hover { box-shadow: var(--shadow-md); }
+
+  .caption-card-text {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+
+  .caption-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* --- Body copy cards --- */
+  .bodycopy-card {
+    position: relative;
+    background: var(--warm-white);
+    padding: 14px 40px 14px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .bodycopy-card:hover { box-shadow: var(--shadow-md); }
+
+  .bodycopy-headline {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .bodycopy-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--warm-gray);
+    margin-bottom: 6px;
+  }
+
+  .bodycopy-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* --- Delete button (cards) --- */
+  .btn-delete {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: transparent;
+    border: none;
+    color: var(--warm-gray);
+    font-size: 16px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s, color 0.15s;
+    line-height: 1;
+    padding: 4px;
+  }
+
+  .caption-card:hover .btn-delete,
+  .bodycopy-card:hover .btn-delete,
+  .ad-card:hover .btn-delete {
+    opacity: 1;
+  }
+
+  .btn-delete:hover { color: var(--red); }
+
+  /* --- Add forms --- */
+  .add-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .add-form input,
+  .add-form textarea {
+    flex: 1;
+    font-family: var(--font-body);
+    font-size: 13px;
+    padding: 8px 12px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .add-form input:focus,
+  .add-form textarea:focus {
+    border-color: var(--amber);
+  }
+
+  .add-form textarea {
+    min-height: 60px;
+    resize: vertical;
+  }
+
+  .add-form button,
+  .btn-primary {
+    flex-shrink: 0;
+    background: var(--amber);
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .add-form button:hover,
+  .btn-primary:hover {
+    background: var(--amber-dark);
+  }
+
+  .bodycopy-form {
+    flex-direction: column;
+  }
+
+  .bodycopy-form-row {
+    display: flex;
+    gap: 8px;
   }
 
   /* --- Ad cards --- */
-  .ad-concept-group {
-    margin-bottom: 48px;
-  }
-
-  .ad-concept-title {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 400;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .ad-concept-title .priority-badge {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    background: var(--amber-light);
-    color: var(--amber-dark);
-    padding: 2px 8px;
-    border-radius: 3px;
-  }
-
   .ad-card {
-    background: var(--warm-white);
+    position: relative;
+    background: #fff;
     border: 1px solid var(--light-gray);
     border-radius: var(--radius);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     overflow: hidden;
-    transition: box-shadow 0.2s;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.15s;
   }
 
   .ad-card:hover { box-shadow: var(--shadow-md); }
 
-  .ad-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--light-gray);
-    background: rgba(200, 149, 108, 0.04);
-  }
-
-  .ad-card-name {
-    font-weight: 600;
-    font-size: 14px;
-  }
-
-  .ad-card-badges {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .format-badge {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 3px;
-    background: var(--light-gray);
-    color: var(--warm-gray);
-  }
-
-  .format-badge.feed { background: #E8EAF0; color: #4A5568; }
-  .format-badge.story { background: #F0E8F0; color: #6B4A6B; }
-
-  .verdict-badge {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 3px;
-  }
-
-  .verdict-ship { background: #E8F0E8; color: var(--green); }
-  .verdict-polish { background: #FFF3E0; color: #C8801C; }
-  .verdict-rework { background: #FDE8E8; color: var(--red); }
-
-  .ad-card-body {
-    display: flex;
-    gap: 0;
-  }
-
   .ad-card-image {
-    width: 240px;
-    min-height: 200px;
-    flex-shrink: 0;
-    background: var(--light-gray);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--warm-gray);
-    font-size: 12px;
-    overflow: hidden;
     position: relative;
+    width: 100%;
+    background: var(--light-gray);
   }
 
   .ad-card-image img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .ad-card-image .no-image {
-    text-align: center;
-    padding: 20px;
-    opacity: 0.5;
-  }
-
-  .no-image-icon {
-    font-size: 32px;
-    margin-bottom: 8px;
     display: block;
-    opacity: 0.3;
   }
 
-  .ad-card-copy {
-    flex: 1;
-    padding: 20px 24px;
-  }
-
-  .ad-hook {
-    font-family: var(--font-display);
-    font-size: 17px;
-    font-weight: 700;
+  .ad-card-caption-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(44, 40, 38, 0.75);
+    color: #fff;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 400;
     line-height: 1.4;
-    margin-bottom: 12px;
-    color: var(--charcoal);
   }
 
-  .ad-body-text {
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--warm-gray);
-    margin-bottom: 12px;
-    white-space: pre-line;
+  .ad-card-body {
+    padding: 16px;
   }
 
-  .ad-cta {
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--amber-dark);
-    margin-bottom: 8px;
-  }
-
-  .ad-cta-button {
-    display: inline-block;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 600;
-    padding: 4px 12px;
-    border: 1px solid var(--amber);
-    border-radius: 3px;
-    color: var(--amber-dark);
-  }
-
-  /* Stories/Reels card */
-  .story-frames {
-    padding: 20px 24px;
-  }
-
-  .story-frame {
-    display: flex;
-    gap: 10px;
-    align-items: baseline;
-    padding: 6px 0;
-    font-size: 14px;
-  }
-
-  .frame-number {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--amber);
-    min-width: 16px;
-  }
-
-  .visual-direction {
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid var(--light-gray);
-    font-size: 13px;
-    color: var(--warm-gray);
+  .ad-card-caption-text {
     font-style: italic;
-  }
-
-  /* --- Scores --- */
-  .score-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border-top: 1px solid var(--light-gray);
-    font-size: 12px;
-    background: rgba(0,0,0,0.01);
-    flex-wrap: wrap;
-  }
-
-  .score-pill {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 0;
-  }
-
-  .score-label {
     color: var(--warm-gray);
-    font-weight: 400;
+    font-size: 14px;
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-left: 3px solid var(--amber-light);
   }
 
-  .score-value {
-    font-family: var(--font-mono);
-    font-weight: 400;
+  .ad-card-bodycopy {
+    margin-bottom: 12px;
   }
 
-  .score-1, .score-2 { color: var(--red); }
-  .score-3 { color: var(--gold); }
-  .score-4 { color: var(--blue-gray); }
-  .score-5 { color: var(--green); }
-
-  .score-divider {
-    width: 1px;
-    height: 14px;
-    background: var(--light-gray);
-  }
-
-  .overall-score {
-    margin-left: auto;
+  .ad-card-bodycopy-headline {
     font-weight: 600;
-    font-size: 13px;
+    font-size: 14px;
+    margin-bottom: 2px;
   }
 
-  /* --- Top ads summary --- */
-  .top-ads {
-    margin-bottom: 40px;
-  }
-
-  .top-ad-item {
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--light-gray);
-  }
-
-  .top-ad-rank {
-    font-family: var(--font-display);
-    font-size: 32px;
-    color: var(--amber-light);
-    min-width: 40px;
-  }
-
-  .top-ad-content h4 {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .top-ad-content p {
+  .ad-card-bodycopy-text {
     font-size: 13px;
     color: var(--warm-gray);
     line-height: 1.5;
   }
 
-  .top-ad-score {
-    font-family: var(--font-mono);
+  .ad-card-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .ad-card-status label {
     font-size: 12px;
-    padding: 2px 6px;
-    border-radius: 3px;
-    background: #E8F0E8;
-    color: var(--green);
-  }
-
-  /* --- Pain points table --- */
-  .pain-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-    margin-top: 8px;
-  }
-
-  .pain-table th {
-    text-align: left;
-    font-size: 10px;
+    font-weight: 600;
+    color: var(--warm-gray);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--warm-gray);
+    letter-spacing: 0.05em;
+  }
+
+  .ad-card-status select {
+    font-family: var(--font-body);
+    font-size: 13px;
+    padding: 4px 8px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--charcoal);
+    cursor: pointer;
+  }
+
+  .status-badge {
+    font-size: 11px;
     font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .status-badge.draft { background: var(--light-gray); color: var(--warm-gray); }
+  .status-badge.approved { background: #d9ead3; color: var(--green); }
+  .status-badge.live { background: #fce8d5; color: var(--amber-dark); }
+  .status-badge.paused { background: #f5d5cc; color: var(--red); }
+
+  .ad-card-feedback textarea {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 13px;
     padding: 8px 12px;
-    border-bottom: 2px solid var(--light-gray);
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    background: var(--warm-white);
+    color: var(--charcoal);
+    resize: vertical;
+    min-height: 48px;
+    outline: none;
+    transition: border-color 0.15s;
   }
 
-  .pain-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--light-gray);
-    vertical-align: top;
-    line-height: 1.5;
-    color: var(--warm-gray);
+  .ad-card-feedback textarea:focus { border-color: var(--amber); }
+
+  .ad-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
   }
 
-  /* --- Key phrases --- */
-  .phrase-category {
+  .btn-generate {
+    background: var(--charcoal);
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .btn-generate:hover { opacity: 0.85; }
+  .btn-generate:disabled { opacity: 0.4; cursor: default; }
+
+  /* --- Modal --- */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal-backdrop.hidden { display: none; }
+
+  .modal {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    width: 480px;
+    max-width: 90vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 28px;
+  }
+
+  .modal h3 {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 20px;
+  }
+
+  .modal-preview {
+    position: relative;
+    margin-bottom: 20px;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .modal-preview img {
+    width: 100%;
+    display: block;
+  }
+
+  .modal-preview-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(44, 40, 38, 0.75);
+    color: #fff;
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .modal-field {
     margin-bottom: 16px;
   }
 
-  .phrase-category h4 {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: var(--charcoal);
-  }
-
-  .phrase-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .phrase-tag {
+  .modal-field label {
+    display: block;
     font-size: 12px;
-    padding: 4px 10px;
-    background: var(--cream);
-    border: 1px solid var(--light-gray);
-    border-radius: 20px;
+    font-weight: 600;
     color: var(--warm-gray);
-    line-height: 1.3;
-  }
-
-  /* --- Standout lines --- */
-  .standout-line {
-    padding: 16px 0;
-    border-bottom: 1px solid var(--light-gray);
-  }
-
-  .standout-line blockquote {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 18px;
-    line-height: 1.4;
-    color: var(--charcoal);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     margin-bottom: 6px;
   }
 
-  .standout-line .note {
+  .modal-field select {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 13px;
+    padding: 8px 12px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--charcoal);
+  }
+
+  .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .btn-cancel {
+    background: transparent;
+    border: 1px solid var(--light-gray);
+    padding: 8px 18px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
     font-size: 13px;
     color: var(--warm-gray);
+    cursor: pointer;
+    transition: border-color 0.15s;
   }
+
+  .btn-cancel:hover { border-color: var(--charcoal); color: var(--charcoal); }
 
   /* --- Empty state --- */
   .empty-state {
     text-align: center;
-    padding: 80px 40px;
     color: var(--warm-gray);
-  }
-
-  .empty-state h2 {
-    font-family: var(--font-display);
-    font-size: 28px;
-    font-weight: 400;
-    margin-bottom: 12px;
-    color: var(--charcoal);
-  }
-
-  .empty-state p {
-    font-size: 15px;
-    max-width: 400px;
-    margin: 0 auto;
+    padding: 48px 24px;
+    font-size: 14px;
     line-height: 1.6;
   }
 
-  /* --- Loading --- */
-  .loading {
-    text-align: center;
-    padding: 120px 40px;
-    color: var(--warm-gray);
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 18px;
-  }
-
-  /* --- Quick mode text --- */
-  .quick-mode {
-    font-size: 14px;
-    line-height: 1.8;
-    color: var(--warm-gray);
-    column-count: 2;
-    column-gap: 32px;
-    margin-top: 12px;
-  }
-
-  @media (max-width: 900px) {
-    .quick-mode { column-count: 1; }
-  }
-
-  /* --- Stats row --- */
-  .stats-row {
-    display: flex;
-    gap: 24px;
-    margin-bottom: 32px;
-    flex-wrap: wrap;
-  }
-
-  .stat-card {
-    background: var(--warm-white);
-    border: 1px solid var(--light-gray);
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    min-width: 140px;
-  }
-
-  .stat-value {
-    font-family: var(--font-display);
-    font-size: 28px;
-    line-height: 1;
+  .empty-state p {
     margin-bottom: 4px;
   }
 
-  .stat-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--warm-gray);
-    font-weight: 600;
-  }
-
-  /* --- Image strip & thumbnails --- */
-  .image-strip {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .main-image-area {
-    width: 100%;
-    min-height: 200px;
-    background: var(--light-gray);
+  /* --- Login screen --- */
+  .login-screen {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    position: relative;
+    min-height: 100vh;
+    padding: 24px;
   }
 
-  .main-image-area img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .thumb-strip {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 4px 2px;
-  }
-
-  .thumb-item {
-    position: relative;
-    width: 56px;
-    height: 56px;
-    flex-shrink: 0;
-    border-radius: 4px;
-    overflow: hidden;
-    cursor: pointer;
-    border: 2px solid var(--light-gray);
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
-
-  .thumb-item:hover {
-    box-shadow: var(--shadow-sm);
-  }
-
-  .thumb-item.active {
-    border-color: var(--amber);
-    box-shadow: 0 0 0 2px var(--amber-light);
-  }
-
-  .thumb-item.review-approved { border-color: var(--green); }
-  .thumb-item.review-rejected { border-color: var(--red); }
-  .thumb-item.review-flagged { border-color: var(--gold); }
-  .thumb-item.review-liked { border-color: var(--pink); }
-
-  .thumb-item.active.review-approved { box-shadow: 0 0 0 2px rgba(91, 138, 94, 0.3); }
-  .thumb-item.active.review-rejected { box-shadow: 0 0 0 2px rgba(196, 85, 58, 0.3); }
-  .thumb-item.active.review-flagged { box-shadow: 0 0 0 2px rgba(184, 150, 62, 0.3); }
-
-  .thumb-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .thumb-type-label {
-    position: absolute;
-    bottom: 1px;
-    left: 1px;
-    right: 1px;
-    font-size: 8px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    text-align: center;
-    background: rgba(44, 40, 38, 0.7);
-    color: var(--cream);
-    padding: 1px 2px;
-    line-height: 1.2;
-  }
-
-  /* --- Review controls --- */
-  .review-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    padding: 6px 0 2px;
-  }
-
-  .review-btn {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    padding: 4px 12px;
-    border-radius: 20px;
-    border: 1px solid var(--light-gray);
-    background: transparent;
-    color: var(--warm-gray);
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: var(--font-body);
-    line-height: 1.4;
-  }
-
-  .review-btn:hover {
-    border-color: var(--warm-gray);
-  }
-
-  .review-btn.review-btn-approve.active {
-    background: var(--green);
-    border-color: var(--green);
-    color: #fff;
-  }
-
-  .review-btn.review-btn-reject.active {
-    background: var(--red);
-    border-color: var(--red);
-    color: #fff;
-  }
-
-  .review-btn.review-btn-flag.active {
-    background: var(--gold);
-    border-color: var(--gold);
-    color: #fff;
-  }
-
-  .review-btn.review-btn-like.active {
-    background: var(--pink);
-    border-color: var(--pink);
-    color: #fff;
-  }
-
-  .review-note-input {
-    flex: 1;
-    min-width: 140px;
-    font-size: 12px;
-    font-family: var(--font-body);
-    padding: 5px 10px;
-    border: 1px solid var(--light-gray);
-    border-radius: 4px;
-    background: var(--warm-white);
-    color: var(--charcoal);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  .review-note-input:focus {
-    border-color: var(--amber);
-  }
-
-  .review-note-input::placeholder {
-    color: var(--warm-gray);
-    opacity: 0.5;
-  }
-
-  .review-saving {
-    font-size: 11px;
-    color: var(--warm-gray);
-    font-style: italic;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-
-  .review-saving.visible {
-    opacity: 1;
-  }
-
-  /* --- Ad status badges --- */
-  .ad-status-badge {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 3px;
-  }
-
-  .ad-status-badge.unreviewed {
-    background: var(--light-gray);
-    color: var(--warm-gray);
-  }
-
-  .ad-status-badge.feedback {
-    background: #FFF3E0;
-    color: #C8801C;
-  }
-
-  .ad-status-badge.approved {
-    background: #E8F0E8;
-    color: var(--green);
-  }
-
-  .ad-status-badge.live {
-    background: #E0EEF4;
-    color: #3A7CA5;
-  }
-
-  /* --- Ad status controls --- */
-  .ad-status-section {
-    padding: 12px 20px;
-    border-top: 1px solid var(--light-gray);
-    background: rgba(0,0,0,0.015);
-  }
-
-  .ad-status-buttons {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 8px;
-  }
-
-  .ad-status-btn {
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    padding: 5px 14px;
-    border-radius: 20px;
-    border: 1px solid var(--light-gray);
-    background: transparent;
-    color: var(--warm-gray);
-    cursor: pointer;
-    transition: all 0.15s;
-    line-height: 1.4;
-  }
-
-  .ad-status-btn:hover {
-    border-color: var(--warm-gray);
-  }
-
-  .ad-status-btn.active-unreviewed {
-    background: var(--light-gray);
-    border-color: var(--warm-gray);
-    color: var(--charcoal);
-  }
-
-  .ad-status-btn.active-feedback {
-    background: #C8801C;
-    border-color: #C8801C;
-    color: #fff;
-  }
-
-  .ad-status-btn.active-approved {
-    background: var(--green);
-    border-color: var(--green);
-    color: #fff;
-  }
-
-  .ad-status-btn.active-live {
-    background: #3A7CA5;
-    border-color: #3A7CA5;
-    color: #fff;
-  }
-
-  .ad-feedback-input {
-    width: 100%;
-    font-family: var(--font-body);
-    font-size: 13px;
-    padding: 8px 12px;
-    border: 1px solid var(--light-gray);
-    border-radius: 4px;
-    background: var(--warm-white);
-    color: var(--charcoal);
-    outline: none;
-    transition: border-color 0.15s;
-    resize: vertical;
-    min-height: 36px;
-    line-height: 1.5;
-  }
-
-  .ad-feedback-input:focus {
-    border-color: var(--amber);
-  }
-
-  .ad-feedback-input::placeholder {
-    color: var(--warm-gray);
-    opacity: 0.5;
-  }
-
-  .ad-status-saving {
-    font-size: 11px;
-    color: var(--warm-gray);
-    font-style: italic;
-    opacity: 0;
-    transition: opacity 0.2s;
-    margin-left: 8px;
-  }
-
-  .ad-status-saving.visible {
-    opacity: 1;
-  }
-
-  /* --- Gallery status filter bar --- */
-  .gallery-filter-bar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-  }
-
-  .gallery-filter-pill {
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    padding: 6px 16px;
-    border-radius: 20px;
-    border: 1px solid var(--light-gray);
-    background: transparent;
-    color: var(--warm-gray);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .gallery-filter-pill:hover {
-    border-color: var(--warm-gray);
-    color: var(--charcoal);
-  }
-
-  .gallery-filter-pill.active {
-    background: var(--charcoal);
-    border-color: var(--charcoal);
-    color: var(--cream);
-  }
-
-  .ad-card.ad-hidden {
-    display: none;
-  }
-
-  /* --- Responsive --- */
-  @media (max-width: 768px) {
-    .sidebar { display: none; }
-    .main { margin-left: 0; padding: 24px 16px; }
-    .segment-title { font-size: 28px; }
-    .ad-card-body { flex-direction: column; }
-    .ad-card-image { width: 100%; min-height: 160px; }
-    .segment-meta { gap: 16px; }
-  }
-
-  /* --- View tabs --- */
-  .topbar-tabs {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    height: 100%;
-  }
-
-  .topbar-tab {
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 0.03em;
-    color: var(--cream);
-    opacity: 0.5;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    padding: 16px 12px 14px;
-    cursor: pointer;
-    transition: opacity 0.15s, border-color 0.15s;
-    height: 100%;
-    display: flex;
-    align-items: center;
-  }
-
-  .topbar-tab:hover {
-    opacity: 0.8;
-  }
-
-  .topbar-tab.active {
-    opacity: 1;
-    border-bottom-color: var(--amber);
-    font-weight: 600;
-  }
-
-  /* --- Creative page --- */
-  .creative-page {
-    animation: fadeIn 0.3s ease-out both;
-  }
-
-  .filter-bar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-  }
-
-  .filter-pill {
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    padding: 6px 16px;
-    border-radius: 20px;
-    border: 1px solid var(--light-gray);
-    background: transparent;
-    color: var(--warm-gray);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .filter-pill:hover {
-    border-color: var(--warm-gray);
-    color: var(--charcoal);
-  }
-
-  .filter-pill.active {
-    background: var(--charcoal);
-    border-color: var(--charcoal);
-    color: var(--cream);
-  }
-
-  .creative-concept-group {
-    margin-bottom: 40px;
-  }
-
-  .creative-concept-heading {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 400;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--light-gray);
-  }
-
-  .image-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-
-  @media (max-width: 1200px) {
-    .image-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  @media (max-width: 768px) {
-    .image-grid { grid-template-columns: 1fr; }
-  }
-
-  .creative-card {
-    background: var(--warm-white);
-    border: 1px solid var(--light-gray);
-    border-radius: var(--radius);
-    overflow: hidden;
-    transition: box-shadow 0.2s;
-    animation: fadeIn 0.3s ease-out both;
-  }
-
-  .creative-card:hover {
-    box-shadow: var(--shadow-md);
-  }
-
-  .creative-card.hidden {
-    display: none;
-  }
-
-  .creative-card-image {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: var(--light-gray);
-    overflow: hidden;
-    cursor: pointer;
-    position: relative;
-  }
-
-  .creative-card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.2s;
-  }
-
-  .creative-card-image:hover img {
-    transform: scale(1.03);
-  }
-
-  .creative-card-info {
-    padding: 12px 14px;
-  }
-
-  .creative-card-filename {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--warm-gray);
-    margin-bottom: 8px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .creative-card-badges {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-  }
-
-  .type-badge {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 3px;
-  }
-
-  .type-badge.base {
-    background: #E8EAF0;
-    color: #4A5568;
-  }
-
-  .type-badge.composited {
-    background: #F0E8F0;
-    color: #6B4A6B;
-  }
-
-  .status-badge {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 3px;
-  }
-
-  .status-badge.approved {
-    background: #E8F0E8;
-    color: var(--green);
-  }
-
-  .status-badge.rejected {
-    background: #FDE8E8;
-    color: var(--red);
-  }
-
-  .status-badge.flagged {
-    background: #FFF3E0;
-    color: var(--gold);
-  }
-
-  .status-badge.liked {
-    background: #F8E8F0;
-    color: var(--pink);
-  }
-
-  .creative-card .review-controls {
-    padding: 4px 0 0;
-  }
-
-  .creative-card .review-note-input {
-    min-width: 0;
-    width: 100%;
-    margin-top: 6px;
-  }
-
-  /* --- Lightbox --- */
-  .lightbox-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(44, 40, 38, 0.85);
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    animation: fadeIn 0.2s ease-out both;
-  }
-
-  .lightbox-overlay img {
-    max-width: 90vw;
-    max-height: 90vh;
-    object-fit: contain;
-    border-radius: var(--radius);
+  .login-card {
+    background: #fff;
+    border-radius: 8px;
     box-shadow: var(--shadow-lg);
-    cursor: default;
+    padding: 40px;
+    width: 380px;
+    max-width: 100%;
+    text-align: center;
   }
 
-  /* --- Creative page empty state --- */
-  .creative-empty {
-    text-align: center;
-    padding: 60px 40px;
+  .login-card h1 {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+
+  .login-card p {
+    color: var(--warm-gray);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .login-card input {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 10px 14px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    outline: none;
+    margin-bottom: 12px;
+    transition: border-color 0.15s;
+  }
+
+  .login-card input:focus { border-color: var(--amber); }
+
+  .login-card button {
+    width: 100%;
+    background: var(--amber);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .login-card button:hover { background: var(--amber-dark); }
+  .login-card button:disabled { opacity: 0.5; cursor: default; }
+
+  .login-message {
+    margin-top: 14px;
+    font-size: 13px;
     color: var(--warm-gray);
   }
 
-  .creative-empty h3 {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 400;
-    margin-bottom: 8px;
-    color: var(--charcoal);
-  }
+  .login-message.error { color: var(--red); }
 
-  .creative-empty p {
+  /* --- Loading overlay --- */
+  .loading-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    color: var(--warm-gray);
     font-size: 14px;
-    max-width: 360px;
-    margin: 0 auto;
   }
 
-  /* --- Animations --- */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* --- Utility --- */
+  .hidden { display: none !important; }
+
+  /* Scrollbar styling */
+  .tab-content::-webkit-scrollbar,
+  .ads-scroll::-webkit-scrollbar,
+  .caption-strip::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
 
-  .fade-in {
-    animation: fadeIn 0.3s ease-out both;
+  .tab-content::-webkit-scrollbar-thumb,
+  .ads-scroll::-webkit-scrollbar-thumb {
+    background: var(--light-gray);
+    border-radius: 3px;
   }
-
-  .ad-card { animation: fadeIn 0.3s ease-out both; }
-  .ad-concept-group:nth-child(2) .ad-card { animation-delay: 0.05s; }
-  .ad-concept-group:nth-child(3) .ad-card { animation-delay: 0.1s; }
-  .ad-concept-group:nth-child(4) .ad-card { animation-delay: 0.15s; }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="topbar-brand">Come Join Us <span>Creative Review</span></div>
-  <div class="topbar-tabs" id="topbar-tabs">
-    <button class="topbar-tab active" data-view="gallery">Ad Gallery</button>
-    <button class="topbar-tab" data-view="creative">Creative</button>
+<!-- Loading state -->
+<div id="loading" class="loading-overlay">Loading...</div>
+
+<!-- Login screen -->
+<div id="login-screen" class="login-screen hidden">
+  <div class="login-card">
+    <h1>Come Join Us</h1>
+    <p>Ad Manager — sign in to continue</p>
+    <form id="login-form">
+      <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email" />
+      <button type="submit" id="login-btn">Send magic link</button>
+    </form>
+    <div id="login-message" class="login-message hidden"></div>
   </div>
-  <div class="topbar-meta" id="topbar-meta"></div>
 </div>
 
-<nav class="sidebar" id="sidebar"></nav>
+<!-- App shell -->
+<div id="app" class="hidden">
+  <div class="topbar">
+    <div class="topbar-brand">Come Join Us <span>— Ad Manager</span></div>
+    <div class="topbar-right">
+      <span id="user-email"></span>
+      <button id="signout-btn">Sign out</button>
+    </div>
+  </div>
 
-<main class="main" id="main">
-  <div class="loading">Loading creative review...</div>
-</main>
+  <div class="main">
+    <!-- Left: Library panels -->
+    <div class="panel-library">
+      <div class="tabs">
+        <div class="tab active" data-tab="images">Images</div>
+        <div class="tab" data-tab="captions">Captions</div>
+        <div class="tab" data-tab="bodycopy">Body Copy</div>
+      </div>
+
+      <div class="tab-content">
+        <div id="panel-images" class="tab-panel active"></div>
+        <div id="panel-captions" class="tab-panel"></div>
+        <div id="panel-bodycopy" class="tab-panel"></div>
+      </div>
+
+      <div id="caption-strip" class="caption-strip"></div>
+    </div>
+
+    <!-- Right: Ads panel -->
+    <div class="panel-ads">
+      <div class="panel-header">
+        <h2>Ads</h2>
+        <span id="ads-count" class="count"></span>
+      </div>
+      <div id="ads-list" class="ads-scroll"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Ad Modal -->
+<div id="modal-create-ad" class="modal-backdrop hidden">
+  <div class="modal">
+    <h3>Create Ad</h3>
+    <div id="modal-preview" class="modal-preview"></div>
+    <div class="modal-field">
+      <label>Body Copy</label>
+      <select id="modal-bodycopy-select">
+        <option value="">None</option>
+      </select>
+    </div>
+    <div class="modal-buttons">
+      <button class="btn-cancel" id="modal-cancel">Cancel</button>
+      <button class="btn-primary" id="modal-create">Create Ad</button>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 (function() {
-  let DATA = null;
-  let activeSegment = null;
-  let activeView = 'gallery';
-  let activeCreativeFilter = 'all';
-  let activeStatusFilter = 'all';
+  'use strict';
+
+  // --- State ---
+  let STATE = { images: [], captions: [], bodyCopy: [], ads: [], adSets: [], tags: [] };
+  let storageBaseUrl = '';
+  let activeTab = 'images';
   let supabaseClient = null;
-  let authToken = null;
+  let currentSession = null;
 
-  // --- Auth: fetch wrapper that includes JWT ---
-  async function authFetch(url, opts = {}) {
-    if (authToken) {
-      opts.headers = opts.headers || {};
-      opts.headers['Authorization'] = `Bearer ${authToken}`;
-    }
-    return fetch(url, opts);
+  // Pending ad creation (from drag-drop)
+  let pendingAd = { imageId: null, captionId: null };
+
+  // --- DOM refs ---
+  const $loading = document.getElementById('loading');
+  const $loginScreen = document.getElementById('login-screen');
+  const $loginForm = document.getElementById('login-form');
+  const $loginEmail = document.getElementById('login-email');
+  const $loginBtn = document.getElementById('login-btn');
+  const $loginMessage = document.getElementById('login-message');
+  const $app = document.getElementById('app');
+  const $userEmail = document.getElementById('user-email');
+  const $signoutBtn = document.getElementById('signout-btn');
+  const $panelImages = document.getElementById('panel-images');
+  const $panelCaptions = document.getElementById('panel-captions');
+  const $panelBodycopy = document.getElementById('panel-bodycopy');
+  const $captionStrip = document.getElementById('caption-strip');
+  const $adsCount = document.getElementById('ads-count');
+  const $adsList = document.getElementById('ads-list');
+  const $modalBackdrop = document.getElementById('modal-create-ad');
+  const $modalPreview = document.getElementById('modal-preview');
+  const $modalBodycopySelect = document.getElementById('modal-bodycopy-select');
+  const $modalCancel = document.getElementById('modal-cancel');
+  const $modalCreate = document.getElementById('modal-create');
+
+  // --- Utility ---
+  function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
   }
 
-  // --- Image URL helper (Supabase Storage) ---
-  function imageUrl(seg, filename) {
-    return `${DATA.storageBaseUrl}/${seg.slug}/${filename}`;
-  }
+  function show(el) { el.classList.remove('hidden'); }
+  function hide(el) { el.classList.add('hidden'); }
 
-  // --- Auth: login screen ---
-  function showLogin(supabaseUrl, supabaseAnonKey) {
-    supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
-    let booted = false;
-
-    // onAuthStateChange fires after the client processes URL hash tokens.
-    // This is the primary mechanism for detecting magic link returns.
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        authToken = session.access_token;
-        if (!booted) {
-          booted = true;
-          window.history.replaceState(null, '', window.location.pathname);
-          loadData();
-        }
-      } else if (!booted) {
-        booted = true;
-        authToken = null;
-        renderLoginForm();
-      }
-    });
-  }
-
-  function renderLoginForm() {
-    document.getElementById('sidebar').style.display = 'none';
-    document.getElementById('main').innerHTML = `
-      <div style="max-width: 380px; margin: 120px auto; text-align: center;">
-        <h1 style="font-family: var(--font-display); font-size: 32px; font-weight: 400; margin-bottom: 8px;">Come Join Us</h1>
-        <p style="color: var(--warm-gray); margin-bottom: 40px; font-size: 15px;">Creative Review</p>
-        <div id="login-form">
-          <input type="email" id="login-email" placeholder="Email address"
-            style="width: 100%; padding: 12px 16px; border: 1px solid var(--light-gray); border-radius: var(--radius); font-family: var(--font-body); font-size: 15px; margin-bottom: 16px; background: var(--warm-white);">
-          <button id="login-btn" onclick="window._sendMagicLink()"
-            style="width: 100%; padding: 12px; background: var(--charcoal); color: var(--cream); border: none; border-radius: var(--radius); font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer; letter-spacing: 0.02em;">
-            Send magic link
-          </button>
-          <p id="login-msg" style="margin-top: 16px; font-size: 13px; color: var(--warm-gray);"></p>
-        </div>
-      </div>`;
-
-    document.getElementById('login-email').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') window._sendMagicLink();
-    });
-  }
-
-  window._sendMagicLink = async function() {
-    const email = document.getElementById('login-email').value.trim();
-    const msg = document.getElementById('login-msg');
-    const btn = document.getElementById('login-btn');
-
-    if (!email) { msg.textContent = 'Enter your email.'; return; }
-
-    btn.disabled = true;
-    btn.textContent = 'Sending...';
-
-    const { error } = await supabaseClient.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.origin }
-    });
-
-    if (error) {
-      msg.style.color = 'var(--red)';
-      msg.textContent = error.message;
-      btn.disabled = false;
-      btn.textContent = 'Send magic link';
-    } else {
-      msg.style.color = 'var(--green)';
-      msg.textContent = 'Check your email for the login link.';
-    }
-  };
-
-  // --- Load data ---
-  async function loadData() {
-    document.getElementById('sidebar').style.display = '';
-    try {
-      const res = await authFetch('/api/data');
-      if (res.status === 401) {
-        renderLoginForm();
-        return;
-      }
-      DATA = await res.json();
-      init();
-    } catch (e) {
-      document.getElementById('main').innerHTML = `
-        <div class="empty-state">
-          <h2>No data found</h2>
-          <p>Run <code>node app/server.js</code> to start the server, or <code>node app/build.js</code> to generate data.json.</p>
-        </div>
-      `;
-    }
-  }
-
-  function init() {
-    document.getElementById('topbar-meta').textContent =
-      DATA.segmentCount + ' segments \u00B7 ' + new Date(DATA.generatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-    renderSidebar();
-
-    // Parse URL for segment + view
-    const route = parseRoute(window.location.pathname);
-    if (route && DATA.segments.find(s => s.slug === route.slug)) {
-      activeView = route.view;
-      document.querySelectorAll('.topbar-tab').forEach(tab => {
-        tab.classList.toggle('active', tab.dataset.view === activeView);
-      });
-      selectSegment(route.slug, true);
-    } else if (DATA.segments.length) {
-      selectSegment(DATA.segments[0].slug);
-    }
-  }
-
-  function parseRoute(pathname) {
-    const match = pathname.match(/^\/segment\/([^/]+)\/(gallery|creative)$/);
-    if (match) return { slug: match[1], view: match[2] };
+  // --- Auth helpers ---
+  function getToken() {
+    if (currentSession && currentSession.access_token) return currentSession.access_token;
     return null;
   }
 
-  function updateURL() {
-    if (activeSegment) {
-      const url = '/segment/' + activeSegment + '/' + activeView;
-      if (window.location.pathname !== url) {
-        history.pushState({ slug: activeSegment, view: activeView }, '', url);
-      }
+  async function authFetch(url, opts = {}) {
+    const token = getToken();
+    if (!token) throw new Error('Not authenticated');
+    const headers = { ...opts.headers, 'Authorization': 'Bearer ' + token };
+    if (opts.body && typeof opts.body === 'object' && !(opts.body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+      opts.body = JSON.stringify(opts.body);
     }
-  }
-
-  window.addEventListener('popstate', function(e) {
-    if (e.state && e.state.slug && e.state.view) {
-      activeView = e.state.view;
-      activeCreativeFilter = 'all';
-      activeStatusFilter = 'all';
-      document.querySelectorAll('.topbar-tab').forEach(tab => {
-        tab.classList.toggle('active', tab.dataset.view === activeView);
-      });
-      activeSegment = e.state.slug;
-      document.querySelectorAll('.sidebar-item').forEach(el => {
-        el.classList.toggle('active', el.dataset.slug === e.state.slug);
-      });
-      renderActiveView(e.state.slug);
-    } else {
-      const route = parseRoute(window.location.pathname);
-      if (route) {
-        activeView = route.view;
-        document.querySelectorAll('.topbar-tab').forEach(tab => {
-          tab.classList.toggle('active', tab.dataset.view === activeView);
-        });
-        selectSegment(route.slug, true);
-      }
+    const res = await fetch(url, { ...opts, headers });
+    if (res.status === 401) {
+      // Session expired
+      handleSignout();
+      throw new Error('Session expired');
     }
-  });
-
-  // --- Sidebar ---
-  function renderSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const lifeSit = DATA.segments.filter(s => s.profile?.type?.includes('Life-situation'));
-    const lifestyle = DATA.segments.filter(s => s.profile?.type?.includes('Lifestyle'));
-    const cross = DATA.segments.filter(s => !s.profile?.type);
-
-    let html = '';
-
-    if (lifeSit.length) {
-      html += `<div class="sidebar-section">
-        <div class="sidebar-section-title">Life-Situation</div>
-        ${lifeSit.map(s => sidebarItem(s, 'life')).join('')}
-      </div>`;
-    }
-
-    if (lifestyle.length) {
-      html += `<div class="sidebar-section">
-        <div class="sidebar-section-title">Lifestyle</div>
-        ${lifestyle.map(s => sidebarItem(s, 'lifestyle')).join('')}
-      </div>`;
-    }
-
-    if (cross.length) {
-      html += `<div class="sidebar-section">
-        <div class="sidebar-section-title">Cross-Segment</div>
-        ${cross.map(s => sidebarItem(s, 'cross')).join('')}
-      </div>`;
-    }
-
-    sidebar.innerHTML = html;
-
-    sidebar.querySelectorAll('.sidebar-item').forEach(el => {
-      el.addEventListener('click', () => selectSegment(el.dataset.slug));
-    });
+    return res;
   }
 
-  function sidebarItem(seg, type) {
-    const counts = countAdsByStatus(seg);
-    const actionable = counts.unreviewed + counts.feedback;
-    return `<div class="sidebar-item" data-slug="${seg.slug}">
-      <span class="dot dot-${type}"></span>
-      ${seg.name}
-      <span class="badge">${actionable > 0 ? actionable : ''}</span>
-    </div>`;
-  }
-
-  function selectSegment(slug, skipPush) {
-    activeSegment = slug;
-    document.querySelectorAll('.sidebar-item').forEach(el => {
-      el.classList.toggle('active', el.dataset.slug === slug);
-    });
-    renderActiveView(slug);
-    window.scrollTo({ top: 0 });
-    if (!skipPush) updateURL();
-  }
-
-  function renderActiveView(slug) {
-    if (activeView === 'creative') {
-      renderCreativePage(slug);
-    } else {
-      renderSegment(slug);
-    }
-  }
-
-  function switchView(view) {
-    if (view === activeView) return;
-    activeView = view;
-    activeCreativeFilter = 'all';
-    activeStatusFilter = 'all';
-    document.querySelectorAll('.topbar-tab').forEach(tab => {
-      tab.classList.toggle('active', tab.dataset.view === view);
-    });
-    if (activeSegment) {
-      renderActiveView(activeSegment);
-      window.scrollTo({ top: 0 });
-    }
-    updateURL();
-  }
-
-  // --- Segment renderer ---
-  function renderSegment(slug) {
-    const seg = DATA.segments.find(s => s.slug === slug);
-    if (!seg) return;
-
-    const main = document.getElementById('main');
-    let html = '';
-
-    // Header
-    html += renderHeader(seg);
-
-    // Stats
-    html += renderStats(seg);
-
-    // Persona card
-    if (seg.empathy?.personaSnapshot) {
-      html += renderPersona(seg);
-    }
-
-    // Top ads (if review exists)
-    if (seg.review?.topAds?.length) {
-      html += renderTopAds(seg);
-    }
-
-    // Ad gallery
-    html += renderAdGallery(seg);
-
-    // Empathy detail (collapsible)
-    if (seg.empathy) {
-      html += renderEmpathyDetail(seg);
-    }
-
-    // Concepts (collapsible)
-    if (seg.concepts?.priority?.length) {
-      html += renderConceptsList(seg);
-    }
-
-    main.innerHTML = html;
-
-    // Wire up collapsibles
-    main.querySelectorAll('.collapsible-header').forEach(el => {
-      el.addEventListener('click', () => {
-        el.parentElement.classList.toggle('open');
-      });
-    });
-  }
-
-  function renderHeader(seg) {
-    const p = seg.profile;
-    return `<div class="segment-header fade-in">
-      ${p?.type ? `<div class="segment-type">${esc(p.type)}</div>` : ''}
-      <h1 class="segment-title">${esc(seg.name)}</h1>
-      ${p?.messagingHook ? `<div class="segment-hook">${esc(p.messagingHook)}</div>` : ''}
-      ${p ? `<div class="segment-meta">
-        ${p.ageSkew ? `<div class="meta-item"><span class="label">Age</span>${esc(p.ageSkew)}</div>` : ''}
-        ${p.priority ? `<div class="meta-item"><span class="label">Priority</span>${esc(p.priority)}</div>` : ''}
-        ${p.who ? `<div class="meta-item"><span class="label">Who</span>${esc(p.who.substring(0, 80))}${p.who.length > 80 ? '...' : ''}</div>` : ''}
-      </div>` : ''}
-    </div>`;
-  }
-
-  function renderStats(seg) {
-    const adCount = seg.adCopy?.concepts?.reduce((sum, c) => sum + c.feedAds.length + c.storiesReels.length, 0) || 0;
-    const feedCount = seg.adCopy?.concepts?.reduce((sum, c) => sum + c.feedAds.length, 0) || 0;
-    const storyCount = seg.adCopy?.concepts?.reduce((sum, c) => sum + c.storiesReels.length, 0) || 0;
-    const imageCount = seg.images?.length || 0;
-    const avgScore = seg.review?.ads?.length
-      ? (seg.review.ads.reduce((sum, a) => sum + (a.overall || 0), 0) / seg.review.ads.length).toFixed(1)
-      : null;
-
-    return `<div class="stats-row fade-in">
-      <div class="stat-card">
-        <div class="stat-value">${adCount}</div>
-        <div class="stat-label">Total Ads</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value">${feedCount}</div>
-        <div class="stat-label">Feed</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value">${storyCount}</div>
-        <div class="stat-label">Stories/Reels</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value">${imageCount}</div>
-        <div class="stat-label">Images</div>
-      </div>
-      ${avgScore ? `<div class="stat-card">
-        <div class="stat-value">${avgScore}</div>
-        <div class="stat-label">Avg Score</div>
-      </div>` : ''}
-    </div>`;
-  }
-
-  function renderPersona(seg) {
-    return `<div class="persona-card fade-in">
-      <h3>Persona</h3>
-      <div class="persona-text">${esc(seg.empathy.personaSnapshot)}</div>
-    </div>`;
-  }
-
-  function renderTopAds(seg) {
-    return `<div class="top-ads fade-in">
-      <div class="section-subtitle">Top Rated</div>
-      ${seg.review.topAds.map((ad, i) => `
-        <div class="top-ad-item">
-          <div class="top-ad-rank">${i + 1}</div>
-          <div class="top-ad-content">
-            <h4>${esc(ad.name)} <span class="top-ad-score">${ad.score}/5</span></h4>
-            <p>${esc(ad.summary)}</p>
-          </div>
-        </div>
-      `).join('')}
-    </div>`;
-  }
-
-  function renderAdGallery(seg) {
-    if (!seg.adCopy?.concepts?.length) {
-      return `<div class="empty-state"><h2>No ad copy yet</h2><p>Run /write-copy to generate ads for this segment.</p></div>`;
-    }
-
-    const counts = countAdsByStatus(seg);
-
-    let html = `<div class="section-title">Ad Gallery</div>`;
-    html += `<div class="gallery-filter-bar" id="gallery-filter-bar">
-      <button class="gallery-filter-pill${activeStatusFilter === 'all' ? ' active' : ''}" data-status-filter="all">All (${counts.all})</button>
-      <button class="gallery-filter-pill${activeStatusFilter === 'unreviewed' ? ' active' : ''}" data-status-filter="unreviewed">Unreviewed (${counts.unreviewed})</button>
-      <button class="gallery-filter-pill${activeStatusFilter === 'feedback' ? ' active' : ''}" data-status-filter="feedback">Feedback (${counts.feedback})</button>
-      <button class="gallery-filter-pill${activeStatusFilter === 'approved' ? ' active' : ''}" data-status-filter="approved">Approved (${counts.approved})</button>
-      <button class="gallery-filter-pill${activeStatusFilter === 'live' ? ' active' : ''}" data-status-filter="live">Live (${counts.live})</button>
-    </div>`;
-
-    for (const concept of seg.adCopy.concepts) {
-      const priority = seg.concepts?.priority?.indexOf(concept.name);
-      const priorityLabel = priority >= 0 ? `#${priority + 1}` : '';
-
-      html += `<div class="ad-concept-group">
-        <div class="ad-concept-title">
-          ${esc(concept.name)}
-          ${priorityLabel ? `<span class="priority-badge">${priorityLabel}</span>` : ''}
-        </div>`;
-
-      // Feed ads
-      for (const ad of concept.feedAds) {
-        html += renderFeedAdCard(seg, concept.name, ad, 'feed');
-      }
-
-      // Stories/Reels
-      for (const ad of concept.storiesReels) {
-        html += renderStoryAdCard(seg, concept.name, ad);
-      }
-
-      html += `</div>`;
-    }
-
-    return html;
-  }
-
-  function renderFeedAdCard(seg, conceptName, ad, format) {
-    const review = findReview(seg, ad.header);
-    const images = findImages(seg, conceptName, 'feed');
-    const verdictClass = getVerdictClass(review?.verdict);
-    const firstImage = images.length > 0 ? images[0] : null;
-    const adId = slugifyHeader(ad.header);
-    const adStatusEntry = getAdStatus(seg, adId);
-    const adStatusLabel = adStatusEntry?.status || 'unreviewed';
-    const adFeedback = adStatusEntry?.feedback || '';
-
-    return `<div class="ad-card" data-slug="${esc(seg.slug)}" data-ad-id="${esc(adId)}" data-ad-status="${esc(adStatusLabel)}">
-      <div class="ad-card-header">
-        <span class="ad-card-name">${esc(ad.header)}</span>
-        <div class="ad-card-badges">
-          <span class="format-badge feed">Feed</span>
-          ${review?.verdict ? `<span class="verdict-badge ${verdictClass}">${esc(review.verdict.split(' \u2014 ')[0].split(' \u2013 ')[0])}</span>` : ''}
-          <span class="ad-status-badge ${esc(adStatusLabel)}">${esc(adStatusLabel)}</span>
-        </div>
-      </div>
-      <div class="ad-card-body">
-        <div class="ad-card-image">
-          ${images.length > 0
-            ? renderImageStrip(seg, images, firstImage)
-            : `<div class="no-image"><span class="no-image-icon">\u25A3</span>No image yet<br><small>/generate-creative</small></div>`
-          }
-        </div>
-        <div class="ad-card-copy">
-          <div class="ad-hook">${esc(ad.hook)}</div>
-          ${ad.body ? `<div class="ad-body-text">${esc(ad.body)}</div>` : ''}
-          ${ad.cta ? `<div class="ad-cta">${esc(ad.cta)}</div>` : ''}
-          ${ad.ctaButton ? `<div class="ad-cta-button">${esc(ad.ctaButton)}</div>` : ''}
-        </div>
-      </div>
-      ${review ? renderScoreBar(review) : ''}
-      ${renderAdStatusControls(seg.slug, adId, adStatusLabel, adFeedback)}
-    </div>`;
-  }
-
-  function renderStoryAdCard(seg, conceptName, ad) {
-    const review = findReview(seg, ad.header);
-    const images = findImages(seg, conceptName, 'story');
-    const verdictClass = getVerdictClass(review?.verdict);
-    const firstImage = images.length > 0 ? images[0] : null;
-    const adId = slugifyHeader(ad.header);
-    const adStatusEntry = getAdStatus(seg, adId);
-    const adStatusLabel = adStatusEntry?.status || 'unreviewed';
-    const adFeedback = adStatusEntry?.feedback || '';
-
-    return `<div class="ad-card" data-slug="${esc(seg.slug)}" data-ad-id="${esc(adId)}" data-ad-status="${esc(adStatusLabel)}">
-      <div class="ad-card-header">
-        <span class="ad-card-name">${esc(ad.header)}</span>
-        <div class="ad-card-badges">
-          <span class="format-badge story">Story / Reel</span>
-          ${review?.verdict ? `<span class="verdict-badge ${verdictClass}">${esc(review.verdict.split(' \u2014 ')[0].split(' \u2013 ')[0])}</span>` : ''}
-          <span class="ad-status-badge ${esc(adStatusLabel)}">${esc(adStatusLabel)}</span>
-        </div>
-      </div>
-      <div class="ad-card-body">
-        <div class="ad-card-image" style="width: 160px;">
-          ${images.length > 0
-            ? renderImageStrip(seg, images, firstImage)
-            : `<div class="no-image"><span class="no-image-icon">\u25A3</span>9:16</div>`
-          }
-        </div>
-        <div class="story-frames">
-          ${ad.frames.map((f, i) => `
-            <div class="story-frame">
-              <span class="frame-number">${i + 1}</span>
-              <span>${esc(f)}</span>
-            </div>
-          `).join('')}
-          ${ad.visualDirection ? `<div class="visual-direction">${esc(ad.visualDirection)}</div>` : ''}
-        </div>
-      </div>
-      ${review ? renderScoreBar(review) : ''}
-      ${renderAdStatusControls(seg.slug, adId, adStatusLabel, adFeedback)}
-    </div>`;
-  }
-
-  function renderImageStrip(seg, images, activeImage) {
-    const slug = seg.slug;
-    const activeFilename = activeImage ? activeImage.filename : '';
-    const imgSrc = activeImage ? imageUrl(seg, activeImage.filename) : '';
-
-    const thumbs = images.map(img => {
-      const reviewClass = img.review?.status ? `review-${img.review.status}` : '';
-      const isActive = img.filename === activeFilename ? 'active' : '';
-      return `<div class="thumb-item ${isActive} ${reviewClass}" data-filename="${esc(img.filename)}" data-slug="${esc(slug)}">
-        <img src="${imageUrl(seg, img.filename)}" alt="${esc(img.filename)}">
-        <span class="thumb-type-label">${img.type === 'composited' ? 'comp' : 'base'}</span>
-      </div>`;
-    }).join('');
-
-    // Review controls for the active image
-    const activeReview = activeImage?.review;
-    const activeStatus = activeReview?.status || '';
-    const activeNote = activeReview?.note || '';
-
-    return `<div class="image-strip" data-slug="${esc(slug)}" data-active-filename="${esc(activeFilename)}">
-      <div class="main-image-area">
-        ${imgSrc ? `<img src="${imgSrc}" alt="${esc(activeFilename)}">` : ''}
-      </div>
-      ${images.length > 1 ? `<div class="thumb-strip">${thumbs}</div>` : ''}
-      <div class="review-controls" data-slug="${esc(slug)}" data-filename="${esc(activeFilename)}">
-        <button class="review-btn review-btn-like${activeStatus === 'liked' ? ' active' : ''}" data-status="liked">Like</button>
-        <button class="review-btn review-btn-approve${activeStatus === 'approved' ? ' active' : ''}" data-status="approved">Approve</button>
-        <button class="review-btn review-btn-reject${activeStatus === 'rejected' ? ' active' : ''}" data-status="rejected">Reject</button>
-        <button class="review-btn review-btn-flag${activeStatus === 'flagged' ? ' active' : ''}" data-status="flagged">Flag</button>
-        <input class="review-note-input" type="text" placeholder="Add a note..." value="${esc(activeNote)}">
-        <span class="review-saving">Saved</span>
-      </div>
-    </div>`;
-  }
-
-  function renderScoreBar(review) {
-    const dims = Object.entries(review.scores);
-    if (!dims.length) return '';
-
-    return `<div class="score-bar">
-      ${dims.map(([dim, s], i) => `
-        ${i > 0 ? '<span class="score-divider"></span>' : ''}
-        <span class="score-pill">
-          <span class="score-label">${esc(dim)}</span>
-          <span class="score-value score-${s.score}">${s.score}/5</span>
-        </span>
-      `).join('')}
-      ${review.overall ? `
-        <span class="overall-score score-${review.overall}">Overall: ${review.overall}/5</span>
-      ` : ''}
-    </div>`;
-  }
-
-  function renderAdStatusControls(slug, adId, status, feedback) {
-    return `<div class="ad-status-section" data-slug="${esc(slug)}" data-ad-id="${esc(adId)}">
-      <div class="ad-status-buttons">
-        <button class="ad-status-btn${status === 'unreviewed' ? ' active-unreviewed' : ''}" data-ad-status="unreviewed">Unreviewed</button>
-        <button class="ad-status-btn${status === 'feedback' ? ' active-feedback' : ''}" data-ad-status="feedback">Feedback</button>
-        <button class="ad-status-btn${status === 'approved' ? ' active-approved' : ''}" data-ad-status="approved">Approved</button>
-        <button class="ad-status-btn${status === 'live' ? ' active-live' : ''}" data-ad-status="live">Live</button>
-        <span class="ad-status-saving">Saved</span>
-      </div>
-      <textarea class="ad-feedback-input" placeholder="Leave feedback on this ad..." rows="1">${esc(feedback)}</textarea>
-    </div>`;
-  }
-
-  function renderEmpathyDetail(seg) {
-    const emp = seg.empathy;
-    let inner = '';
-
-    // Key phrases
-    if (emp.keyPhrases) {
-      inner += Object.entries(emp.keyPhrases).map(([cat, phrases]) => `
-        <div class="phrase-category">
-          <h4>${esc(cat)}</h4>
-          <div class="phrase-list">
-            ${phrases.map(p => `<span class="phrase-tag">${esc(p)}</span>`).join('')}
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Pain points
-    if (emp.painPoints?.length) {
-      inner += `<table class="pain-table">
-        <thead><tr><th>Pain</th><th>Desire</th><th>Fear</th></tr></thead>
-        <tbody>
-          ${emp.painPoints.map(pp => `
-            <tr>
-              <td>${esc(pp.pain)}</td>
-              <td>${esc(pp.desire)}</td>
-              <td>${esc(pp.fear)}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>`;
-    }
-
-    // Quick mode
-    if (emp.quickMode) {
-      inner += `<div style="margin-top: 20px;">
-        <div class="section-subtitle">Quick Mode — First Person Voice</div>
-        <div class="quick-mode">${esc(emp.quickMode)}</div>
-      </div>`;
-    }
-
-    return `<div class="collapsible">
-      <div class="collapsible-header">
-        <span class="collapsible-arrow">\u25B6</span>
-        Empathy Work
-      </div>
-      <div class="collapsible-body">${inner}</div>
-    </div>`;
-  }
-
-  function renderConceptsList(seg) {
-    const concepts = seg.concepts;
-    return `<div class="collapsible">
-      <div class="collapsible-header">
-        <span class="collapsible-arrow">\u25B6</span>
-        Creative Concepts (${concepts.priority.length})
-      </div>
-      <div class="collapsible-body">
-        <ol class="concept-list">
-          ${concepts.priority.map((name, i) => {
-            const concept = concepts.concepts.find(c => c.name === name);
-            return `<li>
-              <span class="concept-rank">${i + 1}</span>
-              <div>
-                <div class="concept-name">${esc(name)}</div>
-                ${concept?.angle ? `<div class="concept-insight">${esc(concept.angle)}</div>` : ''}
-              </div>
-            </li>`;
-          }).join('')}
-        </ol>
-      </div>
-    </div>`;
-  }
-
-  // --- Creative review page ---
-  function renderCreativePage(slug) {
-    const seg = DATA.segments.find(s => s.slug === slug);
-    if (!seg) return;
-
-    const main = document.getElementById('main');
-    const images = seg.images || [];
-
-    if (!images.length) {
-      main.innerHTML = renderHeader(seg) + `
-        <div class="creative-empty">
-          <h3>No creative yet</h3>
-          <p>Run /generate-creative to create images for this segment.</p>
-        </div>`;
-      return;
-    }
-
-    // Group images by concept
-    const conceptGroups = {};
-    for (const img of images) {
-      const key = img.concept || 'Uncategorised';
-      if (!conceptGroups[key]) conceptGroups[key] = [];
-      conceptGroups[key].push(img);
-    }
-
-    // Count for filter bar
-    const baseCount = images.filter(i => i.type === 'base').length;
-    const compCount = images.filter(i => i.type === 'composited').length;
-    const likedCount = images.filter(i => i.review?.status === 'liked').length;
-    const unapprovedCount = images.filter(i => !i.review?.status || i.review.status !== 'approved').length;
-
-    let html = renderHeader(seg);
-
-    // Filter bar
-    html += `<div class="filter-bar">
-      <button class="filter-pill${activeCreativeFilter === 'all' ? ' active' : ''}" data-filter="all">All (${images.length})</button>
-      <button class="filter-pill${activeCreativeFilter === 'base' ? ' active' : ''}" data-filter="base">Bases (${baseCount})</button>
-      <button class="filter-pill${activeCreativeFilter === 'composited' ? ' active' : ''}" data-filter="composited">Composited (${compCount})</button>
-      <button class="filter-pill${activeCreativeFilter === 'liked' ? ' active' : ''}" data-filter="liked">Liked (${likedCount})</button>
-      <button class="filter-pill${activeCreativeFilter === 'unapproved' ? ' active' : ''}" data-filter="unapproved">Unapproved (${unapprovedCount})</button>
-    </div>`;
-
-    html += `<div class="creative-page">`;
-
-    for (const [conceptName, conceptImages] of Object.entries(conceptGroups)) {
-      // Sort: bases first, then composited, then by filename
-      conceptImages.sort((a, b) => {
-        if (a.type === 'base' && b.type !== 'base') return -1;
-        if (a.type !== 'base' && b.type === 'base') return 1;
-        return a.filename.localeCompare(b.filename);
-      });
-
-      html += `<div class="creative-concept-group">
-        <div class="creative-concept-heading">${esc(conceptName)}</div>
-        <div class="image-grid">`;
-
-      for (const img of conceptImages) {
-        const imgSrc = imageUrl(seg, img.filename);
-        const reviewStatus = img.review?.status || '';
-        const reviewNote = img.review?.note || '';
-
-        // Determine hidden state based on active filter
-        let hidden = false;
-        if (activeCreativeFilter === 'base' && img.type !== 'base') hidden = true;
-        if (activeCreativeFilter === 'composited' && img.type !== 'composited') hidden = true;
-        if (activeCreativeFilter === 'unapproved' && reviewStatus === 'approved') hidden = true;
-
-        html += `<div class="creative-card${hidden ? ' hidden' : ''}" data-type="${esc(img.type || '')}" data-status="${esc(reviewStatus)}">
-          <div class="creative-card-image" data-src="${esc(imgSrc)}">
-            <img src="${imgSrc}" alt="${esc(img.filename)}" loading="lazy">
-          </div>
-          <div class="creative-card-info">
-            <div class="creative-card-filename" title="${esc(img.filename)}">${esc(img.filename)}</div>
-            <div class="creative-card-badges">
-              <span class="type-badge ${esc(img.type || 'base')}">${img.type === 'composited' ? 'composited' : 'base'}</span>
-              ${img.format ? `<span class="format-badge ${img.format === 'feed' ? 'feed' : 'story'}">${esc(img.format)}</span>` : ''}
-              ${reviewStatus ? `<span class="status-badge ${esc(reviewStatus)}">${esc(reviewStatus)}</span>` : ''}
-            </div>
-            <div class="review-controls" data-slug="${esc(seg.slug)}" data-filename="${esc(img.filename)}">
-              <button class="review-btn review-btn-like${reviewStatus === 'liked' ? ' active' : ''}" data-status="liked">Like</button>
-              <button class="review-btn review-btn-approve${reviewStatus === 'approved' ? ' active' : ''}" data-status="approved">Approve</button>
-              <button class="review-btn review-btn-reject${reviewStatus === 'rejected' ? ' active' : ''}" data-status="rejected">Reject</button>
-              <button class="review-btn review-btn-flag${reviewStatus === 'flagged' ? ' active' : ''}" data-status="flagged">Flag</button>
-              <input class="review-note-input" type="text" placeholder="Add a note..." value="${esc(reviewNote)}">
-              <span class="review-saving">Saved</span>
-            </div>
-          </div>
-        </div>`;
-      }
-
-      html += `</div></div>`;
-    }
-
-    html += `</div>`;
-    main.innerHTML = html;
-  }
-
-  function applyCreativeFilter(filter) {
-    activeCreativeFilter = filter;
-
-    // Update pill states
-    document.querySelectorAll('.filter-pill').forEach(pill => {
-      pill.classList.toggle('active', pill.dataset.filter === filter);
-    });
-
-    // Show/hide cards
-    document.querySelectorAll('.creative-card').forEach(card => {
-      const type = card.dataset.type;
-      const status = card.dataset.status;
-      let hidden = false;
-
-      if (filter === 'base' && type !== 'base') hidden = true;
-      if (filter === 'composited' && type !== 'composited') hidden = true;
-      if (filter === 'liked' && status !== 'liked') hidden = true;
-      if (filter === 'unapproved' && status === 'approved') hidden = true;
-
-      card.classList.toggle('hidden', hidden);
-    });
-  }
-
-  function applyGalleryStatusFilter(filter) {
-    activeStatusFilter = filter;
-
-    // Update pill states
-    document.querySelectorAll('.gallery-filter-pill').forEach(pill => {
-      pill.classList.toggle('active', pill.dataset.statusFilter === filter);
-    });
-
-    // Show/hide ad cards
-    document.querySelectorAll('.ad-card[data-ad-id]').forEach(card => {
-      if (filter === 'all') {
-        card.classList.remove('ad-hidden');
-      } else {
-        card.classList.toggle('ad-hidden', card.dataset.adStatus !== filter);
-      }
-    });
-  }
-
-  function updateGalleryFilterCounts() {
-    const seg = DATA.segments.find(s => s.slug === activeSegment);
-    if (!seg) return;
-    const counts = countAdsByStatus(seg);
-    const bar = document.getElementById('gallery-filter-bar');
-    if (!bar) return;
-    bar.querySelectorAll('.gallery-filter-pill').forEach(pill => {
-      const f = pill.dataset.statusFilter;
-      const count = counts[f] || 0;
-      const label = f === 'all' ? 'All' : f.charAt(0).toUpperCase() + f.slice(1);
-      pill.textContent = `${label} (${count})`;
-    });
-  }
-
-  function updateSidebarBadge(slug) {
-    const seg = DATA.segments.find(s => s.slug === slug);
-    if (!seg) return;
-    const counts = countAdsByStatus(seg);
-    const actionable = counts.unreviewed + counts.feedback;
-    const sidebarItem = document.querySelector(`.sidebar-item[data-slug="${slug}"] .badge`);
-    if (sidebarItem) {
-      sidebarItem.textContent = actionable > 0 ? actionable : '';
-    }
-  }
-
-  // --- Standout lines (in review top section) ---
-  // Included inside renderTopAds if standoutLines exist
-  // (Already handled via review.topAds)
-
-  // --- Helpers ---
-  function findReview(seg, adHeader) {
-    if (!seg.review?.ads) return null;
-    // Match by header name (fuzzy — remove leading ** and trim)
-    const clean = adHeader.replace(/^\*\*/,'').trim();
-    return seg.review.ads.find(a => {
-      return a.name === clean || a.name.startsWith(clean) || clean.startsWith(a.name);
-    });
-  }
-
-  function findImages(seg, conceptName, format) {
-    if (!seg.images || !seg.images.length) return [];
-    return seg.images
-      .filter(img => img.concept === conceptName && img.format === format)
-      .sort((a, b) => {
-        // bases first, then composited, then by filename
-        if (a.type === 'base' && b.type !== 'base') return -1;
-        if (a.type !== 'base' && b.type === 'base') return 1;
-        return a.filename.localeCompare(b.filename);
-      });
-  }
-
-  function getVerdictClass(verdict) {
-    if (!verdict) return '';
-    const v = verdict.toLowerCase();
-    if (v.startsWith('ship')) return 'verdict-ship';
-    if (v.startsWith('polish')) return 'verdict-polish';
-    if (v.startsWith('rework') || v.startsWith('rewrite')) return 'verdict-rework';
-    return 'verdict-ship';
-  }
-
-  function esc(str) {
-    if (!str) return '';
-    const el = document.createElement('span');
-    el.textContent = str;
-    return el.innerHTML;
-  }
-
-  // --- Review API ---
-  async function saveReview(slug, filename, status, note) {
+  // --- Boot sequence ---
+  async function boot() {
     try {
-      const res = await authFetch(`/api/segments/${encodeURIComponent(slug)}/reviews/${encodeURIComponent(filename)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: status || null, note: note || '' }),
+      // 1. Fetch config
+      const config = await fetch('/api/config').then(r => r.json());
+      storageBaseUrl = config.storageBaseUrl;
+
+      // 2. Init Supabase
+      supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+      // 3. Check existing session
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+        currentSession = session;
+        showApp(session.user);
+        return;
+      }
+
+      // 4. No session — show login
+      showLogin();
+
+      // 5. Listen for auth changes (e.g., after magic link click)
+      supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          currentSession = session;
+          showApp(session.user);
+        }
       });
-      if (!res.ok) throw new Error('Save failed');
-      return await res.json();
-    } catch (e) {
-      console.error('Failed to save review:', e);
-      return null;
+    } catch (err) {
+      console.error('Boot failed:', err);
+      $loading.textContent = 'Failed to load. Check server is running.';
     }
   }
 
-  // Update the in-memory image review data
-  function updateLocalImageReview(slug, filename, status, note) {
-    const seg = DATA.segments.find(s => s.slug === slug);
-    if (!seg || !seg.images) return;
-    const img = seg.images.find(i => i.filename === filename);
-    if (img) {
-      img.review = { status: status || null, note: note || '' };
-    }
+  function showLogin() {
+    hide($loading);
+    hide($app);
+    show($loginScreen);
   }
 
-  // Get image review data from local state
-  function getLocalImageReview(slug, filename) {
-    const seg = DATA.segments.find(s => s.slug === slug);
-    if (!seg || !seg.images) return null;
-    const img = seg.images.find(i => i.filename === filename);
-    return img?.review || null;
+  function showApp(user) {
+    hide($loading);
+    hide($loginScreen);
+    show($app);
+    $userEmail.textContent = user.email || '';
+    init();
   }
 
-  // Flash the "Saved" indicator
-  function flashSaved(controls) {
-    const indicator = controls.querySelector('.review-saving');
-    if (indicator) {
-      indicator.textContent = 'Saved';
-      indicator.classList.add('visible');
-      setTimeout(() => indicator.classList.remove('visible'), 1200);
-    }
+  async function init() {
+    await loadData();
+    connectSSE();
+    setupTabs();
   }
 
-  // Refresh review status classes on a thumbnail
-  function refreshThumbStatus(strip, filename, status) {
-    const thumb = strip.querySelector(`.thumb-item[data-filename="${filename}"]`);
-    if (!thumb) return;
-    thumb.classList.remove('review-approved', 'review-rejected', 'review-flagged', 'review-liked');
-    if (status) {
-      thumb.classList.add(`review-${status}`);
-    }
-  }
+  // --- Login form ---
+  $loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = $loginEmail.value.trim();
+    if (!email) return;
 
-  // Update review controls to reflect current state
-  function syncReviewControls(controls, status, note) {
-    controls.querySelectorAll('.review-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.status === status);
-    });
-    const input = controls.querySelector('.review-note-input');
-    if (input && input !== document.activeElement) {
-      input.value = note || '';
-    }
-  }
+    $loginBtn.disabled = true;
+    $loginBtn.textContent = 'Sending...';
+    hide($loginMessage);
 
-  // --- Ad status helpers ---
-  function slugifyHeader(header) {
-    return header
-      .toLowerCase()
-      .replace(/\u2014/g, '-')  // em dash
-      .replace(/\u2013/g, '-')  // en dash
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
-  }
-
-  function getAdStatus(seg, adId) {
-    return seg.adStatus?.[adId] || null;
-  }
-
-  function getAdStatusLabel(seg, adId) {
-    const entry = getAdStatus(seg, adId);
-    return entry?.status || 'unreviewed';
-  }
-
-  async function saveAdStatus(slug, adId, status, feedback) {
     try {
-      const res = await authFetch(`/api/segments/${encodeURIComponent(slug)}/ad-status/${encodeURIComponent(adId)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: status || 'unreviewed', feedback: feedback || '' }),
-      });
-      if (!res.ok) throw new Error('Save failed');
-      return await res.json();
-    } catch (e) {
-      console.error('Failed to save ad status:', e);
-      return null;
+      const { error } = await supabaseClient.auth.signInWithOtp({ email });
+      if (error) throw error;
+      $loginMessage.textContent = 'Check your email for the magic link.';
+      $loginMessage.className = 'login-message';
+      show($loginMessage);
+    } catch (err) {
+      $loginMessage.textContent = err.message || 'Failed to send magic link.';
+      $loginMessage.className = 'login-message error';
+      show($loginMessage);
+    } finally {
+      $loginBtn.disabled = false;
+      $loginBtn.textContent = 'Send magic link';
+    }
+  });
+
+  // --- Sign out ---
+  $signoutBtn.addEventListener('click', handleSignout);
+
+  async function handleSignout() {
+    try { await supabaseClient.auth.signOut(); } catch (e) {}
+    currentSession = null;
+    localStorage.removeItem('sb-session');
+    showLogin();
+  }
+
+  // --- Data loading ---
+  async function loadData() {
+    try {
+      const [images, captions, bodyCopy, ads, adSets, tags] = await Promise.all([
+        authFetch('/api/images').then(r => r.json()),
+        authFetch('/api/captions').then(r => r.json()),
+        authFetch('/api/body-copy').then(r => r.json()),
+        authFetch('/api/ads').then(r => r.json()),
+        authFetch('/api/ad-sets').then(r => r.json()),
+        authFetch('/api/tags').then(r => r.json()),
+      ]);
+      STATE = { images, captions, bodyCopy, ads, adSets, tags };
+      render();
+    } catch (err) {
+      console.error('loadData failed:', err);
     }
   }
 
-  function updateLocalAdStatus(slug, adId, status, feedback) {
-    const seg = DATA.segments.find(s => s.slug === slug);
-    if (!seg) return;
-    if (!seg.adStatus) seg.adStatus = {};
-    seg.adStatus[adId] = {
-      status: status || 'unreviewed',
-      feedback: feedback || '',
-      updatedAt: new Date().toISOString()
-    };
-  }
-
-  // Count ads by status for a segment
-  function countAdsByStatus(seg) {
-    const counts = { all: 0, unreviewed: 0, feedback: 0, approved: 0, live: 0 };
-    if (!seg.adCopy?.concepts) return counts;
-    for (const concept of seg.adCopy.concepts) {
-      for (const ad of concept.feedAds) {
-        const adId = slugifyHeader(ad.header);
-        const status = getAdStatusLabel(seg, adId);
-        counts.all++;
-        counts[status] = (counts[status] || 0) + 1;
-      }
-      for (const ad of concept.storiesReels) {
-        const adId = slugifyHeader(ad.header);
-        const status = getAdStatusLabel(seg, adId);
-        counts.all++;
-        counts[status] = (counts[status] || 0) + 1;
-      }
-    }
-    return counts;
-  }
-
-  // --- Event delegation for image strip + review controls ---
-  document.getElementById('main').addEventListener('click', function(e) {
-    // Thumbnail click — swap main image
-    const thumb = e.target.closest('.thumb-item');
-    if (thumb) {
-      const strip = thumb.closest('.image-strip');
-      if (!strip) return;
-
-      const slug = strip.dataset.slug;
-      const filename = thumb.dataset.filename;
-
-      // Update active thumbnail
-      strip.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
-      thumb.classList.add('active');
-
-      // Swap main image
-      const mainArea = strip.querySelector('.main-image-area');
-      const seg = DATA.segments.find(s => s.slug === slug);
-      if (mainArea && seg) {
-        mainArea.innerHTML = `<img src="${imageUrl(seg, filename)}" alt="${esc(filename)}">`;
-      }
-
-      // Update strip active filename
-      strip.dataset.activeFilename = filename;
-
-      // Update review controls to reflect this image's review
-      const controls = strip.querySelector('.review-controls');
-      if (controls) {
-        controls.dataset.filename = filename;
-        const review = getLocalImageReview(slug, filename);
-        syncReviewControls(controls, review?.status || '', review?.note || '');
-      }
-
-      return;
-    }
-
-    // Review button click
-    const reviewBtn = e.target.closest('.review-btn');
-    if (reviewBtn) {
-      const controls = reviewBtn.closest('.review-controls');
-      if (!controls) return;
-
-      const slug = controls.dataset.slug;
-      const filename = controls.dataset.filename;
-      if (!slug || !filename) return;
-
-      const currentReview = getLocalImageReview(slug, filename);
-      const currentStatus = currentReview?.status || '';
-      const clickedStatus = reviewBtn.dataset.status;
-
-      // Toggle: if clicking the already-active status, clear it
-      const newStatus = (clickedStatus === currentStatus) ? null : clickedStatus;
-      const note = controls.querySelector('.review-note-input')?.value || '';
-
-      // Update buttons immediately
-      controls.querySelectorAll('.review-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.status === newStatus);
-      });
-
-      // Update local data
-      updateLocalImageReview(slug, filename, newStatus, note);
-
-      // Update thumbnail border (gallery view)
-      const strip = controls.closest('.image-strip');
-      if (strip) {
-        refreshThumbStatus(strip, filename, newStatus);
-      }
-
-      // Update creative card badge and data attr (creative view)
-      const card = controls.closest('.creative-card');
-      if (card) {
-        card.dataset.status = newStatus || '';
-        const badgesEl = card.querySelector('.creative-card-badges');
-        if (badgesEl) {
-          const existingBadge = badgesEl.querySelector('.status-badge');
-          if (existingBadge) existingBadge.remove();
-          if (newStatus) {
-            const badge = document.createElement('span');
-            badge.className = `status-badge ${newStatus}`;
-            badge.textContent = newStatus;
-            badgesEl.appendChild(badge);
-          }
-        }
-        // Re-apply filter visibility
-        if (activeView === 'creative') {
-          let hidden = false;
-          if (activeCreativeFilter === 'base' && card.dataset.type !== 'base') hidden = true;
-          if (activeCreativeFilter === 'composited' && card.dataset.type !== 'composited') hidden = true;
-          if (activeCreativeFilter === 'liked' && newStatus !== 'liked') hidden = true;
-          if (activeCreativeFilter === 'unapproved' && newStatus === 'approved') hidden = true;
-          card.classList.toggle('hidden', hidden);
-        }
-      }
-
-      // Save to server
-      saveReview(slug, filename, newStatus, note).then(result => {
-        if (result) flashSaved(controls);
-      });
-
-      return;
-    }
-  });
-
-  // Note input — save on blur
-  document.getElementById('main').addEventListener('focusout', function(e) {
-    if (!e.target.classList.contains('review-note-input')) return;
-
-    const controls = e.target.closest('.review-controls');
-    if (!controls) return;
-
-    const slug = controls.dataset.slug;
-    const filename = controls.dataset.filename;
-    if (!slug || !filename) return;
-
-    const note = e.target.value;
-    const review = getLocalImageReview(slug, filename);
-    const status = review?.status || null;
-
-    // Only save if note actually changed
-    const oldNote = review?.note || '';
-    if (note === oldNote) return;
-
-    updateLocalImageReview(slug, filename, status, note);
-
-    saveReview(slug, filename, status, note).then(result => {
-      if (result) flashSaved(controls);
-    });
-  });
-
-  // Also save on Enter key in note input
-  document.getElementById('main').addEventListener('keydown', function(e) {
-    if (e.key !== 'Enter') return;
-    if (!e.target.classList.contains('review-note-input')) return;
-
-    e.target.blur(); // triggers focusout handler above
-  });
-
-  // --- Ad status button click ---
-  document.getElementById('main').addEventListener('click', function(e) {
-    const statusBtn = e.target.closest('.ad-status-btn');
-    if (!statusBtn) return;
-
-    const section = statusBtn.closest('.ad-status-section');
-    if (!section) return;
-
-    const slug = section.dataset.slug;
-    const adId = section.dataset.adId;
-    if (!slug || !adId) return;
-
-    const newStatus = statusBtn.dataset.adStatus;
-    const feedback = section.querySelector('.ad-feedback-input')?.value || '';
-
-    // Update button active states
-    section.querySelectorAll('.ad-status-btn').forEach(btn => {
-      btn.classList.remove('active-unreviewed', 'active-feedback', 'active-approved', 'active-live');
-      if (btn.dataset.adStatus === newStatus) {
-        btn.classList.add(`active-${newStatus}`);
-      }
-    });
-
-    // Update the badge in the card header
-    const card = section.closest('.ad-card');
-    if (card) {
-      card.dataset.adStatus = newStatus;
-      const badge = card.querySelector('.ad-status-badge');
-      if (badge) {
-        badge.className = `ad-status-badge ${newStatus}`;
-        badge.textContent = newStatus;
-      }
-      // Re-apply gallery filter
-      if (activeView === 'gallery' && activeStatusFilter !== 'all') {
-        card.classList.toggle('ad-hidden', newStatus !== activeStatusFilter);
-      }
-    }
-
-    // Update local data
-    updateLocalAdStatus(slug, adId, newStatus, feedback);
-
-    // Update filter bar counts
-    updateGalleryFilterCounts();
-
-    // Update sidebar badge
-    updateSidebarBadge(slug);
-
-    // Save to server
-    saveAdStatus(slug, adId, newStatus, feedback).then(result => {
-      if (result) {
-        const indicator = section.querySelector('.ad-status-saving');
-        if (indicator) {
-          indicator.textContent = 'Saved';
-          indicator.classList.add('visible');
-          setTimeout(() => indicator.classList.remove('visible'), 1200);
-        }
-      }
-    });
-  });
-
-  // --- Ad feedback textarea — save on blur ---
-  document.getElementById('main').addEventListener('focusout', function(e) {
-    if (!e.target.classList.contains('ad-feedback-input')) return;
-
-    const section = e.target.closest('.ad-status-section');
-    if (!section) return;
-
-    const slug = section.dataset.slug;
-    const adId = section.dataset.adId;
-    if (!slug || !adId) return;
-
-    const feedback = e.target.value;
-    const seg = DATA.segments.find(s => s.slug === slug);
-    const oldEntry = getAdStatus(seg, adId);
-    const oldFeedback = oldEntry?.feedback || '';
-    if (feedback === oldFeedback) return;
-
-    const status = oldEntry?.status || 'unreviewed';
-    updateLocalAdStatus(slug, adId, status, feedback);
-
-    saveAdStatus(slug, adId, status, feedback).then(result => {
-      if (result) {
-        const indicator = section.querySelector('.ad-status-saving');
-        if (indicator) {
-          indicator.textContent = 'Saved';
-          indicator.classList.add('visible');
-          setTimeout(() => indicator.classList.remove('visible'), 1200);
-        }
-      }
-    });
-  });
-
-  // --- View tab switching ---
-  document.getElementById('topbar-tabs').addEventListener('click', function(e) {
-    const tab = e.target.closest('.topbar-tab');
-    if (tab) switchView(tab.dataset.view);
-  });
-
-  // --- Filter bar clicks ---
-  document.getElementById('main').addEventListener('click', function(e) {
-    const pill = e.target.closest('.filter-pill');
-    if (pill) {
-      applyCreativeFilter(pill.dataset.filter);
-      return;
-    }
-
-    // Gallery filter pill click
-    const galleryPill = e.target.closest('.gallery-filter-pill');
-    if (galleryPill) {
-      applyGalleryStatusFilter(galleryPill.dataset.statusFilter);
-      return;
-    }
-
-    // Creative card image click — open lightbox
-    const cardImage = e.target.closest('.creative-card-image');
-    if (cardImage) {
-      const src = cardImage.dataset.src;
-      if (src) openLightbox(src);
-      return;
-    }
-
-    // Lightbox close
-    if (e.target.closest('.lightbox-overlay')) {
-      closeLightbox();
-      return;
-    }
-  });
-
-  function openLightbox(src) {
-    const overlay = document.createElement('div');
-    overlay.className = 'lightbox-overlay';
-    overlay.innerHTML = `<img src="${src}" alt="Full size">`;
-    overlay.addEventListener('click', function(e) {
-      if (e.target === overlay) closeLightbox();
-    });
-    document.body.appendChild(overlay);
-
-    // Close on Escape
-    overlay._escHandler = function(e) {
-      if (e.key === 'Escape') closeLightbox();
-    };
-    document.addEventListener('keydown', overlay._escHandler);
-  }
-
-  function closeLightbox() {
-    const overlay = document.querySelector('.lightbox-overlay');
-    if (overlay) {
-      if (overlay._escHandler) document.removeEventListener('keydown', overlay._escHandler);
-      overlay.remove();
-    }
-  }
-
-  // --- Live reload via SSE ---
+  // --- SSE ---
   function connectSSE() {
     const es = new EventSource('/api/events');
-    es.onmessage = async function(e) {
-      if (e.data === 'reload' && DATA) {
-        const scrollY = window.scrollY;
-        try {
-          const res = await authFetch('/api/data');
-          if (res.status === 401) { renderLoginForm(); return; }
-          DATA = await res.json();
-          renderSidebar();
-          if (activeSegment) {
-            selectSegment(activeSegment, true);
-            requestAnimationFrame(() => window.scrollTo(0, scrollY));
-          }
-        } catch (err) {
-          console.error('Live reload fetch failed:', err);
-        }
-      }
+    es.onmessage = async (e) => {
+      if (e.data === 'reload') await loadData();
     };
-    es.onerror = function() {
+    es.onerror = () => {
       es.close();
       setTimeout(connectSSE, 3000);
     };
   }
 
-  // --- Init: fetch auth config, show login ---
-  async function boot() {
-    const cfgRes = await fetch('/api/config');
-    const cfg = await cfgRes.json();
-    showLogin(cfg.supabaseUrl, cfg.supabaseAnonKey);
-    connectSSE();
+  // --- Tabs ---
+  function setupTabs() {
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        activeTab = tab.dataset.tab;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        const panelId = 'panel-' + activeTab;
+        document.getElementById(panelId).classList.add('active');
+      });
+    });
   }
+
+  // --- Render (called after data loads) ---
+  function render() {
+    renderImages();
+    renderCaptions();
+    renderBodyCopy();
+    renderCaptionStrip();
+    renderAds();
+  }
+
+  // --- Images panel ---
+  function renderImages() {
+    if (STATE.images.length === 0) {
+      $panelImages.innerHTML = '<div class="empty-state"><p>No images yet.</p><p>Upload images via the CLI or API.</p></div>';
+      return;
+    }
+    let html = '<div class="image-grid">';
+    for (const img of STATE.images) {
+      const src = storageBaseUrl + '/' + img.storage_path;
+      const tagsHtml = (img.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t.name) + '</span>').join('');
+      html += '<div class="image-card" data-image-id="' + img.id + '"'
+        + ' ondragover="event.preventDefault(); this.classList.add(\'drop-target\')"'
+        + ' ondragleave="this.classList.remove(\'drop-target\')"'
+        + ' ondrop="window.__onImageDrop(event, this)">'
+        + '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(img.filename) + '" loading="lazy" />'
+        + '<div class="image-card-info">' + escapeHtml(img.filename) + '</div>'
+        + (tagsHtml ? '<div class="image-card-tags">' + tagsHtml + '</div>' : '')
+        + '</div>';
+    }
+    html += '</div>';
+    $panelImages.innerHTML = html;
+  }
+
+  // --- Captions panel ---
+  function renderCaptions() {
+    let html = '<form class="add-form" id="form-add-caption">'
+      + '<input type="text" placeholder="Write a caption..." required />'
+      + '<button type="submit">Add</button>'
+      + '</form>';
+
+    if (STATE.captions.length === 0) {
+      html += '<div class="empty-state"><p>No captions yet.</p></div>';
+    } else {
+      for (const cap of STATE.captions) {
+        const tagsHtml = (cap.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t.name) + '</span>').join('');
+        html += '<div class="caption-card" draggable="true" data-caption-id="' + cap.id + '">'
+          + '<div class="caption-card-text">' + escapeHtml(cap.text) + '</div>'
+          + (tagsHtml ? '<div class="caption-card-tags">' + tagsHtml + '</div>' : '')
+          + '<button class="btn-delete" onclick="window.__deleteCaption(\'' + cap.id + '\')" title="Delete">&times;</button>'
+          + '</div>';
+      }
+    }
+    $panelCaptions.innerHTML = html;
+
+    // Attach add form handler
+    const form = document.getElementById('form-add-caption');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const input = form.querySelector('input');
+        const text = input.value.trim();
+        if (!text) return;
+        try {
+          await authFetch('/api/captions', { method: 'POST', body: { text } });
+          await loadData();
+        } catch (err) {
+          console.error('Add caption failed:', err);
+        }
+      });
+    }
+
+    // Attach drag handlers to caption cards
+    document.querySelectorAll('.caption-card[draggable]').forEach(card => {
+      card.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('application/caption-id', card.dataset.captionId);
+        e.dataTransfer.effectAllowed = 'copy';
+      });
+    });
+  }
+
+  // --- Body Copy panel ---
+  function renderBodyCopy() {
+    let html = '<form class="add-form bodycopy-form" id="form-add-bodycopy">'
+      + '<input type="text" placeholder="Headline (optional)" />'
+      + '<div class="bodycopy-form-row">'
+      + '<textarea placeholder="Body copy text..." required></textarea>'
+      + '<button type="submit">Add</button>'
+      + '</div>'
+      + '</form>';
+
+    if (STATE.bodyCopy.length === 0) {
+      html += '<div class="empty-state"><p>No body copy yet.</p></div>';
+    } else {
+      for (const bc of STATE.bodyCopy) {
+        const tagsHtml = (bc.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t.name) + '</span>').join('');
+        html += '<div class="bodycopy-card" data-bodycopy-id="' + bc.id + '">'
+          + (bc.headline ? '<div class="bodycopy-headline">' + escapeHtml(bc.headline) + '</div>' : '')
+          + '<div class="bodycopy-text">' + escapeHtml(bc.text) + '</div>'
+          + (tagsHtml ? '<div class="bodycopy-card-tags">' + tagsHtml + '</div>' : '')
+          + '<button class="btn-delete" onclick="window.__deleteBodyCopy(\'' + bc.id + '\')" title="Delete">&times;</button>'
+          + '</div>';
+      }
+    }
+    $panelBodycopy.innerHTML = html;
+
+    // Attach add form handler
+    const form = document.getElementById('form-add-bodycopy');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const headlineInput = form.querySelector('input');
+        const textArea = form.querySelector('textarea');
+        const text = textArea.value.trim();
+        if (!text) return;
+        const headline = headlineInput.value.trim() || null;
+        try {
+          await authFetch('/api/body-copy', { method: 'POST', body: { text, headline } });
+          await loadData();
+        } catch (err) {
+          console.error('Add body copy failed:', err);
+        }
+      });
+    }
+  }
+
+  // --- Caption strip (persistent at bottom of library panel) ---
+  function renderCaptionStrip() {
+    if (STATE.captions.length === 0) {
+      $captionStrip.innerHTML = '';
+      return;
+    }
+    let html = '';
+    for (const cap of STATE.captions) {
+      const truncated = cap.text.length > 40 ? cap.text.slice(0, 37) + '...' : cap.text;
+      html += '<div class="caption-chip" draggable="true" data-caption-id="' + cap.id + '"'
+        + ' title="' + escapeHtml(cap.text) + '">'
+        + escapeHtml(truncated)
+        + '</div>';
+    }
+    $captionStrip.innerHTML = html;
+
+    // Drag handlers for strip chips
+    $captionStrip.querySelectorAll('.caption-chip').forEach(chip => {
+      chip.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('application/caption-id', chip.dataset.captionId);
+        e.dataTransfer.effectAllowed = 'copy';
+      });
+    });
+  }
+
+  // --- Ads panel ---
+  function renderAds() {
+    $adsCount.textContent = STATE.ads.length + ' ad' + (STATE.ads.length !== 1 ? 's' : '');
+
+    if (STATE.ads.length === 0) {
+      $adsList.innerHTML = '<div class="empty-state"><p>No ads yet.</p><p>Drag a caption onto an image to create an ad.</p></div>';
+      return;
+    }
+
+    let html = '';
+    for (const ad of STATE.ads) {
+      const baseImage = ad.base_image;
+      const caption = ad.caption;
+      const bodyCopy = ad.body_copy;
+      const hasComposited = !!ad.composited_image_path;
+      const imageSrc = hasComposited
+        ? storageBaseUrl + '/' + ad.composited_image_path
+        : (baseImage ? storageBaseUrl + '/' + baseImage.storage_path : '');
+
+      html += '<div class="ad-card" data-ad-id="' + ad.id + '">';
+
+      // Image area
+      if (imageSrc) {
+        html += '<div class="ad-card-image">'
+          + '<img src="' + escapeHtml(imageSrc) + '" loading="lazy" />';
+        // Show caption overlay if no composited image
+        if (!hasComposited && caption) {
+          html += '<div class="ad-card-caption-overlay">' + escapeHtml(caption.text) + '</div>';
+        }
+        html += '</div>';
+      }
+
+      html += '<div class="ad-card-body">';
+
+      // Caption as quote
+      if (caption) {
+        html += '<div class="ad-card-caption-text">' + escapeHtml(caption.text) + '</div>';
+      }
+
+      // Body copy
+      if (bodyCopy) {
+        html += '<div class="ad-card-bodycopy">';
+        if (bodyCopy.headline) {
+          html += '<div class="ad-card-bodycopy-headline">' + escapeHtml(bodyCopy.headline) + '</div>';
+        }
+        html += '<div class="ad-card-bodycopy-text">' + escapeHtml(bodyCopy.text) + '</div>';
+        html += '</div>';
+      }
+
+      // Status
+      const desiredStatus = ad.desired_status || 'draft';
+      html += '<div class="ad-card-status">'
+        + '<label>Status</label>'
+        + '<select onchange="window.__updateAdStatus(\'' + ad.id + '\', this.value)">'
+        + '<option value="draft"' + (desiredStatus === 'draft' ? ' selected' : '') + '>Draft</option>'
+        + '<option value="approved"' + (desiredStatus === 'approved' ? ' selected' : '') + '>Approved</option>'
+        + '<option value="live"' + (desiredStatus === 'live' ? ' selected' : '') + '>Live</option>'
+        + '<option value="paused"' + (desiredStatus === 'paused' ? ' selected' : '') + '>Paused</option>'
+        + '</select>';
+      if (ad.meta_status) {
+        html += ' <span class="status-badge ' + escapeHtml(ad.meta_status) + '">' + escapeHtml(ad.meta_status) + '</span>';
+      }
+      html += '</div>';
+
+      // Feedback
+      html += '<div class="ad-card-feedback">'
+        + '<textarea placeholder="Feedback notes..." data-ad-id="' + ad.id + '" data-original="' + escapeHtml(ad.feedback || '') + '"'
+        + ' onblur="window.__saveAdFeedback(this)">'
+        + escapeHtml(ad.feedback || '')
+        + '</textarea>'
+        + '</div>';
+
+      // Actions
+      html += '<div class="ad-card-actions">';
+      if (!hasComposited) {
+        html += '<button class="btn-generate" onclick="window.__generateAd(\'' + ad.id + '\', this)">Generate</button>';
+      }
+      html += '</div>';
+
+      // Delete
+      html += '<button class="btn-delete" onclick="window.__deleteAd(\'' + ad.id + '\')" title="Delete ad">&times;</button>';
+
+      html += '</div>'; // ad-card-body
+      html += '</div>'; // ad-card
+    }
+    $adsList.innerHTML = html;
+  }
+
+  // --- Global event handlers (called from inline handlers) ---
+
+  window.__deleteCaption = async function(id) {
+    if (!confirm('Delete this caption?')) return;
+    try {
+      await authFetch('/api/captions/' + id, { method: 'DELETE' });
+      await loadData();
+    } catch (err) {
+      console.error('Delete caption failed:', err);
+    }
+  };
+
+  window.__deleteBodyCopy = async function(id) {
+    if (!confirm('Delete this body copy?')) return;
+    try {
+      await authFetch('/api/body-copy/' + id, { method: 'DELETE' });
+      await loadData();
+    } catch (err) {
+      console.error('Delete body copy failed:', err);
+    }
+  };
+
+  window.__deleteAd = async function(id) {
+    if (!confirm('Delete this ad?')) return;
+    try {
+      await authFetch('/api/ads/' + id, { method: 'DELETE' });
+      await loadData();
+    } catch (err) {
+      console.error('Delete ad failed:', err);
+    }
+  };
+
+  window.__updateAdStatus = async function(id, status) {
+    try {
+      await authFetch('/api/ads/' + id, { method: 'PUT', body: { desired_status: status } });
+      await loadData();
+    } catch (err) {
+      console.error('Update ad status failed:', err);
+    }
+  };
+
+  window.__saveAdFeedback = async function(textarea) {
+    const id = textarea.dataset.adId;
+    const original = textarea.dataset.original;
+    const current = textarea.value;
+    if (current === original) return;
+    try {
+      await authFetch('/api/ads/' + id, { method: 'PUT', body: { feedback: current } });
+      textarea.dataset.original = current;
+    } catch (err) {
+      console.error('Save feedback failed:', err);
+    }
+  };
+
+  window.__generateAd = async function(id, btn) {
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    try {
+      const res = await authFetch('/api/ads/' + id + '/generate', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Generation failed');
+      }
+    } catch (err) {
+      alert('Generation failed: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Generate';
+    }
+  };
+
+  // --- Drag & Drop: caption onto image ---
+  window.__onImageDrop = function(event, cardEl) {
+    event.preventDefault();
+    cardEl.classList.remove('drop-target');
+
+    const captionId = event.dataTransfer.getData('application/caption-id');
+    if (!captionId) return;
+
+    const imageId = cardEl.dataset.imageId;
+    if (!imageId) return;
+
+    // Find the image and caption
+    const image = STATE.images.find(i => i.id === imageId);
+    const caption = STATE.captions.find(c => c.id === captionId);
+    if (!image || !caption) return;
+
+    // Store pending and show modal
+    pendingAd.imageId = imageId;
+    pendingAd.captionId = captionId;
+    showCreateAdModal(image, caption);
+  };
+
+  function showCreateAdModal(image, caption) {
+    const imageSrc = storageBaseUrl + '/' + image.storage_path;
+    $modalPreview.innerHTML = '<img src="' + escapeHtml(imageSrc) + '" />'
+      + '<div class="modal-preview-caption">' + escapeHtml(caption.text) + '</div>';
+
+    // Populate body copy dropdown
+    let options = '<option value="">None</option>';
+    for (const bc of STATE.bodyCopy) {
+      const label = bc.headline ? bc.headline + ': ' + bc.text.slice(0, 60) : bc.text.slice(0, 80);
+      options += '<option value="' + bc.id + '">' + escapeHtml(label) + '</option>';
+    }
+    $modalBodycopySelect.innerHTML = options;
+
+    show($modalBackdrop);
+  }
+
+  $modalCancel.addEventListener('click', () => {
+    hide($modalBackdrop);
+    pendingAd = { imageId: null, captionId: null };
+  });
+
+  $modalBackdrop.addEventListener('click', (e) => {
+    if (e.target === $modalBackdrop) {
+      hide($modalBackdrop);
+      pendingAd = { imageId: null, captionId: null };
+    }
+  });
+
+  $modalCreate.addEventListener('click', async () => {
+    if (!pendingAd.imageId || !pendingAd.captionId) return;
+
+    const body = {
+      base_image_id: pendingAd.imageId,
+      caption_id: pendingAd.captionId,
+    };
+    const bcId = $modalBodycopySelect.value;
+    if (bcId) body.body_copy_id = bcId;
+
+    $modalCreate.disabled = true;
+    $modalCreate.textContent = 'Creating...';
+
+    try {
+      await authFetch('/api/ads', { method: 'POST', body });
+      hide($modalBackdrop);
+      pendingAd = { imageId: null, captionId: null };
+      await loadData();
+    } catch (err) {
+      console.error('Create ad failed:', err);
+      alert('Failed to create ad: ' + err.message);
+    } finally {
+      $modalCreate.disabled = false;
+      $modalCreate.textContent = 'Create Ad';
+    }
+  });
+
+  // --- Start ---
   boot();
 })();
 </script>
