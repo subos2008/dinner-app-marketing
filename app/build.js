@@ -449,31 +449,10 @@ function listCreativeImages(segmentPath) {
     // No manifest — will fall back to inference
   }
 
-  // Read reviews.json if it exists
-  let reviews = {};
-  try {
-    const reviewData = JSON.parse(fs.readFileSync(path.join(creativePath, 'reviews.json'), 'utf-8'));
-    if (reviewData && typeof reviewData === 'object') {
-      // Support both { "filename": { status, note } } and array format
-      if (Array.isArray(reviewData)) {
-        for (const entry of reviewData) {
-          if (entry.filename) {
-            reviews[entry.filename] = { status: entry.status, note: entry.note || null };
-          }
-        }
-      } else {
-        reviews = reviewData;
-      }
-    }
-  } catch {
-    // No reviews — that's fine
-  }
-
   return imageFiles.map(filename => {
     const manifestEntry = manifestEntries[filename];
 
     if (manifestEntry) {
-      // Use manifest metadata
       return {
         filename,
         concept: manifestEntry.concept || null,
@@ -482,17 +461,17 @@ function listCreativeImages(segmentPath) {
         type: manifestEntry.type || 'base',
         parent: manifestEntry.parent || null,
         copy_variant: manifestEntry.copy_variant || null,
-        review: reviews[filename] || null,
+        review: null,
       };
     }
 
     // Fallback: infer from filename
-    return inferImageMetadata(filename, reviews[filename] || null);
+    return inferImageMetadata(filename);
   });
 }
 
 // --- Infer image metadata from filename ---
-function inferImageMetadata(filename, review) {
+function inferImageMetadata(filename) {
   const baseName = filename.replace(/\.(png|jpg|jpeg|webp)$/i, '');
 
   // Determine format
@@ -535,7 +514,7 @@ function inferImageMetadata(filename, review) {
     type,
     parent,
     copy_variant: null,
-    review: review || null,
+    review: null,
   };
 }
 
