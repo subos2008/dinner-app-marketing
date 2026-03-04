@@ -934,11 +934,17 @@
       // 4. No session — show login
       showLogin();
 
-      // 5. Listen for auth changes (e.g., after magic link click)
+      // 5. Listen for auth changes (sign-in + token refresh)
       supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN' && session) {
+        if (session) {
           currentSession = session;
+        }
+        if (event === 'SIGNED_IN' && session) {
           showApp(session.user);
+        }
+        if (event === 'SIGNED_OUT') {
+          currentSession = null;
+          showLogin();
         }
       });
     } catch (err) {
@@ -1022,14 +1028,19 @@
   }
 
   // --- SSE ---
+  let sseRetryDelay = 1000;
   function connectSSE() {
-    const es = new EventSource('/api/events');
+    const token = getToken();
+    if (!token) return;
+    const es = new EventSource('/api/events?token=' + encodeURIComponent(token));
     es.onmessage = async (e) => {
       if (e.data === 'reload') await loadData();
     };
+    es.onopen = () => { sseRetryDelay = 1000; };
     es.onerror = () => {
       es.close();
-      setTimeout(connectSSE, 3000);
+      setTimeout(connectSSE, sseRetryDelay);
+      sseRetryDelay = Math.min(sseRetryDelay * 2, 30000);
     };
   }
 

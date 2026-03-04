@@ -81,8 +81,15 @@ app.post('/api/images', requireAuth, async (req, res) => {
 });
 
 app.delete('/api/images/:id', requireAuth, async (req, res) => {
-  try { await db.deleteImage(req.params.id, req.token); res.json({ ok: true }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  try {
+    await db.deleteImage(req.params.id, req.token);
+    res.json({ ok: true });
+  } catch (e) {
+    if (e.code === '23503') {
+      return res.status(409).json({ error: 'Cannot delete image — it is used by one or more ads. Delete those ads first.' });
+    }
+    res.status(500).json({ error: e.message });
+  }
 });
 
 app.post('/api/images/:id/tags', requireAuth, async (req, res) => {
@@ -216,14 +223,17 @@ app.post('/api/ads', requireAuth, async (req, res) => {
 });
 
 app.put('/api/ads/:id', requireAuth, async (req, res) => {
+  const VALID_DESIRED_STATUSES = ['draft', 'approved', 'live', 'paused'];
   const allowedFields = [
     'ad_set_id', 'caption_id', 'body_copy_id', 'desired_status',
-    'feedback', 'composited_image_path', 'generation_prompt',
-    'meta_status', 'meta_ad_id'
+    'feedback', 'composited_image_path', 'generation_prompt'
   ];
   const updates = {};
   for (const field of allowedFields) {
     if (req.body[field] !== undefined) updates[field] = req.body[field];
+  }
+  if (updates.desired_status && !VALID_DESIRED_STATUSES.includes(updates.desired_status)) {
+    return res.status(400).json({ error: `Invalid status. Must be one of: ${VALID_DESIRED_STATUSES.join(', ')}` });
   }
   try { res.json(await db.updateAd(req.params.id, updates, req.token)); }
   catch (e) { res.status(500).json({ error: e.message }); }
@@ -398,7 +408,18 @@ app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
 // --- SSE live reload via Supabase Realtime ---
 const sseClients = new Set();
 
-app.get('/api/events', (req, res) => {
+// SSE uses query param for token since EventSource doesn't support headers
+app.get('/api/events', async (req, res, next) => {
+  const token = req.query.token;
+  if (!token) return res.status(401).json({ error: 'Authentication required' });
+  const { createClient } = require('@supabase/supabase-js');
+  const client = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
+    global: { headers: { Authorization: `Bearer ${token}` } }
+  });
+  const { data: { user }, error } = await client.auth.getUser(token);
+  if (error || !user) return res.status(401).json({ error: 'Invalid or expired token' });
+  next();
+}, (req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',

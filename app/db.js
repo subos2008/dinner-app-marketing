@@ -120,11 +120,24 @@ async function createImage(data, token) {
 
 async function deleteImage(id, token) {
   const client = clientForRequest(token);
+  // Fetch storage_path before deleting the row
+  const { data: img } = await client
+    .from('base_image')
+    .select('storage_path')
+    .eq('id', id)
+    .single();
   const { error } = await client
     .from('base_image')
     .delete()
     .eq('id', id);
   if (error) throw error;
+  // Best-effort Storage cleanup
+  if (img && img.storage_path) {
+    const svc = getServiceClient();
+    if (svc) {
+      await svc.storage.from('creative').remove([img.storage_path]).catch(() => {});
+    }
+  }
 }
 
 async function addImageTag(imageId, tagId, token) {
