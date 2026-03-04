@@ -753,6 +753,132 @@
     font-size: 14px;
   }
 
+  /* --- Generate tab --- */
+  .generate-section {
+    margin-bottom: 20px;
+  }
+
+  .generate-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .generate-section-header label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .generate-section-header button {
+    background: transparent;
+    border: none;
+    color: var(--warm-gray);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 2px 6px;
+  }
+
+  .generate-section-header button:hover {
+    color: var(--charcoal);
+  }
+
+  .generate-brief textarea {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 10px 12px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--charcoal);
+    resize: vertical;
+    min-height: 80px;
+    max-height: 300px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .generate-brief textarea:focus {
+    border-color: var(--amber);
+  }
+
+  .generate-type-toggle {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+  }
+
+  .generate-type-toggle button {
+    flex: 1;
+    padding: 8px 16px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 400;
+    border: 1px solid var(--light-gray);
+    background: var(--warm-white);
+    color: var(--warm-gray);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .generate-type-toggle button:first-child {
+    border-radius: var(--radius) 0 0 var(--radius);
+    border-right: none;
+  }
+
+  .generate-type-toggle button:last-child {
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .generate-type-toggle button.active {
+    background: var(--charcoal);
+    color: #fff;
+    border-color: var(--charcoal);
+    font-weight: 600;
+  }
+
+  .generate-prompt textarea {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--charcoal);
+    resize: vertical;
+    min-height: 60px;
+    outline: none;
+    transition: border-color 0.15s;
+    margin-bottom: 12px;
+  }
+
+  .generate-prompt textarea:focus {
+    border-color: var(--amber);
+  }
+
+  .generate-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .generate-actions .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .generate-status {
+    font-size: 13px;
+    color: var(--warm-gray);
+    font-style: italic;
+  }
+
   /* --- Utility --- */
   .hidden { display: none !important; }
 
@@ -806,12 +932,14 @@
         <div class="tab active" data-tab="images">Images</div>
         <div class="tab" data-tab="captions">Captions</div>
         <div class="tab" data-tab="bodycopy">Body Copy</div>
+        <div class="tab" data-tab="generate">Generate</div>
       </div>
 
       <div class="tab-content">
         <div id="panel-images" class="tab-panel active"></div>
         <div id="panel-captions" class="tab-panel"></div>
         <div id="panel-bodycopy" class="tab-panel"></div>
+        <div id="panel-generate" class="tab-panel"></div>
       </div>
 
       <div id="caption-strip" class="caption-strip"></div>
@@ -873,6 +1001,7 @@
   const $panelImages = document.getElementById('panel-images');
   const $panelCaptions = document.getElementById('panel-captions');
   const $panelBodycopy = document.getElementById('panel-bodycopy');
+  const $panelGenerate = document.getElementById('panel-generate');
   const $captionStrip = document.getElementById('caption-strip');
   const $adsCount = document.getElementById('ads-count');
   const $adsList = document.getElementById('ads-list');
@@ -1066,6 +1195,7 @@
     renderCaptions();
     renderBodyCopy();
     renderCaptionStrip();
+    renderGenerate();
     renderBuilder();
     renderAds();
   }
@@ -1213,6 +1343,144 @@
         e.dataTransfer.effectAllowed = 'copy';
       });
     });
+  }
+
+  // --- Generate panel ---
+  let generateBriefLoaded = false;
+  let generateType = 'image';
+  let generateBriefVisible = true;
+
+  function renderGenerate() {
+    // Only render the static shell once; subsequent calls skip
+    if ($panelGenerate.querySelector('.generate-section')) return;
+
+    const briefFromStorage = localStorage.getItem('generate-brief') || '';
+
+    let html = '';
+
+    // Creative brief section
+    html += '<div class="generate-section generate-brief">'
+      + '<div class="generate-section-header">'
+      + '<label>Creative Brief</label>'
+      + '<button id="generate-brief-toggle">hide</button>'
+      + '</div>'
+      + '<textarea id="generate-brief-text" placeholder="Loading creative brief...">' + escapeHtml(briefFromStorage) + '</textarea>'
+      + '</div>';
+
+    // Type toggle
+    html += '<div class="generate-type-toggle">'
+      + '<button class="active" data-gen-type="image">Image</button>'
+      + '<button data-gen-type="caption">Caption</button>'
+      + '</div>';
+
+    // Prompt
+    html += '<div class="generate-prompt">'
+      + '<textarea id="generate-prompt-text" placeholder="Describe what you want..."></textarea>'
+      + '</div>';
+
+    // Actions
+    html += '<div class="generate-actions">'
+      + '<button class="btn-primary" id="generate-btn" disabled>Generate</button>'
+      + '<span class="generate-status" id="generate-status"></span>'
+      + '</div>';
+
+    $panelGenerate.innerHTML = html;
+
+    // Wire up events
+    const $brief = document.getElementById('generate-brief-text');
+    const $briefToggle = document.getElementById('generate-brief-toggle');
+    const $prompt = document.getElementById('generate-prompt-text');
+    const $genBtn = document.getElementById('generate-btn');
+    const $genStatus = document.getElementById('generate-status');
+
+    // Load brief from server if not in localStorage
+    if (!briefFromStorage && !generateBriefLoaded) {
+      generateBriefLoaded = true;
+      authFetch('/api/creative-brief').then(r => r.json()).then(data => {
+        if (data.text && !$brief.value) {
+          $brief.value = data.text;
+          localStorage.setItem('generate-brief', data.text);
+        }
+      }).catch(() => {});
+    }
+
+    // Save brief to localStorage on edit
+    $brief.addEventListener('input', () => {
+      localStorage.setItem('generate-brief', $brief.value);
+    });
+
+    // Toggle brief visibility
+    $briefToggle.addEventListener('click', () => {
+      generateBriefVisible = !generateBriefVisible;
+      $brief.style.display = generateBriefVisible ? '' : 'none';
+      $briefToggle.textContent = generateBriefVisible ? 'hide' : 'show';
+    });
+
+    // Type toggle
+    $panelGenerate.querySelectorAll('.generate-type-toggle button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        generateType = btn.dataset.genType;
+        $panelGenerate.querySelectorAll('.generate-type-toggle button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateGenBtn();
+      });
+    });
+
+    // Prompt input — enable/disable generate button
+    function updateGenBtn() {
+      $genBtn.disabled = !$prompt.value.trim();
+    }
+    $prompt.addEventListener('input', updateGenBtn);
+
+    // Generate button
+    $genBtn.addEventListener('click', async () => {
+      const prompt = $prompt.value.trim();
+      if (!prompt) return;
+
+      $genBtn.disabled = true;
+      $genStatus.textContent = generateType === 'image'
+        ? 'Generating image... this may take a minute'
+        : 'Generating captions...';
+
+      try {
+        const body = {
+          type: generateType,
+          brief: $brief.value || '',
+          prompt
+        };
+        const res = await authFetch('/api/generate', { method: 'POST', body });
+        const data = await res.json();
+
+        if (!res.ok) {
+          $genStatus.textContent = 'Error: ' + (data.error || 'Generation failed');
+          return;
+        }
+
+        $genStatus.textContent = '';
+        $prompt.value = '';
+
+        // Reload data then switch to the appropriate tab
+        await loadData();
+        const targetTab = generateType === 'image' ? 'images' : 'captions';
+        switchToTab(targetTab);
+
+      } catch (err) {
+        $genStatus.textContent = 'Error: ' + err.message;
+      } finally {
+        $genBtn.disabled = false;
+        updateGenBtn();
+      }
+    });
+  }
+
+  function switchToTab(tabName) {
+    activeTab = tabName;
+    document.querySelectorAll('.tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === tabName);
+    });
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById('panel-' + tabName);
+    if (panel) panel.classList.add('active');
   }
 
   // --- Ads panel ---

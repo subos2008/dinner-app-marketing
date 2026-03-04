@@ -244,6 +244,213 @@ app.delete('/api/ads/:id', requireAuth, async (req, res) => {
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// --- Creative Brief ---
+
+app.get('/api/creative-brief', requireAuth, (req, res) => {
+  const fs = require('fs');
+  const briefPath = path.join(__dirname, '..', 'segments', 'creative-brief.md');
+  try {
+    const text = fs.readFileSync(briefPath, 'utf8');
+    res.json({ text });
+  } catch (e) {
+    res.status(404).json({ error: 'Creative brief not found' });
+  }
+});
+
+// --- Generate (images & captions via claude -p) ---
+
+app.post('/api/generate', requireAuth, async (req, res) => {
+  const os = require('os');
+  const fs = require('fs');
+  const { spawn } = require('child_process');
+
+  const { type, brief, prompt } = req.body;
+  if (!type || !prompt) {
+    return res.status(400).json({ error: 'type and prompt are required' });
+  }
+  if (type !== 'image' && type !== 'caption') {
+    return res.status(400).json({ error: 'type must be "image" or "caption"' });
+  }
+
+  // Helper: run claude -p with prompt via stdin (avoids shell escaping issues)
+  function runClaude(promptText, args = []) {
+    return new Promise((resolve, reject) => {
+      const env = { ...process.env };
+      delete env.CLAUDECODE;
+      const child = spawn('claude', ['-p', ...args], {
+        env,
+        stdio: ['pipe', 'pipe', 'pipe']
+      });
+      let stdout = '';
+      let stderr = '';
+      child.stdout.on('data', d => { stdout += d; });
+      child.stderr.on('data', d => { stderr += d; });
+      child.on('close', code => {
+        if (code !== 0) reject(new Error(stderr || `claude exited with code ${code}`));
+        else resolve(stdout);
+      });
+      child.on('error', reject);
+      child.stdin.write(promptText);
+      child.stdin.end();
+    });
+  }
+
+  try {
+    if (type === 'image') {
+      // Snapshot /tmp images before
+      const tmpPngsBefore = new Set(
+        fs.readdirSync(os.tmpdir())
+          .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'))
+      );
+
+      const claudePrompt = [
+        brief ? `Context — creative brief:\n${brief}\n\n---\n\n` : '',
+        `Generate an ad image based on this request: ${prompt}\n\n`,
+        'Use the mcp__nanobanana__generate_image tool to create the image. ',
+        'Make the image suitable for a social media ad (Instagram/Facebook).'
+      ].join('');
+
+      console.log(`[generate] Image: running claude -p...`);
+      let claudeOutput;
+      try {
+        claudeOutput = await runClaude(claudePrompt, [
+          '--allowedTools', 'mcp__nanobanana__generate_image,mcp__nanobanana__configure_gemini_token'
+        ]);
+      } catch (execErr) {
+        console.error(`[generate] claude -p failed:`, execErr.message);
+        return res.status(500).json({
+          error: 'Image generation failed',
+          detail: execErr.message
+        });
+      }
+
+      // Find the output image — Nano Banana may save to a relative path (e.g. generated_imgs/) or /tmp
+      let outputPath = null;
+
+      // Try to extract a file path from claude's output (absolute or relative)
+      const pathMatch = claudeOutput.match(/[`"]?([^\s`"']*\.(png|jpg|jpeg))/i);
+      if (pathMatch) {
+        let candidate = pathMatch[1];
+        // Resolve relative paths against cwd
+        if (!path.isAbsolute(candidate)) {
+          candidate = path.resolve(candidate);
+        }
+        if (fs.existsSync(candidate)) {
+          outputPath = candidate;
+        }
+      }
+
+      // Fallback: scan /tmp for new image files
+      if (!outputPath) {
+        const tmpPngsAfter = fs.readdirSync(os.tmpdir())
+          .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'))
+          .filter(f => !tmpPngsBefore.has(f));
+
+        if (tmpPngsAfter.length > 0) {
+          tmpPngsAfter.sort((a, b) => {
+            const sa = fs.statSync(path.join(os.tmpdir(), a));
+            const sb = fs.statSync(path.join(os.tmpdir(), b));
+            return sb.mtimeMs - sa.mtimeMs;
+          });
+          outputPath = path.join(os.tmpdir(), tmpPngsAfter[0]);
+        }
+      }
+
+      if (!outputPath) {
+        console.error(`[generate] Could not find output image. Claude output:\n${claudeOutput.slice(0, 500)}`);
+        return res.status(500).json({
+          error: 'Generation ran but output image not found',
+          claudeOutput: claudeOutput.slice(0, 500)
+        });
+      }
+
+      console.log(`[generate] Image found at ${outputPath}`);
+
+      // Upload to Supabase Storage
+      const serviceClient = db.getServiceClient();
+      if (!serviceClient) {
+        return res.status(500).json({
+          error: 'SUPABASE_SERVICE_ROLE_KEY not configured — cannot upload to storage'
+        });
+      }
+
+      const timestamp = Date.now();
+      const storagePath = `generated/${timestamp}.png`;
+      const filename = `generated-${timestamp}.png`;
+      const outputBuffer = fs.readFileSync(outputPath);
+
+      const { error: uploadError } = await serviceClient.storage
+        .from('creative')
+        .upload(storagePath, outputBuffer, {
+          contentType: 'image/png',
+          upsert: true
+        });
+
+      if (uploadError) {
+        console.error(`[generate] Storage upload failed:`, uploadError);
+        return res.status(500).json({ error: 'Failed to upload image', detail: uploadError.message });
+      }
+
+      // Create base_image row
+      const image = await db.createImage({ filename, storage_path: storagePath, prompt }, req.token);
+      console.log(`[generate] Image created: ${image.id}`);
+      return res.json({ image });
+
+    } else {
+      // type === 'caption'
+      const claudePrompt = [
+        brief ? `Context — creative brief:\n${brief}\n\n---\n\n` : '',
+        `Generate short ad caption text based on this request: ${prompt}\n\n`,
+        'Output ONLY a JSON array of caption strings. Each caption should be short (suitable for overlaying on an image). ',
+        'Generate 3-5 captions. Output raw JSON with no markdown fences, no explanation — just the array.'
+      ].join('');
+
+      console.log(`[generate] Captions: running claude -p...`);
+      let claudeOutput;
+      try {
+        claudeOutput = await runClaude(claudePrompt);
+      } catch (execErr) {
+        console.error(`[generate] claude -p failed:`, execErr.message);
+        return res.status(500).json({
+          error: 'Caption generation failed',
+          detail: execErr.message
+        });
+      }
+
+      // Parse JSON array from output
+      let captions;
+      try {
+        // Try to find a JSON array in the output
+        const jsonMatch = claudeOutput.match(/\[[\s\S]*\]/);
+        if (!jsonMatch) throw new Error('No JSON array found in output');
+        captions = JSON.parse(jsonMatch[0]);
+        if (!Array.isArray(captions)) throw new Error('Parsed value is not an array');
+        captions = captions.filter(c => typeof c === 'string' && c.trim().length > 0);
+      } catch (parseErr) {
+        console.error(`[generate] Failed to parse captions. Output:\n${claudeOutput.slice(0, 500)}`);
+        return res.status(500).json({
+          error: 'Failed to parse generated captions',
+          claudeOutput: claudeOutput.slice(0, 500)
+        });
+      }
+
+      // Create caption rows
+      const created = [];
+      for (const text of captions) {
+        const cap = await db.createCaption(text.trim(), req.token);
+        created.push(cap);
+      }
+      console.log(`[generate] Created ${created.length} captions`);
+      return res.json({ captions: created });
+    }
+  } catch (err) {
+    console.error(`[generate] Unexpected error:`, err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- Ad Compositing ---
+
 app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
   const os = require('os');
   const fs = require('fs');
@@ -297,9 +504,11 @@ app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
     console.log(`[generate] Ad ${adId}: running claude -p for compositing...`);
     let claudeOutput;
     try {
+      const execEnv = { ...process.env };
+      delete execEnv.CLAUDECODE;
       claudeOutput = execSync(
         `claude -p ${JSON.stringify(prompt)} --allowedTools "mcp__nanobanana__edit_image,mcp__nanobanana__configure_gemini_token"`,
-        { timeout: 120000, encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 }
+        { timeout: 120000, encoding: 'utf8', maxBuffer: 10 * 1024 * 1024, env: execEnv }
       );
     } catch (execErr) {
       console.error(`[generate] claude -p failed:`, execErr.message);
