@@ -187,16 +187,12 @@
     border-radius: var(--radius);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
-    transition: box-shadow 0.15s, outline-color 0.15s;
-    outline: 3px dashed transparent;
+    transition: box-shadow 0.15s;
   }
 
   .image-card:hover { box-shadow: var(--shadow-md); }
-
-  .image-card.drop-target {
-    outline: 3px dashed var(--amber);
-    box-shadow: var(--shadow-lg);
-  }
+  .image-card[draggable] { cursor: grab; }
+  .image-card[draggable]:active { cursor: grabbing; }
 
   .image-card img {
     width: 100%;
@@ -555,76 +551,100 @@
   .btn-generate:hover { opacity: 0.85; }
   .btn-generate:disabled { opacity: 0.4; cursor: default; }
 
-  /* --- Modal --- */
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+  /* --- Ad Builder --- */
+  .ad-builder {
+    border-bottom: 1px solid var(--light-gray);
+    background: var(--warm-white);
+    padding: 16px 20px;
+    flex-shrink: 0;
   }
 
-  .modal-backdrop.hidden { display: none; }
-
-  .modal {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: var(--shadow-lg);
-    width: 480px;
-    max-width: 90vw;
-    max-height: 85vh;
-    overflow-y: auto;
-    padding: 28px;
-  }
-
-  .modal h3 {
-    font-family: var(--font-display);
-    font-size: 20px;
-    font-weight: 400;
-    margin-bottom: 20px;
-  }
-
-  .modal-preview {
-    position: relative;
-    margin-bottom: 20px;
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-
-  .modal-preview img {
-    width: 100%;
-    display: block;
-  }
-
-  .modal-preview-caption {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(44, 40, 38, 0.75);
-    color: #fff;
-    padding: 10px 14px;
-    font-size: 14px;
-  }
-
-  .modal-field {
-    margin-bottom: 16px;
-  }
-
-  .modal-field label {
-    display: block;
+  .ad-builder-label {
     font-size: 12px;
     font-weight: 600;
     color: var(--warm-gray);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 6px;
+    margin-bottom: 10px;
   }
 
-  .modal-field select {
+  .ad-builder-zones {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .drop-zone {
+    flex: 1;
+    min-height: 120px;
+    border: 2px dashed var(--light-gray);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--warm-gray);
+    font-size: 13px;
+    transition: border-color 0.15s, background 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .drop-zone.dragover {
+    border-color: var(--amber);
+    background: rgba(200, 149, 108, 0.08);
+  }
+
+  .drop-zone.filled {
+    border-style: solid;
+    border-color: var(--amber-light);
+  }
+
+  .drop-zone.filled img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .drop-zone-caption-text {
+    padding: 10px;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+    color: var(--charcoal);
+  }
+
+  .drop-zone .btn-clear {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(44, 40, 38, 0.7);
+    color: #fff;
+    border: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 12px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+
+  .drop-zone .btn-clear:hover {
+    background: var(--red);
+  }
+
+  .ad-builder-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .ad-builder-controls select {
+    flex: 1;
     font-family: var(--font-body);
     font-size: 13px;
     padding: 8px 12px;
@@ -634,26 +654,10 @@
     color: var(--charcoal);
   }
 
-  .modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 24px;
+  .ad-builder-controls .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: default;
   }
-
-  .btn-cancel {
-    background: transparent;
-    border: 1px solid var(--light-gray);
-    padding: 8px 18px;
-    border-radius: var(--radius);
-    font-family: var(--font-body);
-    font-size: 13px;
-    color: var(--warm-gray);
-    cursor: pointer;
-    transition: border-color 0.15s;
-  }
-
-  .btn-cancel:hover { border-color: var(--charcoal); color: var(--charcoal); }
 
   /* --- Empty state --- */
   .empty-state {
@@ -815,29 +819,28 @@
 
     <!-- Right: Ads panel -->
     <div class="panel-ads">
+      <div class="ad-builder" id="ad-builder">
+        <div class="ad-builder-label">Ad Builder</div>
+        <div class="ad-builder-zones">
+          <div class="drop-zone" id="drop-zone-image">
+            <span>Drop image here</span>
+          </div>
+          <div class="drop-zone" id="drop-zone-caption">
+            <span>Drop caption here</span>
+          </div>
+        </div>
+        <div class="ad-builder-controls">
+          <select id="builder-bodycopy-select">
+            <option value="">Body copy (optional)</option>
+          </select>
+          <button class="btn-primary" id="builder-create-btn" disabled>Create Ad</button>
+        </div>
+      </div>
       <div class="panel-header">
         <h2>Ads</h2>
         <span id="ads-count" class="count"></span>
       </div>
       <div id="ads-list" class="ads-scroll"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Create Ad Modal -->
-<div id="modal-create-ad" class="modal-backdrop hidden">
-  <div class="modal">
-    <h3>Create Ad</h3>
-    <div id="modal-preview" class="modal-preview"></div>
-    <div class="modal-field">
-      <label>Body Copy</label>
-      <select id="modal-bodycopy-select">
-        <option value="">None</option>
-      </select>
-    </div>
-    <div class="modal-buttons">
-      <button class="btn-cancel" id="modal-cancel">Cancel</button>
-      <button class="btn-primary" id="modal-create">Create Ad</button>
     </div>
   </div>
 </div>
@@ -854,8 +857,8 @@
   let supabaseClient = null;
   let currentSession = null;
 
-  // Pending ad creation (from drag-drop)
-  let pendingAd = { imageId: null, captionId: null };
+  // Ad builder state
+  let builderState = { imageId: null, captionId: null };
 
   // --- DOM refs ---
   const $loading = document.getElementById('loading');
@@ -873,11 +876,10 @@
   const $captionStrip = document.getElementById('caption-strip');
   const $adsCount = document.getElementById('ads-count');
   const $adsList = document.getElementById('ads-list');
-  const $modalBackdrop = document.getElementById('modal-create-ad');
-  const $modalPreview = document.getElementById('modal-preview');
-  const $modalBodycopySelect = document.getElementById('modal-bodycopy-select');
-  const $modalCancel = document.getElementById('modal-cancel');
-  const $modalCreate = document.getElementById('modal-create');
+  const $dropZoneImage = document.getElementById('drop-zone-image');
+  const $dropZoneCap = document.getElementById('drop-zone-caption');
+  const $builderBodycopy = document.getElementById('builder-bodycopy-select');
+  const $builderCreateBtn = document.getElementById('builder-create-btn');
 
   // --- Utility ---
   function escapeHtml(str) {
@@ -1064,6 +1066,7 @@
     renderCaptions();
     renderBodyCopy();
     renderCaptionStrip();
+    renderBuilder();
     renderAds();
   }
 
@@ -1077,10 +1080,7 @@
     for (const img of STATE.images) {
       const src = storageBaseUrl + '/' + img.storage_path;
       const tagsHtml = (img.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t.name) + '</span>').join('');
-      html += '<div class="image-card" data-image-id="' + img.id + '"'
-        + ' ondragover="event.preventDefault(); this.classList.add(\'drop-target\')"'
-        + ' ondragleave="this.classList.remove(\'drop-target\')"'
-        + ' ondrop="window.__onImageDrop(event, this)">'
+      html += '<div class="image-card" draggable="true" data-image-id="' + img.id + '">'
         + '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(img.filename) + '" loading="lazy" />'
         + '<div class="image-card-info">' + escapeHtml(img.filename) + '</div>'
         + (tagsHtml ? '<div class="image-card-tags">' + tagsHtml + '</div>' : '')
@@ -1088,6 +1088,14 @@
     }
     html += '</div>';
     $panelImages.innerHTML = html;
+
+    // Attach drag handlers to image cards
+    document.querySelectorAll('.image-card[draggable]').forEach(card => {
+      card.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('application/image-id', card.dataset.imageId);
+        e.dataTransfer.effectAllowed = 'copy';
+      });
+    });
   }
 
   // --- Captions panel ---
@@ -1212,7 +1220,7 @@
     $adsCount.textContent = STATE.ads.length + ' ad' + (STATE.ads.length !== 1 ? 's' : '');
 
     if (STATE.ads.length === 0) {
-      $adsList.innerHTML = '<div class="empty-state"><p>No ads yet.</p><p>Drag a caption onto an image to create an ad.</p></div>';
+      $adsList.innerHTML = '<div class="empty-state"><p>No ads yet.</p><p>Drop an image and caption into the builder above.</p></div>';
       return;
     }
 
@@ -1366,80 +1374,104 @@
     }
   };
 
-  // --- Drag & Drop: caption onto image ---
-  window.__onImageDrop = function(event, cardEl) {
-    event.preventDefault();
-    cardEl.classList.remove('drop-target');
+  // --- Ad Builder ---
+  function renderBuilder() {
+    // Image drop zone
+    const image = builderState.imageId ? STATE.images.find(i => i.id === builderState.imageId) : null;
+    if (image) {
+      const src = storageBaseUrl + '/' + image.storage_path;
+      $dropZoneImage.innerHTML = '<img src="' + escapeHtml(src) + '" />'
+        + '<button class="btn-clear" onclick="window.__clearBuilderImage()">&times;</button>';
+      $dropZoneImage.classList.add('filled');
+    } else {
+      $dropZoneImage.innerHTML = '<span>Drop image here</span>';
+      $dropZoneImage.classList.remove('filled');
+    }
 
-    const captionId = event.dataTransfer.getData('application/caption-id');
-    if (!captionId) return;
+    // Caption drop zone
+    const caption = builderState.captionId ? STATE.captions.find(c => c.id === builderState.captionId) : null;
+    if (caption) {
+      $dropZoneCap.innerHTML = '<div class="drop-zone-caption-text">' + escapeHtml(caption.text) + '</div>'
+        + '<button class="btn-clear" onclick="window.__clearBuilderCaption()">&times;</button>';
+      $dropZoneCap.classList.add('filled');
+    } else {
+      $dropZoneCap.innerHTML = '<span>Drop caption here</span>';
+      $dropZoneCap.classList.remove('filled');
+    }
 
-    const imageId = cardEl.dataset.imageId;
-    if (!imageId) return;
-
-    // Find the image and caption
-    const image = STATE.images.find(i => i.id === imageId);
-    const caption = STATE.captions.find(c => c.id === captionId);
-    if (!image || !caption) return;
-
-    // Store pending and show modal
-    pendingAd.imageId = imageId;
-    pendingAd.captionId = captionId;
-    showCreateAdModal(image, caption);
-  };
-
-  function showCreateAdModal(image, caption) {
-    const imageSrc = storageBaseUrl + '/' + image.storage_path;
-    $modalPreview.innerHTML = '<img src="' + escapeHtml(imageSrc) + '" />'
-      + '<div class="modal-preview-caption">' + escapeHtml(caption.text) + '</div>';
-
-    // Populate body copy dropdown
-    let options = '<option value="">None</option>';
+    // Body copy dropdown
+    let options = '<option value="">Body copy (optional)</option>';
     for (const bc of STATE.bodyCopy) {
       const label = bc.headline ? bc.headline + ': ' + bc.text.slice(0, 60) : bc.text.slice(0, 80);
       options += '<option value="' + bc.id + '">' + escapeHtml(label) + '</option>';
     }
-    $modalBodycopySelect.innerHTML = options;
+    $builderBodycopy.innerHTML = options;
 
-    show($modalBackdrop);
+    // Enable create button only if image is set
+    $builderCreateBtn.disabled = !builderState.imageId;
   }
 
-  $modalCancel.addEventListener('click', () => {
-    hide($modalBackdrop);
-    pendingAd = { imageId: null, captionId: null };
+  window.__clearBuilderImage = function() {
+    builderState.imageId = null;
+    renderBuilder();
+  };
+
+  window.__clearBuilderCaption = function() {
+    builderState.captionId = null;
+    renderBuilder();
+  };
+
+  // Drop zone handlers
+  function setupDropZone(el, dataType, onDrop) {
+    el.addEventListener('dragover', (e) => {
+      if (e.dataTransfer.types.includes(dataType)) {
+        e.preventDefault();
+        el.classList.add('dragover');
+      }
+    });
+    el.addEventListener('dragleave', () => {
+      el.classList.remove('dragover');
+    });
+    el.addEventListener('drop', (e) => {
+      e.preventDefault();
+      el.classList.remove('dragover');
+      const id = e.dataTransfer.getData(dataType);
+      if (id) onDrop(id);
+    });
+  }
+
+  setupDropZone($dropZoneImage, 'application/image-id', (id) => {
+    builderState.imageId = id;
+    renderBuilder();
   });
 
-  $modalBackdrop.addEventListener('click', (e) => {
-    if (e.target === $modalBackdrop) {
-      hide($modalBackdrop);
-      pendingAd = { imageId: null, captionId: null };
-    }
+  setupDropZone($dropZoneCap, 'application/caption-id', (id) => {
+    builderState.captionId = id;
+    renderBuilder();
   });
 
-  $modalCreate.addEventListener('click', async () => {
-    if (!pendingAd.imageId || !pendingAd.captionId) return;
+  // Create ad button
+  $builderCreateBtn.addEventListener('click', async () => {
+    if (!builderState.imageId) return;
 
-    const body = {
-      base_image_id: pendingAd.imageId,
-      caption_id: pendingAd.captionId,
-    };
-    const bcId = $modalBodycopySelect.value;
+    const body = { base_image_id: builderState.imageId };
+    if (builderState.captionId) body.caption_id = builderState.captionId;
+    const bcId = $builderBodycopy.value;
     if (bcId) body.body_copy_id = bcId;
 
-    $modalCreate.disabled = true;
-    $modalCreate.textContent = 'Creating...';
+    $builderCreateBtn.disabled = true;
+    $builderCreateBtn.textContent = 'Creating...';
 
     try {
       await authFetch('/api/ads', { method: 'POST', body });
-      hide($modalBackdrop);
-      pendingAd = { imageId: null, captionId: null };
+      builderState = { imageId: null, captionId: null };
       await loadData();
     } catch (err) {
       console.error('Create ad failed:', err);
       alert('Failed to create ad: ' + err.message);
     } finally {
-      $modalCreate.disabled = false;
-      $modalCreate.textContent = 'Create Ad';
+      $builderCreateBtn.textContent = 'Create Ad';
+      renderBuilder();
     }
   });
 
