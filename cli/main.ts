@@ -1,25 +1,38 @@
-import { adStatus } from "./commands/ad-status.ts";
+import { tags } from "./commands/tags.ts";
 import { images } from "./commands/images.ts";
-import { reviews } from "./commands/reviews.ts";
-import { segments } from "./commands/segments.ts";
+import { captions } from "./commands/captions.ts";
+import { bodyCopy } from "./commands/body-copy.ts";
+import { ads } from "./commands/ads.ts";
+import { adSets } from "./commands/ad-sets.ts";
 import { sync } from "./commands/sync.ts";
 
 const USAGE = `Usage: deno task cli <command> <action> [args]
 
 Commands:
-  ad-status list <segment>
-  ad-status get <segment> <ad-id>
-  ad-status set <segment> <ad-id> --status <s> [--feedback <f>]
+  tags list
+  tags create --name <n>
+  tags delete <id>
 
-  images list <segment>
-  images add <segment> --filename <f> [--concept <c>] [--format feed] [--aspect-ratio 1:1] [--type base] [--parent <p>] [--prompt <p>] [--style <s>] [--visual-type <v>] [--ad-variant <v>]
+  images list
+  images add --filename <f> --storage-path <p> [--prompt <p>]
 
-  reviews list <segment>
-  reviews set <segment> <filename> --status <s> [--note <n>]
+  captions list
+  captions add --text <t>
+  captions delete <id>
 
-  segments list
+  body-copy list
+  body-copy add --text <t> [--headline <h>]
+  body-copy delete <id>
 
-  sync [--data-only] [--images-only]`;
+  ads list
+  ads create --image <id> [--caption <id>] [--body-copy <id>]
+  ads update <id> --desired-status <s> [--feedback <f>]
+  ads delete <id>
+
+  ad-sets list
+  ad-sets create --name <n>
+
+  sync [--images-only]`;
 
 function parseFlags(args: string[]): Record<string, string> {
   const flags: Record<string, string> = {};
@@ -48,17 +61,23 @@ async function main() {
 
   try {
     switch (command) {
-      case "ad-status":
-        await adStatus(action, rest);
+      case "tags":
+        await tags(action, rest);
         break;
       case "images":
         await images(action, rest);
         break;
-      case "reviews":
-        await reviews(action, rest);
+      case "captions":
+        await captions(action, rest);
         break;
-      case "segments":
-        await segments(action, rest);
+      case "body-copy":
+        await bodyCopy(action, rest);
+        break;
+      case "ads":
+        await ads(action, rest);
+        break;
+      case "ad-sets":
+        await adSets(action, rest);
         break;
       case "sync":
         // sync has no action — flags start from action position
