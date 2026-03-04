@@ -1,42 +1,33 @@
 /**
  * Data access layer for the Creative Review App.
  *
- * Dual-mode: if SUPABASE_URL is set, reads/writes Supabase.
- * Otherwise, falls back to filesystem (current behaviour).
- *
- * In Supabase mode, every query uses a per-request client
+ * All state lives in Supabase. Every query uses a per-request client
  * authenticated with the user's JWT. RLS is always enforced.
  */
-
-const { buildData } = require('./build');
 
 let supabaseUrl = null;
 let supabaseAnonKey = null;
 let storageBaseUrl = null;
-let _realtimeClient = null; // only for SSE subscriptions
+let _realtimeClient = null;
 
 function init() {
-  supabaseUrl = process.env.SUPABASE_URL || null;
-  supabaseAnonKey = process.env.SUPABASE_ANON_KEY || null;
+  supabaseUrl = process.env.SUPABASE_URL;
+  supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
-  if (supabaseUrl && supabaseAnonKey) {
-    storageBaseUrl = `${supabaseUrl}/storage/v1/object/public/creative`;
-    console.log(`Supabase mode: ${supabaseUrl}`);
-  } else {
-    console.log('Filesystem mode (no SUPABASE_URL set)');
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('SUPABASE_URL and SUPABASE_ANON_KEY are required');
+    process.exit(1);
   }
-}
 
-function isSupabase() {
-  return supabaseUrl !== null && supabaseAnonKey !== null;
+  storageBaseUrl = `${supabaseUrl}/storage/v1/object/public/creative`;
+  console.log(`Supabase mode: ${supabaseUrl}`);
 }
 
 function getStorageBaseUrl() {
   return storageBaseUrl;
 }
 
-// Create a Supabase client authenticated as the requesting user.
-// RLS sees the `authenticated` role with this user's JWT.
+// Per-request client authenticated as the requesting user.
 function clientForRequest(token) {
   const { createClient } = require('@supabase/supabase-js');
   return createClient(supabaseUrl, supabaseAnonKey, {
@@ -47,7 +38,7 @@ function clientForRequest(token) {
 
 // Anon client for Realtime subscriptions only (no data queries).
 function getRealtimeClient() {
-  if (!_realtimeClient && isSupabase()) {
+  if (!_realtimeClient) {
     const { createClient } = require('@supabase/supabase-js');
     _realtimeClient = createClient(supabaseUrl, supabaseAnonKey, {
       db: { schema: 'marketing' }
@@ -56,9 +47,11 @@ function getRealtimeClient() {
   return _realtimeClient;
 }
 
-// --- Supabase data fetchers ---
+// --- Data fetchers ---
 
-async function getAllDataSupabase(client) {
+async function getAllData(token) {
+  const client = clientForRequest(token);
+
   const { data: segmentRows, error: segErr } = await client
     .from('segment')
     .select('*')
@@ -119,12 +112,11 @@ async function getAllDataSupabase(client) {
     });
   }
 
-  // Assemble segments in the same shape as buildData()
   const segments = segmentRows.map(row => {
     const slug = row.slug;
     const segImages = imagesBySegment[slug] || [];
 
-    const manifestImages = (imagesBySegment[slug] || []).map(img => ({
+    const manifestImages = segImages.map(img => ({
       filename: img.filename,
       concept: img.concept,
       format: img.format,
@@ -168,160 +160,88 @@ async function getAllDataSupabase(client) {
   };
 }
 
-async function getAllData(token) {
-  if (isSupabase()) {
-    return getAllDataSupabase(clientForRequest(token));
-  }
-  const data = buildData();
-  data.storageBaseUrl = null;
-  return data;
-}
-
 // --- Reviews ---
 
 async function getReviews(slug, token) {
-  if (isSupabase()) {
-    const client = clientForRequest(token);
-    const { data, error } = await client
-      .from('image_review')
-      .select('*')
-      .eq('segment_slug', slug);
-    if (error) throw error;
-    const result = {};
-    for (const r of data) {
-      result[r.filename] = {
-        status: r.status,
-        note: r.note || '',
-        updatedAt: r.updated_at
-      };
-    }
-    return result;
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('image_review')
+    .select('*')
+    .eq('segment_slug', slug);
+  if (error) throw error;
+  const result = {};
+  for (const r of data) {
+    result[r.filename] = {
+      status: r.status,
+      note: r.note || '',
+      updatedAt: r.updated_at
+    };
   }
-
-  const fs = require('fs');
-  const path = require('path');
-  const reviewsPath = path.join(__dirname, '..', 'segments', slug, 'creative', 'reviews.json');
-  try {
-    if (fs.existsSync(reviewsPath)) {
-      return JSON.parse(fs.readFileSync(reviewsPath, 'utf8'));
-    }
-  } catch {}
-  return {};
+  return result;
 }
 
 async function upsertReview(slug, filename, status, note, token) {
-  const now = new Date().toISOString();
-
-  if (isSupabase()) {
-    const client = clientForRequest(token);
-    const { data, error } = await client
-      .from('image_review')
-      .upsert(
-        {
-          segment_slug: slug,
-          filename,
-          status: status || null,
-          note: note || '',
-          updated_at: now
-        },
-        { onConflict: 'segment_slug,filename' }
-      )
-      .select()
-      .single();
-    if (error) throw error;
-    return { status: data.status, note: data.note, updatedAt: data.updated_at };
-  }
-
-  const fs = require('fs');
-  const path = require('path');
-  const reviewsPath = path.join(__dirname, '..', 'segments', slug, 'creative', 'reviews.json');
-  let reviews = {};
-  try {
-    if (fs.existsSync(reviewsPath)) {
-      reviews = JSON.parse(fs.readFileSync(reviewsPath, 'utf8'));
-    }
-  } catch {}
-
-  const entry = { status: status || null, note: note || '', updatedAt: now };
-  reviews[filename] = entry;
-  fs.writeFileSync(reviewsPath, JSON.stringify(reviews, null, 2) + '\n');
-  return entry;
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('image_review')
+    .upsert(
+      {
+        segment_slug: slug,
+        filename,
+        status: status || null,
+        note: note || '',
+        updated_at: new Date().toISOString()
+      },
+      { onConflict: 'segment_slug,filename' }
+    )
+    .select()
+    .single();
+  if (error) throw error;
+  return { status: data.status, note: data.note, updatedAt: data.updated_at };
 }
 
 // --- Ad statuses ---
 
 async function getAdStatuses(slug, token) {
-  if (isSupabase()) {
-    const client = clientForRequest(token);
-    const { data, error } = await client
-      .from('ad_campaign_status')
-      .select('*')
-      .eq('segment_slug', slug);
-    if (error) throw error;
-    const result = {};
-    for (const s of data) {
-      result[s.ad_id] = {
-        status: s.status,
-        feedback: s.feedback || '',
-        updatedAt: s.updated_at
-      };
-    }
-    return result;
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('ad_campaign_status')
+    .select('*')
+    .eq('segment_slug', slug);
+  if (error) throw error;
+  const result = {};
+  for (const s of data) {
+    result[s.ad_id] = {
+      status: s.status,
+      feedback: s.feedback || '',
+      updatedAt: s.updated_at
+    };
   }
-
-  const fs = require('fs');
-  const path = require('path');
-  const statusPath = path.join(__dirname, '..', 'segments', slug, 'creative', 'ad-status.json');
-  try {
-    if (fs.existsSync(statusPath)) {
-      return JSON.parse(fs.readFileSync(statusPath, 'utf8'));
-    }
-  } catch {}
-  return {};
+  return result;
 }
 
 async function upsertAdStatus(slug, adId, status, feedback, token) {
-  const now = new Date().toISOString();
-
-  if (isSupabase()) {
-    const client = clientForRequest(token);
-    const { data, error } = await client
-      .from('ad_campaign_status')
-      .upsert(
-        {
-          segment_slug: slug,
-          ad_id: adId,
-          status: status || 'unreviewed',
-          feedback: feedback || '',
-          updated_at: now
-        },
-        { onConflict: 'segment_slug,ad_id' }
-      )
-      .select()
-      .single();
-    if (error) throw error;
-    return { status: data.status, feedback: data.feedback, updatedAt: data.updated_at };
-  }
-
-  const fs = require('fs');
-  const path = require('path');
-  const statusPath = path.join(__dirname, '..', 'segments', slug, 'creative', 'ad-status.json');
-  let adStatuses = {};
-  try {
-    if (fs.existsSync(statusPath)) {
-      adStatuses = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
-    }
-  } catch {}
-
-  const entry = { status: status || 'unreviewed', feedback: feedback || '', updatedAt: now };
-  adStatuses[adId] = entry;
-  fs.writeFileSync(statusPath, JSON.stringify(adStatuses, null, 2) + '\n');
-  return entry;
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('ad_campaign_status')
+    .upsert(
+      {
+        segment_slug: slug,
+        ad_id: adId,
+        status: status || 'unreviewed',
+        feedback: feedback || '',
+        updated_at: new Date().toISOString()
+      },
+      { onConflict: 'segment_slug,ad_id' }
+    )
+    .select()
+    .single();
+  if (error) throw error;
+  return { status: data.status, feedback: data.feedback, updatedAt: data.updated_at };
 }
 
 module.exports = {
   init,
-  isSupabase,
   getRealtimeClient,
   getStorageBaseUrl,
   getAllData,

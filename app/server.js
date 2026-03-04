@@ -1,5 +1,4 @@
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
 const db = require('./db');
 
@@ -7,26 +6,19 @@ db.init();
 
 const app = express();
 const PORT = process.env.PORT || 8642;
-const ROOT = path.join(__dirname, '..');
 
 app.use(express.json());
 
 // --- Auth config endpoint (public, needed before login) ---
 app.get('/api/config', (req, res) => {
-  if (db.isSupabase()) {
-    res.json({
-      supabaseUrl: process.env.SUPABASE_URL,
-      supabaseAnonKey: process.env.SUPABASE_ANON_KEY
-    });
-  } else {
-    res.json({ supabaseUrl: null });
-  }
+  res.json({
+    supabaseUrl: process.env.SUPABASE_URL,
+    supabaseAnonKey: process.env.SUPABASE_ANON_KEY
+  });
 });
 
 // --- Auth middleware: validate JWT, extract token for db calls ---
 async function requireAuth(req, res, next) {
-  if (!db.isSupabase()) return next(); // filesystem mode: no auth
-
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Authentication required' });
@@ -34,7 +26,6 @@ async function requireAuth(req, res, next) {
 
   const token = authHeader.slice(7);
 
-  // Validate the token by calling getUser (hits Supabase auth server)
   const { createClient } = require('@supabase/supabase-js');
   const client = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
     global: { headers: { Authorization: `Bearer ${token}` } }
@@ -46,7 +37,7 @@ async function requireAuth(req, res, next) {
   }
 
   req.user = user;
-  req.token = token; // pass through for db layer
+  req.token = token;
   next();
 }
 
@@ -54,9 +45,6 @@ async function requireAuth(req, res, next) {
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
-
-// Serve segment creative images and other static segment files
-app.use('/segments', express.static(path.join(ROOT, 'segments')));
 
 // API: full data payload
 app.get('/api/data', requireAuth, async (req, res) => {
@@ -145,7 +133,7 @@ app.put('/api/segments/:slug/ad-status/:adId', requireAuth, async (req, res) => 
   }
 });
 
-// --- SSE live reload ---
+// --- SSE live reload via Supabase Realtime ---
 const sseClients = new Set();
 
 app.get('/api/events', (req, res) => {
@@ -165,25 +153,15 @@ function broadcastReload() {
   }
 }
 
-if (db.isSupabase()) {
-  const realtimeClient = db.getRealtimeClient();
-
-  realtimeClient
-    .channel('marketing-changes')
-    .on('postgres_changes', { event: '*', schema: 'marketing', table: 'image_review' }, () => {
-      broadcastReload();
-    })
-    .on('postgres_changes', { event: '*', schema: 'marketing', table: 'ad_campaign_status' }, () => {
-      broadcastReload();
-    })
-    .subscribe();
-} else {
-  let debounceTimer = null;
-  fs.watch(path.join(ROOT, 'segments'), { recursive: true }, () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(broadcastReload, 500);
-  });
-}
+db.getRealtimeClient()
+  .channel('marketing-changes')
+  .on('postgres_changes', { event: '*', schema: 'marketing', table: 'image_review' }, () => {
+    broadcastReload();
+  })
+  .on('postgres_changes', { event: '*', schema: 'marketing', table: 'ad_campaign_status' }, () => {
+    broadcastReload();
+  })
+  .subscribe();
 
 // --- URL routing: serve index.html for /segment/:slug/:view paths ---
 app.get('/segment/:slug/:view', (req, res) => {

@@ -1415,12 +1415,9 @@
     return fetch(url, opts);
   }
 
-  // --- Image URL helper (Supabase Storage or local filesystem) ---
+  // --- Image URL helper (Supabase Storage) ---
   function imageUrl(seg, filename) {
-    if (DATA && DATA.storageBaseUrl) {
-      return `${DATA.storageBaseUrl}/${seg.slug}/${filename}`;
-    }
-    return `/${seg.creativePath}/${filename}`;
+    return `${DATA.storageBaseUrl}/${seg.slug}/${filename}`;
   }
 
   // --- Auth: login screen ---
@@ -2680,19 +2677,11 @@
     };
   }
 
-  // --- Init: check auth config, then boot ---
+  // --- Init: fetch auth config, show login ---
   async function boot() {
-    try {
-      const cfgRes = await fetch('/api/config');
-      const cfg = await cfgRes.json();
-      if (cfg.supabaseUrl) {
-        showLogin(cfg.supabaseUrl, cfg.supabaseAnonKey);
-      } else {
-        loadData();
-      }
-    } catch {
-      loadData();
-    }
+    const cfgRes = await fetch('/api/config');
+    const cfg = await cfgRes.json();
+    showLogin(cfg.supabaseUrl, cfg.supabaseAnonKey);
     connectSSE();
   }
   boot();
