@@ -64,7 +64,7 @@ Service role key stored in `.env.local` (gitignored), not in `.env`.
 
 ## Still TODO (Phase 2)
 
-- [ ] Deploy app to a host (Railway / Vercel / EC2) — just needs `SUPABASE_URL` + `SUPABASE_ANON_KEY` env vars
-- [ ] Point `review.comejoin.us` at it
+- [ ] Deploy app to a host (Railway / Vercel / EC2) — just needs `SUPABASE_URL` + `SUPABASE_ANON_KEY` env vars - AWS s3 buckets and SPAs has been used for the other apps
+- [ ] Point `marketing.comejoin.us` at it
 - [x] Remove filesystem fallbacks — app is Supabase-only
 - [ ] Add more team members via admin API

@@ -321,3 +321,177 @@ Frame 4: "Six people, fully present, the whole night."
 Frame 5: "Come Join Us → Non-drinkers matched together. Every Wednesday. Book now."
 
 Visual direction: Frame 1 opens on a quiet street scene — someone walking, warm streetlights, unhurried. Not lonely. Content. Frame 2-3 use quick, warm flashbacks to a dinner table — close-ups of food, people leaning in to listen, genuine laughter, mocktails in proper glassware. The mood is soft, golden, intimate — not staged. Frame 4 pulls back to the full table — everyone still there, still engaged, no empty seats. Frame 5: clean CTA on a warm background. The whole sequence should feel like a memory you want to have.
+
+---
+
+## Iteration 3 — Short-Form Positive — 2026-03-03
+
+*Focus: joy, warmth, belonging. Short punchy copy — let the image do the heavy lifting.*
+*These are designed to pair with warm dinner/socialising imagery.*
+
+---
+
+### Feed Ads
+
+**Still Here at 10pm — Variant A**
+
+Everyone's still here at 10pm.
+
+Same energy. Same laughs. Nobody drifted. This is what Wednesday nights sound like when the whole table's present.
+
+Come Join Us. Non-drinkers matched together. Every Wednesday.
+
+CTA button: Book Now
+
+---
+
+**Still Here at 10pm — Variant B**
+
+10pm. Nobody's left. Nobody's repeating themselves. Everyone's still actually listening.
+
+Wednesday dinners for people who don't drink. Six people, one great restaurant, zero explanations.
+
+Book your Wednesday →
+
+CTA button: Book Now
+
+---
+
+**Sober Friends — Variant A**
+
+Sober friends. Good food. Wednesday nights.
+
+We match non-drinkers together for dinner every week. Good restaurant. Great conversation. No explaining required.
+
+Come Join Us →
+
+CTA button: Book Now
+
+---
+
+**Sober Friends — Variant B**
+
+Looking for friends who don't drink?
+
+We put six of you at the same table every Wednesday. Good restaurant, great mocktail menu, and nobody asks what's in your glass.
+
+Book a dinner →
+
+CTA button: Book Now
+
+---
+
+**Sober Friends — Variant C**
+
+Finding sober friends shouldn't be this hard. So we made it easy.
+
+Every Wednesday. Six non-drinkers. One great restaurant. Real conversation. No pressure.
+
+Come Join Us →
+
+CTA button: Sign Up
+
+---
+
+**The Mocktail Debate — Variant A**
+
+"The passionfruit one." "No — ginger. Trust me."
+
+That was the only conversation about drinks all night. The rest was architecture, terrible landlords, and someone's unhinged theory about sourdough.
+
+Wednesday dinners. Non-drinkers matched together.
+
+CTA button: Book Now
+
+---
+
+**The Mocktail Debate — Variant B**
+
+Biggest argument at the table: ginger vs passionfruit mocktails.
+
+Six people. Nobody drinking. Everyone present. The kind of night you actually want to tell someone about.
+
+Come Join Us. Every Wednesday →
+
+CTA button: Book Now
+
+---
+
+**Remember Everything — Variant A**
+
+Walking home remembering every conversation.
+
+That's what Wednesday nights are like when everyone stays present.
+
+Come Join Us →
+
+CTA button: Book Now
+
+---
+
+**Remember Everything — Variant B**
+
+10:47pm. Walking home. Clear head. Full stomach. You remember all of it because you were there for all of it.
+
+Non-drinkers matched together. Every Wednesday.
+
+CTA button: Book Now
+
+---
+
+**Not the Odd One Out — Variant A**
+
+Not the odd one out tonight.
+
+A table where nobody asks, nobody notices, and the mocktails are actually good.
+
+Come Join Us. Wednesday nights →
+
+CTA button: Book Now
+
+---
+
+**Not the Odd One Out — Variant B**
+
+For the first time in months, you're not the only one holding something different.
+
+Six people. Same choice. Great dinner.
+
+Book a Wednesday →
+
+CTA button: Book Now
+
+---
+
+### Stories/Reels
+
+**Sober Friends — Stories/Reels**
+
+Frame 1: "Sober friends. Good food."
+Frame 2: "Every Wednesday. Six non-drinkers. One restaurant."
+Frame 3: "No explaining. No questions. Just dinner."
+Frame 4: "Come Join Us → Book now."
+
+Visual direction: Bright, warm energy throughout. Frame 1: friends laughing at a candlelit table, mocktails on the table, food in front of them. Frame 2: overhead shot of a beautiful table — six plates, drinks, candles. Frame 3: close-up of two people in conversation, genuine smiles, leaning in. Frame 4: clean CTA on warm background. The whole thing should feel joyful and inviting — like a night you want to be at.
+
+---
+
+**The Mocktail Menu — Stories/Reels**
+
+Frame 1: "Ginger or passionfruit?"
+Frame 2: "The only drink debate at this table."
+Frame 3: "Six people. Great food. Nobody drinking."
+Frame 4: "Come Join Us → Wednesday nights. Book now."
+
+Visual direction: Frame 1: close-up of two beautiful mocktails in proper glassware, someone's hand reaching for one. Frame 2: pull back to the table — everyone laughing, engaged, good food. Frame 3: warm group shot, everyone present and happy. Frame 4: clean CTA. Keep the tone light and fun — this isn't heavy, it's a great night out.
+
+---
+
+**Still Here — Stories/Reels**
+
+Frame 1: "10pm."
+Frame 2: "Everyone's still here."
+Frame 3: "Same energy. Same laughs. Nobody drifted."
+Frame 4: "Wednesday dinners for non-drinkers → Book now."
+
+Visual direction: Frame 1: clock or phone showing 10pm, warm restaurant background out of focus. Frame 2: the full table — six people, all still engaged, no empty chairs. Frame 3: close-ups of faces laughing, mocktails, someone gesturing mid-story. Frame 4: clean CTA. The feeling is: this is what it looks like when nobody leaves early.
