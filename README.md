@@ -86,24 +86,37 @@ All skills live in `.claude/skills/` and are invoked as slash commands in Claude
 Deno TypeScript CLI that reads/writes Supabase directly. Used by skills and humans.
 
 ```bash
-# Ad campaign statuses
-deno task cli ad-status list <segment>
-deno task cli ad-status get <segment> <ad-id>
-deno task cli ad-status set <segment> <ad-id> --status <s> [--feedback <f>]
+# Tags
+deno task cli tags list
+deno task cli tags create --name <n>
+deno task cli tags delete <id>
 
-# Image metadata
-deno task cli images list <segment>
-deno task cli images add <segment> --filename <f> [--concept <c>] [--format feed] ...
+# Images
+deno task cli images list
+deno task cli images add --filename <f> --storage-path <p> [--prompt <p>]
 
-# Image reviews
-deno task cli reviews list <segment>
-deno task cli reviews set <segment> <filename> --status <s> [--note <n>]
+# Captions
+deno task cli captions list
+deno task cli captions add --text <t>
+deno task cli captions delete <id>
 
-# Segments
-deno task cli segments list
+# Body copy
+deno task cli body-copy list
+deno task cli body-copy add --text <t> [--headline <h>]
+deno task cli body-copy delete <id>
 
-# Sync filesystem to Supabase
-deno task cli sync [--data-only] [--images-only]
+# Ads
+deno task cli ads list
+deno task cli ads create --image <id> [--caption <id>] [--body-copy <id>]
+deno task cli ads update <id> --desired-status <s> [--feedback <f>]
+deno task cli ads delete <id>
+
+# Ad sets
+deno task cli ad-sets list
+deno task cli ad-sets create --name <n>
+
+# Sync filesystem images to Supabase Storage
+deno task cli sync [--images-only]
 ```
 
 All output is JSON to stdout. Errors go to stderr.
@@ -122,12 +135,14 @@ Web app for reviewing ad copy and images. Approve, reject, flag, or annotate.
 
 ## Supabase
 
-Separate Supabase project from the product app. Marketing schema with 4 tables:
+Separate Supabase project from the product app. Marketing schema with core tables:
 
-- `segment` — parsed markdown content (profile, empathy, concepts, copy, review)
-- `creative_image` — image metadata (concept, format, aspect ratio, prompts)
-- `image_review` — approve/reject/flag images with notes
-- `ad_campaign_status` — ad approval workflow (unreviewed → feedback → approved → live)
+- `base_image` — ad images with storage paths and generation prompts
+- `caption` — primary text variants
+- `body_copy` — body text + optional headline
+- `ad` — combines image + caption + body copy, tracks desired/meta status
+- `ad_set` — groups of ads for campaigns
+- `tag` — freeform tags (e.g. segment names), linked via join tables
 
 Storage: `creative` bucket for ad images (public read).
 
@@ -141,7 +156,7 @@ Configured in `.mcp.json`:
 ## Setup
 
 Requires:
-- Node.js (for review app and build.js)
+- Node.js (for review app)
 - Deno (for CLI tool)
 - `.env` with `SUPABASE_URL` and `SUPABASE_ANON_KEY`
 - `.env.local` with `SUPABASE_SERVICE_ROLE_KEY`
