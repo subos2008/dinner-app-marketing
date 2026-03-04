@@ -1395,6 +1395,7 @@
   <div class="loading">Loading creative review...</div>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 (function() {
   let DATA = null;
@@ -1402,11 +1403,106 @@
   let activeView = 'gallery';
   let activeCreativeFilter = 'all';
   let activeStatusFilter = 'all';
+  let supabaseClient = null;
+  let authToken = null;
+
+  // --- Auth: fetch wrapper that includes JWT ---
+  async function authFetch(url, opts = {}) {
+    if (authToken) {
+      opts.headers = opts.headers || {};
+      opts.headers['Authorization'] = `Bearer ${authToken}`;
+    }
+    return fetch(url, opts);
+  }
+
+  // --- Image URL helper (Supabase Storage or local filesystem) ---
+  function imageUrl(seg, filename) {
+    if (DATA && DATA.storageBaseUrl) {
+      return `${DATA.storageBaseUrl}/${seg.slug}/${filename}`;
+    }
+    return `/${seg.creativePath}/${filename}`;
+  }
+
+  // --- Auth: login screen ---
+  function showLogin(supabaseUrl, supabaseAnonKey) {
+    supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+    let booted = false;
+
+    // onAuthStateChange fires after the client processes URL hash tokens.
+    // This is the primary mechanism for detecting magic link returns.
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        authToken = session.access_token;
+        if (!booted) {
+          booted = true;
+          window.history.replaceState(null, '', window.location.pathname);
+          loadData();
+        }
+      } else if (!booted) {
+        booted = true;
+        authToken = null;
+        renderLoginForm();
+      }
+    });
+  }
+
+  function renderLoginForm() {
+    document.getElementById('sidebar').style.display = 'none';
+    document.getElementById('main').innerHTML = `
+      <div style="max-width: 380px; margin: 120px auto; text-align: center;">
+        <h1 style="font-family: var(--font-display); font-size: 32px; font-weight: 400; margin-bottom: 8px;">Come Join Us</h1>
+        <p style="color: var(--warm-gray); margin-bottom: 40px; font-size: 15px;">Creative Review</p>
+        <div id="login-form">
+          <input type="email" id="login-email" placeholder="Email address"
+            style="width: 100%; padding: 12px 16px; border: 1px solid var(--light-gray); border-radius: var(--radius); font-family: var(--font-body); font-size: 15px; margin-bottom: 16px; background: var(--warm-white);">
+          <button id="login-btn" onclick="window._sendMagicLink()"
+            style="width: 100%; padding: 12px; background: var(--charcoal); color: var(--cream); border: none; border-radius: var(--radius); font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer; letter-spacing: 0.02em;">
+            Send magic link
+          </button>
+          <p id="login-msg" style="margin-top: 16px; font-size: 13px; color: var(--warm-gray);"></p>
+        </div>
+      </div>`;
+
+    document.getElementById('login-email').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') window._sendMagicLink();
+    });
+  }
+
+  window._sendMagicLink = async function() {
+    const email = document.getElementById('login-email').value.trim();
+    const msg = document.getElementById('login-msg');
+    const btn = document.getElementById('login-btn');
+
+    if (!email) { msg.textContent = 'Enter your email.'; return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: window.location.origin }
+    });
+
+    if (error) {
+      msg.style.color = 'var(--red)';
+      msg.textContent = error.message;
+      btn.disabled = false;
+      btn.textContent = 'Send magic link';
+    } else {
+      msg.style.color = 'var(--green)';
+      msg.textContent = 'Check your email for the login link.';
+    }
+  };
 
   // --- Load data ---
   async function loadData() {
+    document.getElementById('sidebar').style.display = '';
     try {
-      const res = await fetch('/api/data');
+      const res = await authFetch('/api/data');
+      if (res.status === 401) {
+        renderLoginForm();
+        return;
+      }
       DATA = await res.json();
       init();
     } catch (e) {
@@ -1797,13 +1893,13 @@
   function renderImageStrip(seg, images, activeImage) {
     const slug = seg.slug;
     const activeFilename = activeImage ? activeImage.filename : '';
-    const imgSrc = activeImage ? `/${seg.creativePath}/${activeImage.filename}` : '';
+    const imgSrc = activeImage ? imageUrl(seg, activeImage.filename) : '';
 
     const thumbs = images.map(img => {
       const reviewClass = img.review?.status ? `review-${img.review.status}` : '';
       const isActive = img.filename === activeFilename ? 'active' : '';
       return `<div class="thumb-item ${isActive} ${reviewClass}" data-filename="${esc(img.filename)}" data-slug="${esc(slug)}">
-        <img src="/${seg.creativePath}/${img.filename}" alt="${esc(img.filename)}">
+        <img src="${imageUrl(seg, img.filename)}" alt="${esc(img.filename)}">
         <span class="thumb-type-label">${img.type === 'composited' ? 'comp' : 'base'}</span>
       </div>`;
     }).join('');
@@ -1990,7 +2086,7 @@
         <div class="image-grid">`;
 
       for (const img of conceptImages) {
-        const imgSrc = `/${seg.creativePath}/${img.filename}`;
+        const imgSrc = imageUrl(seg, img.filename);
         const reviewStatus = img.review?.status || '';
         const reviewNote = img.review?.note || '';
 
@@ -2141,7 +2237,7 @@
   // --- Review API ---
   async function saveReview(slug, filename, status, note) {
     try {
-      const res = await fetch(`/api/segments/${encodeURIComponent(slug)}/reviews/${encodeURIComponent(filename)}`, {
+      const res = await authFetch(`/api/segments/${encodeURIComponent(slug)}/reviews/${encodeURIComponent(filename)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: status || null, note: note || '' }),
@@ -2224,7 +2320,7 @@
 
   async function saveAdStatus(slug, adId, status, feedback) {
     try {
-      const res = await fetch(`/api/segments/${encodeURIComponent(slug)}/ad-status/${encodeURIComponent(adId)}`, {
+      const res = await authFetch(`/api/segments/${encodeURIComponent(slug)}/ad-status/${encodeURIComponent(adId)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: status || 'unreviewed', feedback: feedback || '' }),
@@ -2288,7 +2384,7 @@
       const mainArea = strip.querySelector('.main-image-area');
       const seg = DATA.segments.find(s => s.slug === slug);
       if (mainArea && seg) {
-        mainArea.innerHTML = `<img src="/${seg.creativePath}/${filename}" alt="${esc(filename)}">`;
+        mainArea.innerHTML = `<img src="${imageUrl(seg, filename)}" alt="${esc(filename)}">`;
       }
 
       // Update strip active filename
@@ -2565,7 +2661,8 @@
       if (e.data === 'reload' && DATA) {
         const scrollY = window.scrollY;
         try {
-          const res = await fetch('/api/data');
+          const res = await authFetch('/api/data');
+          if (res.status === 401) { renderLoginForm(); return; }
           DATA = await res.json();
           renderSidebar();
           if (activeSegment) {
@@ -2583,9 +2680,22 @@
     };
   }
 
-  // --- Init ---
-  loadData();
-  connectSSE();
+  // --- Init: check auth config, then boot ---
+  async function boot() {
+    try {
+      const cfgRes = await fetch('/api/config');
+      const cfg = await cfgRes.json();
+      if (cfg.supabaseUrl) {
+        showLogin(cfg.supabaseUrl, cfg.supabaseAnonKey);
+      } else {
+        loadData();
+      }
+    } catch {
+      loadData();
+    }
+    connectSSE();
+  }
+  boot();
 })();
 </script>
 </body>
