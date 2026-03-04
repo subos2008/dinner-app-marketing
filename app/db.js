@@ -40,6 +40,15 @@ function clientForRequest(token) {
   });
 }
 
+function getServiceClient() {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) return null;
+  const { createClient } = require('@supabase/supabase-js');
+  return createClient(supabaseUrl, key, {
+    db: { schema: 'marketing' }
+  });
+}
+
 function getRealtimeClient() {
   if (!_realtimeClient) {
     const { createClient } = require('@supabase/supabase-js');
@@ -377,6 +386,7 @@ module.exports = {
   init,
   getStorageBaseUrl,
   clientForRequest,
+  getServiceClient,
   getRealtimeClient,
   // Tags
   getTags,

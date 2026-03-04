@@ -235,7 +235,164 @@ app.delete('/api/ads/:id', requireAuth, async (req, res) => {
 });
 
 app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
-  res.status(501).json({ error: 'Not implemented — generation coming soon' });
+  const os = require('os');
+  const fs = require('fs');
+  const { execSync } = require('child_process');
+
+  const adId = req.params.id;
+  let tmpDir = null;
+
+  try {
+    // 1. Fetch the ad and find it by id
+    const ads = await db.getAds(req.token);
+    const ad = ads.find(a => a.id === adId);
+    if (!ad) {
+      return res.status(404).json({ error: 'Ad not found' });
+    }
+
+    // 2. Validate: must have base_image and caption
+    if (!ad.base_image) {
+      return res.status(400).json({ error: 'Ad has no base image assigned' });
+    }
+    if (!ad.caption) {
+      return res.status(400).json({ error: 'Ad has no caption assigned' });
+    }
+
+    const captionText = ad.caption.text;
+    const storagePath = ad.base_image.storage_path;
+
+    // 3. Download the base image to a temp directory
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'adgen-'));
+    const ext = path.extname(storagePath) || '.png';
+    const inputPath = path.join(tmpDir, `base${ext}`);
+
+    const imgUrl = `${db.getStorageBaseUrl()}/${storagePath}`;
+    const imgResponse = await fetch(imgUrl);
+    if (!imgResponse.ok) {
+      return res.status(502).json({ error: `Failed to download base image: ${imgResponse.status}` });
+    }
+    const imgBuffer = Buffer.from(await imgResponse.arrayBuffer());
+    fs.writeFileSync(inputPath, imgBuffer);
+
+    // Snapshot /tmp PNGs before running claude so we can find the output
+    const tmpPngsBefore = new Set(
+      fs.readdirSync(os.tmpdir())
+        .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'))
+    );
+
+    // 4. Build the prompt for Claude Code + Nano Banana
+    const prompt = `Use the mcp__nanobanana__edit_image tool to add the text "${captionText.replace(/"/g, '\\"')}" as a bold, clean overlay on the image at ${inputPath}. The text should be white with a subtle drop shadow, positioned prominently. Keep the image composition intact.`;
+
+    // 5. Shell out to claude -p
+    console.log(`[generate] Ad ${adId}: running claude -p for compositing...`);
+    let claudeOutput;
+    try {
+      claudeOutput = execSync(
+        `claude -p ${JSON.stringify(prompt)} --allowedTools "mcp__nanobanana__edit_image,mcp__nanobanana__configure_gemini_token"`,
+        { timeout: 120000, encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 }
+      );
+    } catch (execErr) {
+      console.error(`[generate] claude -p failed:`, execErr.message);
+      return res.status(500).json({
+        error: 'Image generation failed',
+        detail: execErr.stderr || execErr.message
+      });
+    }
+
+    // 6. Find the output image
+    // Strategy: check claude output for a file path, then scan /tmp for new image files
+    let outputPath = null;
+
+    // Try to extract a file path from claude's output
+    const pathMatch = claudeOutput.match(/\/[^\s"']+\.(png|jpg|jpeg)/i);
+    if (pathMatch && fs.existsSync(pathMatch[0])) {
+      outputPath = pathMatch[0];
+    }
+
+    // Fallback: scan /tmp for new image files
+    if (!outputPath) {
+      const tmpPngsAfter = fs.readdirSync(os.tmpdir())
+        .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'))
+        .filter(f => !tmpPngsBefore.has(f));
+
+      if (tmpPngsAfter.length > 0) {
+        // Pick the most recently modified one
+        tmpPngsAfter.sort((a, b) => {
+          const sa = fs.statSync(path.join(os.tmpdir(), a));
+          const sb = fs.statSync(path.join(os.tmpdir(), b));
+          return sb.mtimeMs - sa.mtimeMs;
+        });
+        outputPath = path.join(os.tmpdir(), tmpPngsAfter[0]);
+      }
+    }
+
+    // Also check the tmpDir for any new files besides the original input
+    if (!outputPath) {
+      const tmpDirFiles = fs.readdirSync(tmpDir)
+        .filter(f => f !== `base${ext}`)
+        .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'));
+      if (tmpDirFiles.length > 0) {
+        outputPath = path.join(tmpDir, tmpDirFiles[0]);
+      }
+    }
+
+    if (!outputPath) {
+      console.error(`[generate] Could not find output image. Claude output:\n${claudeOutput.slice(0, 500)}`);
+      return res.status(500).json({
+        error: 'Generation ran but output image not found',
+        // TODO: improve output parsing if Nano Banana changes its save path
+        claudeOutput: claudeOutput.slice(0, 500)
+      });
+    }
+
+    console.log(`[generate] Ad ${adId}: found output at ${outputPath}`);
+
+    // 7. Upload the composited image to Supabase Storage
+    const serviceClient = db.getServiceClient();
+    if (!serviceClient) {
+      return res.status(500).json({
+        error: 'SUPABASE_SERVICE_ROLE_KEY not configured — cannot upload to storage'
+      });
+    }
+
+    const compositedStoragePath = `composited/${adId}.png`;
+    const outputBuffer = fs.readFileSync(outputPath);
+
+    const { error: uploadError } = await serviceClient.storage
+      .from('creative')
+      .upload(compositedStoragePath, outputBuffer, {
+        contentType: 'image/png',
+        upsert: true
+      });
+
+    if (uploadError) {
+      console.error(`[generate] Storage upload failed:`, uploadError);
+      return res.status(500).json({ error: 'Failed to upload composited image', detail: uploadError.message });
+    }
+
+    // 8. Update the ad row with the composited image path
+    const updatedAd = await db.updateAd(adId, {
+      composited_image_path: compositedStoragePath,
+      generation_prompt: prompt
+    }, req.token);
+
+    console.log(`[generate] Ad ${adId}: composited image uploaded to ${compositedStoragePath}`);
+
+    // 9. Return the updated ad info
+    res.json({
+      ad: updatedAd,
+      composited_image_path: compositedStoragePath,
+      composited_image_url: `${db.getStorageBaseUrl()}/${compositedStoragePath}`
+    });
+  } catch (err) {
+    console.error(`[generate] Unexpected error:`, err);
+    res.status(500).json({ error: err.message });
+  } finally {
+    // 9. Clean up temp files
+    if (tmpDir) {
+      try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch {}
+    }
+  }
 });
 
 // --- SSE live reload via Supabase Realtime ---
