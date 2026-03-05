@@ -1336,18 +1336,8 @@
       // 2. Init Supabase
       supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
 
-      // 3. Check existing session
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (session) {
-        currentSession = session;
-        showApp(session.user);
-        return;
-      }
-
-      // 4. No session — show login
-      showLogin();
-
-      // 5. Listen for auth changes (sign-in + token refresh)
+      // 3. Listen for auth changes (sign-in + token refresh) — must be registered
+      //    before getSession so we always catch TOKEN_REFRESHED events
       supabaseClient.auth.onAuthStateChange((event, session) => {
         if (session) {
           currentSession = session;
@@ -1360,6 +1350,15 @@
           showLogin();
         }
       });
+
+      // 4. Check existing session
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+        currentSession = session;
+        showApp(session.user);
+      } else {
+        showLogin();
+      }
     } catch (err) {
       console.error('Boot failed:', err);
       $loading.textContent = 'Failed to load. Check server is running.';
@@ -2430,7 +2429,6 @@
 
     try {
       await authFetch('/api/ads', { method: 'POST', body });
-      builderState = { imageId: null, captionIds: [] };
       await loadData();
     } catch (err) {
       console.error('Create ad failed:', err);
