@@ -1259,6 +1259,7 @@
   let activeTab = 'images';
   let supabaseClient = null;
   let currentSession = null;
+  let appInitialised = false;
 
   // Ad builder state
   let builderState = { imageId: null, captionIds: [] };
@@ -1376,7 +1377,10 @@
     hide($loginScreen);
     show($app);
     $userEmail.textContent = user.email || '';
-    init();
+    if (!appInitialised) {
+      appInitialised = true;
+      init();
+    }
   }
 
   async function init() {
@@ -1417,6 +1421,7 @@
   async function handleSignout() {
     try { await supabaseClient.auth.signOut(); } catch (e) {}
     currentSession = null;
+    appInitialised = false;
     localStorage.removeItem('sb-session');
     showLogin();
   }
