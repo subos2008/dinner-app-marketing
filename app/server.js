@@ -66,6 +66,32 @@ app.delete('/api/tags/:id', requireAuth, async (req, res) => {
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// --- Segments ---
+
+app.get('/api/segments', requireAuth, async (req, res) => {
+  try { res.json(await db.getSegments(req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/segments', requireAuth, async (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: 'name is required' });
+  try { res.json(await db.createSegment(name, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.put('/api/segments/:id', requireAuth, async (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: 'name is required' });
+  try { res.json(await db.updateSegment(req.params.id, name, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/segments/:id', requireAuth, async (req, res) => {
+  try { await db.deleteSegment(req.params.id, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // --- Images ---
 
 app.get('/api/images', requireAuth, async (req, res) => {
@@ -101,6 +127,18 @@ app.post('/api/images/:id/tags', requireAuth, async (req, res) => {
 
 app.delete('/api/images/:id/tags/:tagId', requireAuth, async (req, res) => {
   try { await db.removeImageTag(req.params.id, req.params.tagId, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/images/:id/segments', requireAuth, async (req, res) => {
+  const { segment_id } = req.body;
+  if (!segment_id) return res.status(400).json({ error: 'segment_id is required' });
+  try { res.json(await db.addImageSegment(req.params.id, segment_id, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/images/:id/segments/:segmentId', requireAuth, async (req, res) => {
+  try { await db.removeImageSegment(req.params.id, req.params.segmentId, req.token); res.json({ ok: true }); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -142,6 +180,18 @@ app.delete('/api/captions/:id/tags/:tagId', requireAuth, async (req, res) => {
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+app.post('/api/captions/:id/segments', requireAuth, async (req, res) => {
+  const { segment_id } = req.body;
+  if (!segment_id) return res.status(400).json({ error: 'segment_id is required' });
+  try { res.json(await db.addCaptionSegment(req.params.id, segment_id, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/captions/:id/segments/:segmentId', requireAuth, async (req, res) => {
+  try { await db.removeCaptionSegment(req.params.id, req.params.segmentId, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // --- Body Copy ---
 
 app.get('/api/body-copy', requireAuth, async (req, res) => {
@@ -178,6 +228,18 @@ app.post('/api/body-copy/:id/tags', requireAuth, async (req, res) => {
 
 app.delete('/api/body-copy/:id/tags/:tagId', requireAuth, async (req, res) => {
   try { await db.removeBodyCopyTag(req.params.id, req.params.tagId, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/body-copy/:id/segments', requireAuth, async (req, res) => {
+  const { segment_id } = req.body;
+  if (!segment_id) return res.status(400).json({ error: 'segment_id is required' });
+  try { res.json(await db.addBodyCopySegment(req.params.id, segment_id, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/body-copy/:id/segments/:segmentId', requireAuth, async (req, res) => {
+  try { await db.removeBodyCopySegment(req.params.id, req.params.segmentId, req.token); res.json({ ok: true }); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -241,6 +303,18 @@ app.put('/api/ads/:id', requireAuth, async (req, res) => {
 
 app.delete('/api/ads/:id', requireAuth, async (req, res) => {
   try { await db.deleteAd(req.params.id, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/ads/:id/segments', requireAuth, async (req, res) => {
+  const { segment_id } = req.body;
+  if (!segment_id) return res.status(400).json({ error: 'segment_id is required' });
+  try { res.json(await db.addAdSegment(req.params.id, segment_id, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/ads/:id/segments/:segmentId', requireAuth, async (req, res) => {
+  try { await db.removeAdSegment(req.params.id, req.params.segmentId, req.token); res.json({ ok: true }); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
