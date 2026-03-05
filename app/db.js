@@ -1,8 +1,9 @@
 /**
  * Data access layer for the Creative Review App.
  *
- * New schema: tag, base_image, caption, body_copy, ad_set, ad,
- * plus join tables base_image_tag, caption_tag, body_copy_tag.
+ * New schema: tag, segment, base_image, caption, body_copy, ad_set, ad,
+ * plus join tables base_image_tag, caption_tag, body_copy_tag,
+ * base_image_segment, caption_segment, body_copy_segment, ad_segment.
  *
  * All state lives in Supabase (marketing schema). Every query uses a
  * per-request client authenticated with the user's JWT. RLS is always enforced.
@@ -91,6 +92,136 @@ async function deleteTag(id, token) {
   if (error) throw error;
 }
 
+// --- Segments ---
+
+async function getSegments(token) {
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('segment')
+    .select('*')
+    .order('name');
+  if (error) throw error;
+  return data;
+}
+
+async function createSegment(name, token) {
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('segment')
+    .insert({ name })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function updateSegment(id, name, token) {
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('segment')
+    .update({ name })
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function deleteSegment(id, token) {
+  const client = clientForRequest(token);
+  const { error } = await client
+    .from('segment')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+}
+
+// --- Segment assignments ---
+
+async function addImageSegment(imageId, segmentId, token) {
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('base_image_segment')
+    .insert({ base_image_id: imageId, segment_id: segmentId })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function removeImageSegment(imageId, segmentId, token) {
+  const client = clientForRequest(token);
+  const { error } = await client
+    .from('base_image_segment')
+    .delete()
+    .eq('base_image_id', imageId)
+    .eq('segment_id', segmentId);
+  if (error) throw error;
+}
+
+async function addCaptionSegment(captionId, segmentId, token) {
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('caption_segment')
+    .insert({ caption_id: captionId, segment_id: segmentId })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function removeCaptionSegment(captionId, segmentId, token) {
+  const client = clientForRequest(token);
+  const { error } = await client
+    .from('caption_segment')
+    .delete()
+    .eq('caption_id', captionId)
+    .eq('segment_id', segmentId);
+  if (error) throw error;
+}
+
+async function addBodyCopySegment(bodyId, segmentId, token) {
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('body_copy_segment')
+    .insert({ body_copy_id: bodyId, segment_id: segmentId })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function removeBodyCopySegment(bodyId, segmentId, token) {
+  const client = clientForRequest(token);
+  const { error } = await client
+    .from('body_copy_segment')
+    .delete()
+    .eq('body_copy_id', bodyId)
+    .eq('segment_id', segmentId);
+  if (error) throw error;
+}
+
+async function addAdSegment(adId, segmentId, token) {
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('ad_segment')
+    .insert({ ad_id: adId, segment_id: segmentId })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function removeAdSegment(adId, segmentId, token) {
+  const client = clientForRequest(token);
+  const { error } = await client
+    .from('ad_segment')
+    .delete()
+    .eq('ad_id', adId)
+    .eq('segment_id', segmentId);
+  if (error) throw error;
+}
+
 // --- Generation Prompts ---
 
 async function createGenerationPrompt({ type, prompt, brief }, token) {
@@ -120,13 +251,14 @@ async function getImages(token) {
   const client = clientForRequest(token);
   const { data, error } = await client
     .from('base_image')
-    .select('*, base_image_tag(tag_id, tag:tag_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
+    .select('*, base_image_tag(tag_id, tag:tag_id(id, name)), base_image_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
     .order('created_at', { ascending: false });
   if (error) throw error;
   return data.map(row => {
     const tags = (row.base_image_tag || []).map(jt => jt.tag).filter(Boolean);
-    const { base_image_tag, ...rest } = row;
-    return { ...rest, tags };
+    const segments = (row.base_image_segment || []).map(js => js.segment).filter(Boolean);
+    const { base_image_tag, base_image_segment, ...rest } = row;
+    return { ...rest, tags, segments };
   });
 }
 
@@ -192,13 +324,14 @@ async function getCaptions(token) {
   const client = clientForRequest(token);
   const { data, error } = await client
     .from('caption')
-    .select('*, caption_tag(tag_id, tag:tag_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
+    .select('*, caption_tag(tag_id, tag:tag_id(id, name)), caption_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
     .order('created_at', { ascending: false });
   if (error) throw error;
   return data.map(row => {
     const tags = (row.caption_tag || []).map(jt => jt.tag).filter(Boolean);
-    const { caption_tag, ...rest } = row;
-    return { ...rest, tags };
+    const segments = (row.caption_segment || []).map(js => js.segment).filter(Boolean);
+    const { caption_tag, caption_segment, ...rest } = row;
+    return { ...rest, tags, segments };
   });
 }
 
@@ -263,13 +396,14 @@ async function getBodyCopy(token) {
   const client = clientForRequest(token);
   const { data, error } = await client
     .from('body_copy')
-    .select('*, body_copy_tag(tag_id, tag:tag_id(id, name))')
+    .select('*, body_copy_tag(tag_id, tag:tag_id(id, name)), body_copy_segment(segment_id, segment:segment_id(id, name))')
     .order('created_at', { ascending: false });
   if (error) throw error;
   return data.map(row => {
     const tags = (row.body_copy_tag || []).map(jt => jt.tag).filter(Boolean);
-    const { body_copy_tag, ...rest } = row;
-    return { ...rest, tags };
+    const segments = (row.body_copy_segment || []).map(js => js.segment).filter(Boolean);
+    const { body_copy_tag, body_copy_segment, ...rest } = row;
+    return { ...rest, tags, segments };
   });
 }
 
@@ -376,10 +510,14 @@ async function getAds(token) {
   const client = clientForRequest(token);
   const { data, error } = await client
     .from('ad')
-    .select('*, base_image:base_image_id(*), caption:caption_id(*), body_copy:body_copy_id(*), ad_set:ad_set_id(id, name)')
+    .select('*, base_image:base_image_id(*), caption:caption_id(*), body_copy:body_copy_id(*), ad_set:ad_set_id(id, name), ad_segment(segment_id, segment:segment_id(id, name))')
     .order('created_at', { ascending: false });
   if (error) throw error;
-  return data;
+  return data.map(row => {
+    const segments = (row.ad_segment || []).map(js => js.segment).filter(Boolean);
+    const { ad_segment, ...rest } = row;
+    return { ...rest, segments };
+  });
 }
 
 async function createAd(data, token) {
@@ -435,6 +573,19 @@ module.exports = {
   getTags,
   createTag,
   deleteTag,
+  // Segments
+  getSegments,
+  createSegment,
+  updateSegment,
+  deleteSegment,
+  addImageSegment,
+  removeImageSegment,
+  addCaptionSegment,
+  removeCaptionSegment,
+  addBodyCopySegment,
+  removeBodyCopySegment,
+  addAdSegment,
+  removeAdSegment,
   // Base Images
   getImages,
   createImage,
