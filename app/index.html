@@ -337,6 +337,7 @@
     padding: 4px;
   }
 
+  .image-card:hover .btn-delete,
   .caption-card:hover .btn-delete,
   .bodycopy-card:hover .btn-delete,
   .ad-card:hover .btn-delete {
@@ -1277,6 +1278,7 @@
           + '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(img.filename) + '" loading="lazy" />'
           + '<div class="image-card-info">' + escapeHtml(img.filename) + '</div>'
           + (tagsHtml ? '<div class="image-card-tags">' + tagsHtml + '</div>' : '')
+          + '<button class="btn-delete" onclick="window.__deleteImage(\'' + img.id + '\')" title="Delete">&times;</button>'
           + '</div>';
       }
       g += '</div>';
@@ -1741,6 +1743,21 @@
   }
 
   // --- Global event handlers (called from inline handlers) ---
+
+  window.__deleteImage = async function(id) {
+    if (!confirm('Delete this image?')) return;
+    try {
+      const res = await authFetch('/api/images/' + id, { method: 'DELETE' });
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.error || 'Failed to delete image');
+        return;
+      }
+      await loadData();
+    } catch (err) {
+      console.error('Delete image failed:', err);
+    }
+  };
 
   window.__deleteCaption = async function(id) {
     if (!confirm('Delete this caption?')) return;
