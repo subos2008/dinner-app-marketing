@@ -924,6 +924,25 @@
     background: rgba(200, 149, 108, 0.08);
   }
 
+  /* --- Lightbox --- */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(44, 40, 38, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+  }
+
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+  }
+
   /* --- Utility --- */
   .hidden { display: none !important; }
 
@@ -1275,7 +1294,7 @@
         const src = storageBaseUrl + '/' + img.storage_path;
         const tagsHtml = (img.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t.name) + '</span>').join('');
         g += '<div class="image-card" draggable="true" data-image-id="' + img.id + '">'
-          + '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(img.filename) + '" loading="lazy" />'
+          + '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(img.filename) + '" loading="lazy" onclick="window.__openLightbox(this.src, event)" style="cursor:zoom-in" />'
           + '<div class="image-card-info">' + escapeHtml(img.filename) + '</div>'
           + (tagsHtml ? '<div class="image-card-tags">' + tagsHtml + '</div>' : '')
           + '<button class="btn-delete" onclick="window.__deleteImage(\'' + img.id + '\')" title="Delete">&times;</button>'
@@ -1743,6 +1762,20 @@
   }
 
   // --- Global event handlers (called from inline handlers) ---
+
+  window.__openLightbox = function(src, e) {
+    e.stopPropagation();
+    e.preventDefault();
+    const overlay = document.createElement('div');
+    overlay.className = 'lightbox';
+    overlay.innerHTML = '<img src="' + src + '" />';
+    overlay.addEventListener('click', () => overlay.remove());
+    const onKey = (ev) => {
+      if (ev.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', onKey); }
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.appendChild(overlay);
+  };
 
   window.__deleteImage = async function(id) {
     if (!confirm('Delete this image?')) return;
