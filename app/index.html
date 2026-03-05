@@ -2184,11 +2184,11 @@
       $panelAdsTab.innerHTML = html;
     }
 
-    // Right panel — most recent filtered ad
-    if (filtered.length === 0) {
+    // Right panel — always show most recent ad (unfiltered)
+    if (STATE.ads.length === 0) {
       $adsList.innerHTML = '<div class="empty-state"><p>No ads yet.</p></div>';
     } else {
-      $adsList.innerHTML = renderAdCard(filtered[0]);
+      $adsList.innerHTML = renderAdCard(STATE.ads[0]);
     }
 
     // Attach drag handlers to ad cards
