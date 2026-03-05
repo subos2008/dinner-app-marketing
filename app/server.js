@@ -559,7 +559,7 @@ app.post('/api/generate', requireAuth, async (req, res) => {
 app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
   const os = require('os');
   const fs = require('fs');
-  const { execSync } = require('child_process');
+  const { spawn } = require('child_process');
 
   const adId = req.params.id;
   let tmpDir = null;
@@ -619,32 +619,59 @@ app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
 
     const prompt = `Use the mcp__nanobanana__edit_image tool to add the following text overlays to the image at ${inputPath}:\n${overlayLines}\nKeep the image composition intact. Use white text with subtle shadows for readability.`;
 
-    // 5. Shell out to claude -p
+    // 5. Shell out to claude -p (via stdin to avoid shell escaping issues with newlines)
+    function runClaude(promptText, args = []) {
+      return new Promise((resolve, reject) => {
+        const env = { ...process.env };
+        delete env.CLAUDECODE;
+        const child = spawn('claude', ['-p', ...args], {
+          env,
+          stdio: ['pipe', 'pipe', 'pipe']
+        });
+        let stdout = '';
+        let stderr = '';
+        child.stdout.on('data', d => { stdout += d; });
+        child.stderr.on('data', d => { stderr += d; });
+        child.on('close', code => {
+          if (code !== 0) reject(new Error(stderr || `claude exited with code ${code}`));
+          else resolve(stdout);
+        });
+        child.on('error', reject);
+        child.stdin.write(promptText);
+        child.stdin.end();
+      });
+    }
+
     console.log(`[generate] Ad ${adId}: running claude -p for compositing...`);
     let claudeOutput;
     try {
-      const execEnv = { ...process.env };
-      delete execEnv.CLAUDECODE;
-      claudeOutput = execSync(
-        `claude -p ${JSON.stringify(prompt)} --allowedTools "mcp__nanobanana__edit_image,mcp__nanobanana__configure_gemini_token"`,
-        { timeout: 120000, encoding: 'utf8', maxBuffer: 10 * 1024 * 1024, env: execEnv }
-      );
+      claudeOutput = await runClaude(prompt, [
+        '--allowedTools', 'mcp__nanobanana__edit_image,mcp__nanobanana__configure_gemini_token'
+      ]);
     } catch (execErr) {
       console.error(`[generate] claude -p failed:`, execErr.message);
       return res.status(500).json({
         error: 'Image generation failed',
-        detail: execErr.stderr || execErr.message
+        detail: execErr.message
       });
     }
 
     // 6. Find the output image
-    // Strategy: check claude output for a file path, then scan /tmp for new image files
+    console.log(`[generate] Ad ${adId}: claude output (first 800 chars):\n${claudeOutput.slice(0, 800)}`);
+
     let outputPath = null;
 
-    // Try to extract a file path from claude's output
-    const pathMatch = claudeOutput.match(/\/[^\s"']+\.(png|jpg|jpeg)/i);
-    if (pathMatch && fs.existsSync(pathMatch[0])) {
-      outputPath = pathMatch[0];
+    // Try to extract a file path from claude's output (absolute or relative)
+    const pathMatch = claudeOutput.match(/[`"]?([^\s`"']*\.(png|jpg|jpeg))/i);
+    if (pathMatch) {
+      let candidate = pathMatch[1];
+      if (!path.isAbsolute(candidate)) {
+        candidate = path.resolve(candidate);
+      }
+      if (fs.existsSync(candidate)) {
+        outputPath = candidate;
+        console.log(`[generate] Found via path match: ${outputPath}`);
+      }
     }
 
     // Fallback: scan /tmp for new image files
@@ -654,32 +681,48 @@ app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
         .filter(f => !tmpPngsBefore.has(f));
 
       if (tmpPngsAfter.length > 0) {
-        // Pick the most recently modified one
         tmpPngsAfter.sort((a, b) => {
           const sa = fs.statSync(path.join(os.tmpdir(), a));
           const sb = fs.statSync(path.join(os.tmpdir(), b));
           return sb.mtimeMs - sa.mtimeMs;
         });
         outputPath = path.join(os.tmpdir(), tmpPngsAfter[0]);
+        console.log(`[generate] Found via /tmp scan: ${outputPath}`);
       }
     }
 
-    // Also check the tmpDir for any new files besides the original input
+    // Check generated_imgs/ directory (Nano Banana default)
+    if (!outputPath) {
+      const genDir = path.resolve('generated_imgs');
+      if (fs.existsSync(genDir)) {
+        const genFiles = fs.readdirSync(genDir)
+          .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'))
+          .map(f => ({ name: f, mtime: fs.statSync(path.join(genDir, f)).mtimeMs }))
+          .filter(f => f.mtime > Date.now() - 120000)
+          .sort((a, b) => b.mtime - a.mtime);
+        if (genFiles.length > 0) {
+          outputPath = path.join(genDir, genFiles[0].name);
+          console.log(`[generate] Found via generated_imgs/: ${outputPath}`);
+        }
+      }
+    }
+
+    // Check tmpDir for any new files besides the original input
     if (!outputPath) {
       const tmpDirFiles = fs.readdirSync(tmpDir)
         .filter(f => f !== `base${ext}`)
         .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'));
       if (tmpDirFiles.length > 0) {
         outputPath = path.join(tmpDir, tmpDirFiles[0]);
+        console.log(`[generate] Found via tmpDir: ${outputPath}`);
       }
     }
 
     if (!outputPath) {
-      console.error(`[generate] Could not find output image. Claude output:\n${claudeOutput.slice(0, 500)}`);
+      console.error(`[generate] Could not find output image. Full claude output:\n${claudeOutput}`);
       return res.status(500).json({
         error: 'Generation ran but output image not found',
-        // TODO: improve output parsing if Nano Banana changes its save path
-        claudeOutput: claudeOutput.slice(0, 500)
+        claudeOutput: claudeOutput.slice(0, 1000)
       });
     }
 
