@@ -4,6 +4,9 @@ source .env
 [ -f .env.local ] && source .env.local
 export SUPABASE_URL SUPABASE_ANON_KEY PORT
 export SUPABASE_SERVICE_ROLE_KEY
+export OTEL_SERVICE_NAME OTEL_EXPORTER_OTLP_ENDPOINT OTEL_EXPORTER_OTLP_PROTOCOL
+export HONEYCOMB_API_KEY
+export GOOGLE_AI_API_KEY
 
 # Kill any existing server on the same port
 APP_PORT="${PORT:-8642}"
@@ -14,4 +17,4 @@ if [ -n "$existing" ]; then
   sleep 0.5
 fi
 
-exec node --watch app/server.js
+exec node --watch --require ./app/tracing.js app/server.js

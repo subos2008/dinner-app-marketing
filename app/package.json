@@ -11,6 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/genai": "^1.44.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.71.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.213.0",
+    "@opentelemetry/sdk-node": "^0.213.0",
     "@supabase/supabase-js": "^2.98.0",
     "express": "^5.2.1"
   }

@@ -1,6 +1,10 @@
 const express = require('express');
 const path = require('path');
+const { trace, SpanStatusCode } = require('@opentelemetry/api');
 const db = require('./db');
+const gemini = require('./gemini');
+
+const tracer = trace.getTracer('ad-manager');
 
 db.init();
 
@@ -358,13 +362,9 @@ app.get('/api/generation-prompts', requireAuth, async (req, res) => {
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// --- Generate (images & captions via claude -p) ---
+// --- Generate (images & captions via Gemini API) ---
 
 app.post('/api/generate', requireAuth, async (req, res) => {
-  const os = require('os');
-  const fs = require('fs');
-  const { spawn } = require('child_process');
-
   const { type, brief, prompt } = req.body;
   if (!type || !prompt) {
     return res.status(400).json({ error: 'type and prompt are required' });
@@ -373,103 +373,42 @@ app.post('/api/generate', requireAuth, async (req, res) => {
     return res.status(400).json({ error: 'type must be "image" or "caption"' });
   }
 
-  // Helper: run claude -p with prompt via stdin (avoids shell escaping issues)
-  function runClaude(promptText, args = []) {
-    return new Promise((resolve, reject) => {
-      const env = { ...process.env };
-      delete env.CLAUDECODE;
-      const child = spawn('claude', ['-p', ...args], {
-        env,
-        stdio: ['pipe', 'pipe', 'pipe']
-      });
-      let stdout = '';
-      let stderr = '';
-      child.stdout.on('data', d => { stdout += d; });
-      child.stderr.on('data', d => { stderr += d; });
-      child.on('close', code => {
-        if (code !== 0) reject(new Error(stderr || `claude exited with code ${code}`));
-        else resolve(stdout);
-      });
-      child.on('error', reject);
-      child.stdin.write(promptText);
-      child.stdin.end();
-    });
-  }
-
   try {
     // Create generation_prompt row first
     const genPrompt = await db.createGenerationPrompt({ type, prompt, brief }, req.token);
     const genPromptId = genPrompt.id;
 
     if (type === 'image') {
-      // Snapshot /tmp images before
-      const tmpPngsBefore = new Set(
-        fs.readdirSync(os.tmpdir())
-          .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'))
-      );
-
-      const claudePrompt = [
+      const geminiPrompt = [
         brief ? `Context — creative brief:\n${brief}\n\n---\n\n` : '',
         `Generate an ad image based on this request: ${prompt}\n\n`,
-        'Use the mcp__nanobanana__generate_image tool to create the image. ',
-        'Make the image suitable for a social media ad (Instagram/Facebook).'
+        'Make the image suitable for a social media ad (Instagram/Facebook). ',
+        'Do NOT include any text, words, letters, captions, headlines, or watermarks in the image. The image should be purely visual with no text overlay — text will be added separately later.'
       ].join('');
 
-      console.log(`[generate] Image: running claude -p...`);
-      let claudeOutput;
+      console.log(`[generate] Image: calling Gemini...`);
+      let imageBuffer;
       try {
-        claudeOutput = await runClaude(claudePrompt, [
-          '--allowedTools', 'mcp__nanobanana__generate_image,mcp__nanobanana__configure_gemini_token'
-        ]);
-      } catch (execErr) {
-        console.error(`[generate] claude -p failed:`, execErr.message);
-        return res.status(500).json({
-          error: 'Image generation failed',
-          detail: execErr.message
+        imageBuffer = await tracer.startActiveSpan('gemini.generate_image', async (span) => {
+          span.setAttribute('generation.type', 'image');
+          try {
+            const result = await gemini.generateImage(geminiPrompt);
+            if (result.text) span.setAttribute('gemini.text', result.text.slice(0, 2000));
+            span.setAttribute('gemini.image_bytes', result.buffer.length);
+            span.setStatus({ code: SpanStatusCode.OK });
+            return result.buffer;
+          } catch (err) {
+            span.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            span.recordException(err);
+            throw err;
+          } finally {
+            span.end();
+          }
         });
+      } catch (err) {
+        console.error(`[generate] Gemini image generation failed:`, err.message);
+        return res.status(500).json({ error: 'Image generation failed', detail: err.message });
       }
-
-      // Find the output image — Nano Banana may save to a relative path (e.g. generated_imgs/) or /tmp
-      let outputPath = null;
-
-      // Try to extract a file path from claude's output (absolute or relative)
-      const pathMatch = claudeOutput.match(/[`"]?([^\s`"']*\.(png|jpg|jpeg))/i);
-      if (pathMatch) {
-        let candidate = pathMatch[1];
-        // Resolve relative paths against cwd
-        if (!path.isAbsolute(candidate)) {
-          candidate = path.resolve(candidate);
-        }
-        if (fs.existsSync(candidate)) {
-          outputPath = candidate;
-        }
-      }
-
-      // Fallback: scan /tmp for new image files
-      if (!outputPath) {
-        const tmpPngsAfter = fs.readdirSync(os.tmpdir())
-          .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'))
-          .filter(f => !tmpPngsBefore.has(f));
-
-        if (tmpPngsAfter.length > 0) {
-          tmpPngsAfter.sort((a, b) => {
-            const sa = fs.statSync(path.join(os.tmpdir(), a));
-            const sb = fs.statSync(path.join(os.tmpdir(), b));
-            return sb.mtimeMs - sa.mtimeMs;
-          });
-          outputPath = path.join(os.tmpdir(), tmpPngsAfter[0]);
-        }
-      }
-
-      if (!outputPath) {
-        console.error(`[generate] Could not find output image. Claude output:\n${claudeOutput.slice(0, 500)}`);
-        return res.status(500).json({
-          error: 'Generation ran but output image not found',
-          claudeOutput: claudeOutput.slice(0, 500)
-        });
-      }
-
-      console.log(`[generate] Image found at ${outputPath}`);
 
       // Upload to Supabase Storage
       const serviceClient = db.getServiceClient();
@@ -482,11 +421,10 @@ app.post('/api/generate', requireAuth, async (req, res) => {
       const timestamp = Date.now();
       const storagePath = `generated/${timestamp}.png`;
       const filename = `generated-${timestamp}.png`;
-      const outputBuffer = fs.readFileSync(outputPath);
 
       const { error: uploadError } = await serviceClient.storage
         .from('creative')
-        .upload(storagePath, outputBuffer, {
+        .upload(storagePath, imageBuffer, {
           contentType: 'image/png',
           upsert: true
         });
@@ -503,39 +441,49 @@ app.post('/api/generate', requireAuth, async (req, res) => {
 
     } else {
       // type === 'caption'
-      const claudePrompt = [
+      const geminiPrompt = [
         brief ? `Context — creative brief:\n${brief}\n\n---\n\n` : '',
         `Generate short ad caption text based on this request: ${prompt}\n\n`,
         'Output ONLY a JSON array of caption strings. Each caption should be short (suitable for overlaying on an image). ',
         'Generate 3-5 captions. Output raw JSON with no markdown fences, no explanation — just the array.'
       ].join('');
 
-      console.log(`[generate] Captions: running claude -p...`);
-      let claudeOutput;
+      console.log(`[generate] Captions: calling Gemini...`);
+      let geminiOutput;
       try {
-        claudeOutput = await runClaude(claudePrompt);
-      } catch (execErr) {
-        console.error(`[generate] claude -p failed:`, execErr.message);
-        return res.status(500).json({
-          error: 'Caption generation failed',
-          detail: execErr.message
+        geminiOutput = await tracer.startActiveSpan('gemini.generate_captions', async (span) => {
+          span.setAttribute('generation.type', 'caption');
+          try {
+            const result = await gemini.generateCaptions(geminiPrompt);
+            span.setAttribute('gemini.output', result.slice(0, 2000));
+            span.setStatus({ code: SpanStatusCode.OK });
+            return result;
+          } catch (err) {
+            span.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            span.recordException(err);
+            throw err;
+          } finally {
+            span.end();
+          }
         });
+      } catch (err) {
+        console.error(`[generate] Gemini caption generation failed:`, err.message);
+        return res.status(500).json({ error: 'Caption generation failed', detail: err.message });
       }
 
       // Parse JSON array from output
       let captions;
       try {
-        // Try to find a JSON array in the output
-        const jsonMatch = claudeOutput.match(/\[[\s\S]*\]/);
+        const jsonMatch = geminiOutput.match(/\[[\s\S]*\]/);
         if (!jsonMatch) throw new Error('No JSON array found in output');
         captions = JSON.parse(jsonMatch[0]);
         if (!Array.isArray(captions)) throw new Error('Parsed value is not an array');
         captions = captions.filter(c => typeof c === 'string' && c.trim().length > 0);
       } catch (parseErr) {
-        console.error(`[generate] Failed to parse captions. Output:\n${claudeOutput.slice(0, 500)}`);
+        console.error(`[generate] Failed to parse captions. Output:\n${geminiOutput.slice(0, 500)}`);
         return res.status(500).json({
           error: 'Failed to parse generated captions',
-          claudeOutput: claudeOutput.slice(0, 500)
+          geminiOutput: geminiOutput.slice(0, 500)
         });
       }
 
@@ -557,22 +505,17 @@ app.post('/api/generate', requireAuth, async (req, res) => {
 // --- Ad Compositing ---
 
 app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
-  const os = require('os');
-  const fs = require('fs');
-  const { spawn } = require('child_process');
-
   const adId = req.params.id;
-  let tmpDir = null;
 
   try {
-    // 1. Fetch the ad and find it by id
+    // 1. Fetch the ad
     const ads = await db.getAds(req.token);
     const ad = ads.find(a => a.id === adId);
     if (!ad) {
       return res.status(404).json({ error: 'Ad not found' });
     }
 
-    // 2. Validate: must have base_image and at least one caption
+    // 2. Validate
     if (!ad.base_image) {
       return res.status(400).json({ error: 'Ad has no base image assigned' });
     }
@@ -580,28 +523,17 @@ app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
       return res.status(400).json({ error: 'Ad has no captions assigned' });
     }
 
-    const storagePath = ad.base_image.storage_path;
-
-    // 3. Download the base image to a temp directory
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'adgen-'));
-    const ext = path.extname(storagePath) || '.png';
-    const inputPath = path.join(tmpDir, `base${ext}`);
-
-    const imgUrl = `${db.getStorageBaseUrl()}/${storagePath}`;
+    // 3. Download the base image
+    const imgUrl = `${db.getStorageBaseUrl()}/${ad.base_image.storage_path}`;
     const imgResponse = await fetch(imgUrl);
     if (!imgResponse.ok) {
       return res.status(502).json({ error: `Failed to download base image: ${imgResponse.status}` });
     }
     const imgBuffer = Buffer.from(await imgResponse.arrayBuffer());
-    fs.writeFileSync(inputPath, imgBuffer);
+    const ext = path.extname(ad.base_image.storage_path) || '.png';
+    const mimeType = ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/png';
 
-    // Snapshot /tmp PNGs before running claude so we can find the output
-    const tmpPngsBefore = new Set(
-      fs.readdirSync(os.tmpdir())
-        .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'))
-    );
-
-    // 4. Build the prompt for Claude Code + Nano Banana
+    // 4. Build the prompt
     const roleHints = {
       headline: 'large, bold, upper area',
       subline: 'medium, below headline',
@@ -617,118 +549,35 @@ app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
       return `- OVERLAY TEXT: "${cap.text}"`;
     }).join('\n');
 
-    const prompt = `Use the mcp__nanobanana__edit_image tool to add the following text overlays to the image at ${inputPath}:\n${overlayLines}\nKeep the image composition intact. Use white text with subtle shadows for readability.`;
+    const prompt = `Add the following text overlays to this image:\n${overlayLines}\nKeep the image composition intact. Use white text with subtle shadows for readability.`;
 
-    // 5. Shell out to claude -p (via stdin to avoid shell escaping issues with newlines)
-    function runClaude(promptText, args = []) {
-      return new Promise((resolve, reject) => {
-        const env = { ...process.env };
-        delete env.CLAUDECODE;
-        const child = spawn('claude', ['-p', ...args], {
-          env,
-          stdio: ['pipe', 'pipe', 'pipe']
-        });
-        let stdout = '';
-        let stderr = '';
-        child.stdout.on('data', d => { stdout += d; });
-        child.stderr.on('data', d => { stderr += d; });
-        child.on('close', code => {
-          if (code !== 0) reject(new Error(stderr || `claude exited with code ${code}`));
-          else resolve(stdout);
-        });
-        child.on('error', reject);
-        child.stdin.write(promptText);
-        child.stdin.end();
-      });
-    }
-
-    console.log(`[generate] Ad ${adId}: running claude -p for compositing...`);
-    let claudeOutput;
+    // 5. Call Gemini to edit the image
+    console.log(`[generate] Ad ${adId}: calling Gemini for compositing...`);
+    let compositedBuffer;
     try {
-      claudeOutput = await runClaude(prompt, [
-        '--allowedTools', 'mcp__nanobanana__edit_image,mcp__nanobanana__configure_gemini_token'
-      ]);
-    } catch (execErr) {
-      console.error(`[generate] claude -p failed:`, execErr.message);
-      return res.status(500).json({
-        error: 'Image generation failed',
-        detail: execErr.message
-      });
-    }
-
-    // 6. Find the output image
-    console.log(`[generate] Ad ${adId}: claude output (first 800 chars):\n${claudeOutput.slice(0, 800)}`);
-
-    let outputPath = null;
-
-    // Try to extract a file path from claude's output (absolute or relative)
-    const pathMatch = claudeOutput.match(/[`"]?([^\s`"']*\.(png|jpg|jpeg))/i);
-    if (pathMatch) {
-      let candidate = pathMatch[1];
-      if (!path.isAbsolute(candidate)) {
-        candidate = path.resolve(candidate);
-      }
-      if (fs.existsSync(candidate)) {
-        outputPath = candidate;
-        console.log(`[generate] Found via path match: ${outputPath}`);
-      }
-    }
-
-    // Fallback: scan /tmp for new image files
-    if (!outputPath) {
-      const tmpPngsAfter = fs.readdirSync(os.tmpdir())
-        .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'))
-        .filter(f => !tmpPngsBefore.has(f));
-
-      if (tmpPngsAfter.length > 0) {
-        tmpPngsAfter.sort((a, b) => {
-          const sa = fs.statSync(path.join(os.tmpdir(), a));
-          const sb = fs.statSync(path.join(os.tmpdir(), b));
-          return sb.mtimeMs - sa.mtimeMs;
-        });
-        outputPath = path.join(os.tmpdir(), tmpPngsAfter[0]);
-        console.log(`[generate] Found via /tmp scan: ${outputPath}`);
-      }
-    }
-
-    // Check generated_imgs/ directory (Nano Banana default)
-    if (!outputPath) {
-      const genDir = path.resolve('generated_imgs');
-      if (fs.existsSync(genDir)) {
-        const genFiles = fs.readdirSync(genDir)
-          .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'))
-          .map(f => ({ name: f, mtime: fs.statSync(path.join(genDir, f)).mtimeMs }))
-          .filter(f => f.mtime > Date.now() - 120000)
-          .sort((a, b) => b.mtime - a.mtime);
-        if (genFiles.length > 0) {
-          outputPath = path.join(genDir, genFiles[0].name);
-          console.log(`[generate] Found via generated_imgs/: ${outputPath}`);
+      compositedBuffer = await tracer.startActiveSpan('gemini.composite_ad', async (span) => {
+        span.setAttribute('ad.id', adId);
+        span.setAttribute('ad.caption_count', ad.captions.length);
+        try {
+          const result = await gemini.editImage(imgBuffer, mimeType, prompt);
+          if (result.text) span.setAttribute('gemini.text', result.text.slice(0, 2000));
+          span.setAttribute('gemini.image_bytes', result.buffer.length);
+          span.setStatus({ code: SpanStatusCode.OK });
+          return result.buffer;
+        } catch (err) {
+          span.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+          span.recordException(err);
+          throw err;
+        } finally {
+          span.end();
         }
-      }
-    }
-
-    // Check tmpDir for any new files besides the original input
-    if (!outputPath) {
-      const tmpDirFiles = fs.readdirSync(tmpDir)
-        .filter(f => f !== `base${ext}`)
-        .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'));
-      if (tmpDirFiles.length > 0) {
-        outputPath = path.join(tmpDir, tmpDirFiles[0]);
-        console.log(`[generate] Found via tmpDir: ${outputPath}`);
-      }
-    }
-
-    if (!outputPath) {
-      console.error(`[generate] Could not find output image. Full claude output:\n${claudeOutput}`);
-      return res.status(500).json({
-        error: 'Generation ran but output image not found',
-        claudeOutput: claudeOutput.slice(0, 1000)
       });
+    } catch (err) {
+      console.error(`[generate] Gemini compositing failed:`, err.message);
+      return res.status(500).json({ error: 'Image compositing failed', detail: err.message });
     }
 
-    console.log(`[generate] Ad ${adId}: found output at ${outputPath}`);
-
-    // 7. Upload the composited image to Supabase Storage
+    // 6. Upload the composited image to Supabase Storage
     const serviceClient = db.getServiceClient();
     if (!serviceClient) {
       return res.status(500).json({
@@ -737,11 +586,10 @@ app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
     }
 
     const compositedStoragePath = `composited/${adId}.png`;
-    const outputBuffer = fs.readFileSync(outputPath);
 
     const { error: uploadError } = await serviceClient.storage
       .from('creative')
-      .upload(compositedStoragePath, outputBuffer, {
+      .upload(compositedStoragePath, compositedBuffer, {
         contentType: 'image/png',
         upsert: true
       });
@@ -751,7 +599,7 @@ app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
       return res.status(500).json({ error: 'Failed to upload composited image', detail: uploadError.message });
     }
 
-    // 8. Update the ad row with the composited image path
+    // 7. Update the ad row
     const updatedAd = await db.updateAd(adId, {
       composited_image_path: compositedStoragePath,
       generation_prompt: prompt
@@ -759,7 +607,6 @@ app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
 
     console.log(`[generate] Ad ${adId}: composited image uploaded to ${compositedStoragePath}`);
 
-    // 9. Return the updated ad info
     res.json({
       ad: updatedAd,
       composited_image_path: compositedStoragePath,
@@ -768,11 +615,6 @@ app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
   } catch (err) {
     console.error(`[generate] Unexpected error:`, err);
     res.status(500).json({ error: err.message });
-  } finally {
-    // 9. Clean up temp files
-    if (tmpDir) {
-      try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch {}
-    }
   }
 });
 
