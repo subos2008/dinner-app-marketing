@@ -150,9 +150,9 @@ app.get('/api/captions', requireAuth, async (req, res) => {
 });
 
 app.post('/api/captions', requireAuth, async (req, res) => {
-  const { text } = req.body;
+  const { text, role } = req.body;
   if (!text) return res.status(400).json({ error: 'text is required' });
-  try { res.json(await db.createCaption(text, req.token)); }
+  try { res.json(await db.createCaption(text, req.token, undefined, role)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -278,16 +278,24 @@ app.get('/api/ads', requireAuth, async (req, res) => {
 });
 
 app.post('/api/ads', requireAuth, async (req, res) => {
-  const { base_image_id, caption_id, body_copy_id, ad_set_id } = req.body;
+  const { base_image_id, body_copy_id, ad_set_id, caption_ids } = req.body;
   if (!base_image_id) return res.status(400).json({ error: 'base_image_id is required' });
-  try { res.json(await db.createAd({ base_image_id, caption_id, body_copy_id, ad_set_id }, req.token)); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  try {
+    const ad = await db.createAd({ base_image_id, body_copy_id, ad_set_id }, req.token);
+    // Assign captions via M2M join table
+    if (caption_ids && Array.isArray(caption_ids)) {
+      for (const captionId of caption_ids) {
+        await db.addAdCaption(ad.id, captionId, req.token);
+      }
+    }
+    res.json(ad);
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.put('/api/ads/:id', requireAuth, async (req, res) => {
   const VALID_DESIRED_STATUSES = ['draft', 'approved', 'live', 'paused'];
   const allowedFields = [
-    'ad_set_id', 'caption_id', 'body_copy_id', 'desired_status',
+    'ad_set_id', 'body_copy_id', 'desired_status',
     'feedback', 'composited_image_path', 'generation_prompt'
   ];
   const updates = {};
@@ -303,6 +311,18 @@ app.put('/api/ads/:id', requireAuth, async (req, res) => {
 
 app.delete('/api/ads/:id', requireAuth, async (req, res) => {
   try { await db.deleteAd(req.params.id, req.token); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/ads/:id/captions', requireAuth, async (req, res) => {
+  const { caption_id } = req.body;
+  if (!caption_id) return res.status(400).json({ error: 'caption_id is required' });
+  try { res.json(await db.addAdCaption(req.params.id, caption_id, req.token)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/ads/:id/captions/:captionId', requireAuth, async (req, res) => {
+  try { await db.removeAdCaption(req.params.id, req.params.captionId, req.token); res.json({ ok: true }); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -552,15 +572,14 @@ app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
       return res.status(404).json({ error: 'Ad not found' });
     }
 
-    // 2. Validate: must have base_image and caption
+    // 2. Validate: must have base_image and at least one caption
     if (!ad.base_image) {
       return res.status(400).json({ error: 'Ad has no base image assigned' });
     }
-    if (!ad.caption) {
-      return res.status(400).json({ error: 'Ad has no caption assigned' });
+    if (!ad.captions || ad.captions.length === 0) {
+      return res.status(400).json({ error: 'Ad has no captions assigned' });
     }
 
-    const captionText = ad.caption.text;
     const storagePath = ad.base_image.storage_path;
 
     // 3. Download the base image to a temp directory
@@ -583,7 +602,22 @@ app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
     );
 
     // 4. Build the prompt for Claude Code + Nano Banana
-    const prompt = `Use the mcp__nanobanana__edit_image tool to add the text "${captionText.replace(/"/g, '\\"')}" as a bold, clean overlay on the image at ${inputPath}. The text should be white with a subtle drop shadow, positioned prominently. Keep the image composition intact.`;
+    const roleHints = {
+      headline: 'large, bold, upper area',
+      subline: 'medium, below headline',
+      cta: 'button style, lower area, accent color',
+      tagline: 'small, bottom edge'
+    };
+
+    const overlayLines = ad.captions.map(cap => {
+      const role = cap.role;
+      if (role && roleHints[role]) {
+        return `- ${role.toUpperCase()} (${roleHints[role]}): "${cap.text}"`;
+      }
+      return `- OVERLAY TEXT: "${cap.text}"`;
+    }).join('\n');
+
+    const prompt = `Use the mcp__nanobanana__edit_image tool to add the following text overlays to the image at ${inputPath}:\n${overlayLines}\nKeep the image composition intact. Use white text with subtle shadows for readability.`;
 
     // 5. Shell out to claude -p
     console.log(`[generate] Ad ${adId}: running claude -p for compositing...`);

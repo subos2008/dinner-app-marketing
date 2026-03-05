@@ -423,6 +423,58 @@
     gap: 4px;
   }
 
+  .role-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    line-height: 1.4;
+    font-family: var(--font-mono);
+  }
+
+  .role-badge.headline { background: #E8D5B7; color: #6B4E2B; }
+  .role-badge.subline  { background: #D5E8D5; color: #2B6B3E; }
+  .role-badge.cta      { background: #E8D5D5; color: #6B2B2B; }
+  .role-badge.tagline  { background: #D5D5E8; color: #2B2B6B; }
+  .role-badge.general  { background: var(--light-gray); color: var(--warm-gray); }
+
+  .caption-role-select {
+    font-size: 12px;
+    padding: 4px 8px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    background: var(--warm-white);
+    font-family: var(--font-body);
+  }
+
+  .builder-caption-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    background: var(--warm-white);
+    border-radius: var(--radius);
+    font-size: 13px;
+    line-height: 1.3;
+  }
+
+  .builder-caption-item .btn-clear {
+    position: static;
+    background: transparent;
+    color: var(--warm-gray);
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0 2px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .builder-caption-item .btn-clear:hover { color: var(--red); }
+
   /* --- Body copy cards --- */
   .bodycopy-card {
     position: relative;
@@ -1155,7 +1207,7 @@
             <span>Drop image here</span>
           </div>
           <div class="drop-zone" id="drop-zone-caption">
-            <span>Drop caption here</span>
+            <span>Drop captions here</span>
           </div>
         </div>
         <div class="ad-builder-controls">
@@ -1184,7 +1236,7 @@
   let currentSession = null;
 
   // Ad builder state
-  let builderState = { imageId: null, captionId: null };
+  let builderState = { imageId: null, captionIds: [] };
 
   // --- DOM refs ---
   const $loading = document.getElementById('loading');
@@ -1626,8 +1678,15 @@
   // --- Captions panel ---
   function renderCaptions() {
     const filtered = filterBySegment(STATE.captions);
-    let html = '<form class="add-form" id="form-add-caption">'
-      + '<input type="text" placeholder="Write a caption..." required />'
+    let html = '<form class="add-form" id="form-add-caption" style="display:flex;gap:6px;align-items:center">'
+      + '<input type="text" placeholder="Write a caption..." required style="flex:1" />'
+      + '<select class="caption-role-select" id="caption-role-select">'
+      + '<option value="">No role</option>'
+      + '<option value="headline">Headline</option>'
+      + '<option value="subline">Subline</option>'
+      + '<option value="cta">CTA</option>'
+      + '<option value="tagline">Tagline</option>'
+      + '</select>'
       + '<button type="submit">Add</button>'
       + '</form>';
 
@@ -1652,6 +1711,9 @@
       function renderCaptionCards(captions) {
         let c = '';
         for (const cap of captions) {
+          const roleBadge = cap.role
+            ? '<span class="role-badge ' + escapeHtml(cap.role) + '">' + escapeHtml(cap.role) + '</span> '
+            : '';
           const tagsHtml = (cap.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t.name) + '</span>').join('');
           const segHtml = (cap.segments || []).map(s =>
             '<span class="segment-chip">' + escapeHtml(s.name)
@@ -1659,7 +1721,7 @@
             + '</span>'
           ).join('');
           c += '<div class="caption-card" draggable="true" data-caption-id="' + cap.id + '">'
-            + '<div class="caption-card-text">' + escapeHtml(cap.text) + '</div>'
+            + '<div class="caption-card-text">' + roleBadge + escapeHtml(cap.text) + '</div>'
             + (tagsHtml || segHtml ? '<div class="caption-card-tags">' + tagsHtml + segHtml + '</div>' : '')
             + '<button class="btn-delete" onclick="window.__deleteCaption(\'' + cap.id + '\')" title="Delete">&times;</button>'
             + '</div>';
@@ -1697,8 +1759,10 @@
         const input = form.querySelector('input');
         const text = input.value.trim();
         if (!text) return;
+        const roleSelect = document.getElementById('caption-role-select');
+        const role = roleSelect ? roleSelect.value || undefined : undefined;
         try {
-          await authFetch('/api/captions', { method: 'POST', body: { text } });
+          await authFetch('/api/captions', { method: 'POST', body: { text, role } });
           await loadData();
         } catch (err) {
           console.error('Add caption failed:', err);
@@ -1790,9 +1854,12 @@
     let html = '';
     for (const cap of STATE.captions) {
       const truncated = cap.text.length > 40 ? cap.text.slice(0, 37) + '...' : cap.text;
+      const roleBadge = cap.role
+        ? '<span class="role-badge ' + escapeHtml(cap.role) + '" style="margin-right:4px;font-size:9px">' + escapeHtml(cap.role) + '</span>'
+        : '';
       html += '<div class="caption-chip" draggable="true" data-caption-id="' + cap.id + '"'
         + ' title="' + escapeHtml(cap.text) + '">'
-        + escapeHtml(truncated)
+        + roleBadge + escapeHtml(truncated)
         + '</div>';
     }
     $captionStrip.innerHTML = html;
@@ -1978,7 +2045,7 @@
   // --- Ads ---
   function renderAdCard(ad) {
     const baseImage = ad.base_image;
-    const caption = ad.caption;
+    const captions = ad.captions || [];
     const bodyCopy = ad.body_copy;
     const hasComposited = !!ad.composited_image_path;
     const imageSrc = hasComposited
@@ -1991,16 +2058,23 @@
     if (imageSrc) {
       html += '<div class="ad-card-image">'
         + '<img src="' + escapeHtml(imageSrc) + '" loading="lazy" />';
-      if (!hasComposited && caption) {
-        html += '<div class="ad-card-caption-overlay">' + escapeHtml(caption.text) + '</div>';
+      if (!hasComposited && captions.length > 0) {
+        // Show headline caption as overlay, or first caption
+        const overlayCaption = captions.find(c => c.role === 'headline') || captions[0];
+        html += '<div class="ad-card-caption-overlay">' + escapeHtml(overlayCaption.text) + '</div>';
       }
       html += '</div>';
     }
 
     html += '<div class="ad-card-body">';
 
-    if (caption) {
-      html += '<div class="ad-card-caption-text">' + escapeHtml(caption.text) + '</div>';
+    if (captions.length > 0) {
+      for (const cap of captions) {
+        const badge = cap.role
+          ? '<span class="role-badge ' + escapeHtml(cap.role) + '">' + escapeHtml(cap.role) + '</span> '
+          : '';
+        html += '<div class="ad-card-caption-text">' + badge + escapeHtml(cap.text) + '</div>';
+      }
     }
 
     if (bodyCopy) {
@@ -2059,7 +2133,7 @@
     const filtered = filterBySegment(STATE.ads);
     // Ads tab — full list
     if (filtered.length === 0) {
-      $panelAdsTab.innerHTML = '<div class="empty-state"><p>No ads yet.</p><p>Drop an image and caption into the builder to create one.</p></div>';
+      $panelAdsTab.innerHTML = '<div class="empty-state"><p>No ads yet.</p><p>Drop an image and captions into the builder to create one.</p></div>';
     } else {
       const count = filtered.length + ' ad' + (filtered.length !== 1 ? 's' : '');
       let html = '<div style="margin-bottom:12px;font-family:var(--font-mono);font-size:12px;color:var(--warm-gray)">' + count + '</div>';
@@ -2231,14 +2305,24 @@
       $dropZoneImage.classList.remove('filled');
     }
 
-    // Caption drop zone
-    const caption = builderState.captionId ? STATE.captions.find(c => c.id === builderState.captionId) : null;
-    if (caption) {
-      $dropZoneCap.innerHTML = '<div class="drop-zone-caption-text">' + escapeHtml(caption.text) + '</div>'
-        + '<button class="btn-clear" onclick="window.__clearBuilderCaption()">&times;</button>';
+    // Caption drop zone — supports multiple captions
+    if (builderState.captionIds.length > 0) {
+      let capHtml = '';
+      for (const cid of builderState.captionIds) {
+        const cap = STATE.captions.find(c => c.id === cid);
+        if (!cap) continue;
+        const badge = cap.role
+          ? '<span class="role-badge ' + escapeHtml(cap.role) + '">' + escapeHtml(cap.role) + '</span> '
+          : '';
+        capHtml += '<div class="builder-caption-item">'
+          + badge + escapeHtml(cap.text)
+          + '<button class="btn-clear" onclick="window.__removeBuilderCaption(\'' + cid + '\')">&times;</button>'
+          + '</div>';
+      }
+      $dropZoneCap.innerHTML = capHtml + '<div style="text-align:center;font-size:11px;color:var(--warm-gray);margin-top:4px">Drop more captions</div>';
       $dropZoneCap.classList.add('filled');
     } else {
-      $dropZoneCap.innerHTML = '<span>Drop caption here</span>';
+      $dropZoneCap.innerHTML = '<span>Drop captions here</span>';
       $dropZoneCap.classList.remove('filled');
     }
 
@@ -2260,7 +2344,12 @@
   };
 
   window.__clearBuilderCaption = function() {
-    builderState.captionId = null;
+    builderState.captionIds = [];
+    renderBuilder();
+  };
+
+  window.__removeBuilderCaption = function(captionId) {
+    builderState.captionIds = builderState.captionIds.filter(id => id !== captionId);
     renderBuilder();
   };
 
@@ -2289,7 +2378,9 @@
   });
 
   setupDropZone($dropZoneCap, 'application/caption-id', (id) => {
-    builderState.captionId = id;
+    if (!builderState.captionIds.includes(id)) {
+      builderState.captionIds.push(id);
+    }
     renderBuilder();
   });
 
@@ -2298,7 +2389,7 @@
     if (!builderState.imageId) return;
 
     const body = { base_image_id: builderState.imageId };
-    if (builderState.captionId) body.caption_id = builderState.captionId;
+    if (builderState.captionIds.length > 0) body.caption_ids = builderState.captionIds;
     const bcId = $builderBodycopy.value;
     if (bcId) body.body_copy_id = bcId;
 
@@ -2307,7 +2398,7 @@
 
     try {
       await authFetch('/api/ads', { method: 'POST', body });
-      builderState = { imageId: null, captionId: null };
+      builderState = { imageId: null, captionIds: [] };
       await loadData();
     } catch (err) {
       console.error('Create ad failed:', err);

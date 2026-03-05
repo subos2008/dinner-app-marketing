@@ -335,10 +335,11 @@ async function getCaptions(token) {
   });
 }
 
-async function createCaption(text, token, generationPromptId) {
+async function createCaption(text, token, generationPromptId, role) {
   const client = clientForRequest(token);
   const insert = { text };
   if (generationPromptId) insert.generation_prompt_id = generationPromptId;
+  if (role) insert.role = role;
   const { data, error } = await client
     .from('caption')
     .insert(insert)
@@ -510,13 +511,14 @@ async function getAds(token) {
   const client = clientForRequest(token);
   const { data, error } = await client
     .from('ad')
-    .select('*, base_image:base_image_id(*), caption:caption_id(*), body_copy:body_copy_id(*), ad_set:ad_set_id(id, name), ad_segment(segment_id, segment:segment_id(id, name))')
+    .select('*, base_image:base_image_id(*), body_copy:body_copy_id(*), ad_set:ad_set_id(id, name), ad_segment(segment_id, segment:segment_id(id, name)), ad_caption(caption_id, caption:caption_id(*))')
     .order('created_at', { ascending: false });
   if (error) throw error;
   return data.map(row => {
     const segments = (row.ad_segment || []).map(js => js.segment).filter(Boolean);
-    const { ad_segment, ...rest } = row;
-    return { ...rest, segments };
+    const captions = (row.ad_caption || []).map(jc => jc.caption).filter(Boolean);
+    const { ad_segment, ad_caption, ...rest } = row;
+    return { ...rest, segments, captions };
   });
 }
 
@@ -526,7 +528,6 @@ async function createAd(data, token) {
     .from('ad')
     .insert({
       base_image_id: data.base_image_id,
-      caption_id: data.caption_id,
       body_copy_id: data.body_copy_id,
       ad_set_id: data.ad_set_id
     })
@@ -554,6 +555,29 @@ async function deleteAd(id, token) {
     .from('ad')
     .delete()
     .eq('id', id);
+  if (error) throw error;
+}
+
+// --- Ad Captions (M2M) ---
+
+async function addAdCaption(adId, captionId, token) {
+  const client = clientForRequest(token);
+  const { data, error } = await client
+    .from('ad_caption')
+    .insert({ ad_id: adId, caption_id: captionId })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function removeAdCaption(adId, captionId, token) {
+  const client = clientForRequest(token);
+  const { error } = await client
+    .from('ad_caption')
+    .delete()
+    .eq('ad_id', adId)
+    .eq('caption_id', captionId);
   if (error) throw error;
 }
 
@@ -615,5 +639,8 @@ module.exports = {
   getAds,
   createAd,
   updateAd,
-  deleteAd
+  deleteAd,
+  // Ad Captions (M2M)
+  addAdCaption,
+  removeAdCaption
 };
