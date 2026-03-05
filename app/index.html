@@ -135,6 +135,139 @@
     border-bottom-color: var(--amber);
   }
 
+  /* --- Segment filter bar --- */
+  .segment-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--light-gray);
+    flex-wrap: wrap;
+    min-height: 40px;
+  }
+
+  .segment-pill {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 400;
+    padding: 4px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--light-gray);
+    background: transparent;
+    color: var(--warm-gray);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    position: relative;
+  }
+
+  .segment-pill:hover {
+    border-color: var(--amber);
+    color: var(--amber-dark);
+  }
+
+  .segment-pill.active {
+    background: var(--charcoal);
+    color: var(--cream);
+    border-color: var(--charcoal);
+    font-weight: 600;
+  }
+
+  .segment-pill.drag-over {
+    background: var(--amber-light);
+    border-color: var(--amber);
+    color: var(--amber-dark);
+  }
+
+  .segment-pill-add {
+    font-size: 14px;
+    padding: 2px 10px;
+    border: 1px dashed var(--light-gray);
+    border-radius: 14px;
+    background: transparent;
+    color: var(--warm-gray);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .segment-pill-add:hover {
+    border-color: var(--amber);
+    color: var(--amber-dark);
+  }
+
+  .segment-add-input {
+    font-family: var(--font-body);
+    font-size: 12px;
+    padding: 4px 10px;
+    border: 1px solid var(--amber);
+    border-radius: 14px;
+    background: #fff;
+    color: var(--charcoal);
+    outline: none;
+    width: 140px;
+  }
+
+  .segment-pill-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+    background: #fff;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    z-index: 50;
+    min-width: 100px;
+    overflow: hidden;
+  }
+
+  .segment-pill-menu button {
+    display: block;
+    width: 100%;
+    padding: 6px 12px;
+    border: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--charcoal);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .segment-pill-menu button:hover {
+    background: var(--cream);
+  }
+
+  .segment-pill-menu button.danger {
+    color: var(--red);
+  }
+
+  .segment-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 8px;
+    border-radius: 10px;
+    background: rgba(200, 149, 108, 0.15);
+    color: var(--amber-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .segment-chip .remove-seg {
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .segment-chip .remove-seg:hover {
+    opacity: 1;
+  }
+
   /* --- Panel content area --- */
   .tab-content {
     flex: 1;
@@ -1000,6 +1133,8 @@
         <div class="tab" data-tab="generate">Generate</div>
       </div>
 
+      <div class="segment-bar" id="segment-bar"></div>
+
       <div class="tab-content">
         <div id="panel-images" class="tab-panel active"></div>
         <div id="panel-captions" class="tab-panel"></div>
@@ -1041,7 +1176,8 @@
   'use strict';
 
   // --- State ---
-  let STATE = { images: [], captions: [], bodyCopy: [], ads: [], adSets: [], tags: [] };
+  let STATE = { images: [], captions: [], bodyCopy: [], ads: [], adSets: [], tags: [], segments: [] };
+  let activeSegment = 'all'; // 'all', 'generic', or a segment UUID
   let storageBaseUrl = '';
   let activeTab = 'images';
   let supabaseClient = null;
@@ -1078,6 +1214,12 @@
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+  }
+
+  function filterBySegment(items) {
+    if (activeSegment === 'all') return items;
+    if (activeSegment === 'generic') return items.filter(item => !item.segments || item.segments.length === 0);
+    return items.filter(item => (item.segments || []).some(s => s.id === activeSegment));
   }
 
   function show(el) { el.classList.remove('hidden'); }
@@ -1205,15 +1347,16 @@
   // --- Data loading ---
   async function loadData() {
     try {
-      const [images, captions, bodyCopy, ads, adSets, tags] = await Promise.all([
+      const [images, captions, bodyCopy, ads, adSets, tags, segments] = await Promise.all([
         authFetch('/api/images').then(r => r.json()),
         authFetch('/api/captions').then(r => r.json()),
         authFetch('/api/body-copy').then(r => r.json()),
         authFetch('/api/ads').then(r => r.json()),
         authFetch('/api/ad-sets').then(r => r.json()),
         authFetch('/api/tags').then(r => r.json()),
+        authFetch('/api/segments').then(r => r.json()),
       ]);
-      STATE = { images, captions, bodyCopy, ads, adSets, tags };
+      STATE = { images, captions, bodyCopy, ads, adSets, tags, segments };
       render();
     } catch (err) {
       console.error('loadData failed:', err);
@@ -1248,6 +1391,7 @@
 
   // --- Render (called after data loads) ---
   function render() {
+    renderSegmentBar();
     renderImages();
     renderCaptions();
     renderBodyCopy();
@@ -1257,9 +1401,148 @@
     renderAds();
   }
 
+  // --- Segment bar ---
+  function renderSegmentBar() {
+    const $bar = document.getElementById('segment-bar');
+    let html = '<button class="segment-pill' + (activeSegment === 'all' ? ' active' : '') + '" data-segment="all">All</button>';
+    html += '<button class="segment-pill' + (activeSegment === 'generic' ? ' active' : '') + '" data-segment="generic">Generic</button>';
+
+    for (const seg of STATE.segments) {
+      html += '<button class="segment-pill' + (activeSegment === seg.id ? ' active' : '') + '" data-segment="' + seg.id + '" data-segment-name="' + escapeHtml(seg.name) + '">'
+        + escapeHtml(seg.name)
+        + '</button>';
+    }
+
+    html += '<button class="segment-pill-add" id="segment-add-btn" title="Add segment">+</button>';
+    $bar.innerHTML = html;
+
+    // Click handlers for pills
+    $bar.querySelectorAll('.segment-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        activeSegment = pill.dataset.segment;
+        render();
+      });
+
+      // Right-click context menu for real segments (not All/Generic)
+      if (pill.dataset.segment !== 'all' && pill.dataset.segment !== 'generic') {
+        pill.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          showSegmentMenu(pill, pill.dataset.segment, pill.dataset.segmentName);
+        });
+
+        // Drop target for assigning items to segments
+        pill.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          pill.classList.add('drag-over');
+        });
+        pill.addEventListener('dragleave', () => {
+          pill.classList.remove('drag-over');
+        });
+        pill.addEventListener('drop', async (e) => {
+          e.preventDefault();
+          pill.classList.remove('drag-over');
+          const segmentId = pill.dataset.segment;
+          const imageId = e.dataTransfer.getData('application/image-id');
+          const captionId = e.dataTransfer.getData('application/caption-id');
+          const bodyCopyId = e.dataTransfer.getData('application/bodycopy-id');
+          const adId = e.dataTransfer.getData('application/ad-id');
+          try {
+            if (imageId) await authFetch('/api/images/' + imageId + '/segments', { method: 'POST', body: { segment_id: segmentId } });
+            if (captionId) await authFetch('/api/captions/' + captionId + '/segments', { method: 'POST', body: { segment_id: segmentId } });
+            if (bodyCopyId) await authFetch('/api/body-copy/' + bodyCopyId + '/segments', { method: 'POST', body: { segment_id: segmentId } });
+            if (adId) await authFetch('/api/ads/' + adId + '/segments', { method: 'POST', body: { segment_id: segmentId } });
+            await loadData();
+          } catch (err) {
+            console.error('Assign segment failed:', err);
+          }
+        });
+      }
+    });
+
+    // Add button
+    document.getElementById('segment-add-btn').addEventListener('click', () => {
+      const btn = document.getElementById('segment-add-btn');
+      const input = document.createElement('input');
+      input.className = 'segment-add-input';
+      input.placeholder = 'Segment name...';
+      btn.replaceWith(input);
+      input.focus();
+
+      async function submit() {
+        const name = input.value.trim();
+        if (name) {
+          try {
+            await authFetch('/api/segments', { method: 'POST', body: { name } });
+            await loadData();
+          } catch (err) {
+            console.error('Create segment failed:', err);
+          }
+        } else {
+          renderSegmentBar();
+        }
+      }
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') submit();
+        if (e.key === 'Escape') renderSegmentBar();
+      });
+      input.addEventListener('blur', submit);
+    });
+  }
+
+  function showSegmentMenu(pill, segmentId, segmentName) {
+    // Close any existing menu
+    document.querySelectorAll('.segment-pill-menu').forEach(m => m.remove());
+
+    const menu = document.createElement('div');
+    menu.className = 'segment-pill-menu';
+    menu.innerHTML = '<button data-action="rename">Rename</button>'
+      + '<button data-action="delete" class="danger">Delete</button>';
+    pill.style.position = 'relative';
+    pill.appendChild(menu);
+
+    menu.querySelector('[data-action="rename"]').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      menu.remove();
+      const newName = prompt('Rename segment:', segmentName);
+      if (newName && newName.trim() && newName.trim() !== segmentName) {
+        try {
+          await authFetch('/api/segments/' + segmentId, { method: 'PUT', body: { name: newName.trim() } });
+          await loadData();
+        } catch (err) {
+          console.error('Rename segment failed:', err);
+        }
+      }
+    });
+
+    menu.querySelector('[data-action="delete"]').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      menu.remove();
+      if (confirm('Delete segment "' + segmentName + '"? Items won\'t be deleted, just unassigned.')) {
+        try {
+          if (activeSegment === segmentId) activeSegment = 'all';
+          await authFetch('/api/segments/' + segmentId, { method: 'DELETE' });
+          await loadData();
+        } catch (err) {
+          console.error('Delete segment failed:', err);
+        }
+      }
+    });
+
+    // Close on click outside
+    setTimeout(() => {
+      document.addEventListener('click', function closeMenu(e) {
+        if (!menu.contains(e.target)) {
+          menu.remove();
+          document.removeEventListener('click', closeMenu);
+        }
+      });
+    }, 0);
+  }
+
   // --- Images panel ---
   function renderImages() {
-    if (STATE.images.length === 0) {
+    const filtered = filterBySegment(STATE.images);
+    if (filtered.length === 0) {
       $panelImages.innerHTML = '<div class="empty-state"><p>No images yet.</p><p>Upload images via the CLI or API.</p></div>';
       return;
     }
@@ -1267,7 +1550,7 @@
     // Group images by generation_prompt_id
     const groups = new Map(); // promptId -> { prompt, images }
     const ungrouped = [];
-    for (const img of STATE.images) {
+    for (const img of filtered) {
       const gp = img.generation_prompt;
       if (gp && gp.id) {
         if (!groups.has(gp.id)) {
@@ -1286,10 +1569,15 @@
       for (const img of images) {
         const src = storageBaseUrl + '/' + img.storage_path;
         const tagsHtml = (img.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t.name) + '</span>').join('');
+        const segHtml = (img.segments || []).map(s =>
+          '<span class="segment-chip">' + escapeHtml(s.name)
+          + ' <span class="remove-seg" onclick="window.__removeImageSegment(\'' + img.id + '\', \'' + s.id + '\')">&times;</span>'
+          + '</span>'
+        ).join('');
         g += '<div class="image-card" draggable="true" data-image-id="' + img.id + '">'
           + '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(img.filename) + '" loading="lazy" onclick="window.__openLightbox(this.src, event)" style="cursor:zoom-in" />'
           + '<div class="image-card-info">' + escapeHtml(img.filename) + '</div>'
-          + (tagsHtml ? '<div class="image-card-tags">' + tagsHtml + '</div>' : '')
+          + (tagsHtml || segHtml ? '<div class="image-card-tags">' + tagsHtml + segHtml + '</div>' : '')
           + '<button class="btn-delete" onclick="window.__deleteImage(\'' + img.id + '\')" title="Delete">&times;</button>'
           + '</div>';
       }
@@ -1337,18 +1625,19 @@
 
   // --- Captions panel ---
   function renderCaptions() {
+    const filtered = filterBySegment(STATE.captions);
     let html = '<form class="add-form" id="form-add-caption">'
       + '<input type="text" placeholder="Write a caption..." required />'
       + '<button type="submit">Add</button>'
       + '</form>';
 
-    if (STATE.captions.length === 0) {
+    if (filtered.length === 0) {
       html += '<div class="empty-state"><p>No captions yet.</p></div>';
     } else {
       // Group captions by generation_prompt_id
       const groups = new Map();
       const ungrouped = [];
-      for (const cap of STATE.captions) {
+      for (const cap of filtered) {
         const gp = cap.generation_prompt;
         if (gp && gp.id) {
           if (!groups.has(gp.id)) {
@@ -1364,9 +1653,14 @@
         let c = '';
         for (const cap of captions) {
           const tagsHtml = (cap.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t.name) + '</span>').join('');
+          const segHtml = (cap.segments || []).map(s =>
+            '<span class="segment-chip">' + escapeHtml(s.name)
+            + ' <span class="remove-seg" onclick="window.__removeCaptionSegment(\'' + cap.id + '\', \'' + s.id + '\')">&times;</span>'
+            + '</span>'
+          ).join('');
           c += '<div class="caption-card" draggable="true" data-caption-id="' + cap.id + '">'
             + '<div class="caption-card-text">' + escapeHtml(cap.text) + '</div>'
-            + (tagsHtml ? '<div class="caption-card-tags">' + tagsHtml + '</div>' : '')
+            + (tagsHtml || segHtml ? '<div class="caption-card-tags">' + tagsHtml + segHtml + '</div>' : '')
             + '<button class="btn-delete" onclick="window.__deleteCaption(\'' + cap.id + '\')" title="Delete">&times;</button>'
             + '</div>';
         }
@@ -1430,6 +1724,7 @@
 
   // --- Body Copy panel ---
   function renderBodyCopy() {
+    const filtered = filterBySegment(STATE.bodyCopy);
     let html = '<form class="add-form bodycopy-form" id="form-add-bodycopy">'
       + '<input type="text" placeholder="Headline (optional)" />'
       + '<div class="bodycopy-form-row">'
@@ -1438,15 +1733,20 @@
       + '</div>'
       + '</form>';
 
-    if (STATE.bodyCopy.length === 0) {
+    if (filtered.length === 0) {
       html += '<div class="empty-state"><p>No body copy yet.</p></div>';
     } else {
-      for (const bc of STATE.bodyCopy) {
+      for (const bc of filtered) {
         const tagsHtml = (bc.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t.name) + '</span>').join('');
-        html += '<div class="bodycopy-card" data-bodycopy-id="' + bc.id + '">'
+        const segHtml = (bc.segments || []).map(s =>
+          '<span class="segment-chip">' + escapeHtml(s.name)
+          + ' <span class="remove-seg" onclick="window.__removeBodyCopySegment(\'' + bc.id + '\', \'' + s.id + '\')">&times;</span>'
+          + '</span>'
+        ).join('');
+        html += '<div class="bodycopy-card" draggable="true" data-bodycopy-id="' + bc.id + '">'
           + (bc.headline ? '<div class="bodycopy-headline">' + escapeHtml(bc.headline) + '</div>' : '')
           + '<div class="bodycopy-text">' + escapeHtml(bc.text) + '</div>'
-          + (tagsHtml ? '<div class="bodycopy-card-tags">' + tagsHtml + '</div>' : '')
+          + (tagsHtml || segHtml ? '<div class="bodycopy-card-tags">' + tagsHtml + segHtml + '</div>' : '')
           + '<button class="btn-delete" onclick="window.__deleteBodyCopy(\'' + bc.id + '\')" title="Delete">&times;</button>'
           + '</div>';
       }
@@ -1471,6 +1771,14 @@
         }
       });
     }
+
+    // Attach drag handlers to body copy cards
+    $panelBodycopy.querySelectorAll('.bodycopy-card[draggable]').forEach(card => {
+      card.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('application/bodycopy-id', card.dataset.bodycopyId);
+        e.dataTransfer.effectAllowed = 'copy';
+      });
+    });
   }
 
   // --- Caption strip (persistent at bottom of library panel) ---
@@ -1718,6 +2026,15 @@
     }
     html += '</div>';
 
+    const adSegHtml = (ad.segments || []).map(s =>
+      '<span class="segment-chip">' + escapeHtml(s.name)
+      + ' <span class="remove-seg" onclick="window.__removeAdSegment(\'' + ad.id + '\', \'' + s.id + '\')">&times;</span>'
+      + '</span>'
+    ).join('');
+    if (adSegHtml) {
+      html += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">' + adSegHtml + '</div>';
+    }
+
     html += '<div class="ad-card-feedback">'
       + '<textarea placeholder="Feedback notes..." data-ad-id="' + ad.id + '" data-original="' + escapeHtml(ad.feedback || '') + '"'
       + ' onblur="window.__saveAdFeedback(this)">'
@@ -1739,24 +2056,37 @@
   }
 
   function renderAds() {
+    const filtered = filterBySegment(STATE.ads);
     // Ads tab — full list
-    if (STATE.ads.length === 0) {
+    if (filtered.length === 0) {
       $panelAdsTab.innerHTML = '<div class="empty-state"><p>No ads yet.</p><p>Drop an image and caption into the builder to create one.</p></div>';
     } else {
-      const count = STATE.ads.length + ' ad' + (STATE.ads.length !== 1 ? 's' : '');
+      const count = filtered.length + ' ad' + (filtered.length !== 1 ? 's' : '');
       let html = '<div style="margin-bottom:12px;font-family:var(--font-mono);font-size:12px;color:var(--warm-gray)">' + count + '</div>';
-      for (const ad of STATE.ads) {
+      for (const ad of filtered) {
         html += renderAdCard(ad);
       }
       $panelAdsTab.innerHTML = html;
     }
 
-    // Right panel — most recent ad only
-    if (STATE.ads.length === 0) {
+    // Right panel — most recent filtered ad
+    if (filtered.length === 0) {
       $adsList.innerHTML = '<div class="empty-state"><p>No ads yet.</p></div>';
     } else {
-      $adsList.innerHTML = renderAdCard(STATE.ads[0]);
+      $adsList.innerHTML = renderAdCard(filtered[0]);
     }
+
+    // Attach drag handlers to ad cards
+    const adContainers = [$panelAdsTab, $adsList];
+    adContainers.forEach(container => {
+      container.querySelectorAll('.ad-card[data-ad-id]').forEach(card => {
+        card.setAttribute('draggable', 'true');
+        card.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('application/ad-id', card.dataset.adId);
+          e.dataTransfer.effectAllowed = 'copy';
+        });
+      });
+    });
   }
 
   // --- Global event handlers (called from inline handlers) ---
@@ -1857,6 +2187,34 @@
       btn.disabled = false;
       btn.textContent = 'Generate';
     }
+  };
+
+  window.__removeImageSegment = async function(imageId, segmentId) {
+    try {
+      await authFetch('/api/images/' + imageId + '/segments/' + segmentId, { method: 'DELETE' });
+      await loadData();
+    } catch (err) { console.error('Remove image segment failed:', err); }
+  };
+
+  window.__removeCaptionSegment = async function(captionId, segmentId) {
+    try {
+      await authFetch('/api/captions/' + captionId + '/segments/' + segmentId, { method: 'DELETE' });
+      await loadData();
+    } catch (err) { console.error('Remove caption segment failed:', err); }
+  };
+
+  window.__removeBodyCopySegment = async function(bodyId, segmentId) {
+    try {
+      await authFetch('/api/body-copy/' + bodyId + '/segments/' + segmentId, { method: 'DELETE' });
+      await loadData();
+    } catch (err) { console.error('Remove body copy segment failed:', err); }
+  };
+
+  window.__removeAdSegment = async function(adId, segmentId) {
+    try {
+      await authFetch('/api/ads/' + adId + '/segments/' + segmentId, { method: 'DELETE' });
+      await loadData();
+    } catch (err) { console.error('Remove ad segment failed:', err); }
   };
 
   // --- Ad Builder ---
