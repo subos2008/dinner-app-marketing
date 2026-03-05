@@ -226,6 +226,18 @@ async function removeAdSegment(adId, segmentId, token) {
 
 async function createGenerationPrompt({ type, prompt, brief }, token) {
   const client = clientForRequest(token);
+
+  // Reuse existing prompt if type + prompt text match
+  const { data: existing } = await client
+    .from('generation_prompt')
+    .select('*')
+    .eq('type', type)
+    .eq('prompt', prompt)
+    .limit(1)
+    .single();
+
+  if (existing) return existing;
+
   const { data, error } = await client
     .from('generation_prompt')
     .insert({ type, prompt, brief: brief || null })

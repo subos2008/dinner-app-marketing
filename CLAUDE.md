@@ -34,5 +34,10 @@ This repo is for:
 - Primary ad platform: **Meta** (Facebook/Instagram)
 - Need to connect AI tooling to Meta's marketing APIs for automation
 
+## Database Migrations
+- Migrations live in `supabase/migrations/` with sequential numbering (`00001_`, `00002_`, etc.)
+- **Always apply migrations with `supabase db push --linked`** — do NOT use `psql` directly
+- The Supabase CLI is installed and the project is already linked
+
 ## Ways of Working
 This repo is a thinking space. We explore ideas, refine them, and produce actionable marketing output. Not everything here ships — some of it is just us working through the problem.
