@@ -450,12 +450,32 @@
     font-family: var(--font-body);
   }
 
+  .ad-builder-caption-zones {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .drop-zone.drop-zone-half {
+    min-height: 56px;
+    flex: 1;
+  }
+
+  .drop-zone.filled.caption-zone-filled {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 8px;
+    gap: 4px;
+  }
+
   .builder-caption-item {
     display: flex;
     align-items: center;
     gap: 6px;
     padding: 6px 8px;
-    background: var(--warm-white);
+    background: var(--cream);
     border-radius: var(--radius);
     font-size: 13px;
     line-height: 1.3;
@@ -1206,8 +1226,13 @@
           <div class="drop-zone" id="drop-zone-image">
             <span>Drop image here</span>
           </div>
-          <div class="drop-zone" id="drop-zone-caption">
-            <span>Drop captions here</span>
+          <div class="ad-builder-caption-zones">
+            <div class="drop-zone drop-zone-half" id="drop-zone-headline">
+              <span>Headline / Subline</span>
+            </div>
+            <div class="drop-zone drop-zone-half" id="drop-zone-cta">
+              <span>CTA / Tagline</span>
+            </div>
           </div>
         </div>
         <div class="ad-builder-controls">
@@ -1256,7 +1281,8 @@
   const $captionStrip = document.getElementById('caption-strip');
   const $adsList = document.getElementById('ads-list');
   const $dropZoneImage = document.getElementById('drop-zone-image');
-  const $dropZoneCap = document.getElementById('drop-zone-caption');
+  const $dropZoneHeadline = document.getElementById('drop-zone-headline');
+  const $dropZoneCta = document.getElementById('drop-zone-cta');
   const $builderBodycopy = document.getElementById('builder-bodycopy-select');
   const $builderCreateBtn = document.getElementById('builder-create-btn');
 
@@ -1681,7 +1707,6 @@
     let html = '<form class="add-form" id="form-add-caption" style="display:flex;gap:6px;align-items:center">'
       + '<input type="text" placeholder="Write a caption..." required style="flex:1" />'
       + '<select class="caption-role-select" id="caption-role-select">'
-      + '<option value="">No role</option>'
       + '<option value="headline">Headline</option>'
       + '<option value="subline">Subline</option>'
       + '<option value="cta">CTA</option>'
@@ -2305,26 +2330,31 @@
       $dropZoneImage.classList.remove('filled');
     }
 
-    // Caption drop zone — supports multiple captions
-    if (builderState.captionIds.length > 0) {
-      let capHtml = '';
-      for (const cid of builderState.captionIds) {
-        const cap = STATE.captions.find(c => c.id === cid);
-        if (!cap) continue;
-        const badge = cap.role
-          ? '<span class="role-badge ' + escapeHtml(cap.role) + '">' + escapeHtml(cap.role) + '</span> '
-          : '';
-        capHtml += '<div class="builder-caption-item">'
-          + badge + escapeHtml(cap.text)
-          + '<button class="btn-clear" onclick="window.__removeBuilderCaption(\'' + cid + '\')">&times;</button>'
-          + '</div>';
+    // Caption drop zones — headline/subline and cta/tagline
+    function renderCaptionZone($zone, roles, emptyLabel) {
+      const items = builderState.captionIds
+        .map(cid => STATE.captions.find(c => c.id === cid))
+        .filter(cap => cap && roles.includes(cap.role || ''));
+      if (items.length > 0) {
+        let html = '';
+        for (const cap of items) {
+          const badge = cap.role
+            ? '<span class="role-badge ' + escapeHtml(cap.role) + '">' + escapeHtml(cap.role) + '</span> '
+            : '';
+          html += '<div class="builder-caption-item">'
+            + badge + escapeHtml(cap.text)
+            + '<button class="btn-clear" onclick="window.__removeBuilderCaption(\'' + cap.id + '\')">&times;</button>'
+            + '</div>';
+        }
+        $zone.innerHTML = html;
+        $zone.classList.add('filled', 'caption-zone-filled');
+      } else {
+        $zone.innerHTML = '<span>' + emptyLabel + '</span>';
+        $zone.classList.remove('filled', 'caption-zone-filled');
       }
-      $dropZoneCap.innerHTML = capHtml + '<div style="text-align:center;font-size:11px;color:var(--warm-gray);margin-top:4px">Drop more captions</div>';
-      $dropZoneCap.classList.add('filled');
-    } else {
-      $dropZoneCap.innerHTML = '<span>Drop captions here</span>';
-      $dropZoneCap.classList.remove('filled');
     }
+    renderCaptionZone($dropZoneHeadline, ['headline', 'subline', ''], 'Headline / Subline');
+    renderCaptionZone($dropZoneCta, ['cta', 'tagline'], 'CTA / Tagline');
 
     // Body copy dropdown
     let options = '<option value="">Body copy (optional)</option>';
@@ -2377,12 +2407,14 @@
     renderBuilder();
   });
 
-  setupDropZone($dropZoneCap, 'application/caption-id', (id) => {
+  function onCaptionDrop(id) {
     if (!builderState.captionIds.includes(id)) {
       builderState.captionIds.push(id);
     }
     renderBuilder();
-  });
+  }
+  setupDropZone($dropZoneHeadline, 'application/caption-id', onCaptionDrop);
+  setupDropZone($dropZoneCta, 'application/caption-id', onCaptionDrop);
 
   // Create ad button
   $builderCreateBtn.addEventListener('click', async () => {
