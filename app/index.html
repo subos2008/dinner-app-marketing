@@ -2019,6 +2019,18 @@
 
         $genStatus.textContent = '';
 
+        // Auto-assign active segment to generated items
+        if (activeSegment && activeSegment !== 'all' && activeSegment !== 'generic') {
+          if (data.image) {
+            await authFetch('/api/images/' + data.image.id + '/segments', { method: 'POST', body: { segment_id: activeSegment } }).catch(() => {});
+          }
+          if (data.captions) {
+            for (const cap of data.captions) {
+              await authFetch('/api/captions/' + cap.id + '/segments', { method: 'POST', body: { segment_id: activeSegment } }).catch(() => {});
+            }
+          }
+        }
+
         // Reload data then switch to the appropriate tab
         await loadData();
         const targetTab = generateType === 'image' ? 'images' : 'captions';
