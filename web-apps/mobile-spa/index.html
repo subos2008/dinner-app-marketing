@@ -1026,6 +1026,238 @@
   .viewer-build-btn:active {
     background: var(--accent-dark);
   }
+
+  /* --- Ad Builder Bottom Sheet --- */
+  .builder-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 220;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+
+  .builder-backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .builder-backdrop.hidden {
+    display: none !important;
+  }
+
+  .builder-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 70vh;
+    z-index: 230;
+    background: var(--surface);
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .builder-sheet.visible {
+    transform: translateY(0);
+  }
+
+  .builder-sheet.hidden {
+    display: none !important;
+  }
+
+  .builder-handle {
+    width: 40px;
+    height: 4px;
+    background: var(--text-tertiary);
+    border-radius: 2px;
+    margin: 10px auto 0;
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+
+  .builder-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 16px 8px;
+  }
+
+  .builder-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 0.5px solid var(--separator);
+  }
+
+  .builder-preview img {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .builder-preview-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .builder-preview-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .builder-role-section {
+    margin-bottom: 14px;
+  }
+
+  .builder-role-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+  }
+
+  .builder-role-empty {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    padding: 8px 0;
+    font-style: italic;
+  }
+
+  .builder-caption-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    border: 1.5px solid transparent;
+    margin-bottom: 6px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .builder-caption-card:active {
+    background: #EDEDF0;
+  }
+
+  .builder-caption-card.selected {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .builder-caption-text {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--text-primary);
+  }
+
+  .builder-caption-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+    font-size: 12px;
+    color: transparent;
+  }
+
+  .builder-caption-card.selected .builder-caption-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .builder-footer {
+    padding: 12px 16px;
+    padding-bottom: calc(12px + var(--safe-bottom));
+    border-top: 0.5px solid var(--separator);
+    flex-shrink: 0;
+  }
+
+  .builder-action-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    -webkit-appearance: none;
+    transition: background 0.15s, opacity 0.15s;
+  }
+
+  .builder-action-btn:active {
+    background: var(--accent-dark);
+  }
+
+  .builder-action-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .builder-action-btn.loading {
+    position: relative;
+    color: transparent;
+  }
+
+  .builder-action-btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2.5px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: gen-spin 0.6s linear infinite;
+  }
+
+  /* Builder success toast */
+  .builder-toast {
+    position: fixed;
+    top: calc(var(--safe-top) + 60px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: var(--text-primary);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 300;
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+
+  .builder-toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 </style>
 </head>
 <body>
@@ -1155,6 +1387,19 @@
     </div>
     <button class="viewer-build-btn" id="viewer-build-btn">Build Ad</button>
   </div>
+
+  <!-- Ad Builder Bottom Sheet -->
+  <div id="ad-builder-backdrop" class="builder-backdrop hidden"></div>
+  <div id="ad-builder" class="builder-sheet hidden">
+    <div class="builder-handle"></div>
+    <div class="builder-content" id="builder-content"></div>
+    <div class="builder-footer">
+      <button id="builder-action-btn" class="builder-action-btn">Use as Ad</button>
+    </div>
+  </div>
+
+  <!-- Builder success toast -->
+  <div id="builder-toast" class="builder-toast">Ad created</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -1224,10 +1469,21 @@
   const $viewerImage = document.getElementById('viewer-image');
   const $viewerBuildBtn = document.getElementById('viewer-build-btn');
 
+  // Builder DOM refs
+  const $builderBackdrop = document.getElementById('ad-builder-backdrop');
+  const $builderSheet = document.getElementById('ad-builder');
+  const $builderContent = document.getElementById('builder-content');
+  const $builderActionBtn = document.getElementById('builder-action-btn');
+  const $builderToast = document.getElementById('builder-toast');
+
   // Viewer state
   let viewerImageIndex = -1;
   let viewerOpen = false;
   let builderImageId = null;
+
+  // Builder state
+  let selectedCaptionIds = [];
+  let builderCreating = false;
 
   // --- Utility ---
   function show(el) { el.classList.remove('hidden'); }
@@ -1934,13 +2190,12 @@
   // Close button
   $viewerClose.addEventListener('click', closeViewer);
 
-  // Build Ad button
+  // Build Ad button — opens the ad builder bottom sheet
   $viewerBuildBtn.addEventListener('click', () => {
     const images = filteredImages();
     if (viewerImageIndex >= 0 && viewerImageIndex < images.length) {
       builderImageId = images[viewerImageIndex].id;
-      console.log('Build Ad tapped — image ID:', builderImageId);
-      // Task 8 will open the ad builder
+      openAdBuilder();
     }
   });
 
@@ -1999,6 +2254,223 @@
     if (e.key === 'ArrowLeft') showPrevImage();
     if (e.key === 'ArrowRight') showNextImage();
   });
+
+  // --- Ad Builder Bottom Sheet ---
+
+  function openAdBuilder() {
+    if (!builderImageId) return;
+    selectedCaptionIds = [];
+    builderCreating = false;
+    renderBuilderContent();
+    updateBuilderActionBtn();
+
+    // Show backdrop + sheet
+    $builderBackdrop.classList.remove('hidden');
+    $builderSheet.classList.remove('hidden');
+
+    // Trigger reflow then animate in
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        $builderBackdrop.classList.add('visible');
+        $builderSheet.classList.add('visible');
+      });
+    });
+  }
+
+  function closeAdBuilder() {
+    $builderBackdrop.classList.remove('visible');
+    $builderSheet.classList.remove('visible');
+
+    // Wait for transition to finish then hide
+    setTimeout(() => {
+      $builderBackdrop.classList.add('hidden');
+      $builderSheet.classList.add('hidden');
+      selectedCaptionIds = [];
+      builderImageId = null;
+      $builderContent.innerHTML = '';
+    }, 300);
+  }
+
+  function renderBuilderContent() {
+    const image = STATE.images.find(img => img.id === builderImageId);
+    if (!image) return;
+
+    const imgSrc = storageBaseUrl + '/' + image.storage_path;
+    const captions = filteredCaptions();
+
+    // Group captions by role
+    const roleOrder = ['headline', 'subline', 'cta', 'tagline'];
+    const groups = {};
+    roleOrder.forEach(r => { groups[r] = []; });
+    groups['other'] = [];
+
+    captions.forEach(cap => {
+      const role = cap.role && roleOrder.includes(cap.role) ? cap.role : 'other';
+      groups[role].push(cap);
+    });
+
+    let html = '';
+
+    // Image preview
+    html += '<div class="builder-preview">';
+    html += '<img src="' + escapeHtml(imgSrc) + '" alt="" />';
+    html += '<div>';
+    html += '<div class="builder-preview-label">Select captions</div>';
+    html += '<div class="builder-preview-sub">Or use image as-is</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // Render each role group
+    const roleLabels = {
+      headline: 'Headlines',
+      subline: 'Sublines',
+      cta: 'Calls to Action',
+      tagline: 'Taglines',
+      other: 'Other',
+    };
+
+    const allRoles = [...roleOrder, 'other'];
+    for (const role of allRoles) {
+      const caps = groups[role];
+      html += '<div class="builder-role-section">';
+      html += '<div class="builder-role-title">' + roleLabels[role] + '</div>';
+      if (caps.length === 0) {
+        html += '<div class="builder-role-empty">No ' + roleLabels[role].toLowerCase() + '</div>';
+      } else {
+        for (const cap of caps) {
+          const isSelected = selectedCaptionIds.includes(cap.id);
+          html += '<div class="builder-caption-card' + (isSelected ? ' selected' : '') + '" data-caption-id="' + escapeHtml(cap.id) + '">';
+          html += '<div class="builder-caption-text">' + escapeHtml(cap.text) + '</div>';
+          html += '<div class="builder-caption-check">' + (isSelected ? '&#10003;' : '') + '</div>';
+          html += '</div>';
+        }
+      }
+      html += '</div>';
+    }
+
+    $builderContent.innerHTML = html;
+
+    // Attach click handlers to caption cards
+    $builderContent.querySelectorAll('.builder-caption-card').forEach(card => {
+      card.addEventListener('click', () => {
+        toggleCaption(card.dataset.captionId);
+      });
+    });
+  }
+
+  function toggleCaption(captionId) {
+    const idx = selectedCaptionIds.indexOf(captionId);
+    if (idx === -1) {
+      selectedCaptionIds.push(captionId);
+    } else {
+      selectedCaptionIds.splice(idx, 1);
+    }
+
+    // Update card visuals
+    $builderContent.querySelectorAll('.builder-caption-card').forEach(card => {
+      const isSelected = selectedCaptionIds.includes(card.dataset.captionId);
+      card.classList.toggle('selected', isSelected);
+      const checkEl = card.querySelector('.builder-caption-check');
+      if (checkEl) checkEl.innerHTML = isSelected ? '&#10003;' : '';
+    });
+
+    updateBuilderActionBtn();
+  }
+
+  function updateBuilderActionBtn() {
+    if (selectedCaptionIds.length > 0) {
+      $builderActionBtn.textContent = 'Generate Ad (' + selectedCaptionIds.length + ')';
+    } else {
+      $builderActionBtn.textContent = 'Use as Ad';
+    }
+  }
+
+  async function handleCreateAd() {
+    if (builderCreating || !builderImageId) return;
+    builderCreating = true;
+    $builderActionBtn.disabled = true;
+    $builderActionBtn.classList.add('loading');
+
+    const image = STATE.images.find(img => img.id === builderImageId);
+    if (!image) {
+      builderCreating = false;
+      $builderActionBtn.disabled = false;
+      $builderActionBtn.classList.remove('loading');
+      return;
+    }
+
+    try {
+      if (selectedCaptionIds.length === 0) {
+        // "Use as Ad" path — no captions, use base image directly
+        const { data: ad, error } = await db().from('ad')
+          .insert({ base_image_id: builderImageId, composited_image_path: image.storage_path })
+          .select().single();
+        if (error) throw error;
+
+        if (activeSegmentId) {
+          await db().from('ad_segment').insert({ ad_id: ad.id, segment_id: activeSegmentId });
+        }
+      } else {
+        // "Generate Ad" path — with captions, trigger compositing
+        const { data: ad, error } = await db().from('ad')
+          .insert({ base_image_id: builderImageId })
+          .select().single();
+        if (error) throw error;
+
+        for (const captionId of selectedCaptionIds) {
+          await db().from('ad_caption').insert({ ad_id: ad.id, caption_id: captionId });
+        }
+
+        if (activeSegmentId) {
+          await db().from('ad_segment').insert({ ad_id: ad.id, segment_id: activeSegmentId });
+        }
+
+        // Trigger compositing
+        await supabaseClient.functions.invoke('generate', {
+          body: { type: 'composite', adId: ad.id }
+        });
+      }
+
+      // Close builder and viewer
+      closeAdBuilder();
+      closeViewer();
+
+      // Switch to Library tab > Ads view
+      switchTab('library');
+      switchLibraryView('ads');
+
+      // Reload data
+      await loadData();
+
+      // Show success toast
+      showBuilderToast('Ad created');
+
+    } catch (err) {
+      console.error('handleCreateAd failed:', err);
+      $builderActionBtn.disabled = false;
+      $builderActionBtn.classList.remove('loading');
+      $builderActionBtn.textContent = 'Failed — Tap to retry';
+      builderCreating = false;
+      return;
+    }
+
+    builderCreating = false;
+    $builderActionBtn.disabled = false;
+    $builderActionBtn.classList.remove('loading');
+    updateBuilderActionBtn();
+  }
+
+  function showBuilderToast(msg) {
+    $builderToast.textContent = msg;
+    $builderToast.classList.add('visible');
+    setTimeout(() => {
+      $builderToast.classList.remove('visible');
+    }, 2000);
+  }
+
+  // Wire builder events
+  $builderBackdrop.addEventListener('click', closeAdBuilder);
+  $builderActionBtn.addEventListener('click', handleCreateAd);
 
   // --- Render ---
   function render() {
