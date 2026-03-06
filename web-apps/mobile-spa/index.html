@@ -643,6 +643,119 @@
     color: var(--text-secondary);
   }
 
+  /* Caption suggestion cards (ephemeral, after image generation) */
+  .gen-suggestions-loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .gen-suggestions-loading::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--separator);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: gen-spin 0.6s linear infinite;
+    flex-shrink: 0;
+  }
+
+  .gen-suggestions-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+    margin: 16px 0 8px;
+  }
+
+  .gen-suggestion-card {
+    background: var(--bg);
+    border-radius: var(--radius);
+    border: 1.5px dashed var(--separator);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: border-color 0.25s, background 0.25s, border-style 0.25s;
+  }
+
+  .gen-suggestion-card.saved {
+    background: var(--surface);
+    border: 1px solid var(--green);
+    border-style: solid;
+  }
+
+  .gen-suggestion-card-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .gen-suggestion-card-text {
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--text-primary);
+  }
+
+  .gen-suggestion-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .gen-suggestion-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-tertiary);
+    padding: 2px 6px;
+    background: rgba(0,0,0,0.04);
+    border-radius: 4px;
+  }
+
+  .gen-suggestion-keep-btn {
+    flex-shrink: 0;
+    align-self: center;
+    padding: 6px 14px;
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-appearance: none;
+    transition: background 0.15s, opacity 0.15s;
+  }
+
+  .gen-suggestion-keep-btn:active {
+    background: #E8D4C0;
+  }
+
+  .gen-suggestion-keep-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .gen-suggestion-saved-label {
+    flex-shrink: 0;
+    align-self: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
   /* Error display in results */
   .gen-result-error {
     padding: 14px;
@@ -1276,6 +1389,10 @@
           });
         }
         renderImageResult(data.image);
+
+        // Fire suggest-captions call (non-blocking — image is already shown)
+        fireSuggestCaptions(briefText, segmentHint, promptText);
+
       } else if (generateType === 'caption' && data && data.captions) {
         // Auto-assign each caption to active segment
         if (activeSegmentId) {
@@ -1334,6 +1451,132 @@
     el.className = 'gen-result-error';
     el.textContent = message;
     $genResults.appendChild(el);
+  }
+
+  // --- Caption Suggestions (after image generation) ---
+
+  async function fireSuggestCaptions(briefText, segmentHint, promptText) {
+    // Show loading indicator
+    const loadingEl = document.createElement('div');
+    loadingEl.className = 'gen-suggestions-loading';
+    loadingEl.textContent = 'Suggesting captions...';
+    $genResults.appendChild(loadingEl);
+
+    try {
+      const { data: suggestData, error: suggestError } = await supabaseClient.functions.invoke('generate', {
+        body: {
+          type: 'suggest-captions',
+          brief: briefText || undefined,
+          segment_hint: segmentHint,
+          image_prompt: promptText,
+        },
+      });
+
+      // Remove loading indicator
+      if (loadingEl.parentNode) loadingEl.remove();
+
+      if (suggestError) {
+        console.warn('suggest-captions error:', suggestError);
+        return;
+      }
+
+      if (suggestData && Array.isArray(suggestData.suggestions) && suggestData.suggestions.length > 0) {
+        renderSuggestions(suggestData.suggestions);
+      }
+    } catch (err) {
+      console.warn('suggest-captions failed:', err);
+      if (loadingEl.parentNode) loadingEl.remove();
+    }
+  }
+
+  function renderSuggestions(suggestions) {
+    const knownRoles = ['headline', 'subline', 'cta', 'tagline'];
+
+    // Section label
+    const label = document.createElement('div');
+    label.className = 'gen-suggestions-label';
+    label.textContent = 'Caption Suggestions';
+    $genResults.appendChild(label);
+
+    for (const sug of suggestions) {
+      const text = sug.text || '';
+      const role = sug.role || '';
+      if (!text.trim()) continue;
+
+      const card = document.createElement('div');
+      card.className = 'gen-suggestion-card';
+
+      const roleClass = knownRoles.includes(role) ? 'role-' + role : 'role-default';
+
+      let badgeHtml = '';
+      if (role) {
+        badgeHtml = '<span class="gen-result-role-badge ' + roleClass + '">' + escapeHtml(role) + '</span>';
+      }
+
+      card.innerHTML =
+        '<div class="gen-suggestion-card-body">'
+        + '<div class="gen-suggestion-card-text">' + escapeHtml(text) + '</div>'
+        + '<div class="gen-suggestion-card-meta">'
+        + badgeHtml
+        + '<span class="gen-suggestion-label">Suggestion</span>'
+        + '</div>'
+        + '</div>'
+        + '<button class="gen-suggestion-keep-btn">Keep</button>';
+
+      const keepBtn = card.querySelector('.gen-suggestion-keep-btn');
+      keepBtn.addEventListener('click', () => keepSuggestion(text, role, card));
+
+      $genResults.appendChild(card);
+    }
+  }
+
+  async function keepSuggestion(text, role, cardElement) {
+    const keepBtn = cardElement.querySelector('.gen-suggestion-keep-btn');
+    if (keepBtn) {
+      keepBtn.disabled = true;
+      keepBtn.textContent = 'Saving...';
+    }
+
+    try {
+      // Insert into caption table
+      const insertObj = { text };
+      if (role) insertObj.role = role;
+
+      const { data: cap, error } = await db().from('caption').insert(insertObj).select().single();
+      if (error) throw error;
+
+      // Auto-assign to active segment if one is selected
+      if (activeSegmentId && cap) {
+        await db().from('caption_segment').insert({
+          caption_id: cap.id,
+          segment_id: activeSegmentId,
+        });
+      }
+
+      // Transition card to saved state
+      cardElement.classList.add('saved');
+      if (keepBtn) keepBtn.remove();
+
+      // Remove "Suggestion" label
+      const sugLabel = cardElement.querySelector('.gen-suggestion-label');
+      if (sugLabel) sugLabel.remove();
+
+      // Add saved indicator
+      const savedLabel = document.createElement('span');
+      savedLabel.className = 'gen-suggestion-saved-label';
+      savedLabel.innerHTML = '&#10003; Saved';
+      cardElement.appendChild(savedLabel);
+
+      // Reload data so Library picks up the new caption
+      await loadData();
+
+    } catch (err) {
+      console.error('keepSuggestion failed:', err);
+      if (keepBtn) {
+        keepBtn.disabled = false;
+        keepBtn.textContent = 'Keep';
+      }
+    }
   }
 
   // Wire Generate button click
