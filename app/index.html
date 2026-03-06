@@ -243,6 +243,143 @@
     color: var(--red);
   }
 
+  /* --- Segments management panel --- */
+  .segment-manage-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 4px 0;
+  }
+
+  .segment-manage-card {
+    background: #fff;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    padding: 12px;
+  }
+
+  .segment-manage-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .segment-manage-header input[type="text"] {
+    flex: 1;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .segment-manage-header input[type="text"]:hover,
+  .segment-manage-header input[type="text"]:focus {
+    border-color: var(--light-gray);
+    background: var(--warm-white);
+  }
+
+  .segment-manage-header input[type="text"]:focus {
+    border-color: var(--amber);
+  }
+
+  .segment-manage-delete {
+    background: transparent;
+    border: none;
+    color: var(--warm-gray);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  .segment-manage-delete:hover {
+    color: var(--red);
+    background: rgba(196, 85, 58, 0.08);
+  }
+
+  .segment-manage-hint-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  .segment-manage-card textarea {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.4;
+    padding: 6px 8px;
+    border: 1px solid var(--light-gray);
+    border-radius: 4px;
+    background: #fff;
+    color: var(--charcoal);
+    resize: vertical;
+    min-height: 40px;
+    max-height: 120px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .segment-manage-card textarea:focus {
+    border-color: var(--amber);
+  }
+
+  .segment-manage-add {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .segment-manage-add input {
+    flex: 1;
+    font-family: var(--font-body);
+    font-size: 13px;
+    padding: 6px 10px;
+    border: 1px dashed var(--light-gray);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .segment-manage-add input:focus {
+    border-color: var(--amber);
+    border-style: solid;
+  }
+
+  .segment-manage-add input::placeholder {
+    color: var(--warm-gray);
+  }
+
+  /* --- Generate tab segment hint --- */
+  .generate-segment-hint {
+    margin-bottom: 12px;
+    padding: 8px 10px;
+    background: rgba(200, 149, 108, 0.1);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 13px;
+    color: var(--warm-gray);
+    line-height: 1.4;
+  }
+
+  .generate-segment-hint strong {
+    color: var(--charcoal);
+    font-weight: 600;
+  }
+
   .segment-chip {
     display: inline-flex;
     align-items: center;
@@ -1202,6 +1339,7 @@
         <div class="tab" data-tab="captions">Captions</div>
         <div class="tab" data-tab="bodycopy">Body Copy</div>
         <div class="tab" data-tab="ads">Ads</div>
+        <div class="tab" data-tab="segments">Segments</div>
         <div class="tab" data-tab="generate">Generate</div>
       </div>
 
@@ -1212,6 +1350,7 @@
         <div id="panel-captions" class="tab-panel"></div>
         <div id="panel-bodycopy" class="tab-panel"></div>
         <div id="panel-ads-tab" class="tab-panel"></div>
+        <div id="panel-segments" class="tab-panel"></div>
         <div id="panel-generate" class="tab-panel"></div>
       </div>
 
@@ -1279,6 +1418,7 @@
   const $panelBodycopy = document.getElementById('panel-bodycopy');
   const $panelGenerate = document.getElementById('panel-generate');
   const $panelAdsTab = document.getElementById('panel-ads-tab');
+  const $panelSegments = document.getElementById('panel-segments');
   const $captionStrip = document.getElementById('caption-strip');
   const $adsList = document.getElementById('ads-list');
   const $dropZoneImage = document.getElementById('drop-zone-image');
@@ -1479,6 +1619,8 @@
     renderBodyCopy();
     renderCaptionStrip();
     renderGenerate();
+    renderGenerateHint();
+    renderSegmentsPanel();
     renderBuilder();
     renderAds();
   }
@@ -1577,28 +1719,10 @@
 
     const menu = document.createElement('div');
     menu.className = 'segment-pill-menu';
-    const seg = STATE.segments.find(s => s.id === segmentId);
-    const hasHint = seg && seg.prompt_hint;
     menu.innerHTML = '<button data-action="rename">Rename</button>'
-      + '<button data-action="prompt-hint">' + (hasHint ? 'Edit' : 'Add') + ' prompt hint</button>'
       + '<button data-action="delete" class="danger">Delete</button>';
     pill.style.position = 'relative';
     pill.appendChild(menu);
-
-    menu.querySelector('[data-action="prompt-hint"]').addEventListener('click', async (e) => {
-      e.stopPropagation();
-      menu.remove();
-      const currentHint = seg ? seg.prompt_hint || '' : '';
-      const newHint = prompt('Prompt hint for image/caption generation:\n(e.g. "they often have laptop bags/backpacks with them")', currentHint);
-      if (newHint !== null) {
-        try {
-          await authFetch('/api/segments/' + segmentId, { method: 'PUT', body: { prompt_hint: newHint.trim() } });
-          await loadData();
-        } catch (err) {
-          console.error('Update prompt hint failed:', err);
-        }
-      }
-    });
 
     menu.querySelector('[data-action="rename"]').addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -1809,7 +1933,11 @@
         const roleSelect = document.getElementById('caption-role-select');
         const role = roleSelect ? roleSelect.value || undefined : undefined;
         try {
-          await authFetch('/api/captions', { method: 'POST', body: { text, role } });
+          const res = await authFetch('/api/captions', { method: 'POST', body: { text, role } });
+          const cap = await res.json();
+          if (activeSegment && activeSegment !== 'all' && activeSegment !== 'generic' && cap.id) {
+            await authFetch('/api/captions/' + cap.id + '/segments', { method: 'POST', body: { segment_id: activeSegment } }).catch(() => {});
+          }
           await loadData();
         } catch (err) {
           console.error('Add caption failed:', err);
@@ -1875,7 +2003,11 @@
         if (!text) return;
         const headline = headlineInput.value.trim() || null;
         try {
-          await authFetch('/api/body-copy', { method: 'POST', body: { text, headline } });
+          const res = await authFetch('/api/body-copy', { method: 'POST', body: { text, headline } });
+          const bc = await res.json();
+          if (activeSegment && activeSegment !== 'all' && activeSegment !== 'generic' && bc.id) {
+            await authFetch('/api/body-copy/' + bc.id + '/segments', { method: 'POST', body: { segment_id: activeSegment } }).catch(() => {});
+          }
           await loadData();
         } catch (err) {
           console.error('Add body copy failed:', err);
@@ -2073,6 +2205,137 @@
         updateGenBtn();
       }
     });
+  }
+
+  // --- Segments management panel ---
+  function renderSegmentsPanel() {
+    let html = '<div class="segment-manage-list">';
+    for (const seg of STATE.segments) {
+      html += '<div class="segment-manage-card" data-seg-id="' + seg.id + '">'
+        + '<div class="segment-manage-header">'
+        + '<input type="text" class="seg-name-input" value="' + escapeHtml(seg.name) + '" data-original="' + escapeHtml(seg.name) + '">'
+        + '<button class="segment-manage-delete" title="Delete segment">&times;</button>'
+        + '</div>'
+        + '<div class="segment-manage-hint-label">Prompt hint</div>'
+        + '<textarea class="seg-hint-input" placeholder="e.g. &quot;they often have laptop bags/backpacks with them&quot;">' + escapeHtml(seg.prompt_hint || '') + '</textarea>'
+        + '</div>';
+    }
+    html += '<div class="segment-manage-add">'
+      + '<input type="text" class="seg-add-input" placeholder="+ Add new segment...">'
+      + '</div>';
+    html += '</div>';
+    $panelSegments.innerHTML = html;
+
+    // Name editing — save on blur/enter
+    $panelSegments.querySelectorAll('.seg-name-input').forEach(input => {
+      const card = input.closest('.segment-manage-card');
+      const segId = card.dataset.segId;
+
+      async function saveName() {
+        const newName = input.value.trim();
+        const original = input.dataset.original;
+        if (!newName || newName === original) {
+          input.value = original;
+          return;
+        }
+        try {
+          await authFetch('/api/segments/' + segId, { method: 'PUT', body: { name: newName } });
+          input.dataset.original = newName;
+          await loadData();
+        } catch (err) {
+          console.error('Rename segment failed:', err);
+          input.value = original;
+        }
+      }
+      input.addEventListener('blur', saveName);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+        if (e.key === 'Escape') { input.value = input.dataset.original; input.blur(); }
+      });
+    });
+
+    // Hint editing — save on blur/enter
+    $panelSegments.querySelectorAll('.seg-hint-input').forEach(textarea => {
+      const card = textarea.closest('.segment-manage-card');
+      const segId = card.dataset.segId;
+      const seg = STATE.segments.find(s => s.id === segId);
+      let lastSaved = seg ? seg.prompt_hint || '' : '';
+
+      async function saveHint() {
+        const newHint = textarea.value.trim();
+        if (newHint === lastSaved) return;
+        try {
+          await authFetch('/api/segments/' + segId, { method: 'PUT', body: { prompt_hint: newHint } });
+          lastSaved = newHint;
+          await loadData();
+        } catch (err) {
+          console.error('Update prompt hint failed:', err);
+          textarea.value = lastSaved;
+        }
+      }
+      textarea.addEventListener('blur', saveHint);
+      textarea.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); textarea.blur(); }
+        if (e.key === 'Escape') { textarea.value = lastSaved; textarea.blur(); }
+      });
+    });
+
+    // Delete buttons
+    $panelSegments.querySelectorAll('.segment-manage-delete').forEach(btn => {
+      const card = btn.closest('.segment-manage-card');
+      const segId = card.dataset.segId;
+      const seg = STATE.segments.find(s => s.id === segId);
+      btn.addEventListener('click', async () => {
+        if (!confirm('Delete segment "' + (seg ? seg.name : '') + '"? Items won\'t be deleted, just unassigned.')) return;
+        try {
+          if (activeSegment === segId) activeSegment = 'all';
+          await authFetch('/api/segments/' + segId, { method: 'DELETE' });
+          await loadData();
+        } catch (err) {
+          console.error('Delete segment failed:', err);
+        }
+      });
+    });
+
+    // Add new segment
+    const addInput = $panelSegments.querySelector('.seg-add-input');
+    async function addSegment() {
+      const name = addInput.value.trim();
+      if (!name) return;
+      try {
+        await authFetch('/api/segments', { method: 'POST', body: { name } });
+        await loadData();
+      } catch (err) {
+        console.error('Create segment failed:', err);
+      }
+    }
+    addInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addSegment();
+      if (e.key === 'Escape') { addInput.value = ''; addInput.blur(); }
+    });
+  }
+
+  // --- Generate tab hint display ---
+  function renderGenerateHint() {
+    // Remove existing hint element if present
+    const existing = document.getElementById('generate-segment-hint');
+    if (existing) existing.remove();
+
+    // Only show if a real segment is active and has a hint
+    if (!activeSegment || activeSegment === 'all' || activeSegment === 'generic') return;
+    const seg = STATE.segments.find(s => s.id === activeSegment);
+    if (!seg || !seg.prompt_hint) return;
+
+    const hintEl = document.createElement('div');
+    hintEl.id = 'generate-segment-hint';
+    hintEl.className = 'generate-segment-hint';
+    hintEl.innerHTML = '<strong>Segment hint:</strong> ' + escapeHtml(seg.prompt_hint);
+
+    // Insert after the type toggle (before the prompt textarea)
+    const typeToggle = $panelGenerate.querySelector('.generate-type-toggle');
+    if (typeToggle) {
+      typeToggle.insertAdjacentElement('afterend', hintEl);
+    }
   }
 
   function switchToTab(tabName) {
