@@ -575,6 +575,109 @@
     margin-top: 20px;
   }
 
+  /* Result cards */
+  .gen-result-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 0.5px solid var(--separator);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .gen-result-card img {
+    width: 100%;
+    display: block;
+  }
+
+  .gen-result-caption-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--separator);
+    padding: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .gen-result-caption-text {
+    flex: 1;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--text-primary);
+  }
+
+  .gen-result-role-badge {
+    flex-shrink: 0;
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .gen-result-role-badge.role-headline {
+    background: #E0F2F1;
+    color: #00695C;
+  }
+
+  .gen-result-role-badge.role-subline {
+    background: #FFF3E0;
+    color: #E65100;
+  }
+
+  .gen-result-role-badge.role-cta {
+    background: var(--accent-light);
+    color: var(--accent-dark);
+  }
+
+  .gen-result-role-badge.role-tagline {
+    background: #ECEFF1;
+    color: #546E7A;
+  }
+
+  .gen-result-role-badge.role-default {
+    background: #F5F5F5;
+    color: var(--text-secondary);
+  }
+
+  /* Error display in results */
+  .gen-result-error {
+    padding: 14px;
+    background: #FFF5F5;
+    border-radius: var(--radius);
+    border: 1px solid #FFCDD2;
+    color: var(--red);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  /* Loading spinner on button */
+  .gen-submit.loading {
+    position: relative;
+    color: transparent;
+  }
+
+  .gen-submit.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2.5px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: gen-spin 0.6s linear infinite;
+  }
+
+  @keyframes gen-spin {
+    to { transform: rotate(360deg); }
+  }
+
   /* --- Bottom tab bar --- */
   .tab-bar {
     position: relative;
@@ -795,6 +898,7 @@
   const $genBriefStatus = document.getElementById('gen-brief-status');
   const $genPrompt = document.getElementById('gen-prompt');
   const $genSubmit = document.getElementById('gen-submit');
+  const $genResults = document.getElementById('generate-results');
 
   // --- Utility ---
   function show(el) { el.classList.remove('hidden'); }
@@ -995,6 +1099,8 @@
   }
 
   // --- Generate tab ---
+  let isGenerating = false;
+
   function setGenerateType(type) {
     // Save current prompt before switching
     const currentKey = 'mobile-generate-prompt-' + generateType;
@@ -1022,7 +1128,7 @@
   }
 
   function updateGenSubmitState() {
-    $genSubmit.disabled = !$genPrompt.value.trim();
+    $genSubmit.disabled = isGenerating || !$genPrompt.value.trim();
   }
 
   // Type toggle click handlers
@@ -1121,6 +1227,118 @@
       $genHint.classList.add('hidden');
     }
   }
+
+  // --- Generation handler ---
+  async function handleGenerate() {
+    if (isGenerating) return;
+    const promptText = $genPrompt.value.trim();
+    if (!promptText) return;
+
+    isGenerating = true;
+
+    // Loading state
+    const originalLabel = $genSubmit.textContent;
+    $genSubmit.textContent = 'Generating...';
+    $genSubmit.disabled = true;
+    $genSubmit.classList.add('loading');
+
+    // Clear previous results
+    $genResults.innerHTML = '';
+
+    // Build segment hint
+    let segmentHint = undefined;
+    if (activeSegmentId) {
+      const seg = STATE.segments.find(s => s.id === activeSegmentId);
+      if (seg && seg.prompt_hint) segmentHint = seg.prompt_hint;
+    }
+
+    // Get brief text (from textarea if loaded, else from localStorage)
+    const briefText = $genBriefTextarea.value || localStorage.getItem('mobile-generate-brief') || '';
+
+    try {
+      const { data, error } = await supabaseClient.functions.invoke('generate', {
+        body: {
+          type: generateType,
+          brief: briefText || undefined,
+          prompt: promptText,
+          segment_hint: segmentHint,
+        },
+      });
+
+      if (error) throw new Error(error.message || 'Edge Function error');
+      if (data && data.error) throw new Error(data.error + (data.detail ? ': ' + data.detail : ''));
+
+      if (generateType === 'image' && data && data.image) {
+        // Auto-assign to active segment
+        if (activeSegmentId) {
+          await db().from('base_image_segment').insert({
+            base_image_id: data.image.id,
+            segment_id: activeSegmentId,
+          });
+        }
+        renderImageResult(data.image);
+      } else if (generateType === 'caption' && data && data.captions) {
+        // Auto-assign each caption to active segment
+        if (activeSegmentId) {
+          for (const cap of data.captions) {
+            await db().from('caption_segment').insert({
+              caption_id: cap.id,
+              segment_id: activeSegmentId,
+            });
+          }
+        }
+        renderCaptionResults(data.captions);
+      } else {
+        throw new Error('Unexpected response from server');
+      }
+
+      // Reload data so Library tab picks up new items
+      await loadData();
+
+    } catch (err) {
+      renderGenerateError(err.message || 'Generation failed');
+    } finally {
+      isGenerating = false;
+      $genSubmit.classList.remove('loading');
+      $genSubmit.textContent = generateType === 'image' ? 'Generate Image' : 'Generate Captions';
+      updateGenSubmitState();
+    }
+  }
+
+  function renderImageResult(image) {
+    const imgUrl = storageBaseUrl + '/' + image.storage_path;
+    const card = document.createElement('div');
+    card.className = 'gen-result-card';
+    card.innerHTML = '<img src="' + escapeHtml(imgUrl) + '?t=' + Date.now() + '" alt="Generated image" />';
+    $genResults.appendChild(card);
+  }
+
+  function renderCaptionResults(captions) {
+    const knownRoles = ['headline', 'subline', 'cta', 'tagline'];
+    for (const cap of captions) {
+      const card = document.createElement('div');
+      card.className = 'gen-result-caption-card';
+
+      let badgeHtml = '';
+      if (cap.role) {
+        const roleClass = knownRoles.includes(cap.role) ? 'role-' + cap.role : 'role-default';
+        badgeHtml = '<span class="gen-result-role-badge ' + roleClass + '">' + escapeHtml(cap.role) + '</span>';
+      }
+
+      card.innerHTML = '<div class="gen-result-caption-text">' + escapeHtml(cap.text) + '</div>' + badgeHtml;
+      $genResults.appendChild(card);
+    }
+  }
+
+  function renderGenerateError(message) {
+    const el = document.createElement('div');
+    el.className = 'gen-result-error';
+    el.textContent = message;
+    $genResults.appendChild(el);
+  }
+
+  // Wire Generate button click
+  $genSubmit.addEventListener('click', handleGenerate);
 
   // --- Render ---
   function render() {
