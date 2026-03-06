@@ -1577,10 +1577,28 @@
 
     const menu = document.createElement('div');
     menu.className = 'segment-pill-menu';
+    const seg = STATE.segments.find(s => s.id === segmentId);
+    const hasHint = seg && seg.prompt_hint;
     menu.innerHTML = '<button data-action="rename">Rename</button>'
+      + '<button data-action="prompt-hint">' + (hasHint ? 'Edit' : 'Add') + ' prompt hint</button>'
       + '<button data-action="delete" class="danger">Delete</button>';
     pill.style.position = 'relative';
     pill.appendChild(menu);
+
+    menu.querySelector('[data-action="prompt-hint"]').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      menu.remove();
+      const currentHint = seg ? seg.prompt_hint || '' : '';
+      const newHint = prompt('Prompt hint for image/caption generation:\n(e.g. "they often have laptop bags/backpacks with them")', currentHint);
+      if (newHint !== null) {
+        try {
+          await authFetch('/api/segments/' + segmentId, { method: 'PUT', body: { prompt_hint: newHint.trim() } });
+          await loadData();
+        } catch (err) {
+          console.error('Update prompt hint failed:', err);
+        }
+      }
+    });
 
     menu.querySelector('[data-action="rename"]').addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -2009,10 +2027,17 @@
         : 'Generating captions...';
 
       try {
+        // Include segment prompt hint if a segment is active
+        let segmentHint = '';
+        if (activeSegment && activeSegment !== 'all' && activeSegment !== 'generic') {
+          const seg = STATE.segments.find(s => s.id === activeSegment);
+          if (seg && seg.prompt_hint) segmentHint = seg.prompt_hint;
+        }
         const body = {
           type: generateType,
           brief: $brief.value || '',
-          prompt
+          prompt,
+          segment_hint: segmentHint || undefined
         };
         const res = await authFetch('/api/generate', { method: 'POST', body });
         const data = await res.json();

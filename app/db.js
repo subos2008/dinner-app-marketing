@@ -115,11 +115,11 @@ async function createSegment(name, token) {
   return data;
 }
 
-async function updateSegment(id, name, token) {
+async function updateSegment(id, updates, token) {
   const client = clientForRequest(token);
   const { data, error } = await client
     .from('segment')
-    .update({ name })
+    .update(updates)
     .eq('id', id)
     .select()
     .single();

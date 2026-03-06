@@ -85,9 +85,11 @@ app.post('/api/segments', requireAuth, async (req, res) => {
 });
 
 app.put('/api/segments/:id', requireAuth, async (req, res) => {
-  const { name } = req.body;
-  if (!name) return res.status(400).json({ error: 'name is required' });
-  try { res.json(await db.updateSegment(req.params.id, name, req.token)); }
+  const updates = {};
+  if (req.body.name !== undefined) updates.name = req.body.name;
+  if (req.body.prompt_hint !== undefined) updates.prompt_hint = req.body.prompt_hint;
+  if (Object.keys(updates).length === 0) return res.status(400).json({ error: 'name or prompt_hint is required' });
+  try { res.json(await db.updateSegment(req.params.id, updates, req.token)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -365,7 +367,7 @@ app.get('/api/generation-prompts', requireAuth, async (req, res) => {
 // --- Generate (images & captions via Gemini API) ---
 
 app.post('/api/generate', requireAuth, async (req, res) => {
-  const { type, brief, prompt } = req.body;
+  const { type, brief, prompt, segment_hint } = req.body;
   if (!type || !prompt) {
     return res.status(400).json({ error: 'type and prompt are required' });
   }
@@ -381,6 +383,7 @@ app.post('/api/generate', requireAuth, async (req, res) => {
     if (type === 'image') {
       const geminiPrompt = [
         brief ? `Context — creative brief:\n${brief}\n\n---\n\n` : '',
+        segment_hint ? `Segment style hint: ${segment_hint}\n\n` : '',
         `Generate an ad image based on this request: ${prompt}\n\n`,
         'Make the image suitable for a social media ad (Instagram/Facebook). ',
         'Do NOT include any text, words, letters, captions, headlines, or watermarks in the image. The image should be purely visual with no text overlay — text will be added separately later.'
@@ -443,6 +446,7 @@ app.post('/api/generate', requireAuth, async (req, res) => {
       // type === 'caption'
       const geminiPrompt = [
         brief ? `Context — creative brief:\n${brief}\n\n---\n\n` : '',
+        segment_hint ? `Segment style hint: ${segment_hint}\n\n` : '',
         `Generate short ad caption text based on this request: ${prompt}\n\n`,
         'Output ONLY a JSON array of caption strings. Each caption should be short (suitable for overlaying on an image). ',
         'Generate 3-5 captions. Output raw JSON with no markdown fences, no explanation — just the array.'
