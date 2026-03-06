@@ -329,6 +329,252 @@
     opacity: 0.4;
   }
 
+  /* --- Generate tab --- */
+  .gen-type-toggle {
+    display: flex;
+    background: rgba(118, 118, 128, 0.12);
+    border-radius: 8px;
+    padding: 2px;
+    margin-bottom: 16px;
+  }
+
+  .gen-type-btn {
+    flex: 1;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 1;
+  }
+
+  .gen-type-btn.active {
+    background: var(--surface);
+    color: var(--text-primary);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+
+  .gen-type-btn:active:not(.active) {
+    background: rgba(118, 118, 128, 0.08);
+  }
+
+  /* Segment prompt hint */
+  .gen-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--accent-light);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--accent-dark);
+  }
+
+  .gen-hint-icon {
+    flex-shrink: 0;
+    font-size: 16px;
+    line-height: 1.3;
+    opacity: 0.8;
+  }
+
+  .gen-hint-text {
+    flex: 1;
+  }
+
+  .gen-hint.hidden {
+    display: none;
+  }
+
+  /* Creative brief section */
+  .gen-brief {
+    margin-bottom: 16px;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 0.5px solid var(--separator);
+    overflow: hidden;
+  }
+
+  .gen-brief-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  .gen-brief-header:active {
+    background: var(--bg);
+  }
+
+  .gen-brief-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .gen-brief-chevron {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    transition: transform 0.25s ease;
+    display: inline-block;
+  }
+
+  .gen-brief.expanded .gen-brief-chevron {
+    transform: rotate(180deg);
+  }
+
+  .gen-brief-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .gen-brief.expanded .gen-brief-body {
+    max-height: 400px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .gen-brief-body-inner {
+    padding: 0 14px 14px;
+  }
+
+  .gen-brief-textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 10px 12px;
+    border: 1px solid var(--separator);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    background: var(--bg);
+    resize: vertical;
+    -webkit-appearance: none;
+  }
+
+  .gen-brief-textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .gen-brief-save {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-appearance: none;
+    transition: background 0.15s;
+  }
+
+  .gen-brief-save:active {
+    background: #E8D4C0;
+  }
+
+  .gen-brief-save:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .gen-brief-status {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 6px;
+    min-height: 16px;
+  }
+
+  /* Prompt textarea */
+  .gen-prompt-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .gen-prompt {
+    width: 100%;
+    min-height: 100px;
+    padding: 14px;
+    border: 1px solid var(--separator);
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 16px; /* prevents iOS zoom */
+    line-height: 1.5;
+    color: var(--text-primary);
+    background: var(--surface);
+    resize: none;
+    -webkit-appearance: none;
+    transition: border-color 0.15s;
+  }
+
+  .gen-prompt:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .gen-prompt::placeholder {
+    color: var(--text-tertiary);
+  }
+
+  /* Generate button */
+  .gen-submit {
+    width: 100%;
+    padding: 15px;
+    margin-top: 16px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    -webkit-appearance: none;
+    transition: background 0.15s, opacity 0.15s;
+    letter-spacing: 0.01em;
+  }
+
+  .gen-submit:active {
+    background: var(--accent-dark);
+  }
+
+  .gen-submit:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .gen-submit:disabled:active {
+    background: var(--accent);
+  }
+
+  /* Results area */
+  #generate-results {
+    margin-top: 20px;
+  }
+
   /* --- Bottom tab bar --- */
   .tab-bar {
     position: relative;
@@ -428,11 +674,42 @@
   <!-- Tab content -->
   <div class="tab-content">
     <div id="tab-generate" class="tab-panel active">
-      <div class="tab-panel-empty">
-        <div class="tab-panel-empty-icon">&#9881;</div>
-        <div>Generate tab</div>
-        <div style="font-size:13px; color:var(--text-tertiary);">Coming soon</div>
+      <!-- Type toggle -->
+      <div class="gen-type-toggle">
+        <button class="gen-type-btn active" data-gen-type="image" id="gen-type-image">Image</button>
+        <button class="gen-type-btn" data-gen-type="caption" id="gen-type-caption">Caption</button>
       </div>
+
+      <!-- Segment prompt hint -->
+      <div class="gen-hint hidden" id="gen-hint">
+        <span class="gen-hint-icon">&#x1F4A1;</span>
+        <span class="gen-hint-text" id="gen-hint-text"></span>
+      </div>
+
+      <!-- Creative brief (collapsible) -->
+      <div class="gen-brief" id="gen-brief">
+        <div class="gen-brief-header" id="gen-brief-header">
+          <span class="gen-brief-title">Creative Brief</span>
+          <span class="gen-brief-chevron">&#9662;</span>
+        </div>
+        <div class="gen-brief-body">
+          <div class="gen-brief-body-inner">
+            <textarea class="gen-brief-textarea" id="gen-brief-textarea" placeholder="Loading creative brief..."></textarea>
+            <button class="gen-brief-save" id="gen-brief-save">Save Brief</button>
+            <div class="gen-brief-status" id="gen-brief-status"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prompt textarea -->
+      <label class="gen-prompt-label" id="gen-prompt-label" for="gen-prompt">Prompt</label>
+      <textarea class="gen-prompt" id="gen-prompt" placeholder="Describe the image you want..."></textarea>
+
+      <!-- Generate button -->
+      <button class="gen-submit" id="gen-submit" disabled>Generate Image</button>
+
+      <!-- Results area -->
+      <div id="generate-results"></div>
     </div>
     <div id="tab-library" class="tab-panel">
       <div class="tab-panel-empty">
@@ -485,6 +762,9 @@
   let STATE = { images: [], captions: [], ads: [], segments: [] };
   let activeSegmentId = localStorage.getItem('mobile-active-segment') || null;
   let activeTab = 'generate';
+  let generateType = 'image'; // 'image' | 'caption'
+  let briefLoaded = false;
+  let briefLoadedOnce = false;
 
   // --- Supabase helpers ---
   function db() { return supabaseClient.schema('marketing'); }
@@ -503,6 +783,20 @@
   const $segmentPickerLabel = document.getElementById('segment-picker-label');
   const $segmentDropdownOverlay = document.getElementById('segment-dropdown-overlay');
   const $segmentDropdown = document.getElementById('segment-dropdown');
+
+  // Generate tab DOM refs
+  const $genTypeImage = document.getElementById('gen-type-image');
+  const $genTypeCaption = document.getElementById('gen-type-caption');
+  const $genHint = document.getElementById('gen-hint');
+  const $genHintText = document.getElementById('gen-hint-text');
+  const $genBrief = document.getElementById('gen-brief');
+  const $genBriefHeader = document.getElementById('gen-brief-header');
+  const $genBriefTextarea = document.getElementById('gen-brief-textarea');
+  const $genBriefSave = document.getElementById('gen-brief-save');
+  const $genBriefStatus = document.getElementById('gen-brief-status');
+  const $genPrompt = document.getElementById('gen-prompt');
+  const $genPromptLabel = document.getElementById('gen-prompt-label');
+  const $genSubmit = document.getElementById('gen-submit');
 
   // --- Utility ---
   function show(el) { el.classList.remove('hidden'); }
@@ -702,10 +996,137 @@
       .subscribe();
   }
 
+  // --- Generate tab ---
+  function setGenerateType(type) {
+    // Save current prompt before switching
+    const currentKey = 'mobile-generate-prompt-' + generateType;
+    localStorage.setItem(currentKey, $genPrompt.value);
+
+    generateType = type;
+
+    // Update toggle buttons
+    $genTypeImage.classList.toggle('active', type === 'image');
+    $genTypeCaption.classList.toggle('active', type === 'caption');
+
+    // Update prompt placeholder + label
+    if (type === 'image') {
+      $genPrompt.placeholder = 'Describe the image you want...';
+      $genSubmit.textContent = 'Generate Image';
+    } else {
+      $genPrompt.placeholder = 'Describe the captions you want...';
+      $genSubmit.textContent = 'Generate Captions';
+    }
+
+    // Load saved prompt for this type
+    const newKey = 'mobile-generate-prompt-' + type;
+    $genPrompt.value = localStorage.getItem(newKey) || '';
+    updateGenSubmitState();
+  }
+
+  function updateGenSubmitState() {
+    $genSubmit.disabled = !$genPrompt.value.trim();
+  }
+
+  // Type toggle click handlers
+  $genTypeImage.addEventListener('click', () => setGenerateType('image'));
+  $genTypeCaption.addEventListener('click', () => setGenerateType('caption'));
+
+  // Prompt: save to localStorage on input, update button state
+  $genPrompt.addEventListener('input', () => {
+    const key = 'mobile-generate-prompt-' + generateType;
+    localStorage.setItem(key, $genPrompt.value);
+    updateGenSubmitState();
+  });
+
+  // Load saved prompt on init
+  $genPrompt.value = localStorage.getItem('mobile-generate-prompt-image') || '';
+  updateGenSubmitState();
+
+  // Creative brief: collapsible
+  $genBriefHeader.addEventListener('click', () => {
+    const isExpanding = !$genBrief.classList.contains('expanded');
+    $genBrief.classList.toggle('expanded');
+
+    // Lazy-load on first expand
+    if (isExpanding && !briefLoadedOnce) {
+      loadBrief();
+    }
+  });
+
+  async function loadBrief() {
+    briefLoadedOnce = true;
+
+    // Try localStorage cache first
+    const cached = localStorage.getItem('mobile-generate-brief');
+    if (cached) {
+      $genBriefTextarea.value = cached;
+    }
+
+    // Then fetch from Storage
+    try {
+      $genBriefTextarea.placeholder = 'Loading creative brief...';
+      const res = await fetch(storageBaseUrl + '/creative-brief.md');
+      if (res.ok) {
+        const text = await res.text();
+        $genBriefTextarea.value = text;
+        localStorage.setItem('mobile-generate-brief', text);
+        briefLoaded = true;
+      } else {
+        if (!cached) {
+          $genBriefTextarea.placeholder = 'Could not load brief. Type here to create one.';
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load brief:', err);
+      if (!cached) {
+        $genBriefTextarea.placeholder = 'Could not load brief. Type here to create one.';
+      }
+    }
+  }
+
+  // Save brief to Storage
+  $genBriefSave.addEventListener('click', async () => {
+    const text = $genBriefTextarea.value;
+    $genBriefSave.disabled = true;
+    $genBriefStatus.textContent = 'Saving...';
+
+    try {
+      const blob = new Blob([text], { type: 'text/markdown' });
+      const { error } = await supabaseClient.storage
+        .from('creative')
+        .upload('creative-brief.md', blob, { upsert: true });
+
+      if (error) throw error;
+
+      localStorage.setItem('mobile-generate-brief', text);
+      $genBriefStatus.textContent = 'Saved.';
+      setTimeout(() => { $genBriefStatus.textContent = ''; }, 2000);
+    } catch (err) {
+      console.error('Failed to save brief:', err);
+      $genBriefStatus.textContent = 'Save failed: ' + (err.message || 'Unknown error');
+    } finally {
+      $genBriefSave.disabled = false;
+    }
+  });
+
+  function renderGenerateTab() {
+    // Update segment prompt hint
+    if (activeSegmentId) {
+      const seg = STATE.segments.find(s => s.id === activeSegmentId);
+      if (seg && seg.prompt_hint) {
+        $genHintText.textContent = seg.prompt_hint;
+        $genHint.classList.remove('hidden');
+      } else {
+        $genHint.classList.add('hidden');
+      }
+    } else {
+      $genHint.classList.add('hidden');
+    }
+  }
+
   // --- Render ---
   function render() {
-    // Placeholder — future tasks will fill in tab content
-    // For now, update counts or other global UI elements here
+    renderGenerateTab();
   }
 
   // --- Boot sequence ---
