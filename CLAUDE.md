@@ -40,9 +40,13 @@ This repo is for:
 - The Supabase CLI is installed and the project is already linked
 
 ## Running the App
-- **Always start the server with `./app/start.sh`** — it sources `.env` and `.env.local` and exports all required env vars (Supabase, OTel, Gemini API key)
-- The script auto-kills any existing server on the same port before starting
-- Do NOT run `node app/server.js` directly — env vars will be missing
+- The app is a static SPA (`app/index.html`) — no server required
+- Serve locally with `npx serve app/` or any static file server
+- All data access goes directly to Supabase via the JS client (config is inlined in `index.html`)
+- Generation (images, captions, ad compositing) uses the `generate` Supabase Edge Function
+- Edge Function source: `supabase/functions/generate/index.ts` with shared modules in `supabase/functions/_shared/`
+- Deploy Edge Function: `supabase functions deploy generate`
+- Secrets: `GOOGLE_AI_API_KEY` set via `supabase secrets set` (SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY are auto-available)
 
 ## Ways of Working
 This repo is a thinking space. We explore ideas, refine them, and produce actionable marketing output. Not everything here ships — some of it is just us working through the problem.

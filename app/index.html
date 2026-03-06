@@ -1391,10 +1391,14 @@
 (function() {
   'use strict';
 
+  // --- Config (public/publishable values) ---
+  const SUPABASE_URL = 'https://pqrhphvbyjqhntqjzljc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_vJfmD1tuFO7X2tiKTmRe3Q_-Py5ObXh';
+
   // --- State ---
   let STATE = { images: [], captions: [], bodyCopy: [], ads: [], adSets: [], tags: [], segments: [] };
   let activeSegment = 'all'; // 'all', 'generic', or a segment UUID
-  let storageBaseUrl = '';
+  const storageBaseUrl = SUPABASE_URL + '/storage/v1/object/public/creative';
   let activeTab = 'images';
   let supabaseClient = null;
   let currentSession = null;
@@ -1402,6 +1406,10 @@
 
   // Ad builder state
   let builderState = { imageId: null, captionIds: [] };
+
+  // --- Supabase helpers ---
+  /** Marketing schema query builder */
+  function db() { return supabaseClient.schema('marketing'); }
 
   // --- DOM refs ---
   const $loading = document.getElementById('loading');
@@ -1444,41 +1452,11 @@
   function show(el) { el.classList.remove('hidden'); }
   function hide(el) { el.classList.add('hidden'); }
 
-  // --- Auth helpers ---
-  function getToken() {
-    if (currentSession && currentSession.access_token) return currentSession.access_token;
-    return null;
-  }
-
-  async function authFetch(url, opts = {}) {
-    const token = getToken();
-    if (!token) throw new Error('Not authenticated');
-    const headers = { ...opts.headers, 'Authorization': 'Bearer ' + token };
-    if (opts.body && typeof opts.body === 'object' && !(opts.body instanceof FormData)) {
-      headers['Content-Type'] = 'application/json';
-      opts.body = JSON.stringify(opts.body);
-    }
-    const res = await fetch(url, { ...opts, headers });
-    if (res.status === 401) {
-      // Session expired
-      handleSignout();
-      throw new Error('Session expired');
-    }
-    return res;
-  }
-
   // --- Boot sequence ---
   async function boot() {
     try {
-      // 1. Fetch config
-      const config = await fetch('/api/config').then(r => r.json());
-      storageBaseUrl = config.storageBaseUrl;
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-      // 2. Init Supabase
-      supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
-
-      // 3. Listen for auth changes (sign-in + token refresh) — must be registered
-      //    before getSession so we always catch TOKEN_REFRESHED events
       supabaseClient.auth.onAuthStateChange((event, session) => {
         if (session) {
           currentSession = session;
@@ -1492,7 +1470,6 @@
         }
       });
 
-      // 4. Check existing session
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (session) {
         currentSession = session;
@@ -1502,7 +1479,7 @@
       }
     } catch (err) {
       console.error('Boot failed:', err);
-      $loading.textContent = 'Failed to load. Check server is running.';
+      $loading.textContent = 'Failed to load.';
     }
   }
 
@@ -1525,7 +1502,7 @@
 
   async function init() {
     await loadData();
-    connectSSE();
+    connectRealtime();
     setupTabs();
   }
 
@@ -1566,40 +1543,79 @@
     showLogin();
   }
 
-  // --- Data loading ---
+  // --- Data loading (direct Supabase queries) ---
   async function loadData() {
     try {
-      const [images, captions, bodyCopy, ads, adSets, tags, segments] = await Promise.all([
-        authFetch('/api/images').then(r => r.json()),
-        authFetch('/api/captions').then(r => r.json()),
-        authFetch('/api/body-copy').then(r => r.json()),
-        authFetch('/api/ads').then(r => r.json()),
-        authFetch('/api/ad-sets').then(r => r.json()),
-        authFetch('/api/tags').then(r => r.json()),
-        authFetch('/api/segments').then(r => r.json()),
+      const [rawImages, rawCaptions, rawBc, rawAds, rawAdSets, rawTags, rawSegments] = await Promise.all([
+        db().from('base_image')
+          .select('*, base_image_tag(tag_id, tag:tag_id(id, name)), base_image_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
+          .order('created_at', { ascending: false }),
+        db().from('caption')
+          .select('*, caption_tag(tag_id, tag:tag_id(id, name)), caption_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
+          .order('created_at', { ascending: false }),
+        db().from('body_copy')
+          .select('*, body_copy_tag(tag_id, tag:tag_id(id, name)), body_copy_segment(segment_id, segment:segment_id(id, name))')
+          .order('created_at', { ascending: false }),
+        db().from('ad')
+          .select('*, base_image:base_image_id(*), body_copy:body_copy_id(*), ad_set:ad_set_id(id, name), ad_segment(segment_id, segment:segment_id(id, name)), ad_caption(caption_id, caption:caption_id(*))')
+          .order('created_at', { ascending: false }),
+        db().from('ad_set')
+          .select('*')
+          .order('created_at', { ascending: false }),
+        db().from('tag')
+          .select('*')
+          .order('name'),
+        db().from('segment')
+          .select('*')
+          .order('name'),
       ]);
-      STATE = { images, captions, bodyCopy, ads, adSets, tags, segments };
+
+      const images = (rawImages.data || []).map(row => {
+        const tags = (row.base_image_tag || []).map(jt => jt.tag).filter(Boolean);
+        const segments = (row.base_image_segment || []).map(js => js.segment).filter(Boolean);
+        const { base_image_tag, base_image_segment, ...rest } = row;
+        return { ...rest, tags, segments };
+      });
+      const captions = (rawCaptions.data || []).map(row => {
+        const tags = (row.caption_tag || []).map(jt => jt.tag).filter(Boolean);
+        const segments = (row.caption_segment || []).map(js => js.segment).filter(Boolean);
+        const { caption_tag, caption_segment, ...rest } = row;
+        return { ...rest, tags, segments };
+      });
+      const bodyCopy = (rawBc.data || []).map(row => {
+        const tags = (row.body_copy_tag || []).map(jt => jt.tag).filter(Boolean);
+        const segments = (row.body_copy_segment || []).map(js => js.segment).filter(Boolean);
+        const { body_copy_tag, body_copy_segment, ...rest } = row;
+        return { ...rest, tags, segments };
+      });
+      const ads = (rawAds.data || []).map(row => {
+        const segments = (row.ad_segment || []).map(js => js.segment).filter(Boolean);
+        const captions = (row.ad_caption || []).map(jc => jc.caption).filter(Boolean);
+        const { ad_segment, ad_caption, ...rest } = row;
+        return { ...rest, segments, captions };
+      });
+
+      STATE = {
+        images,
+        captions,
+        bodyCopy,
+        ads,
+        adSets: rawAdSets.data || [],
+        tags: rawTags.data || [],
+        segments: rawSegments.data || [],
+      };
       render();
     } catch (err) {
       console.error('loadData failed:', err);
     }
   }
 
-  // --- SSE ---
-  let sseRetryDelay = 1000;
-  function connectSSE() {
-    const token = getToken();
-    if (!token) return;
-    const es = new EventSource('/api/events?token=' + encodeURIComponent(token));
-    es.onmessage = async (e) => {
-      if (e.data === 'reload') await loadData();
-    };
-    es.onopen = () => { sseRetryDelay = 1000; };
-    es.onerror = () => {
-      es.close();
-      setTimeout(connectSSE, sseRetryDelay);
-      sseRetryDelay = Math.min(sseRetryDelay * 2, 30000);
-    };
+  // --- Realtime (replaces SSE) ---
+  function connectRealtime() {
+    supabaseClient
+      .channel('marketing-changes')
+      .on('postgres_changes', { event: '*', schema: 'marketing', table: 'ad' }, () => loadData())
+      .subscribe();
   }
 
   // --- Tabs ---
@@ -1671,10 +1687,10 @@
           const bodyCopyId = e.dataTransfer.getData('application/bodycopy-id');
           const adId = e.dataTransfer.getData('application/ad-id');
           try {
-            if (imageId) await authFetch('/api/images/' + imageId + '/segments', { method: 'POST', body: { segment_id: segmentId } });
-            if (captionId) await authFetch('/api/captions/' + captionId + '/segments', { method: 'POST', body: { segment_id: segmentId } });
-            if (bodyCopyId) await authFetch('/api/body-copy/' + bodyCopyId + '/segments', { method: 'POST', body: { segment_id: segmentId } });
-            if (adId) await authFetch('/api/ads/' + adId + '/segments', { method: 'POST', body: { segment_id: segmentId } });
+            if (imageId) await db().from('base_image_segment').insert({ base_image_id: imageId, segment_id: segmentId });
+            if (captionId) await db().from('caption_segment').insert({ caption_id: captionId, segment_id: segmentId });
+            if (bodyCopyId) await db().from('body_copy_segment').insert({ body_copy_id: bodyCopyId, segment_id: segmentId });
+            if (adId) await db().from('ad_segment').insert({ ad_id: adId, segment_id: segmentId });
             await loadData();
           } catch (err) {
             console.error('Assign segment failed:', err);
@@ -1696,7 +1712,7 @@
         const name = input.value.trim();
         if (name) {
           try {
-            await authFetch('/api/segments', { method: 'POST', body: { name } });
+            await db().from('segment').insert({ name });
             await loadData();
           } catch (err) {
             console.error('Create segment failed:', err);
@@ -1730,7 +1746,7 @@
       const newName = prompt('Rename segment:', segmentName);
       if (newName && newName.trim() && newName.trim() !== segmentName) {
         try {
-          await authFetch('/api/segments/' + segmentId, { method: 'PUT', body: { name: newName.trim() } });
+          await db().from('segment').update({ name: newName.trim() }).eq('id', segmentId);
           await loadData();
         } catch (err) {
           console.error('Rename segment failed:', err);
@@ -1744,7 +1760,7 @@
       if (confirm('Delete segment "' + segmentName + '"? Items won\'t be deleted, just unassigned.')) {
         try {
           if (activeSegment === segmentId) activeSegment = 'all';
-          await authFetch('/api/segments/' + segmentId, { method: 'DELETE' });
+          await db().from('segment').delete().eq('id', segmentId);
           await loadData();
         } catch (err) {
           console.error('Delete segment failed:', err);
@@ -1933,10 +1949,12 @@
         const roleSelect = document.getElementById('caption-role-select');
         const role = roleSelect ? roleSelect.value || undefined : undefined;
         try {
-          const res = await authFetch('/api/captions', { method: 'POST', body: { text, role } });
-          const cap = await res.json();
+          const insert = { text };
+          if (role) insert.role = role;
+          const { data: cap, error } = await db().from('caption').insert(insert).select().single();
+          if (error) throw error;
           if (activeSegment && activeSegment !== 'all' && activeSegment !== 'generic' && cap.id) {
-            await authFetch('/api/captions/' + cap.id + '/segments', { method: 'POST', body: { segment_id: activeSegment } }).catch(() => {});
+            await db().from('caption_segment').insert({ caption_id: cap.id, segment_id: activeSegment }).catch(() => {});
           }
           await loadData();
         } catch (err) {
@@ -2003,10 +2021,10 @@
         if (!text) return;
         const headline = headlineInput.value.trim() || null;
         try {
-          const res = await authFetch('/api/body-copy', { method: 'POST', body: { text, headline } });
-          const bc = await res.json();
+          const { data: bc, error } = await db().from('body_copy').insert({ text, headline }).select().single();
+          if (error) throw error;
           if (activeSegment && activeSegment !== 'all' && activeSegment !== 'generic' && bc.id) {
-            await authFetch('/api/body-copy/' + bc.id + '/segments', { method: 'POST', body: { segment_id: activeSegment } }).catch(() => {});
+            await db().from('body_copy_segment').insert({ body_copy_id: bc.id, segment_id: activeSegment }).catch(() => {});
           }
           await loadData();
         } catch (err) {
@@ -2101,15 +2119,17 @@
     const $genBtn = document.getElementById('generate-btn');
     const $genStatus = document.getElementById('generate-status');
 
-    // Load brief from server if not in localStorage
+    // Load brief from Storage if not in localStorage
     if (!briefFromStorage && !generateBriefLoaded) {
       generateBriefLoaded = true;
-      authFetch('/api/creative-brief').then(r => r.json()).then(data => {
-        if (data.text && !$brief.value) {
-          $brief.value = data.text;
-          localStorage.setItem('generate-brief', data.text);
-        }
-      }).catch(() => {});
+      fetch(storageBaseUrl + '/creative-brief.md')
+        .then(r => r.ok ? r.text() : Promise.reject())
+        .then(text => {
+          if (text && !$brief.value) {
+            $brief.value = text;
+            localStorage.setItem('generate-brief', text);
+          }
+        }).catch(() => {});
     }
 
     // Save brief to localStorage on edit
@@ -2171,11 +2191,14 @@
           prompt,
           segment_hint: segmentHint || undefined
         };
-        const res = await authFetch('/api/generate', { method: 'POST', body });
-        const data = await res.json();
+        const { data, error } = await supabaseClient.functions.invoke('generate', { body });
 
-        if (!res.ok) {
-          $genStatus.textContent = 'Error: ' + (data.error || 'Generation failed');
+        if (error) {
+          $genStatus.textContent = 'Error: ' + (error.message || 'Generation failed');
+          return;
+        }
+        if (data && data.error) {
+          $genStatus.textContent = 'Error: ' + data.error;
           return;
         }
 
@@ -2184,11 +2207,11 @@
         // Auto-assign active segment to generated items
         if (activeSegment && activeSegment !== 'all' && activeSegment !== 'generic') {
           if (data.image) {
-            await authFetch('/api/images/' + data.image.id + '/segments', { method: 'POST', body: { segment_id: activeSegment } }).catch(() => {});
+            await db().from('base_image_segment').insert({ base_image_id: data.image.id, segment_id: activeSegment }).catch(() => {});
           }
           if (data.captions) {
             for (const cap of data.captions) {
-              await authFetch('/api/captions/' + cap.id + '/segments', { method: 'POST', body: { segment_id: activeSegment } }).catch(() => {});
+              await db().from('caption_segment').insert({ caption_id: cap.id, segment_id: activeSegment }).catch(() => {});
             }
           }
         }
@@ -2239,7 +2262,7 @@
           return;
         }
         try {
-          await authFetch('/api/segments/' + segId, { method: 'PUT', body: { name: newName } });
+          await db().from('segment').update({ name: newName }).eq('id', segId);
           input.dataset.original = newName;
           await loadData();
         } catch (err) {
@@ -2265,7 +2288,7 @@
         const newHint = textarea.value.trim();
         if (newHint === lastSaved) return;
         try {
-          await authFetch('/api/segments/' + segId, { method: 'PUT', body: { prompt_hint: newHint } });
+          await db().from('segment').update({ prompt_hint: newHint }).eq('id', segId);
           lastSaved = newHint;
           await loadData();
         } catch (err) {
@@ -2289,7 +2312,7 @@
         if (!confirm('Delete segment "' + (seg ? seg.name : '') + '"? Items won\'t be deleted, just unassigned.')) return;
         try {
           if (activeSegment === segId) activeSegment = 'all';
-          await authFetch('/api/segments/' + segId, { method: 'DELETE' });
+          await db().from('segment').delete().eq('id', segId);
           await loadData();
         } catch (err) {
           console.error('Delete segment failed:', err);
@@ -2303,7 +2326,7 @@
       const name = addInput.value.trim();
       if (!name) return;
       try {
-        await authFetch('/api/segments', { method: 'POST', body: { name } });
+        await db().from('segment').insert({ name });
         await loadData();
       } catch (err) {
         console.error('Create segment failed:', err);
@@ -2511,10 +2534,13 @@
   window.__deleteImage = async function(id) {
     if (!confirm('Delete this image?')) return;
     try {
-      const res = await authFetch('/api/images/' + id, { method: 'DELETE' });
-      if (!res.ok) {
-        const data = await res.json();
-        alert(data.error || 'Failed to delete image');
+      const { error } = await db().from('base_image').delete().eq('id', id);
+      if (error) {
+        if (error.code === '23503') {
+          alert('Cannot delete image — it is used by one or more ads. Delete those ads first.');
+        } else {
+          alert(error.message || 'Failed to delete image');
+        }
         return;
       }
       await loadData();
@@ -2526,7 +2552,7 @@
   window.__deleteCaption = async function(id) {
     if (!confirm('Delete this caption?')) return;
     try {
-      await authFetch('/api/captions/' + id, { method: 'DELETE' });
+      await db().from('caption').delete().eq('id', id);
       await loadData();
     } catch (err) {
       console.error('Delete caption failed:', err);
@@ -2536,7 +2562,7 @@
   window.__deleteBodyCopy = async function(id) {
     if (!confirm('Delete this body copy?')) return;
     try {
-      await authFetch('/api/body-copy/' + id, { method: 'DELETE' });
+      await db().from('body_copy').delete().eq('id', id);
       await loadData();
     } catch (err) {
       console.error('Delete body copy failed:', err);
@@ -2546,7 +2572,7 @@
   window.__deleteAd = async function(id) {
     if (!confirm('Delete this ad?')) return;
     try {
-      await authFetch('/api/ads/' + id, { method: 'DELETE' });
+      await db().from('ad').delete().eq('id', id);
       await loadData();
     } catch (err) {
       console.error('Delete ad failed:', err);
@@ -2555,7 +2581,7 @@
 
   window.__updateAdStatus = async function(id, status) {
     try {
-      await authFetch('/api/ads/' + id, { method: 'PUT', body: { desired_status: status } });
+      await db().from('ad').update({ desired_status: status }).eq('id', id);
       await loadData();
     } catch (err) {
       console.error('Update ad status failed:', err);
@@ -2568,7 +2594,7 @@
     const current = textarea.value;
     if (current === original) return;
     try {
-      await authFetch('/api/ads/' + id, { method: 'PUT', body: { feedback: current } });
+      await db().from('ad').update({ feedback: current }).eq('id', id);
       textarea.dataset.original = current;
     } catch (err) {
       console.error('Save feedback failed:', err);
@@ -2579,9 +2605,12 @@
     btn.disabled = true;
     btn.textContent = 'Generating...';
     try {
-      const res = await authFetch('/api/ads/' + id + '/generate', { method: 'POST' });
-      const data = await res.json();
-      if (!res.ok) {
+      const { data, error } = await supabaseClient.functions.invoke('generate', {
+        body: { type: 'composite', adId: id }
+      });
+      if (error) {
+        alert('Generation failed: ' + error.message);
+      } else if (data && data.error) {
         alert((data.error || 'Generation failed') + (data.detail ? '\n\n' + data.detail : ''));
       }
     } catch (err) {
@@ -2594,28 +2623,28 @@
 
   window.__removeImageSegment = async function(imageId, segmentId) {
     try {
-      await authFetch('/api/images/' + imageId + '/segments/' + segmentId, { method: 'DELETE' });
+      await db().from('base_image_segment').delete().eq('base_image_id', imageId).eq('segment_id', segmentId);
       await loadData();
     } catch (err) { console.error('Remove image segment failed:', err); }
   };
 
   window.__removeCaptionSegment = async function(captionId, segmentId) {
     try {
-      await authFetch('/api/captions/' + captionId + '/segments/' + segmentId, { method: 'DELETE' });
+      await db().from('caption_segment').delete().eq('caption_id', captionId).eq('segment_id', segmentId);
       await loadData();
     } catch (err) { console.error('Remove caption segment failed:', err); }
   };
 
   window.__removeBodyCopySegment = async function(bodyId, segmentId) {
     try {
-      await authFetch('/api/body-copy/' + bodyId + '/segments/' + segmentId, { method: 'DELETE' });
+      await db().from('body_copy_segment').delete().eq('body_copy_id', bodyId).eq('segment_id', segmentId);
       await loadData();
     } catch (err) { console.error('Remove body copy segment failed:', err); }
   };
 
   window.__removeAdSegment = async function(adId, segmentId) {
     try {
-      await authFetch('/api/ads/' + adId + '/segments/' + segmentId, { method: 'DELETE' });
+      await db().from('ad_segment').delete().eq('ad_id', adId).eq('segment_id', segmentId);
       await loadData();
     } catch (err) { console.error('Remove ad segment failed:', err); }
   };
@@ -2724,16 +2753,20 @@
   $builderCreateBtn.addEventListener('click', async () => {
     if (!builderState.imageId) return;
 
-    const body = { base_image_id: builderState.imageId };
-    if (builderState.captionIds.length > 0) body.caption_ids = builderState.captionIds;
+    const adInsert = { base_image_id: builderState.imageId };
     const bcId = $builderBodycopy.value;
-    if (bcId) body.body_copy_id = bcId;
+    if (bcId) adInsert.body_copy_id = bcId;
 
     $builderCreateBtn.disabled = true;
     $builderCreateBtn.textContent = 'Creating...';
 
     try {
-      await authFetch('/api/ads', { method: 'POST', body });
+      const { data: ad, error } = await db().from('ad').insert(adInsert).select().single();
+      if (error) throw error;
+      // Assign captions via M2M join table
+      for (const captionId of builderState.captionIds) {
+        await db().from('ad_caption').insert({ ad_id: ad.id, caption_id: captionId });
+      }
       await loadData();
     } catch (err) {
       console.error('Create ad failed:', err);
