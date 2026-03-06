@@ -41,6 +41,7 @@ This repo is for:
 
 ## Running the App
 - **Always start the server with `./app/start.sh`** — it sources `.env` and `.env.local` and exports all required env vars (Supabase, OTel, Gemini API key)
+- The script auto-kills any existing server on the same port before starting
 - Do NOT run `node app/server.js` directly — env vars will be missing
 
 ## Ways of Working
