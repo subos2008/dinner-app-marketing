@@ -763,7 +763,6 @@
   let activeSegmentId = localStorage.getItem('mobile-active-segment') || null;
   let activeTab = 'generate';
   let generateType = 'image'; // 'image' | 'caption'
-  let briefLoaded = false;
   let briefLoadedOnce = false;
 
   // --- Supabase helpers ---
@@ -795,7 +794,6 @@
   const $genBriefSave = document.getElementById('gen-brief-save');
   const $genBriefStatus = document.getElementById('gen-brief-status');
   const $genPrompt = document.getElementById('gen-prompt');
-  const $genPromptLabel = document.getElementById('gen-prompt-label');
   const $genSubmit = document.getElementById('gen-submit');
 
   // --- Utility ---
@@ -1070,7 +1068,7 @@
         const text = await res.text();
         $genBriefTextarea.value = text;
         localStorage.setItem('mobile-generate-brief', text);
-        briefLoaded = true;
+
       } else {
         if (!cached) {
           $genBriefTextarea.placeholder = 'Could not load brief. Type here to create one.';
