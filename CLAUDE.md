@@ -39,5 +39,9 @@ This repo is for:
 - **Always apply migrations with `supabase db push --linked`** — do NOT use `psql` directly
 - The Supabase CLI is installed and the project is already linked
 
+## Running the App
+- **Always start the server with `./app/start.sh`** — it sources `.env` and `.env.local` and exports all required env vars (Supabase, OTel, Gemini API key)
+- Do NOT run `node app/server.js` directly — env vars will be missing
+
 ## Ways of Working
 This repo is a thinking space. We explore ideas, refine them, and produce actionable marketing output. Not everything here ships — some of it is just us working through the problem.
