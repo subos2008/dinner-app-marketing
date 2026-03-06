@@ -2,25 +2,31 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Come Join Us</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
 
   :root {
-    --cream: #FAF6F1;
-    --warm-white: #FFF9F3;
-    --amber: #C8956C;
-    --amber-light: #E8C9A8;
-    --amber-dark: #8B5E3C;
-    --charcoal: #2C2826;
-    --warm-gray: #6B6461;
-    --light-gray: #E8E2DC;
-    --red: #C4553A;
-    --green: #5B8A5E;
+    --bg: #F8F8FA;
+    --surface: #FFFFFF;
+    --text-primary: #1C1C1E;
+    --text-secondary: #8E8E93;
+    --text-tertiary: #AEAEB2;
+    --separator: #E5E5EA;
+    --accent: #C8956C;
+    --accent-light: #F3E8DD;
+    --accent-dark: #8B5E3C;
+    --red: #FF3B30;
+    --green: #34C759;
+    --tab-bar-bg: rgba(249, 249, 249, 0.94);
+    --top-bar-bg: rgba(249, 249, 249, 0.94);
     --radius: 10px;
+    --radius-lg: 14px;
     --font-display: 'Playfair Display', Georgia, serif;
-    --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+    --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,22 +34,24 @@
 
   body {
     font-family: var(--font-body);
-    background: var(--cream);
-    color: var(--charcoal);
-    line-height: 1.6;
-    font-weight: 300;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.4;
+    font-weight: 400;
     min-height: 100dvh;
     -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
   }
 
   /* --- Loading --- */
   .loading-overlay {
     position: fixed; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    background: var(--cream);
+    background: var(--bg);
     font-family: var(--font-display);
     font-size: 18px;
-    color: var(--warm-gray);
+    color: var(--text-secondary);
     z-index: 200;
   }
 
@@ -53,7 +61,7 @@
   .login-screen {
     position: fixed; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    background: var(--cream);
+    background: var(--bg);
     padding: 24px;
     z-index: 150;
   }
@@ -69,10 +77,11 @@
     font-size: 28px;
     font-weight: 400;
     margin-bottom: 8px;
+    color: var(--text-primary);
   }
 
   .login-card p {
-    color: var(--warm-gray);
+    color: var(--text-secondary);
     margin-bottom: 28px;
     font-size: 15px;
   }
@@ -80,24 +89,25 @@
   .login-card input {
     width: 100%;
     padding: 14px 16px;
-    border: 1px solid var(--light-gray);
+    border: 1px solid var(--separator);
     border-radius: var(--radius);
     font-family: var(--font-body);
     font-size: 16px; /* prevents iOS zoom */
     margin-bottom: 12px;
-    background: white;
+    background: var(--surface);
+    color: var(--text-primary);
     -webkit-appearance: none;
   }
 
   .login-card input:focus {
     outline: none;
-    border-color: var(--amber);
+    border-color: var(--accent);
   }
 
   .login-card button {
     width: 100%;
     padding: 14px;
-    background: var(--amber);
+    background: var(--accent);
     color: white;
     border: none;
     border-radius: var(--radius);
@@ -108,7 +118,7 @@
     -webkit-appearance: none;
   }
 
-  .login-card button:hover { background: var(--amber-dark); }
+  .login-card button:active { background: var(--accent-dark); }
   .login-card button:disabled { opacity: 0.5; cursor: default; }
 
   .login-message {
@@ -121,58 +131,255 @@
 
   /* --- App shell --- */
   #app {
-    min-height: 100dvh;
+    position: fixed;
+    inset: 0;
     display: flex;
     flex-direction: column;
+    background: var(--bg);
   }
 
+  /* --- Top bar --- */
   .topbar {
-    position: sticky;
-    top: 0;
+    position: relative;
     z-index: 100;
-    background: var(--charcoal);
-    color: var(--cream);
-    padding: 0 16px;
-    height: 48px;
+    background: var(--top-bar-bg);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    padding-top: var(--safe-top);
+    border-bottom: 0.5px solid var(--separator);
+    flex-shrink: 0;
+  }
+
+  .topbar-inner {
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 13px;
+    padding: 0 16px;
   }
 
   .topbar-brand {
     font-family: var(--font-display);
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 400;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
   }
 
-  .topbar-right {
+  .topbar-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: var(--safe-top);
+    height: 44px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 12px;
-    opacity: 0.6;
   }
 
-  .topbar-right button {
-    background: transparent;
-    border: 1px solid rgba(250,246,241,0.25);
-    color: var(--cream);
-    padding: 4px 10px;
-    border-radius: var(--radius);
-    font-size: 12px;
+  .segment-picker {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    border: none;
+    border-radius: 20px;
+    padding: 5px 12px 5px 10px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent-dark);
     cursor: pointer;
     -webkit-appearance: none;
+    transition: background 0.15s;
   }
 
-  .main-content {
-    flex: 1;
-    padding: 16px;
+  .segment-picker:active {
+    background: #E8D4C0;
+  }
+
+  .segment-picker-icon {
+    width: 16px;
+    height: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--warm-gray);
+  }
+
+  .segment-picker-chevron {
+    margin-left: 2px;
+    opacity: 0.6;
+    font-size: 10px;
+  }
+
+  .signout-btn {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    font-family: var(--font-body);
+    font-size: 13px;
+    cursor: pointer;
+    padding: 4px 0;
+    -webkit-appearance: none;
+  }
+
+  .signout-btn:active {
+    color: var(--text-secondary);
+  }
+
+  /* --- Segment dropdown --- */
+  .segment-dropdown-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    background: rgba(0,0,0,0.25);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
+  .segment-dropdown-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .segment-dropdown {
+    position: absolute;
+    top: calc(var(--safe-top) + 50px);
+    left: 50%;
+    transform: translateX(-50%) scale(0.95);
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.15), 0 0 0 0.5px rgba(0,0,0,0.05);
+    min-width: 200px;
+    max-width: 260px;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .segment-dropdown-overlay.visible .segment-dropdown {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+
+  .segment-dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
     font-size: 15px;
+    color: var(--text-primary);
+    cursor: pointer;
+    border-bottom: 0.5px solid var(--separator);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .segment-dropdown-item:last-child {
+    border-bottom: none;
+  }
+
+  .segment-dropdown-item:active {
+    background: var(--bg);
+  }
+
+  .segment-dropdown-item.active {
+    color: var(--accent-dark);
+    font-weight: 600;
+  }
+
+  .segment-dropdown-check {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  /* --- Tab content area --- */
+  .tab-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+
+  .tab-panel {
+    display: none;
+    padding: 16px;
+    min-height: 100%;
+  }
+
+  .tab-panel.active {
+    display: block;
+  }
+
+  .tab-panel-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    color: var(--text-tertiary);
+    font-size: 15px;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .tab-panel-empty-icon {
+    font-size: 40px;
+    margin-bottom: 4px;
+    opacity: 0.4;
+  }
+
+  /* --- Bottom tab bar --- */
+  .tab-bar {
+    position: relative;
+    z-index: 100;
+    background: var(--tab-bar-bg);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-top: 0.5px solid var(--separator);
+    flex-shrink: 0;
+    padding-bottom: var(--safe-bottom);
+  }
+
+  .tab-bar-inner {
+    display: flex;
+    height: 50px;
+  }
+
+  .tab-bar-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    color: var(--text-tertiary);
+    transition: color 0.15s;
+  }
+
+  .tab-bar-btn.active {
+    color: var(--accent);
+  }
+
+  .tab-bar-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .tab-bar-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
   }
 </style>
 </head>
@@ -196,15 +403,67 @@
 
 <!-- App shell -->
 <div id="app" class="hidden">
+  <!-- Top bar -->
   <div class="topbar">
-    <div class="topbar-brand">Come Join Us</div>
-    <div class="topbar-right">
-      <span id="user-email"></span>
-      <button id="signout-btn">Sign out</button>
+    <div class="topbar-inner">
+      <div class="topbar-brand">Come Join Us</div>
+      <div class="topbar-center">
+        <button class="segment-picker" id="segment-picker-btn">
+          <span class="segment-picker-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+          </span>
+          <span id="segment-picker-label">All</span>
+          <span class="segment-picker-chevron">&#9662;</span>
+        </button>
+      </div>
+      <button class="signout-btn" id="signout-btn">Sign out</button>
     </div>
   </div>
-  <div class="main-content">
-    <p>Mobile app shell — ready for UI</p>
+
+  <!-- Segment dropdown -->
+  <div class="segment-dropdown-overlay" id="segment-dropdown-overlay">
+    <div class="segment-dropdown" id="segment-dropdown"></div>
+  </div>
+
+  <!-- Tab content -->
+  <div class="tab-content">
+    <div id="tab-generate" class="tab-panel active">
+      <div class="tab-panel-empty">
+        <div class="tab-panel-empty-icon">&#9881;</div>
+        <div>Generate tab</div>
+        <div style="font-size:13px; color:var(--text-tertiary);">Coming soon</div>
+      </div>
+    </div>
+    <div id="tab-library" class="tab-panel">
+      <div class="tab-panel-empty">
+        <div class="tab-panel-empty-icon">&#128444;</div>
+        <div>Library</div>
+        <div style="font-size:13px; color:var(--text-tertiary);">Coming soon</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom tab bar -->
+  <div class="tab-bar">
+    <div class="tab-bar-inner">
+      <button class="tab-bar-btn active" data-tab="generate" id="tab-btn-generate">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+        <span class="tab-bar-label">Generate</span>
+      </button>
+      <button class="tab-bar-btn" data-tab="library" id="tab-btn-library">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        <span class="tab-bar-label">Library</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -223,6 +482,10 @@
   let currentSession = null;
   let appInitialised = false;
 
+  let STATE = { images: [], captions: [], ads: [], segments: [] };
+  let activeSegmentId = localStorage.getItem('mobile-active-segment') || null;
+  let activeTab = 'generate';
+
   // --- Supabase helpers ---
   function db() { return supabaseClient.schema('marketing'); }
 
@@ -234,12 +497,207 @@
   const $loginBtn = document.getElementById('login-btn');
   const $loginMessage = document.getElementById('login-message');
   const $app = document.getElementById('app');
-  const $userEmail = document.getElementById('user-email');
   const $signoutBtn = document.getElementById('signout-btn');
+
+  const $segmentPickerBtn = document.getElementById('segment-picker-btn');
+  const $segmentPickerLabel = document.getElementById('segment-picker-label');
+  const $segmentDropdownOverlay = document.getElementById('segment-dropdown-overlay');
+  const $segmentDropdown = document.getElementById('segment-dropdown');
 
   // --- Utility ---
   function show(el) { el.classList.remove('hidden'); }
   function hide(el) { el.classList.add('hidden'); }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // --- Segment picker ---
+  function openSegmentDropdown() {
+    renderSegmentDropdown();
+    $segmentDropdownOverlay.classList.add('visible');
+  }
+
+  function closeSegmentDropdown() {
+    $segmentDropdownOverlay.classList.remove('visible');
+  }
+
+  function renderSegmentDropdown() {
+    let html = '';
+    const isAll = !activeSegmentId;
+    html += '<div class="segment-dropdown-item' + (isAll ? ' active' : '') + '" data-segment-id="">'
+      + 'All'
+      + (isAll ? '<span class="segment-dropdown-check">&#10003;</span>' : '')
+      + '</div>';
+
+    for (const seg of STATE.segments) {
+      const isActive = activeSegmentId === seg.id;
+      html += '<div class="segment-dropdown-item' + (isActive ? ' active' : '') + '" data-segment-id="' + seg.id + '">'
+        + escapeHtml(seg.name)
+        + (isActive ? '<span class="segment-dropdown-check">&#10003;</span>' : '')
+        + '</div>';
+    }
+
+    $segmentDropdown.innerHTML = html;
+
+    // Attach click handlers
+    $segmentDropdown.querySelectorAll('.segment-dropdown-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const id = item.dataset.segmentId || null;
+        setActiveSegment(id);
+        closeSegmentDropdown();
+      });
+    });
+  }
+
+  function setActiveSegment(id) {
+    activeSegmentId = id;
+    if (id) {
+      localStorage.setItem('mobile-active-segment', id);
+    } else {
+      localStorage.removeItem('mobile-active-segment');
+    }
+    updateSegmentPickerLabel();
+    render();
+  }
+
+  function updateSegmentPickerLabel() {
+    if (!activeSegmentId) {
+      $segmentPickerLabel.textContent = 'All';
+      return;
+    }
+    const seg = STATE.segments.find(s => s.id === activeSegmentId);
+    $segmentPickerLabel.textContent = seg ? seg.name : 'All';
+    // If the stored segment no longer exists, reset to All
+    if (!seg) {
+      activeSegmentId = null;
+      localStorage.removeItem('mobile-active-segment');
+      $segmentPickerLabel.textContent = 'All';
+    }
+  }
+
+  $segmentPickerBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if ($segmentDropdownOverlay.classList.contains('visible')) {
+      closeSegmentDropdown();
+    } else {
+      openSegmentDropdown();
+    }
+  });
+
+  $segmentDropdownOverlay.addEventListener('click', (e) => {
+    if (e.target === $segmentDropdownOverlay) {
+      closeSegmentDropdown();
+    }
+  });
+
+  // --- Tab switching ---
+  function switchTab(tabName) {
+    activeTab = tabName;
+    // Update tab buttons
+    document.querySelectorAll('.tab-bar-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tabName);
+    });
+    // Update tab panels
+    document.querySelectorAll('.tab-panel').forEach(panel => {
+      panel.classList.toggle('active', panel.id === 'tab-' + tabName);
+    });
+  }
+
+  document.querySelectorAll('.tab-bar-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchTab(btn.dataset.tab);
+    });
+  });
+
+  // --- Filter helpers ---
+  function filteredImages() {
+    if (!activeSegmentId) return STATE.images;
+    return STATE.images.filter(img =>
+      (img.segments || []).some(s => s.id === activeSegmentId)
+    );
+  }
+
+  function filteredCaptions() {
+    if (!activeSegmentId) return STATE.captions;
+    return STATE.captions.filter(cap =>
+      (cap.segments || []).some(s => s.id === activeSegmentId)
+    );
+  }
+
+  function filteredAds() {
+    if (!activeSegmentId) return STATE.ads;
+    return STATE.ads.filter(ad =>
+      (ad.segments || []).some(s => s.id === activeSegmentId)
+    );
+  }
+
+  // --- Data loading ---
+  async function loadData() {
+    try {
+      const [rawImages, rawCaptions, rawAds, rawSegments] = await Promise.all([
+        db().from('base_image')
+          .select('*, base_image_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
+          .order('created_at', { ascending: false }),
+        db().from('caption')
+          .select('*, caption_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
+          .order('created_at', { ascending: false }),
+        db().from('ad')
+          .select('*, base_image:base_image_id(*), ad_segment(segment_id, segment:segment_id(id, name)), ad_caption(caption_id, caption:caption_id(*))')
+          .order('created_at', { ascending: false }),
+        db().from('segment').select('*').order('name'),
+      ]);
+
+      // Flatten M2M joins
+      const images = (rawImages.data || []).map(row => {
+        const segments = (row.base_image_segment || []).map(js => js.segment).filter(Boolean);
+        const { base_image_segment, ...rest } = row;
+        return { ...rest, segments };
+      });
+
+      const captions = (rawCaptions.data || []).map(row => {
+        const segments = (row.caption_segment || []).map(js => js.segment).filter(Boolean);
+        const { caption_segment, ...rest } = row;
+        return { ...rest, segments };
+      });
+
+      const ads = (rawAds.data || []).map(row => {
+        const segments = (row.ad_segment || []).map(js => js.segment).filter(Boolean);
+        const adCaptions = (row.ad_caption || []).map(jc => jc.caption).filter(Boolean);
+        const { ad_segment, ad_caption, ...rest } = row;
+        return { ...rest, segments, captions: adCaptions };
+      });
+
+      STATE = {
+        images,
+        captions,
+        ads,
+        segments: rawSegments.data || [],
+      };
+
+      updateSegmentPickerLabel();
+      render();
+    } catch (err) {
+      console.error('loadData failed:', err);
+    }
+  }
+
+  // --- Realtime ---
+  function connectRealtime() {
+    supabaseClient
+      .channel('marketing-changes')
+      .on('postgres_changes', { event: '*', schema: 'marketing', table: 'ad' }, () => loadData())
+      .subscribe();
+  }
+
+  // --- Render ---
+  function render() {
+    // Placeholder — future tasks will fill in tab content
+    // For now, update counts or other global UI elements here
+  }
 
   // --- Boot sequence ---
   async function boot() {
@@ -278,7 +736,6 @@
     hide($loading);
     hide($loginScreen);
     show($app);
-    $userEmail.textContent = user.email || '';
     if (!appInitialised) {
       appInitialised = true;
       init();
@@ -286,7 +743,8 @@
   }
 
   async function init() {
-    // App initialisation — add data loading here
+    await loadData();
+    connectRealtime();
   }
 
   // --- Login form ---
@@ -322,6 +780,7 @@
     try { await supabaseClient.auth.signOut(); } catch (e) {}
     currentSession = null;
     appInitialised = false;
+    STATE = { images: [], captions: [], ads: [], segments: [] };
     showLogin();
   }
 
