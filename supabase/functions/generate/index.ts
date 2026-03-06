@@ -28,8 +28,10 @@ Deno.serve(async (req) => {
       return await handleCaptionGeneration(body, userClient)
     } else if (type === 'composite') {
       return await handleComposite(body, userClient)
+    } else if (type === 'suggest-captions') {
+      return await handleSuggestCaptions(body)
     } else {
-      return jsonResponse({ error: 'type must be "image", "caption", or "composite"' }, 400)
+      return jsonResponse({ error: 'type must be "image", "caption", "composite", or "suggest-captions"' }, 400)
     }
   } catch (err) {
     console.error('generate function error:', err)
@@ -255,6 +257,46 @@ async function handleComposite(body: any, userClient: any) {
     composited_image_path: compositedStoragePath,
     composited_image_url: `${supabaseUrl}/storage/v1/object/public/creative/${compositedStoragePath}`,
   })
+}
+
+// --- Suggest Captions (no DB writes) ---
+
+// deno-lint-ignore no-explicit-any
+async function handleSuggestCaptions(body: any) {
+  const { brief, segment_hint, image_prompt } = body
+  if (!image_prompt) return jsonResponse({ error: 'image_prompt is required' }, 400)
+
+  const geminiPrompt = [
+    brief ? `Context — creative brief:\n${brief}\n\n---\n\n` : '',
+    segment_hint ? `Segment style hint: ${segment_hint}\n\n` : '',
+    `An ad image was generated with this prompt: "${image_prompt}"\n\n`,
+    `Generate 4 short ad caption suggestions for this image. Return a JSON array of objects with "text" and "role" fields.\n`,
+    `Roles should be: 1 headline (punchy, 5-8 words), 1 subline (supporting, 8-12 words), 1 cta (call to action, 3-5 words), 1 tagline (brand voice, 5-8 words).\n`,
+    `Keep copy warm, honest, direct. Not corporate. Not cringey.\n`,
+    `Return ONLY the JSON array, no other text.`,
+  ].join('')
+
+  console.log('[generate] Suggest captions: calling Gemini...')
+  let geminiOutput: string
+  try {
+    geminiOutput = await generateCaptions(geminiPrompt)
+  } catch (err) {
+    console.error('[generate] Gemini suggest-captions failed:', (err as Error).message)
+    return jsonResponse({ error: 'Failed to generate caption suggestions' }, 500)
+  }
+
+  let suggestions
+  try {
+    const jsonMatch = geminiOutput.match(/\[[\s\S]*\]/)
+    if (!jsonMatch) throw new Error('No JSON array found')
+    suggestions = JSON.parse(jsonMatch[0])
+  } catch {
+    console.error(`[generate] Failed to parse suggest-captions output:\n${geminiOutput.slice(0, 500)}`)
+    return jsonResponse({ error: 'Failed to parse caption suggestions' }, 500)
+  }
+
+  console.log(`[generate] Suggest captions: returned ${suggestions.length} suggestions`)
+  return jsonResponse({ suggestions })
 }
 
 // --- Helpers ---
