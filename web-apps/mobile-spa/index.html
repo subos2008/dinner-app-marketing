@@ -410,7 +410,7 @@
       <div class="topbar-center">
         <button class="segment-picker" id="segment-picker-btn">
           <span class="segment-picker-icon">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
           </span>
           <span id="segment-picker-label">All</span>
           <span class="segment-picker-chevron">&#9662;</span>
@@ -650,6 +650,15 @@
           .order('created_at', { ascending: false }),
         db().from('segment').select('*').order('name'),
       ]);
+
+      // Log any query errors
+      const queryErrors = [
+        rawImages.error && `images: ${rawImages.error.message}`,
+        rawCaptions.error && `captions: ${rawCaptions.error.message}`,
+        rawAds.error && `ads: ${rawAds.error.message}`,
+        rawSegments.error && `segments: ${rawSegments.error.message}`,
+      ].filter(Boolean);
+      if (queryErrors.length) console.error('loadData query errors:', queryErrors);
 
       // Flatten M2M joins
       const images = (rawImages.data || []).map(row => {
