@@ -1911,9 +1911,9 @@
     const briefText = $genBriefTextarea.value || localStorage.getItem('mobile-generate-brief') || '';
 
     try {
-      const { data, error } = await supabaseClient.functions.invoke('generate', {
+      const fnName = generateType === 'image' ? 'generate-image' : 'generate-captions';
+      const { data, error } = await supabaseClient.functions.invoke(fnName, {
         body: {
-          type: generateType,
           brief: briefText || undefined,
           prompt: promptText,
           segment_hint: segmentHint,
@@ -2006,9 +2006,9 @@
     $genResults.appendChild(loadingEl);
 
     try {
-      const { data: suggestData, error: suggestError } = await supabaseClient.functions.invoke('generate', {
+      const { data: suggestData, error: suggestError } = await supabaseClient.functions.invoke('generate-captions', {
         body: {
-          type: 'suggest-captions',
+          mode: 'suggest',
           brief: briefText || undefined,
           segment_hint: segmentHint,
           image_prompt: promptText,
@@ -2324,8 +2324,8 @@
     $adViewerRegenBtn.classList.add('loading');
 
     try {
-      const { error } = await supabaseClient.functions.invoke('generate', {
-        body: { type: 'composite', adId: ad.id }
+      const { error } = await supabaseClient.functions.invoke('composite', {
+        body: { adId: ad.id }
       });
       if (error) throw error;
 
@@ -2690,8 +2690,8 @@
         }
 
         // Trigger compositing
-        await supabaseClient.functions.invoke('generate', {
-          body: { type: 'composite', adId: ad.id }
+        await supabaseClient.functions.invoke('composite', {
+          body: { adId: ad.id }
         });
       }
 

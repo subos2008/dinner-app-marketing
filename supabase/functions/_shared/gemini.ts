@@ -1,5 +1,13 @@
-import { GoogleGenAI } from 'npm:@google/genai'
-import { encode as base64Encode } from 'https://deno.land/std@0.224.0/encoding/base64.ts'
+import { GoogleGenAI } from 'https://esm.sh/@google/genai'
+
+/** Encode Uint8Array to base64 string */
+function base64Encode(data: Uint8Array): string {
+  let binary = ''
+  for (let i = 0; i < data.length; i++) {
+    binary += String.fromCharCode(data[i])
+  }
+  return btoa(binary)
+}
 
 const MODEL = 'gemini-2.5-flash-image'
 

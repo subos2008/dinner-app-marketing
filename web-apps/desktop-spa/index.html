@@ -2185,13 +2185,13 @@
           const seg = STATE.segments.find(s => s.id === activeSegment);
           if (seg && seg.prompt_hint) segmentHint = seg.prompt_hint;
         }
+        const fnName = generateType === 'image' ? 'generate-image' : 'generate-captions';
         const body = {
-          type: generateType,
           brief: $brief.value || '',
           prompt,
           segment_hint: segmentHint || undefined
         };
-        const { data, error } = await supabaseClient.functions.invoke('generate', { body });
+        const { data, error } = await supabaseClient.functions.invoke(fnName, { body });
 
         if (error) {
           $genStatus.textContent = 'Error: ' + (error.message || 'Generation failed');
@@ -2605,8 +2605,8 @@
     btn.disabled = true;
     btn.textContent = 'Generating...';
     try {
-      const { data, error } = await supabaseClient.functions.invoke('generate', {
-        body: { type: 'composite', adId: id }
+      const { data, error } = await supabaseClient.functions.invoke('composite', {
+        body: { adId: id }
       });
       if (error) {
         alert('Generation failed: ' + error.message);
