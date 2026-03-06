@@ -2377,8 +2377,9 @@
     const captions = ad.captions || [];
     const bodyCopy = ad.body_copy;
     const hasComposited = !!ad.composited_image_path;
+    const cacheBust = ad.updated_at ? '?t=' + new Date(ad.updated_at).getTime() : '';
     const imageSrc = hasComposited
-      ? storageBaseUrl + '/' + ad.composited_image_path
+      ? storageBaseUrl + '/' + ad.composited_image_path + cacheBust
       : (baseImage ? storageBaseUrl + '/' + baseImage.storage_path : '');
 
     let html = '<div class="ad-card" data-ad-id="' + ad.id + '">';
@@ -2446,9 +2447,8 @@
       + '</div>';
 
     html += '<div class="ad-card-actions">';
-    if (!hasComposited) {
-      html += '<button class="btn-generate" onclick="window.__generateAd(\'' + ad.id + '\', this)">Generate</button>';
-    }
+    html += '<button class="btn-generate" onclick="window.__generateAd(\'' + ad.id + '\', this)">'
+      + (hasComposited ? 'Re-generate' : 'Generate') + '</button>';
     html += '</div>';
 
     html += '<button class="btn-delete" onclick="window.__deleteAd(\'' + ad.id + '\')" title="Delete ad">&times;</button>';
@@ -2582,7 +2582,7 @@
       const res = await authFetch('/api/ads/' + id + '/generate', { method: 'POST' });
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error || 'Generation failed');
+        alert((data.error || 'Generation failed') + (data.detail ? '\n\n' + data.detail : ''));
       }
     } catch (err) {
       alert('Generation failed: ' + err.message);

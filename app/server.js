@@ -553,7 +553,8 @@ app.post('/api/ads/:id/generate', requireAuth, async (req, res) => {
       return `- OVERLAY TEXT: "${cap.text}"`;
     }).join('\n');
 
-    const prompt = `Add the following text overlays to this image:\n${overlayLines}\nKeep the image composition intact. Use white text with subtle shadows for readability.`;
+    const feedbackNote = ad.feedback ? `\nAdditional creative direction: ${ad.feedback}` : '';
+    const prompt = `Add the following text overlays to this image:\n${overlayLines}\nKeep the image composition intact. Use white text with subtle shadows for readability.${feedbackNote}`;
 
     // 5. Call Gemini to edit the image
     console.log(`[generate] Ad ${adId}: calling Gemini for compositing...`);
