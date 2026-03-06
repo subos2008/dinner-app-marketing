@@ -39,10 +39,11 @@ This repo is for:
 - **Always apply migrations with `supabase db push --linked`** — do NOT use `psql` directly
 - The Supabase CLI is installed and the project is already linked
 
-## Running the App
-- The app is a static SPA (`app/index.html`) — no server required
-- Serve locally with `npx serve app/` or any static file server
-- All data access goes directly to Supabase via the JS client (config is inlined in `index.html`)
+## Running the Apps
+- SPAs live under `web-apps/` — each is a standalone static SPA with its own `start.sh`
+- **Desktop ad manager:** `cd web-apps/desktop-spa && npx serve .`
+- **Mobile app:** `cd web-apps/mobile-spa && npx serve .`
+- All data access goes directly to Supabase via the JS client (config is inlined in each `index.html`)
 - Generation (images, captions, ad compositing) uses the `generate` Supabase Edge Function
 - Edge Function source: `supabase/functions/generate/index.ts` with shared modules in `supabase/functions/_shared/`
 - Deploy Edge Function: `supabase functions deploy generate`

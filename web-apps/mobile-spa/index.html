@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Come Join Us</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap');
+
+  :root {
+    --cream: #FAF6F1;
+    --warm-white: #FFF9F3;
+    --amber: #C8956C;
+    --amber-light: #E8C9A8;
+    --amber-dark: #8B5E3C;
+    --charcoal: #2C2826;
+    --warm-gray: #6B6461;
+    --light-gray: #E8E2DC;
+    --red: #C4553A;
+    --green: #5B8A5E;
+    --radius: 10px;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--cream);
+    color: var(--charcoal);
+    line-height: 1.6;
+    font-weight: 300;
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* --- Loading --- */
+  .loading-overlay {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--cream);
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--warm-gray);
+    z-index: 200;
+  }
+
+  .hidden { display: none !important; }
+
+  /* --- Login --- */
+  .login-screen {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--cream);
+    padding: 24px;
+    z-index: 150;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+  }
+
+  .login-card h1 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+
+  .login-card p {
+    color: var(--warm-gray);
+    margin-bottom: 28px;
+    font-size: 15px;
+  }
+
+  .login-card input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 16px; /* prevents iOS zoom */
+    margin-bottom: 12px;
+    background: white;
+    -webkit-appearance: none;
+  }
+
+  .login-card input:focus {
+    outline: none;
+    border-color: var(--amber);
+  }
+
+  .login-card button {
+    width: 100%;
+    padding: 14px;
+    background: var(--amber);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+
+  .login-card button:hover { background: var(--amber-dark); }
+  .login-card button:disabled { opacity: 0.5; cursor: default; }
+
+  .login-message {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--green);
+  }
+
+  .login-message.error { color: var(--red); }
+
+  /* --- App shell --- */
+  #app {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--charcoal);
+    color: var(--cream);
+    padding: 0 16px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+  }
+
+  .topbar-brand {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    opacity: 0.6;
+  }
+
+  .topbar-right button {
+    background: transparent;
+    border: 1px solid rgba(250,246,241,0.25);
+    color: var(--cream);
+    padding: 4px 10px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--warm-gray);
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Loading state -->
+<div id="loading" class="loading-overlay">Loading...</div>
+
+<!-- Login screen -->
+<div id="login-screen" class="login-screen hidden">
+  <div class="login-card">
+    <h1>Come Join Us</h1>
+    <p>Sign in to continue</p>
+    <form id="login-form">
+      <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email" />
+      <button type="submit" id="login-btn">Send magic link</button>
+    </form>
+    <div id="login-message" class="login-message hidden"></div>
+  </div>
+</div>
+
+<!-- App shell -->
+<div id="app" class="hidden">
+  <div class="topbar">
+    <div class="topbar-brand">Come Join Us</div>
+    <div class="topbar-right">
+      <span id="user-email"></span>
+      <button id="signout-btn">Sign out</button>
+    </div>
+  </div>
+  <div class="main-content">
+    <p>Mobile app shell — ready for UI</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // --- Config (public/publishable values) ---
+  const SUPABASE_URL = 'https://pqrhphvbyjqhntqjzljc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_vJfmD1tuFO7X2tiKTmRe3Q_-Py5ObXh';
+
+  // --- State ---
+  const storageBaseUrl = SUPABASE_URL + '/storage/v1/object/public/creative';
+  let supabaseClient = null;
+  let currentSession = null;
+  let appInitialised = false;
+
+  // --- Supabase helpers ---
+  function db() { return supabaseClient.schema('marketing'); }
+
+  // --- DOM refs ---
+  const $loading = document.getElementById('loading');
+  const $loginScreen = document.getElementById('login-screen');
+  const $loginForm = document.getElementById('login-form');
+  const $loginEmail = document.getElementById('login-email');
+  const $loginBtn = document.getElementById('login-btn');
+  const $loginMessage = document.getElementById('login-message');
+  const $app = document.getElementById('app');
+  const $userEmail = document.getElementById('user-email');
+  const $signoutBtn = document.getElementById('signout-btn');
+
+  // --- Utility ---
+  function show(el) { el.classList.remove('hidden'); }
+  function hide(el) { el.classList.add('hidden'); }
+
+  // --- Boot sequence ---
+  async function boot() {
+    try {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (session) currentSession = session;
+        if (event === 'SIGNED_IN' && session) showApp(session.user);
+        if (event === 'SIGNED_OUT') {
+          currentSession = null;
+          showLogin();
+        }
+      });
+
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+        currentSession = session;
+        showApp(session.user);
+      } else {
+        showLogin();
+      }
+    } catch (err) {
+      console.error('Boot failed:', err);
+      $loading.textContent = 'Failed to load.';
+    }
+  }
+
+  function showLogin() {
+    hide($loading);
+    hide($app);
+    show($loginScreen);
+  }
+
+  function showApp(user) {
+    hide($loading);
+    hide($loginScreen);
+    show($app);
+    $userEmail.textContent = user.email || '';
+    if (!appInitialised) {
+      appInitialised = true;
+      init();
+    }
+  }
+
+  async function init() {
+    // App initialisation — add data loading here
+  }
+
+  // --- Login form ---
+  $loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = $loginEmail.value.trim();
+    if (!email) return;
+
+    $loginBtn.disabled = true;
+    $loginBtn.textContent = 'Sending...';
+    hide($loginMessage);
+
+    try {
+      const { error } = await supabaseClient.auth.signInWithOtp({ email });
+      if (error) throw error;
+      $loginMessage.textContent = 'Check your email for the magic link.';
+      $loginMessage.className = 'login-message';
+      show($loginMessage);
+    } catch (err) {
+      $loginMessage.textContent = err.message || 'Failed to send magic link.';
+      $loginMessage.className = 'login-message error';
+      show($loginMessage);
+    } finally {
+      $loginBtn.disabled = false;
+      $loginBtn.textContent = 'Send magic link';
+    }
+  });
+
+  // --- Sign out ---
+  $signoutBtn.addEventListener('click', handleSignout);
+
+  async function handleSignout() {
+    try { await supabaseClient.auth.signOut(); } catch (e) {}
+    currentSession = null;
+    appInitialised = false;
+    showLogin();
+  }
+
+  // --- Start ---
+  boot();
+})();
+</script>
+</body>
+</html>
