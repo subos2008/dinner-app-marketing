@@ -1695,6 +1695,28 @@
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+
+  /* Caption editor */
+  .caption-editor { position: fixed; inset: 0; z-index: 220; background: var(--bg); display: flex; flex-direction: column; }
+  .caption-editor.hidden { display: none !important; }
+  .caption-editor-header { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  .caption-editor-close { background: none; border: none; font-size: 28px; padding: 0 12px 0 0; cursor: pointer; color: var(--text-primary); line-height: 1; }
+  .caption-editor-title { font-size: 17px; font-weight: 600; flex: 1; }
+  .caption-editor-badge { font-size: 11px; padding: 3px 8px; border-radius: 10px; background: #FFF3CD; color: #856404; }
+  .caption-editor-body { flex: 1; overflow-y: auto; padding: 20px 16px; display: flex; flex-direction: column; gap: 20px; }
+  .caption-editor-section label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .caption-editor-textarea { width: 100%; min-height: 100px; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; font-family: inherit; resize: vertical; background: var(--card-bg); color: var(--text-primary); box-sizing: border-box; }
+  .caption-editor-roles { display: flex; gap: 8px; flex-wrap: wrap; }
+  .caption-editor-role-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--card-bg); font-size: 14px; cursor: pointer; color: var(--text-primary); text-transform: capitalize; }
+  .caption-editor-role-btn.active { background: var(--accent-dark); color: #fff; border-color: var(--accent-dark); }
+  .caption-editor-segments { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .caption-editor-seg-chip { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 14px; background: rgba(0,0,0,0.06); font-size: 13px; }
+  .caption-editor-seg-chip button { background: none; border: none; font-size: 14px; cursor: pointer; padding: 0 0 0 2px; color: var(--text-secondary); }
+  .caption-editor-seg-add { padding: 6px 12px; border-radius: 14px; border: 1px dashed var(--border); background: none; font-size: 13px; cursor: pointer; color: var(--text-secondary); }
+  .caption-editor-locked { font-size: 13px; color: #856404; padding: 10px 14px; background: #FFF3CD; border-radius: 10px; line-height: 1.5; }
+  .caption-editor-footer { padding: 16px; padding-bottom: calc(16px + var(--safe-bottom)); border-top: 1px solid var(--border); flex-shrink: 0; }
+  .caption-editor-save { width: 100%; padding: 14px; border-radius: 12px; border: none; background: var(--accent); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; }
+  .caption-editor-save:disabled { opacity: 0.5; cursor: default; }
 </style>
 </head>
 <body>
@@ -1901,6 +1923,19 @@
   <div id="builder-toast" class="builder-toast">Ad created</div>
 </div>
 
+<!-- Caption editor -->
+<div id="caption-editor" class="caption-editor hidden">
+  <div class="caption-editor-header">
+    <button class="caption-editor-close" id="caption-editor-close">&times;</button>
+    <div class="caption-editor-title">Edit Caption</div>
+    <span class="caption-editor-badge hidden" id="caption-editor-locked-badge">In Use</span>
+  </div>
+  <div class="caption-editor-body" id="caption-editor-body"></div>
+  <div class="caption-editor-footer">
+    <button class="caption-editor-save" id="caption-editor-save">Save</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 (function() {
@@ -1926,6 +1961,8 @@
   let selectedImageIds = new Set();
   let briefLoadedOnce = false;
   let briefLoadedContent = null;
+  let editorCaptionId = null;
+  let editorIsLocked = false;
 
   // --- Supabase helpers ---
   function db() { return supabaseClient.schema('marketing'); }
@@ -2015,6 +2052,12 @@
   const $builderActionBtn = document.getElementById('builder-action-btn');
   const $builderRegenBtn = document.getElementById('builder-regen-btn');
   const $builderToast = document.getElementById('builder-toast');
+  // Caption editor
+  const $captionEditor = document.getElementById('caption-editor');
+  const $captionEditorBody = document.getElementById('caption-editor-body');
+  const $captionEditorSave = document.getElementById('caption-editor-save');
+  const $captionEditorClose = document.getElementById('caption-editor-close');
+  const $captionEditorLockedBadge = document.getElementById('caption-editor-locked-badge');
 
   // Select action bar handlers
   document.getElementById('select-cancel-btn').addEventListener('click', () => exitSelectMode());
@@ -3388,9 +3431,141 @@
 
   // --- Caption Editor ---
 
-  function openCaptionEditor(captionId) {
-    console.log('Open editor for caption:', captionId);
+  async function openCaptionEditor(captionId) {
+    const caption = STATE.captions.find(c => c.id === captionId);
+    if (!caption) return;
+
+    editorCaptionId = captionId;
+
+    // Check if caption is used by any ad
+    const { data: usages } = await db().from('ad_caption').select('ad_id').eq('caption_id', captionId).limit(1);
+    editorIsLocked = (usages && usages.length > 0);
+
+    renderCaptionEditorBody(caption);
+
+    if (editorIsLocked) {
+      show($captionEditorLockedBadge);
+      $captionEditorSave.textContent = 'Duplicate & Save';
+    } else {
+      hide($captionEditorLockedBadge);
+      $captionEditorSave.textContent = 'Save';
+    }
+
+    show($captionEditor);
+    document.body.style.overflow = 'hidden';
   }
+
+  function closeCaptionEditor() {
+    hide($captionEditor);
+    document.body.style.overflow = '';
+    editorCaptionId = null;
+    editorIsLocked = false;
+  }
+
+  function renderCaptionEditorBody(caption) {
+    const roles = ['headline', 'subline', 'cta', 'tagline'];
+    const currentRole = caption.role || 'headline';
+
+    let segsHtml = '';
+    for (const seg of (caption.segments || [])) {
+      segsHtml += '<span class="caption-editor-seg-chip">'
+        + escapeHtml(seg.name)
+        + ' <button data-segment-id="' + seg.id + '" title="Remove">&times;</button>'
+        + '</span>';
+    }
+    segsHtml += '<button class="caption-editor-seg-add" id="caption-editor-add-seg">+ Segment</button>';
+
+    let html = '';
+
+    if (editorIsLocked) {
+      html += '<div class="caption-editor-locked">This caption is used by an ad. Editing will create a duplicate.</div>';
+    }
+
+    html += '<div class="caption-editor-section"><label>Text</label>'
+      + '<textarea class="caption-editor-textarea" id="caption-editor-text">' + escapeHtml(caption.text) + '</textarea>'
+      + '</div>';
+
+    html += '<div class="caption-editor-section"><label>Role</label><div class="caption-editor-roles">';
+    for (const r of roles) {
+      const activeClass = r === currentRole ? ' active' : '';
+      html += '<button class="caption-editor-role-btn' + activeClass + '" data-role="' + r + '">' + r + '</button>';
+    }
+    html += '</div></div>';
+
+    html += '<div class="caption-editor-section"><label>Segments</label>'
+      + '<div class="caption-editor-segments">' + segsHtml + '</div>'
+      + '</div>';
+
+    $captionEditorBody.innerHTML = html;
+
+    // Role picker
+    $captionEditorBody.querySelectorAll('.caption-editor-role-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $captionEditorBody.querySelectorAll('.caption-editor-role-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // Remove segment chip
+    $captionEditorBody.querySelectorAll('.caption-editor-seg-chip button').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const segId = btn.dataset.segmentId;
+        await db().from('caption_segment').delete().eq('caption_id', editorCaptionId).eq('segment_id', segId);
+        await loadData();
+        const updated = STATE.captions.find(c => c.id === editorCaptionId);
+        if (updated) renderCaptionEditorBody(updated);
+      });
+    });
+
+    // Add segment button
+    const addSegBtn = document.getElementById('caption-editor-add-seg');
+    if (addSegBtn) {
+      addSegBtn.addEventListener('click', () => {
+        showEditorSegmentPicker();
+      });
+    }
+  }
+
+  function showEditorSegmentPicker() {
+    const caption = STATE.captions.find(c => c.id === editorCaptionId);
+    if (!caption) return;
+    const assignedIds = new Set((caption.segments || []).map(s => s.id));
+    const available = STATE.segments.filter(s => !assignedIds.has(s.id));
+
+    if (available.length === 0) {
+      alert('Already assigned to all segments.');
+      return;
+    }
+
+    const dropdown = $segmentDropdown;
+    let html = '<div class="segment-dropdown-title">Add to Segment</div>';
+    for (const seg of available) {
+      html += '<div class="segment-dropdown-item" data-seg-id="' + seg.id + '">' + escapeHtml(seg.name) + '</div>';
+    }
+    dropdown.innerHTML = html;
+    $segmentDropdownOverlay.classList.add('visible');
+
+    dropdown.querySelectorAll('.segment-dropdown-item').forEach(item => {
+      item.addEventListener('click', async () => {
+        const segId = item.dataset.segId;
+        $segmentDropdownOverlay.classList.remove('visible');
+        await db().from('caption_segment').insert({ caption_id: editorCaptionId, segment_id: segId });
+        await loadData();
+        const updated = STATE.captions.find(c => c.id === editorCaptionId);
+        if (updated) renderCaptionEditorBody(updated);
+      });
+    });
+
+    const backdropHandler = (e) => {
+      if (e.target === $segmentDropdownOverlay) {
+        $segmentDropdownOverlay.classList.remove('visible');
+        $segmentDropdownOverlay.removeEventListener('click', backdropHandler);
+      }
+    };
+    $segmentDropdownOverlay.addEventListener('click', backdropHandler);
+  }
+
+  $captionEditorClose.addEventListener('click', closeCaptionEditor);
 
   // --- Full-screen Ad Builder ---
 
