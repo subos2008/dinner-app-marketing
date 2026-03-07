@@ -819,6 +819,28 @@
     -webkit-appearance: none;
     appearance: none;
   }
+  .gen-role-select {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px;
+    margin-bottom: 12px;
+  }
+  .gen-role-select label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    min-width: 40px;
+  }
+  .gen-role-select select {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    border: 0.5px solid var(--separator);
+    background: var(--surface);
+    color: var(--text-primary);
+    font-size: 14px;
+    -webkit-appearance: none;
+  }
   .gen-caption-picker {
     margin: 0 16px 12px;
     max-height: 200px;
@@ -1645,6 +1667,17 @@
         </select>
       </div>
 
+      <!-- Caption role selector (hidden until Caption type) -->
+      <div class="gen-role-select hidden" id="gen-role-row">
+        <label>Type</label>
+        <select id="gen-role-select">
+          <option value="headline">Headline</option>
+          <option value="subline">Subline</option>
+          <option value="cta">CTA</option>
+          <option value="tagline">Tagline</option>
+        </select>
+      </div>
+
       <!-- Caption picker (hidden until Image+Text mode) -->
       <div class="gen-caption-picker hidden" id="gen-caption-picker"></div>
 
@@ -1820,6 +1853,8 @@
   const $genModeRow = document.getElementById('gen-mode-row');
   const $genModeSelect = document.getElementById('gen-mode-select');
   const $genCaptionPicker = document.getElementById('gen-caption-picker');
+  const $genRoleRow = document.getElementById('gen-role-row');
+  const $genRoleSelect = document.getElementById('gen-role-select');
 
   // Restore saved ratio and mode from localStorage
   const savedRatio = localStorage.getItem('mobile-generate-ratio') || '9:16';
@@ -2115,6 +2150,9 @@
     $genModeRow.classList.toggle('hidden', type !== 'image');
     if (type !== 'image') $genCaptionPicker.classList.add('hidden');
 
+    // Show/hide role selector (caption only)
+    $genRoleRow.classList.toggle('hidden', type !== 'caption');
+
     // Update prompt placeholder + label
     if (type === 'image') {
       $genPrompt.placeholder = 'Describe the image you want...';
@@ -2291,6 +2329,7 @@
         prompt: promptText,
         segment_hint: segmentHint,
         aspect_ratio: generateType === 'image' ? $genRatioSelect.value : undefined,
+        role: generateType === 'caption' ? $genRoleSelect.value : undefined,
       };
 
       // Add include_text for Image+Text mode
@@ -2322,23 +2361,14 @@
         // Fire suggest-captions call (non-blocking — image is already shown)
         fireSuggestCaptions(briefText, segmentHint, promptText);
 
-      } else if (generateType === 'caption' && data && data.captions) {
-        // Auto-assign each caption to active segment
-        if (activeSegmentId) {
-          for (const cap of data.captions) {
-            await db().from('caption_segment').insert({
-              caption_id: cap.id,
-              segment_id: activeSegmentId,
-            });
-          }
-        }
-        renderCaptionResults(data.captions);
+        // Reload data so Library tab picks up new image
+        await loadData();
+
+      } else if (generateType === 'caption' && data && data.suggestions) {
+        renderSuggestions(data.suggestions);
       } else {
         throw new Error('Unexpected response from server');
       }
-
-      // Reload data so Library tab picks up new items
-      await loadData();
 
     } catch (err) {
       renderGenerateError(err.message || 'Generation failed');
@@ -2356,23 +2386,6 @@
     card.className = 'gen-result-card';
     card.innerHTML = '<img src="' + escapeHtml(imgUrl) + '?t=' + Date.now() + '" alt="Generated image" />';
     $genResults.appendChild(card);
-  }
-
-  function renderCaptionResults(captions) {
-    const knownRoles = ['headline', 'subline', 'cta', 'tagline'];
-    for (const cap of captions) {
-      const card = document.createElement('div');
-      card.className = 'gen-result-caption-card';
-
-      let badgeHtml = '';
-      if (cap.role) {
-        const roleClass = knownRoles.includes(cap.role) ? 'role-' + cap.role : 'role-default';
-        badgeHtml = '<span class="gen-result-role-badge ' + roleClass + '">' + escapeHtml(cap.role) + '</span>';
-      }
-
-      card.innerHTML = '<div class="gen-result-caption-text">' + escapeHtml(cap.text) + '</div>' + badgeHtml;
-      $genResults.appendChild(card);
-    }
   }
 
   function renderGenerateError(message) {
