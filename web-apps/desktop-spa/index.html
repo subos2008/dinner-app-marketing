@@ -1754,6 +1754,8 @@
     hide($loading);
     hide($app);
     show($loginScreen);
+    const saved = localStorage.getItem('login-email');
+    if (saved) $loginEmail.value = saved;
   }
 
   function showApp(user) {
@@ -1778,13 +1780,14 @@
     e.preventDefault();
     const email = $loginEmail.value.trim();
     if (!email) return;
+    localStorage.setItem('login-email', email);
 
     $loginBtn.disabled = true;
     $loginBtn.textContent = 'Sending...';
     hide($loginMessage);
 
     try {
-      const { error } = await supabaseClient.auth.signInWithOtp({ email });
+      const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin } });
       if (error) throw error;
       $loginMessage.textContent = 'Check your email for the magic link.';
       $loginMessage.className = 'login-message';
