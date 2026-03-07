@@ -1728,7 +1728,7 @@
         if (session) {
           currentSession = session;
         }
-        if (event === 'SIGNED_IN' && session) {
+        if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session) {
           showApp(session.user);
         }
         if (event === 'SIGNED_OUT') {
