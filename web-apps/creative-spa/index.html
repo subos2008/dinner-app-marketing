@@ -938,15 +938,7 @@
     gap: 2px;
   }
 
-  .image-grid img {
-    width: 100%;
-    display: block;
-    cursor: pointer;
-  }
 
-  .image-grid img:active {
-    opacity: 0.7;
-  }
 
   .image-group-divider {
     grid-column: 1 / -1;
@@ -962,6 +954,153 @@
 
   .image-group-divider:first-child {
     padding-top: 0;
+  }
+
+  /* Archive toggle */
+  .archive-toggle {
+    display: flex;
+    background: rgba(118, 118, 128, 0.12);
+    border-radius: 6px;
+    padding: 2px;
+    margin-bottom: 8px;
+  }
+  .archive-toggle button {
+    flex: 1;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.2s ease;
+  }
+  .archive-toggle button.active {
+    background: var(--surface);
+    color: var(--text-primary);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  /* Select mode */
+  .image-grid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .image-grid-header-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .image-select-btn {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .image-cell-wrap {
+    position: relative;
+  }
+  .image-cell-wrap .select-check {
+    display: none;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.8);
+    background: rgba(0,0,0,0.3);
+    z-index: 2;
+  }
+  .select-mode .image-cell-wrap .select-check {
+    display: block;
+  }
+  .image-cell-wrap.selected .select-check {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .image-cell-wrap.selected .select-check::after {
+    content: '\2713';
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+  .image-cell-wrap.selected img {
+    opacity: 0.7;
+  }
+  .image-cell-wrap img {
+    width: 100%;
+    display: block;
+    cursor: pointer;
+  }
+  .image-cell-wrap img:active {
+    opacity: 0.7;
+  }
+
+  /* Select action bar */
+  .select-action-bar {
+    position: fixed;
+    bottom: calc(60px + var(--safe-bottom));
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--separator);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 90;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+  }
+  .select-action-bar .select-count {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .select-action-bar .select-archive-btn {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+  .select-action-bar .select-archive-btn.archive {
+    background: var(--red);
+    color: #fff;
+  }
+  .select-action-bar .select-archive-btn.restore {
+    background: var(--accent);
+    color: #fff;
+  }
+  .select-action-bar .select-cancel-btn {
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    -webkit-appearance: none;
   }
 
   .lib-empty {
@@ -1589,6 +1728,13 @@
     <button class="viewer-build-btn" id="viewer-build-btn">Build Ad</button>
   </div>
 
+  <!-- Select mode action bar -->
+  <div id="select-action-bar" class="select-action-bar hidden">
+    <button class="select-cancel-btn" id="select-cancel-btn">Cancel</button>
+    <span class="select-count" id="select-count">0 selected</span>
+    <button class="select-archive-btn" id="select-archive-btn">Archive</button>
+  </div>
+
   <!-- Fullscreen ad viewer -->
   <div id="ad-viewer" class="ad-viewer hidden">
     <div class="viewer-close" id="ad-viewer-close">&times;</div>
@@ -1633,6 +1779,9 @@
   let activeTab = 'generate';
   let generateType = 'image'; // 'image' | 'caption'
   let libraryView = 'images'; // 'images' | 'captions' | 'ads'
+  let showArchived = false;
+  let selectMode = false;
+  let selectedImageIds = new Set();
   let briefLoadedOnce = false;
 
   // --- Supabase helpers ---
@@ -1706,6 +1855,27 @@
   const $builderContent = document.getElementById('builder-content');
   const $builderActionBtn = document.getElementById('builder-action-btn');
   const $builderToast = document.getElementById('builder-toast');
+
+  // Select action bar handlers
+  document.getElementById('select-cancel-btn').addEventListener('click', () => exitSelectMode());
+  document.getElementById('select-archive-btn').addEventListener('click', async () => {
+    const ids = Array.from(selectedImageIds);
+    if (ids.length === 0) return;
+    const action = showArchived ? 'restore' : 'archive';
+    const msg = action === 'archive'
+      ? 'Archive ' + ids.length + ' image' + (ids.length > 1 ? 's' : '') + '?'
+      : 'Restore ' + ids.length + ' image' + (ids.length > 1 ? 's' : '') + '?';
+    if (!confirm(msg)) return;
+    try {
+      const value = action === 'archive' ? new Date().toISOString() : null;
+      const { error } = await db().from('base_image').update({ archived_at: value }).in('id', ids);
+      if (error) throw error;
+      exitSelectMode();
+      await loadData();
+    } catch (err) {
+      alert('Failed to ' + action + ': ' + (err.message || err));
+    }
+  });
 
   // Viewer state
   let viewerImageIndex = -1;
@@ -1855,10 +2025,17 @@
   // --- Data loading ---
   async function loadData() {
     try {
+      const imageQuery = db().from('base_image')
+        .select('*, base_image_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
+        .order('created_at', { ascending: false });
+      if (showArchived) {
+        imageQuery.not('archived_at', 'is', null);
+      } else {
+        imageQuery.is('archived_at', null);
+      }
+
       const [rawImages, rawCaptions, rawAds, rawSegments] = await Promise.all([
-        db().from('base_image')
-          .select('*, base_image_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
-          .order('created_at', { ascending: false }),
+        imageQuery,
         db().from('caption')
           .select('*, caption_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
           .order('created_at', { ascending: false }),
@@ -2335,6 +2512,7 @@
 
   // --- Library tab ---
   function switchLibraryView(view) {
+    if (selectMode) exitSelectMode();
     libraryView = view;
     $libBtnImages.classList.toggle('active', view === 'images');
     $libBtnCaptions.classList.toggle('active', view === 'captions');
@@ -2439,17 +2617,30 @@
   }
 
   function renderImageGrid(images) {
+    // Archive toggle (always shown)
+    let html = '<div class="archive-toggle">'
+      + '<button class="archive-toggle-btn' + (!showArchived ? ' active' : '') + '" data-show="active">Active</button>'
+      + '<button class="archive-toggle-btn' + (showArchived ? ' active' : '') + '" data-show="archived">Archived</button>'
+      + '</div>';
+
     if (!images.length) {
-      $libImageGrid.innerHTML = '<div class="lib-empty">'
-        + '<div style="font-size:32px; opacity:0.3;">&#128247;</div>'
-        + '<div>No images yet.</div>'
-        + '<div style="font-size:13px;">Head to Generate to create some.</div>'
-        + '</div>';
+      const emptyMsg = showArchived
+        ? '<div>No archived images.</div>'
+        : '<div>No images yet.</div><div style="font-size:13px;">Head to Generate to create some.</div>';
+      $libImageGrid.innerHTML = html
+        + '<div class="lib-empty"><div style="font-size:32px; opacity:0.3;">&#128247;</div>' + emptyMsg + '</div>';
+      attachArchiveToggleHandlers();
       return;
     }
 
+    // Header with count + select button
+    html += '<div class="image-grid-header">'
+      + '<span class="image-grid-header-label">' + images.length + ' image' + (images.length !== 1 ? 's' : '') + '</span>'
+      + '<button class="image-select-btn" id="image-select-toggle">' + (selectMode ? 'Cancel' : 'Select') + '</button>'
+      + '</div>';
+
     // Group images by generation_prompt.id
-    const grouped = new Map(); // promptId -> { prompt, images }
+    const grouped = new Map();
     const ungrouped = [];
 
     images.forEach(img => {
@@ -2464,42 +2655,105 @@
       }
     });
 
-    let html = '<div class="image-grid">';
+    html += '<div class="image-grid' + (selectMode ? ' select-mode' : '') + '">';
 
-    // Ungrouped images first
     if (ungrouped.length) {
-      ungrouped.forEach(img => {
-        html += renderImageCell(img);
-      });
+      ungrouped.forEach(img => { html += renderImageCell(img); });
     }
 
-    // Grouped images with dividers
     grouped.forEach(group => {
       const promptText = group.prompt.prompt || 'Generated';
       const truncated = promptText.length > 60 ? promptText.substring(0, 60) + '...' : promptText;
       html += '<div class="image-group-divider">' + escapeHtml(truncated) + '</div>';
-      group.images.forEach(img => {
-        html += renderImageCell(img);
-      });
+      group.images.forEach(img => { html += renderImageCell(img); });
     });
 
     html += '</div>';
     $libImageGrid.innerHTML = html;
 
-    // Attach click handlers — open fullscreen viewer
-    $libImageGrid.querySelectorAll('[data-image-id]').forEach(cell => {
+    // Attach click handlers
+    $libImageGrid.querySelectorAll('.image-cell-wrap').forEach(cell => {
       cell.addEventListener('click', () => {
-        openViewer(cell.dataset.imageId);
+        if (selectMode) {
+          const id = cell.dataset.imageId;
+          if (selectedImageIds.has(id)) {
+            selectedImageIds.delete(id);
+            cell.classList.remove('selected');
+          } else {
+            selectedImageIds.add(id);
+            cell.classList.add('selected');
+          }
+          updateSelectActionBar();
+        } else {
+          openViewer(cell.dataset.imageId);
+        }
+      });
+    });
+
+    // Select toggle button
+    const $selectToggle = document.getElementById('image-select-toggle');
+    if ($selectToggle) {
+      $selectToggle.addEventListener('click', () => {
+        if (selectMode) { exitSelectMode(); } else { enterSelectMode(); }
+      });
+    }
+
+    attachArchiveToggleHandlers();
+  }
+
+  function attachArchiveToggleHandlers() {
+    $libImageGrid.querySelectorAll('.archive-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const newShowArchived = btn.dataset.show === 'archived';
+        if (newShowArchived === showArchived) return;
+        showArchived = newShowArchived;
+        if (selectMode) exitSelectMode();
+        await loadData();
       });
     });
   }
 
+  function enterSelectMode() {
+    selectMode = true;
+    selectedImageIds.clear();
+    renderLibrary();
+    updateSelectActionBar();
+    show(document.getElementById('select-action-bar'));
+  }
+
+  function exitSelectMode() {
+    selectMode = false;
+    selectedImageIds.clear();
+    hide(document.getElementById('select-action-bar'));
+    renderLibrary();
+  }
+
+  function updateSelectActionBar() {
+    const count = selectedImageIds.size;
+    const $count = document.getElementById('select-count');
+    const $btn = document.getElementById('select-archive-btn');
+
+    $count.textContent = count + ' selected';
+
+    if (showArchived) {
+      $btn.textContent = 'Restore';
+      $btn.className = 'select-archive-btn restore';
+    } else {
+      $btn.textContent = 'Archive';
+      $btn.className = 'select-archive-btn archive';
+    }
+
+    $btn.disabled = count === 0;
+    $btn.style.opacity = count === 0 ? '0.4' : '1';
+  }
+
   function renderImageCell(img) {
     const src = storageBaseUrl + '/' + img.storage_path;
-    return '<img data-image-id="' + escapeHtml(img.id) + '" '
-      + 'src="' + escapeHtml(src) + '" '
-      + 'loading="lazy" '
-      + 'alt="" />';
+    const selectedClass = selectedImageIds.has(img.id) ? ' selected' : '';
+    return '<div class="image-cell-wrap' + selectedClass + '" data-image-id="' + escapeHtml(img.id) + '">'
+      + '<div class="select-check"></div>'
+      + '<img src="' + escapeHtml(src) + '" loading="lazy" alt="" />'
+      + '</div>';
   }
 
   // --- Ads Grid ---
