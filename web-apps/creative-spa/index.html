@@ -2726,7 +2726,7 @@
   }
 
   function renderCaptionsList() {
-    const captions = STATE.captions || [];
+    const captions = filteredCaptions();
     const knownRoles = ['headline', 'subline', 'cta', 'tagline'];
 
     let html = '<div class="lib-caption-add">'
