@@ -1416,8 +1416,8 @@
       <div class="gen-ratio-select" id="gen-ratio-row">
         <label>Ratio</label>
         <select id="gen-ratio-select">
-          <option value="4:5">Feed (4:5)</option>
           <option value="9:16">Story / Reels (9:16)</option>
+          <option value="4:5">Feed (4:5)</option>
           <option value="2:3">Grindr Interstitial (2:3)</option>
         </select>
       </div>
@@ -1593,6 +1593,12 @@
   const $genModeRow = document.getElementById('gen-mode-row');
   const $genModeSelect = document.getElementById('gen-mode-select');
   const $genCaptionPicker = document.getElementById('gen-caption-picker');
+
+  // Restore saved ratio and mode from localStorage
+  const savedRatio = localStorage.getItem('mobile-generate-ratio') || '9:16';
+  $genRatioSelect.value = savedRatio;
+  const savedMode = localStorage.getItem('mobile-generate-mode') || 'image-only';
+  $genModeSelect.value = savedMode;
 
   // Library tab DOM refs
   const $libBtnImages = document.getElementById('lib-btn-images');
@@ -1883,7 +1889,13 @@
   });
 
   // Mode select: show/hide caption picker
+  // Persist ratio selection
+  $genRatioSelect.addEventListener('change', () => {
+    localStorage.setItem('mobile-generate-ratio', $genRatioSelect.value);
+  });
+
   $genModeSelect.addEventListener('change', () => {
+    localStorage.setItem('mobile-generate-mode', $genModeSelect.value);
     if ($genModeSelect.value === 'image-text') {
       // Populate caption picker from STATE.captions
       const caps = STATE.captions || [];

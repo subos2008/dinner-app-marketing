@@ -2470,9 +2470,11 @@
     html += '<div class="generate-ratio-row" id="generate-ratio-row"' + (generateType !== 'image' ? ' style="display:none"' : '') + '>'
       + '<label>Aspect Ratio</label>'
       + '<select id="generate-ratio-select">'
-      + '<option value="4:5">Feed (4:5)</option>'
-      + '<option value="9:16">Story / Reels (9:16)</option>'
-      + '<option value="2:3">Grindr Interstitial (2:3)</option>'
+      + ['9:16', '4:5', '2:3'].map(r => {
+        const labels = { '9:16': 'Story / Reels (9:16)', '4:5': 'Feed (4:5)', '2:3': 'Grindr Interstitial (2:3)' };
+        const saved = localStorage.getItem('generate-ratio') || '9:16';
+        return '<option value="' + r + '"' + (r === saved ? ' selected' : '') + '>' + labels[r] + '</option>';
+      }).join('')
       + '</select>'
       + '</div>';
 
@@ -2480,8 +2482,11 @@
     html += '<div class="generate-mode-row" id="generate-mode-row"' + (generateType !== 'image' ? ' style="display:none"' : '') + '>'
       + '<label>Mode</label>'
       + '<select id="generate-mode-select">'
-      + '<option value="image-only">Image only</option>'
-      + '<option value="image-text">Image + Text</option>'
+      + ['image-only', 'image-text'].map(m => {
+        const labels = { 'image-only': 'Image only', 'image-text': 'Image + Text' };
+        const saved = localStorage.getItem('generate-mode') || 'image-only';
+        return '<option value="' + m + '"' + (m === saved ? ' selected' : '') + '>' + labels[m] + '</option>';
+      }).join('')
       + '</select>'
       + '</div>';
 
@@ -2559,8 +2564,14 @@
       });
     });
 
+    // Persist ratio selection
+    $ratioSelect.addEventListener('change', () => {
+      localStorage.setItem('generate-ratio', $ratioSelect.value);
+    });
+
     // Mode select — show/hide caption picker
     $modeSelect.addEventListener('change', () => {
+      localStorage.setItem('generate-mode', $modeSelect.value);
       if ($modeSelect.value === 'image-text') {
         // Populate caption picker from STATE.captions
         const caps = filterBySegment(STATE.captions);
