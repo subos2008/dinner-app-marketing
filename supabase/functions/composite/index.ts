@@ -27,6 +27,7 @@ Deno.serve(async (req) => {
     if (!ads || ads.length === 0) return jsonResponse({ error: 'Ad not found' }, 404)
 
     const ad = ads[0]
+    const aspectRatio = ad.base_image.aspect_ratio || undefined
     const captions = (ad.ad_caption || []).map((jc: { caption: unknown }) => jc.caption).filter(Boolean)
 
     // 2. Validate
@@ -68,7 +69,7 @@ Deno.serve(async (req) => {
     console.log(`[composite] Ad ${adId}: calling Gemini...`)
     let compositedData: Uint8Array
     try {
-      const result = await editImage(imgBuffer, mimeType, prompt)
+      const result = await editImage(imgBuffer, mimeType, prompt, aspectRatio)
       compositedData = result.data
     } catch (err) {
       console.error('[composite] Gemini failed:', (err as Error).message)
