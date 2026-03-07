@@ -1299,26 +1299,62 @@
     pointer-events: none;
   }
 
-  .viewer-build-btn {
+  .viewer-actions {
     position: absolute;
     bottom: calc(var(--safe-bottom) + 16px);
     left: 16px;
     right: 16px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+  }
+  .viewer-action-btn {
+    flex: 1;
     padding: 16px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
+    border: 2px solid rgba(255,255,255,0.3);
     border-radius: var(--radius);
     font-family: var(--font-body);
     font-size: 17px;
     font-weight: 600;
     cursor: pointer;
-    z-index: 10;
     -webkit-appearance: none;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
   }
-
-  .viewer-build-btn:active {
-    background: var(--accent-dark);
+  .viewer-action-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .viewer-edit-form {
+    position: absolute;
+    bottom: calc(var(--safe-bottom) + 16px);
+    left: 16px;
+    right: 16px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+  }
+  .viewer-edit-form input {
+    flex: 1;
+    padding: 14px 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: var(--radius);
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    font-size: 15px;
+    font-family: var(--font-body);
+  }
+  .viewer-edit-form input::placeholder { color: rgba(255,255,255,0.5); }
+  .viewer-edit-form button {
+    padding: 14px 20px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 600;
+    font-family: var(--font-body);
+    cursor: pointer;
   }
 
   /* --- Fullscreen Ad Viewer --- */
@@ -1764,7 +1800,14 @@
     <div class="viewer-image-wrap">
       <img id="viewer-image" src="" alt="" />
     </div>
-    <button class="viewer-build-btn" id="viewer-build-btn">Build Ad</button>
+    <div class="viewer-actions" id="viewer-actions">
+      <button class="viewer-action-btn" id="viewer-edit-btn">Edit</button>
+      <button class="viewer-action-btn viewer-action-primary" id="viewer-build-btn">Build Ad</button>
+    </div>
+    <div class="viewer-edit-form hidden" id="viewer-edit-form">
+      <input type="text" id="viewer-edit-input" placeholder="e.g. remove the tree, warmer colours..." />
+      <button id="viewer-edit-submit">Edit</button>
+    </div>
   </div>
 
   <!-- Select mode action bar -->
@@ -1894,6 +1937,11 @@
   const $viewerCounter = document.getElementById('viewer-counter');
   const $viewerImage = document.getElementById('viewer-image');
   const $viewerBuildBtn = document.getElementById('viewer-build-btn');
+  const $viewerActions = document.getElementById('viewer-actions');
+  const $viewerEditBtn = document.getElementById('viewer-edit-btn');
+  const $viewerEditForm = document.getElementById('viewer-edit-form');
+  const $viewerEditInput = document.getElementById('viewer-edit-input');
+  const $viewerEditSubmit = document.getElementById('viewer-edit-submit');
 
   // Ad viewer DOM refs
   const $adViewer = document.getElementById('ad-viewer');
@@ -1933,6 +1981,7 @@
   // Viewer state
   let viewerImageIndex = -1;
   let viewerOpen = false;
+  let viewerEditing = false;
   let builderImageId = null;
 
   // Ad viewer state
@@ -3025,6 +3074,10 @@
   function closeViewer() {
     viewerOpen = false;
     viewerImageIndex = -1;
+    viewerEditing = false;
+    hide($viewerEditForm);
+    show($viewerActions);
+    $viewerEditInput.value = '';
     hide($viewer);
     document.body.style.overflow = '';
     $viewerImage.style.transform = '';
@@ -3063,6 +3116,64 @@
     if (viewerImageIndex >= 0 && viewerImageIndex < images.length) {
       builderImageId = images[viewerImageIndex].id;
       openAdBuilder();
+    }
+  });
+
+  // Edit button — toggles inline edit prompt
+  $viewerEditBtn.addEventListener('click', () => {
+    viewerEditing = !viewerEditing;
+    if (viewerEditing) {
+      hide($viewerActions);
+      show($viewerEditForm);
+      $viewerEditInput.focus();
+    } else {
+      show($viewerActions);
+      hide($viewerEditForm);
+    }
+  });
+
+  // Edit submit — calls edit-image edge function
+  $viewerEditSubmit.addEventListener('click', async () => {
+    const editPrompt = $viewerEditInput.value.trim();
+    if (!editPrompt) return;
+
+    const images = filteredImages();
+    if (viewerImageIndex < 0 || viewerImageIndex >= images.length) return;
+    const sourceImage = images[viewerImageIndex];
+
+    $viewerEditSubmit.disabled = true;
+    $viewerEditSubmit.textContent = 'Editing...';
+
+    try {
+      const { data, error } = await supabaseClient.functions.invoke('edit-image', {
+        body: { base_image_id: sourceImage.id, prompt: editPrompt }
+      });
+      const errMsg = fnError(error, data);
+      if (errMsg) throw new Error(errMsg);
+
+      await loadData();
+
+      // Navigate to the new image in the viewer
+      const updatedImages = filteredImages();
+      const newIdx = updatedImages.findIndex(img => img.id === data.image.id);
+      if (newIdx !== -1) {
+        viewerImageIndex = newIdx;
+        updateViewerImage();
+      }
+
+      // Reset edit form
+      $viewerEditInput.value = '';
+      viewerEditing = false;
+      hide($viewerEditForm);
+      show($viewerActions);
+    } catch (err) {
+      console.error('Edit image failed:', err);
+      $viewerEditSubmit.textContent = 'Failed — Tap to retry';
+    } finally {
+      $viewerEditSubmit.disabled = false;
+      if ($viewerEditSubmit.textContent === 'Editing...') {
+        $viewerEditSubmit.textContent = 'Edit';
+      }
     }
   });
 
