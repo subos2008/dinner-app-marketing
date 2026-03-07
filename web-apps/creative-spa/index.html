@@ -959,6 +959,12 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 2px;
   }
+  .image-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 
 
 
@@ -1181,12 +1187,12 @@
     align-items: flex-start;
     justify-content: space-between;
     padding: 12px 16px;
-    border-bottom: 1px solid #1a1a1a;
+    border-bottom: 1px solid var(--border);
   }
   .lib-caption-text {
     flex: 1;
     font-size: 14px;
-    color: #ccc;
+    color: var(--text-primary);
     line-height: 1.4;
   }
   .lib-caption-role {
@@ -1199,10 +1205,10 @@
     margin-left: 8px;
     white-space: nowrap;
   }
-  .lib-caption-role.role-headline { background: #3a2a1a; color: #C8956C; }
-  .lib-caption-role.role-subline { background: #1a2a3a; color: #6CA8C8; }
-  .lib-caption-role.role-cta { background: #2a3a1a; color: #8AC86C; }
-  .lib-caption-role.role-tagline { background: #2a1a3a; color: #A86CC8; }
+  .lib-caption-role.role-headline { background: #f3ebe2; color: #8B5E3C; }
+  .lib-caption-role.role-subline { background: #e2eef3; color: #3C6E8B; }
+  .lib-caption-role.role-cta { background: #e6f3e2; color: #4A7B3C; }
+  .lib-caption-role.role-tagline { background: #ede2f3; color: #6E3C8B; }
   .lib-caption-delete {
     background: none;
     border: none;
