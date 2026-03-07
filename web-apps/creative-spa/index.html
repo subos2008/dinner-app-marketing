@@ -974,14 +974,50 @@
     font-size: 12px;
     font-weight: 500;
     color: var(--text-tertiary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     line-height: 1.3;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
   }
 
   .image-group-divider:first-child {
     padding-top: 0;
+  }
+
+  .group-divider-text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  .image-group-divider.expanded .group-divider-text {
+    white-space: normal;
+    overflow: visible;
+  }
+
+  .group-divider-reuse {
+    flex-shrink: 0;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 15px;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    -webkit-appearance: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -2px;
+  }
+
+  .group-divider-reuse:active {
+    background: var(--surface);
   }
 
   /* Archive toggle */
@@ -2075,6 +2111,15 @@
     });
   });
 
+  function reusePrompt(text, type) {
+    switchTab('generate');
+    if (type === 'image' || type === 'caption') {
+      setGenerateType(type);
+    }
+    $genPrompt.value = text;
+    $genSubmit.disabled = false;
+  }
+
   // --- Filter helpers ---
   function filteredImages() {
     if (!activeSegmentId) return STATE.images;
@@ -2750,8 +2795,10 @@
 
     grouped.forEach(group => {
       const promptText = group.prompt.prompt || 'Generated';
-      const truncated = promptText.length > 60 ? promptText.substring(0, 60) + '...' : promptText;
-      html += '<div class="image-group-divider">' + escapeHtml(truncated) + '</div>';
+      html += '<div class="image-group-divider" data-full-prompt="' + escapeHtml(promptText) + '" data-prompt-type="' + escapeHtml(group.prompt.type || 'image') + '">'
+        + '<span class="group-divider-text">' + escapeHtml(promptText) + '</span>'
+        + '<button class="group-divider-reuse hidden" title="Use this prompt again">&#8635;</button>'
+        + '</div>';
       group.images.forEach(img => { html += renderImageCell(img); });
     });
 
@@ -2784,6 +2831,26 @@
         if (selectMode) { exitSelectMode(); } else { enterSelectMode(); }
       });
     }
+
+    // Prompt group divider: tap to expand/collapse, reuse button
+    $libImageGrid.querySelectorAll('.image-group-divider').forEach(div => {
+      div.addEventListener('click', (e) => {
+        if (e.target.closest('.group-divider-reuse')) return;
+        div.classList.toggle('expanded');
+        const reuseBtn = div.querySelector('.group-divider-reuse');
+        if (reuseBtn) reuseBtn.classList.toggle('hidden', !div.classList.contains('expanded'));
+      });
+    });
+
+    $libImageGrid.querySelectorAll('.group-divider-reuse').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const div = btn.closest('.image-group-divider');
+        const promptText = div.dataset.fullPrompt;
+        const promptType = div.dataset.promptType || 'image';
+        if (promptText) reusePrompt(promptText, promptType);
+      });
+    });
 
     attachArchiveToggleHandlers();
   }
