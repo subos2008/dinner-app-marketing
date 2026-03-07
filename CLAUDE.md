@@ -42,11 +42,11 @@ This repo is for:
 ## Running the Apps
 - SPAs live under `web-apps/` — each is a standalone static SPA with its own `start.sh`
 - **Desktop ad manager:** `cd web-apps/desktop-spa && npx serve . -l 8642`
-- **Mobile app:** `cd web-apps/mobile-spa && npx serve .`
+- **Creative SPA:** `cd web-apps/creative-spa && npx serve .`
 - All data access goes directly to Supabase via the JS client (config is inlined in each `index.html`)
 
 ## Deploying
-- **Mobile/creative SPA:** `bash web-apps/mobile-spa/deploy.sh` — syncs to S3 + CloudFront invalidation → https://creative.comejoinus.app
+- **Creative SPA:** `bash web-apps/creative-spa/deploy.sh` — syncs to S3 + CloudFront invalidation → https://creative.comejoinus.app
 - **Edge Functions:** `supabase functions deploy <function-name>` (e.g. `generate-image`, `composite`, `generate-captions`, `suggest-captions`)
 - Edge Function source: `supabase/functions/` with shared modules in `supabase/functions/_shared/`
 - Secrets: `GOOGLE_AI_API_KEY` set via `supabase secrets set` (SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY are auto-available)
