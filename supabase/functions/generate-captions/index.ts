@@ -1,6 +1,14 @@
 import { corsHeaders } from '../_shared/cors.ts'
-import { createUserClient } from '../_shared/supabase.ts'
 import { generateCaptions } from '../_shared/gemini.ts'
+
+const ROLE_PROMPTS: Record<string, string> = {
+  headline: 'Generate 5 short, punchy headlines (5-8 words each). Bold, attention-grabbing.',
+  subline: 'Generate 5 supporting sublines (8-12 words each). Expand on the hook, add context.',
+  cta: 'Generate 5 calls to action (3-5 words each). Direct, action-oriented.',
+  tagline: 'Generate 5 brand taglines (5-8 words each). Warm, honest, memorable.',
+}
+
+const VALID_ROLES = Object.keys(ROLE_PROMPTS)
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -9,44 +17,38 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json()
-    const { mode } = body // 'generate' or 'suggest'
+    const { mode } = body
 
     if (mode === 'suggest') {
       return await handleSuggest(body)
     }
 
-    // Default: generate and persist captions
-    const userClient = createUserClient(req)
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return jsonResponse({ error: 'Unauthorized' }, 401)
-    }
-
-    return await handleGenerate(body, userClient)
+    return await handleGenerate(body)
   } catch (err) {
     console.error('generate-captions error:', err)
     return jsonResponse({ error: (err as Error).message }, 500)
   }
 })
 
-// --- Generate & persist captions ---
+// --- Generate captions (ephemeral, no DB writes) ---
 
 // deno-lint-ignore no-explicit-any
-async function handleGenerate(body: any, userClient: any) {
-  const { prompt, brief, segment_hint } = body
-  if (!prompt) return jsonResponse({ error: 'prompt is required' }, 400)
-
-  const genPromptId = await upsertGenerationPrompt(userClient, 'caption', prompt, brief)
+async function handleGenerate(body: any) {
+  const { role, brief, segment_hint } = body
+  if (!role || !VALID_ROLES.includes(role)) {
+    return jsonResponse({ error: `role is required and must be one of: ${VALID_ROLES.join(', ')}` }, 400)
+  }
 
   const geminiPrompt = [
     brief ? `Context — creative brief:\n${brief}\n\n---\n\n` : '',
     segment_hint ? `Segment style hint: ${segment_hint}\n\n` : '',
-    `Generate short ad caption text based on this request: ${prompt}\n\n`,
-    'Output ONLY a JSON array of caption strings. Each caption should be short (suitable for overlaying on an image). ',
-    'Generate 3-5 captions. Output raw JSON with no markdown fences, no explanation — just the array.',
+    `${ROLE_PROMPTS[role]}\n\n`,
+    `Keep copy warm, honest, direct. Not corporate. Not cringey.\n\n`,
+    `Return a JSON array of objects with "text" and "role" fields. The "role" field should be "${role}" for all items.\n`,
+    `Return ONLY the JSON array, no other text.`,
   ].join('')
 
-  console.log('[generate-captions] calling Gemini...')
+  console.log(`[generate-captions] generate role=${role}: calling Gemini...`)
   let geminiOutput: string
   try {
     geminiOutput = await generateCaptions(geminiPrompt)
@@ -55,33 +57,19 @@ async function handleGenerate(body: any, userClient: any) {
     return jsonResponse({ error: 'Caption generation failed', detail: (err as Error).message }, 500)
   }
 
-  let captions: string[]
+  let suggestions
   try {
     const jsonMatch = geminiOutput.match(/\[[\s\S]*\]/)
     if (!jsonMatch) throw new Error('No JSON array found in output')
-    captions = JSON.parse(jsonMatch[0])
-    if (!Array.isArray(captions)) throw new Error('Parsed value is not an array')
-    captions = captions.filter((c: unknown) => typeof c === 'string' && (c as string).trim().length > 0)
+    suggestions = JSON.parse(jsonMatch[0])
+    if (!Array.isArray(suggestions)) throw new Error('Parsed value is not an array')
   } catch {
     console.error(`[generate-captions] Failed to parse. Output:\n${geminiOutput.slice(0, 500)}`)
-    return jsonResponse({
-      error: 'Failed to parse generated captions',
-      geminiOutput: geminiOutput.slice(0, 500),
-    }, 500)
+    return jsonResponse({ error: 'Failed to parse generated captions', geminiOutput: geminiOutput.slice(0, 500) }, 500)
   }
 
-  const created = []
-  for (const text of captions) {
-    const { data: cap, error } = await userClient
-      .from('caption')
-      .insert({ text: text.trim(), generation_prompt_id: genPromptId })
-      .select()
-      .single()
-    if (!error && cap) created.push(cap)
-  }
-
-  console.log(`[generate-captions] created ${created.length} captions`)
-  return jsonResponse({ captions: created })
+  console.log(`[generate-captions] generate: returned ${suggestions.length} suggestions`)
+  return jsonResponse({ suggestions })
 }
 
 // --- Suggest captions (ephemeral, no DB writes) ---
@@ -125,28 +113,6 @@ async function handleSuggest(body: any) {
 }
 
 // --- Helpers ---
-
-// deno-lint-ignore no-explicit-any
-async function upsertGenerationPrompt(client: any, type: string, prompt: string, brief?: string): Promise<string> {
-  const { data: existing } = await client
-    .from('generation_prompt')
-    .select('*')
-    .eq('type', type)
-    .eq('prompt', prompt)
-    .limit(1)
-    .single()
-
-  if (existing) return existing.id
-
-  const { data, error } = await client
-    .from('generation_prompt')
-    .insert({ type, prompt, brief: brief || null })
-    .select()
-    .single()
-
-  if (error) throw error
-  return data.id
-}
 
 function jsonResponse(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
