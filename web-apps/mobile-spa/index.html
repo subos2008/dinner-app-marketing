@@ -977,6 +977,81 @@
     padding: 32px 24px;
   }
 
+  .lib-caption-add {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #222;
+  }
+  .lib-caption-add input {
+    flex: 1;
+    font-size: 14px;
+    padding: 10px 12px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background: #1a1a1a;
+    color: #fff;
+  }
+  .lib-caption-add input::placeholder { color: #666; }
+  .lib-caption-add select {
+    font-size: 13px;
+    padding: 8px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background: #1a1a1a;
+    color: #fff;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .lib-caption-add button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 10px;
+    background: #C8956C;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .lib-caption-add button:disabled {
+    opacity: 0.4;
+  }
+  .lib-caption-card {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .lib-caption-text {
+    flex: 1;
+    font-size: 14px;
+    color: #ccc;
+    line-height: 1.4;
+  }
+  .lib-caption-role {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 8px;
+    white-space: nowrap;
+  }
+  .lib-caption-role.role-headline { background: #3a2a1a; color: #C8956C; }
+  .lib-caption-role.role-subline { background: #1a2a3a; color: #6CA8C8; }
+  .lib-caption-role.role-cta { background: #2a3a1a; color: #8AC86C; }
+  .lib-caption-role.role-tagline { background: #2a1a3a; color: #A86CC8; }
+  .lib-caption-delete {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 18px;
+    padding: 0 4px;
+    margin-left: 8px;
+    cursor: pointer;
+  }
+
   .lib-placeholder {
     display: flex;
     align-items: center;
@@ -1469,10 +1544,13 @@
       <!-- Sub-toggle: Images | Ads -->
       <div class="lib-sub-toggle">
         <button class="lib-sub-btn active" data-lib-view="images" id="lib-btn-images">Images</button>
+        <button class="lib-sub-btn" data-lib-view="captions" id="lib-btn-captions">Captions</button>
         <button class="lib-sub-btn" data-lib-view="ads" id="lib-btn-ads">Ads</button>
       </div>
       <!-- Image grid container -->
       <div id="lib-image-grid"></div>
+      <!-- Captions list container -->
+      <div id="lib-captions-view" class="hidden"></div>
       <!-- Ads placeholder container -->
       <div id="lib-ads-view" class="hidden"></div>
     </div>
@@ -1554,7 +1632,7 @@
   let activeSegmentId = localStorage.getItem('mobile-active-segment') || null;
   let activeTab = 'generate';
   let generateType = 'image'; // 'image' | 'caption'
-  let libraryView = 'images'; // 'images' | 'ads'
+  let libraryView = 'images'; // 'images' | 'captions' | 'ads'
   let briefLoadedOnce = false;
 
   // --- Supabase helpers ---
@@ -1602,8 +1680,10 @@
 
   // Library tab DOM refs
   const $libBtnImages = document.getElementById('lib-btn-images');
+  const $libBtnCaptions = document.getElementById('lib-btn-captions');
   const $libBtnAds = document.getElementById('lib-btn-ads');
   const $libImageGrid = document.getElementById('lib-image-grid');
+  const $libCaptionsView = document.getElementById('lib-captions-view');
   const $libAdsView = document.getElementById('lib-ads-view');
 
   // Viewer DOM refs
@@ -2257,24 +2337,105 @@
   function switchLibraryView(view) {
     libraryView = view;
     $libBtnImages.classList.toggle('active', view === 'images');
+    $libBtnCaptions.classList.toggle('active', view === 'captions');
     $libBtnAds.classList.toggle('active', view === 'ads');
     renderLibrary();
   }
 
   $libBtnImages.addEventListener('click', () => switchLibraryView('images'));
+  $libBtnCaptions.addEventListener('click', () => switchLibraryView('captions'));
   $libBtnAds.addEventListener('click', () => switchLibraryView('ads'));
 
   function renderLibrary() {
+    hide($libImageGrid);
+    hide($libCaptionsView);
+    hide($libAdsView);
+
     if (libraryView === 'images') {
-      hide($libAdsView);
       show($libImageGrid);
-      const images = filteredImages();
-      renderImageGrid(images);
+      renderImageGrid(filteredImages());
+    } else if (libraryView === 'captions') {
+      show($libCaptionsView);
+      renderCaptionsList();
     } else {
-      hide($libImageGrid);
       show($libAdsView);
       renderAdsGrid(filteredAds());
     }
+  }
+
+  function renderCaptionsList() {
+    const captions = STATE.captions || [];
+    const knownRoles = ['headline', 'subline', 'cta', 'tagline'];
+
+    let html = '<div class="lib-caption-add">'
+      + '<input type="text" id="lib-caption-input" placeholder="Write a caption..." />'
+      + '<select id="lib-caption-role">'
+      + '<option value="headline">Headline</option>'
+      + '<option value="subline">Subline</option>'
+      + '<option value="cta">CTA</option>'
+      + '<option value="tagline">Tagline</option>'
+      + '</select>'
+      + '<button id="lib-caption-add-btn">Add</button>'
+      + '</div>';
+
+    if (captions.length === 0) {
+      html += '<div class="lib-empty">'
+        + '<div style="font-size:32px; opacity:0.3;">&#9997;&#65039;</div>'
+        + '<div>No captions yet.</div>'
+        + '<div style="font-size:13px;">Add one above or generate via the Generate tab.</div>'
+        + '</div>';
+    } else {
+      for (const cap of captions) {
+        const roleClass = cap.role && knownRoles.includes(cap.role) ? 'role-' + cap.role : '';
+        const roleBadge = cap.role ? '<span class="lib-caption-role ' + roleClass + '">' + escapeHtml(cap.role) + '</span>' : '';
+        html += '<div class="lib-caption-card">'
+          + '<div class="lib-caption-text">' + escapeHtml(cap.text) + '</div>'
+          + roleBadge
+          + '<button class="lib-caption-delete" data-caption-id="' + cap.id + '" title="Delete">&times;</button>'
+          + '</div>';
+      }
+    }
+
+    $libCaptionsView.innerHTML = html;
+
+    // Add caption handler
+    const $input = document.getElementById('lib-caption-input');
+    const $role = document.getElementById('lib-caption-role');
+    const $addBtn = document.getElementById('lib-caption-add-btn');
+
+    $addBtn.addEventListener('click', async () => {
+      const text = $input.value.trim();
+      if (!text) return;
+      $addBtn.disabled = true;
+      try {
+        const insert = { text, role: $role.value };
+        const { data: cap, error } = await db().from('caption').insert(insert).select().single();
+        if (error) throw error;
+        if (activeSegmentId && cap) {
+          await db().from('caption_segment').insert({ caption_id: cap.id, segment_id: activeSegmentId }).catch(() => {});
+        }
+        $input.value = '';
+        await loadData();
+      } catch (err) {
+        console.error('Add caption failed:', err);
+      } finally {
+        $addBtn.disabled = false;
+      }
+    });
+
+    // Delete caption handlers
+    $libCaptionsView.querySelectorAll('.lib-caption-delete').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.captionId;
+        if (!confirm('Delete this caption?')) return;
+        try {
+          await db().from('caption').delete().eq('id', id);
+          await loadData();
+        } catch (err) {
+          console.error('Delete caption failed:', err);
+        }
+      });
+    });
   }
 
   function renderImageGrid(images) {
