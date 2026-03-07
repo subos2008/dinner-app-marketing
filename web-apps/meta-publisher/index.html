@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>ComeJoinUs - Publisher</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+
+  :root {
+    --bg: #F8F8FA;
+    --surface: #FFFFFF;
+    --text-primary: #1C1C1E;
+    --text-secondary: #8E8E93;
+    --text-tertiary: #AEAEB2;
+    --separator: #E5E5EA;
+    --accent: #C8956C;
+    --accent-light: #F3E8DD;
+    --accent-dark: #8B5E3C;
+    --red: #FF3B30;
+    --green: #34C759;
+    --blue: #007AFF;
+    --orange: #FF9500;
+    --tab-bar-bg: rgba(249, 249, 249, 0.94);
+    --top-bar-bg: rgba(249, 249, 249, 0.94);
+    --radius: 10px;
+    --radius-lg: 14px;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.4;
+    font-weight: 400;
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+
+  .hidden { display: none !important; }
+
+  .loading-overlay {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg);
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--text-secondary);
+    z-index: 200;
+  }
+
+  .login-screen {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg);
+    padding: 24px;
+    z-index: 150;
+  }
+
+  .login-card {
+    width: 100%; max-width: 360px; text-align: center;
+  }
+
+  .login-card h1 {
+    font-family: var(--font-display);
+    font-size: 28px; font-weight: 400;
+    margin-bottom: 8px;
+  }
+
+  .login-card p { color: var(--text-secondary); margin-bottom: 28px; font-size: 15px; }
+
+  .login-card input {
+    width: 100%; padding: 14px 16px;
+    border: 1px solid var(--separator); border-radius: var(--radius);
+    font-family: var(--font-body); font-size: 16px;
+    margin-bottom: 12px; background: var(--surface);
+    color: var(--text-primary); -webkit-appearance: none;
+  }
+
+  .login-card input:focus { outline: none; border-color: var(--accent); }
+
+  .login-card button {
+    width: 100%; padding: 14px;
+    background: var(--accent); color: white; border: none;
+    border-radius: var(--radius);
+    font-family: var(--font-body); font-size: 16px; font-weight: 600;
+    cursor: pointer; -webkit-appearance: none;
+  }
+
+  .login-card button:active { background: var(--accent-dark); }
+  .login-card button:disabled { opacity: 0.5; cursor: default; }
+
+  .login-message { margin-top: 16px; font-size: 14px; color: var(--green); }
+  .login-message.error { color: var(--red); }
+
+  #app {
+    position: fixed; inset: 0;
+    display: flex; flex-direction: column;
+    background: var(--bg);
+  }
+
+  .topbar {
+    position: relative; z-index: 100;
+    background: var(--top-bar-bg);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    padding-top: var(--safe-top);
+    border-bottom: 0.5px solid var(--separator);
+    flex-shrink: 0;
+  }
+
+  .topbar-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 44px; padding: 0 16px;
+  }
+
+  .topbar-title {
+    font-family: var(--font-display);
+    font-size: 17px; font-weight: 400;
+    letter-spacing: -0.2px;
+  }
+
+  .topbar-btn {
+    background: none; border: none;
+    color: var(--accent); font-size: 15px;
+    cursor: pointer; padding: 4px 8px;
+    font-family: var(--font-body);
+  }
+
+  .tab-bar {
+    display: flex; gap: 0;
+    padding: 6px 16px 4px;
+    background: var(--top-bar-bg);
+  }
+
+  .tab-btn {
+    flex: 1; text-align: center;
+    padding: 8px 0;
+    background: none; border: none;
+    font-family: var(--font-body); font-size: 13px;
+    color: var(--text-tertiary);
+    cursor: pointer; position: relative;
+    font-weight: 500;
+  }
+
+  .tab-btn.active { color: var(--accent); }
+
+  .tab-btn.active::after {
+    content: '';
+    position: absolute; bottom: 0; left: 20%; right: 20%;
+    height: 2px; background: var(--accent);
+    border-radius: 1px;
+  }
+
+  .content {
+    flex: 1; overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(var(--safe-bottom) + 16px);
+  }
+
+  .ad-set-card {
+    background: var(--surface);
+    margin: 12px 16px;
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    cursor: pointer;
+    border: 1px solid var(--separator);
+    transition: background 0.15s;
+  }
+
+  .ad-set-card:active { background: #F0F0F5; }
+
+  .ad-set-name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+
+  .ad-set-meta {
+    font-size: 13px; color: var(--text-secondary);
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+
+  .ad-set-badge {
+    display: inline-block;
+    padding: 2px 8px; border-radius: 6px;
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .badge-synced { background: #D1F2D1; color: #1B7A1B; }
+  .badge-pending { background: #FFF3CD; color: #856404; }
+  .badge-error { background: #F8D7DA; color: #721C24; }
+  .badge-no-meta { background: #E8E8ED; color: var(--text-secondary); }
+
+  .detail-header {
+    padding: 16px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 0.5px solid var(--separator);
+    background: var(--surface);
+  }
+
+  .detail-back {
+    background: none; border: none;
+    font-size: 24px; color: var(--accent);
+    cursor: pointer; padding: 0 4px;
+    line-height: 1;
+  }
+
+  .detail-title { font-size: 17px; font-weight: 600; flex: 1; }
+
+  .sync-btn {
+    padding: 10px 20px;
+    background: var(--accent); color: white;
+    border: none; border-radius: var(--radius);
+    font-size: 15px; font-weight: 600;
+    cursor: pointer; width: calc(100% - 32px);
+    margin: 16px;
+    font-family: var(--font-body);
+  }
+
+  .sync-btn:active { background: var(--accent-dark); }
+  .sync-btn:disabled { opacity: 0.5; cursor: default; }
+
+  .ad-row {
+    display: flex; gap: 12px; align-items: center;
+    padding: 12px 16px;
+    border-bottom: 0.5px solid var(--separator);
+    background: var(--surface);
+  }
+
+  .ad-row-thumb {
+    width: 56px; height: 56px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: var(--separator);
+    flex-shrink: 0;
+  }
+
+  .ad-row-info { flex: 1; min-width: 0; }
+
+  .ad-row-caption {
+    font-size: 14px; font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .ad-row-status {
+    font-size: 12px; color: var(--text-secondary);
+    margin-top: 2px;
+    display: flex; gap: 8px; align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot-draft { background: var(--text-tertiary); }
+  .dot-approved { background: var(--blue); }
+  .dot-live { background: var(--green); }
+  .dot-paused { background: var(--orange); }
+  .dot-synced { background: var(--green); }
+  .dot-pending { background: var(--orange); }
+
+  .ad-row-actions { flex-shrink: 0; }
+
+  .status-select {
+    padding: 6px 8px;
+    border: 1px solid var(--separator);
+    border-radius: 6px;
+    font-size: 13px;
+    background: var(--surface);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+  }
+
+  .sync-result {
+    margin: 12px 16px;
+    padding: 12px;
+    border-radius: var(--radius);
+    font-size: 13px;
+  }
+
+  .sync-result-success { background: #D1F2D1; color: #1B7A1B; }
+  .sync-result-error { background: #F8D7DA; color: #721C24; }
+
+  .log-entry {
+    padding: 12px 16px;
+    border-bottom: 0.5px solid var(--separator);
+    font-size: 13px;
+  }
+
+  .log-time { color: var(--text-tertiary); font-size: 11px; }
+  .log-action { font-weight: 500; }
+  .log-error { color: var(--red); margin-top: 4px; }
+
+  .assign-btn {
+    padding: 4px 10px;
+    background: var(--accent-light); color: var(--accent-dark);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    font-size: 12px; font-weight: 500;
+    cursor: pointer; font-family: var(--font-body);
+  }
+
+  .assign-btn:active { background: var(--accent); color: white; }
+
+  .assign-sheet-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 300;
+  }
+
+  .assign-sheet {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-radius: 14px 14px 0 0;
+    padding: 20px 16px calc(var(--safe-bottom) + 20px);
+    z-index: 301;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .assign-sheet h3 { font-size: 17px; font-weight: 600; margin-bottom: 12px; }
+
+  .assign-option {
+    padding: 12px;
+    border: 1px solid var(--separator);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .assign-option:active { background: var(--accent-light); }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+
+  .empty-state-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .section-header {
+    padding: 20px 16px 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<div id="loading" class="loading-overlay">Publisher</div>
+
+<div id="login-screen" class="login-screen hidden">
+  <div class="login-card">
+    <h1>Publisher</h1>
+    <p>Push ads to Meta</p>
+    <form id="login-form">
+      <input type="email" id="login-email" placeholder="Email" autocomplete="email" required />
+      <button type="submit" id="login-btn">Send Magic Link</button>
+    </form>
+    <div id="login-message" class="login-message hidden"></div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span class="topbar-title">Publisher</span>
+      <button class="topbar-btn" id="signout-btn">Sign Out</button>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab-ad-sets" data-tab="ad-sets">Ad Sets</button>
+      <button class="tab-btn" id="tab-unassigned" data-tab="unassigned">Unassigned</button>
+      <button class="tab-btn" id="tab-log" data-tab="log">Sync Log</button>
+    </div>
+  </div>
+
+  <div class="content" id="content">
+    <div id="view-ad-sets"></div>
+    <div id="view-detail" class="hidden"></div>
+    <div id="view-unassigned" class="hidden"></div>
+    <div id="view-log" class="hidden"></div>
+  </div>
+</div>
+
+<div id="assign-overlay" class="assign-sheet-overlay hidden"></div>
+<div id="assign-sheet" class="assign-sheet hidden">
+  <h3>Assign to Ad Set</h3>
+  <div id="assign-options"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  const SUPABASE_URL = 'https://pqrhphvbyjqhntqjzljc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_vJfmD1tuFO7X2tiKTmRe3Q_-Py5ObXh';
+  const storageBaseUrl = SUPABASE_URL + '/storage/v1/object/public/creative';
+
+  let supabaseClient = null;
+  let currentSession = null;
+  let appInitialised = false;
+
+  let STATE = { adSets: [], ads: [], syncLog: [] };
+  let activeTab = 'ad-sets';
+  let detailAdSetId = null;
+  let assigningAdId = null;
+
+  function db() { return supabaseClient.schema('marketing'); }
+
+  function fnError(error, data) {
+    if (error) {
+      console.error('fnError raw:', { error, data, context: error.context, msg: error.message });
+      if (error.context) {
+        if (typeof error.context === 'object' && error.context.error) return error.context.error;
+        if (typeof error.context === 'string') return error.context;
+      }
+      return error.message || 'Edge Function error';
+    }
+    if (data && data.error) return data.error;
+    return null;
+  }
+
+  function escapeHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s || '';
+    return d.innerHTML;
+  }
+
+  const $loading = document.getElementById('loading');
+  const $loginScreen = document.getElementById('login-screen');
+  const $loginForm = document.getElementById('login-form');
+  const $loginEmail = document.getElementById('login-email');
+  const $loginBtn = document.getElementById('login-btn');
+  const $loginMessage = document.getElementById('login-message');
+  const $app = document.getElementById('app');
+  const $signoutBtn = document.getElementById('signout-btn');
+
+  const $viewAdSets = document.getElementById('view-ad-sets');
+  const $viewDetail = document.getElementById('view-detail');
+  const $viewUnassigned = document.getElementById('view-unassigned');
+  const $viewLog = document.getElementById('view-log');
+
+  const $assignOverlay = document.getElementById('assign-overlay');
+  const $assignSheet = document.getElementById('assign-sheet');
+  const $assignOptions = document.getElementById('assign-options');
+
+  // --- Auth ---
+  $loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = $loginEmail.value.trim();
+    if (!email) return;
+    $loginBtn.disabled = true;
+    $loginMessage.classList.add('hidden');
+
+    const { error } = await supabaseClient.auth.signInWithOtp({ email });
+    if (error) {
+      $loginMessage.textContent = error.message;
+      $loginMessage.className = 'login-message error';
+      $loginMessage.classList.remove('hidden');
+    } else {
+      $loginMessage.textContent = 'Check your email for a login link.';
+      $loginMessage.className = 'login-message';
+      $loginMessage.classList.remove('hidden');
+    }
+    $loginBtn.disabled = false;
+  });
+
+  $signoutBtn.addEventListener('click', async () => {
+    await supabaseClient.auth.signOut();
+    currentSession = null;
+    $app.classList.add('hidden');
+    $loginScreen.classList.remove('hidden');
+  });
+
+  // --- Tabs ---
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+
+  function switchTab(tab) {
+    activeTab = tab;
+    detailAdSetId = null;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    $viewAdSets.classList.toggle('hidden', tab !== 'ad-sets');
+    $viewDetail.classList.add('hidden');
+    $viewUnassigned.classList.toggle('hidden', tab !== 'unassigned');
+    $viewLog.classList.toggle('hidden', tab !== 'log');
+    if (tab === 'ad-sets') renderAdSets();
+    if (tab === 'unassigned') renderUnassigned();
+    if (tab === 'log') renderSyncLog();
+  }
+
+  // --- Data loading ---
+  async function loadData() {
+    const [adSetsRes, adsRes, logRes] = await Promise.all([
+      db().from('ad_set').select('*').order('created_at', { ascending: false }),
+      db().from('ad').select('*, base_image:base_image_id(*), caption:caption_id(*), body_copy:body_copy_id(*)').order('created_at', { ascending: false }),
+      db().from('sync_log').select('*').order('synced_at', { ascending: false }).limit(50),
+    ]);
+
+    STATE.adSets = adSetsRes.data || [];
+    STATE.ads = adsRes.data || [];
+    STATE.syncLog = logRes.data || [];
+
+    render();
+  }
+
+  function render() {
+    if (activeTab === 'ad-sets') {
+      if (detailAdSetId) renderDetail();
+      else renderAdSets();
+    }
+    if (activeTab === 'unassigned') renderUnassigned();
+    if (activeTab === 'log') renderSyncLog();
+  }
+
+  // --- Render: Ad Sets list ---
+  function renderAdSets() {
+    if (STATE.adSets.length === 0) {
+      $viewAdSets.innerHTML = '<div class="empty-state"><div class="empty-state-title">No Ad Sets</div>Create ad sets in Meta, then set their meta_ad_set_id in the database.</div>';
+      return;
+    }
+
+    $viewAdSets.innerHTML = STATE.adSets.map(function(as) {
+      var ads = STATE.ads.filter(function(a) { return a.ad_set_id === as.id; });
+      var total = ads.length;
+      var synced = ads.filter(function(a) { return a.meta_ad_id && a.desired_status === 'live' && a.meta_status === 'ACTIVE'; }).length;
+      var pending = ads.filter(function(a) { return needsSync(a); }).length;
+
+      var badge = '';
+      if (!as.meta_ad_set_id) {
+        badge = '<span class="ad-set-badge badge-no-meta">No Meta ID</span>';
+      } else if (pending > 0) {
+        badge = '<span class="ad-set-badge badge-pending">' + pending + ' pending</span>';
+      } else if (synced > 0) {
+        badge = '<span class="ad-set-badge badge-synced">In sync</span>';
+      }
+
+      return '<div class="ad-set-card" data-id="' + as.id + '">'
+        + '<div class="ad-set-name">' + escapeHtml(as.name) + '</div>'
+        + '<div class="ad-set-meta">'
+        + '<span>' + total + ' ad' + (total !== 1 ? 's' : '') + '</span>'
+        + badge
+        + '</div>'
+        + '</div>';
+    }).join('');
+
+    $viewAdSets.querySelectorAll('.ad-set-card').forEach(function(card) {
+      card.addEventListener('click', function() {
+        detailAdSetId = card.dataset.id;
+        $viewAdSets.classList.add('hidden');
+        $viewDetail.classList.remove('hidden');
+        renderDetail();
+      });
+    });
+  }
+
+  // --- Render: Ad Set Detail ---
+  function renderDetail() {
+    var adSet = STATE.adSets.find(function(as) { return as.id === detailAdSetId; });
+    if (!adSet) return;
+
+    var ads = STATE.ads.filter(function(a) { return a.ad_set_id === adSet.id; });
+    var pendingCount = ads.filter(function(a) { return needsSync(a); }).length;
+
+    var html = '<div class="detail-header">'
+      + '<button class="detail-back" id="detail-back">&larr;</button>'
+      + '<div class="detail-title">' + escapeHtml(adSet.name) + '</div>'
+      + '</div>';
+
+    if (ads.length === 0) {
+      html += '<div class="empty-state">No ads assigned to this ad set.<br>Assign ads from the Unassigned tab.</div>';
+    } else {
+      html += ads.map(function(ad) { return renderAdRow(ad); }).join('');
+    }
+
+    if (adSet.meta_ad_set_id && pendingCount > 0) {
+      html += '<button class="sync-btn" id="sync-btn">Sync ' + pendingCount + ' Ad' + (pendingCount !== 1 ? 's' : '') + '</button>';
+    } else if (!adSet.meta_ad_set_id) {
+      html += '<div class="empty-state" style="padding:24px">Set meta_ad_set_id before syncing.</div>';
+    } else if (pendingCount === 0 && ads.length > 0) {
+      html += '<div class="empty-state" style="padding:24px;color:var(--green)">All ads in sync.</div>';
+    }
+
+    html += '<div id="sync-results"></div>';
+
+    $viewDetail.innerHTML = html;
+
+    document.getElementById('detail-back').addEventListener('click', function() {
+      detailAdSetId = null;
+      $viewDetail.classList.add('hidden');
+      $viewAdSets.classList.remove('hidden');
+      renderAdSets();
+    });
+
+    $viewDetail.querySelectorAll('.status-select').forEach(function(sel) {
+      sel.addEventListener('change', async function() {
+        var adId = sel.dataset.adId;
+        var newStatus = sel.value;
+        var res = await db().from('ad').update({ desired_status: newStatus }).eq('id', adId);
+        if (res.error) {
+          alert('Failed to update status: ' + res.error.message);
+          return;
+        }
+        await loadData();
+      });
+    });
+
+    var $syncBtn = document.getElementById('sync-btn');
+    if ($syncBtn) {
+      $syncBtn.addEventListener('click', function() { handleSync(adSet.id); });
+    }
+  }
+
+  function renderAdRow(ad) {
+    var imgUrl = ad.composited_image_path
+      ? storageBaseUrl + '/' + ad.composited_image_path
+      : (ad.base_image ? storageBaseUrl + '/' + ad.base_image.storage_path : '');
+
+    var captionText = ad.caption ? ad.caption.text : 'No caption';
+    var syncState = getSyncState(ad);
+
+    var statusOptions = ['draft', 'approved', 'live', 'paused'].map(function(s) {
+      return '<option value="' + s + '"' + (ad.desired_status === s ? ' selected' : '') + '>' + s + '</option>';
+    }).join('');
+
+    return '<div class="ad-row">'
+      + (imgUrl ? '<img class="ad-row-thumb" src="' + imgUrl + '" alt="" />' : '<div class="ad-row-thumb"></div>')
+      + '<div class="ad-row-info">'
+      + '<div class="ad-row-caption">' + escapeHtml(captionText) + '</div>'
+      + '<div class="ad-row-status">'
+      + '<span class="status-dot dot-' + ad.desired_status + '"></span>'
+      + '<span>' + ad.desired_status + '</span>'
+      + (ad.meta_status ? ' &rarr; <span class="status-dot dot-' + (ad.meta_status === 'ACTIVE' ? 'synced' : 'pending') + '"></span> Meta: ' + ad.meta_status : '')
+      + (syncState === 'pending' ? ' <span style="color:var(--orange);font-weight:600">(needs sync)</span>' : '')
+      + '</div>'
+      + '</div>'
+      + '<div class="ad-row-actions">'
+      + '<select class="status-select" data-ad-id="' + ad.id + '">' + statusOptions + '</select>'
+      + '</div>'
+      + '</div>';
+  }
+
+  // --- Render: Unassigned ---
+  function renderUnassigned() {
+    var unassigned = STATE.ads.filter(function(a) { return !a.ad_set_id && a.desired_status !== 'draft'; });
+
+    if (unassigned.length === 0) {
+      $viewUnassigned.innerHTML = '<div class="empty-state"><div class="empty-state-title">No Unassigned Ads</div>All approved ads are assigned to ad sets, or all ads are still in draft.</div>';
+      return;
+    }
+
+    $viewUnassigned.innerHTML = '<div class="section-header">' + unassigned.length + ' unassigned ad' + (unassigned.length !== 1 ? 's' : '') + '</div>'
+      + unassigned.map(function(ad) {
+        var imgUrl = ad.composited_image_path
+          ? storageBaseUrl + '/' + ad.composited_image_path
+          : (ad.base_image ? storageBaseUrl + '/' + ad.base_image.storage_path : '');
+        var captionText = ad.caption ? ad.caption.text : 'No caption';
+
+        return '<div class="ad-row">'
+          + (imgUrl ? '<img class="ad-row-thumb" src="' + imgUrl + '" alt="" />' : '<div class="ad-row-thumb"></div>')
+          + '<div class="ad-row-info">'
+          + '<div class="ad-row-caption">' + escapeHtml(captionText) + '</div>'
+          + '<div class="ad-row-status"><span class="status-dot dot-' + ad.desired_status + '"></span> ' + ad.desired_status + '</div>'
+          + '</div>'
+          + '<div class="ad-row-actions">'
+          + '<button class="assign-btn" data-ad-id="' + ad.id + '">Assign</button>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+
+    $viewUnassigned.querySelectorAll('.assign-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() { openAssignSheet(btn.dataset.adId); });
+    });
+  }
+
+  // --- Assign sheet ---
+  function openAssignSheet(adId) {
+    assigningAdId = adId;
+    var adSetsWithMeta = STATE.adSets.filter(function(as) { return as.meta_ad_set_id; });
+
+    if (adSetsWithMeta.length === 0) {
+      alert('No ad sets with a Meta ID. Create ad sets in Meta first.');
+      return;
+    }
+
+    $assignOptions.innerHTML = adSetsWithMeta.map(function(as) {
+      return '<div class="assign-option" data-as-id="' + as.id + '">' + escapeHtml(as.name) + '</div>';
+    }).join('');
+
+    $assignSheet.classList.remove('hidden');
+    $assignOverlay.classList.remove('hidden');
+
+    $assignOptions.querySelectorAll('.assign-option').forEach(function(opt) {
+      opt.addEventListener('click', async function() {
+        var asId = opt.dataset.asId;
+        var res = await db().from('ad').update({ ad_set_id: asId }).eq('id', assigningAdId);
+        if (res.error) {
+          alert('Failed to assign: ' + res.error.message);
+          return;
+        }
+        closeAssignSheet();
+        await loadData();
+      });
+    });
+  }
+
+  function closeAssignSheet() {
+    $assignSheet.classList.add('hidden');
+    $assignOverlay.classList.add('hidden');
+    assigningAdId = null;
+  }
+
+  $assignOverlay.addEventListener('click', closeAssignSheet);
+
+  // --- Render: Sync Log ---
+  function renderSyncLog() {
+    if (STATE.syncLog.length === 0) {
+      $viewLog.innerHTML = '<div class="empty-state"><div class="empty-state-title">No Sync History</div>Sync some ads to see activity here.</div>';
+      return;
+    }
+
+    $viewLog.innerHTML = STATE.syncLog.map(function(entry) {
+      var time = new Date(entry.synced_at).toLocaleString();
+      var statusClass = entry.status === 'success' ? 'dot-synced' : 'dot-pending';
+
+      return '<div class="log-entry">'
+        + '<div class="log-time">' + time + '</div>'
+        + '<div class="log-action">'
+        + '<span class="status-dot ' + statusClass + '"></span> '
+        + entry.action + ' ' + entry.entity_type
+        + (entry.meta_id ? ' &rarr; ' + entry.meta_id : '')
+        + '</div>'
+        + (entry.error ? '<div class="log-error">' + escapeHtml(entry.error) + '</div>' : '')
+        + '</div>';
+    }).join('');
+  }
+
+  // --- Sync ---
+  async function handleSync(adSetId) {
+    var $syncBtn = document.getElementById('sync-btn');
+    var $syncResults = document.getElementById('sync-results');
+    if ($syncBtn) {
+      $syncBtn.disabled = true;
+      $syncBtn.textContent = 'Syncing...';
+    }
+
+    try {
+      var resp = await supabaseClient.functions.invoke('meta-sync', {
+        body: { ad_set_id: adSetId },
+      });
+
+      var errMsg = fnError(resp.error, resp.data);
+      if (errMsg) {
+        console.error('Sync error:', errMsg);
+        if ($syncResults) {
+          $syncResults.innerHTML = '<div class="sync-result sync-result-error">' + escapeHtml(errMsg) + '</div>';
+        }
+        return;
+      }
+
+      var results = resp.data.synced || [];
+      if ($syncResults && results.length > 0) {
+        $syncResults.innerHTML = results.map(function(r) {
+          if (r.success) {
+            return '<div class="sync-result sync-result-success">' + r.action + ': ' + r.ad_id.slice(0, 8) + ' &rarr; ' + (r.meta_ad_id || '') + '</div>';
+          } else {
+            return '<div class="sync-result sync-result-error">' + r.action + ': ' + r.ad_id.slice(0, 8) + ' &mdash; ' + escapeHtml(r.error) + '</div>';
+          }
+        }).join('');
+      } else if ($syncResults && resp.data.message) {
+        $syncResults.innerHTML = '<div class="sync-result sync-result-success">' + escapeHtml(resp.data.message) + '</div>';
+      }
+
+      await loadData();
+
+    } catch (err) {
+      console.error('Sync error:', err);
+      if ($syncResults) {
+        $syncResults.innerHTML = '<div class="sync-result sync-result-error">' + escapeHtml(err.message || 'Sync failed') + '</div>';
+      }
+    } finally {
+      if ($syncBtn) {
+        $syncBtn.disabled = false;
+        $syncBtn.textContent = 'Sync';
+      }
+    }
+  }
+
+  // --- Helpers ---
+  function needsSync(ad) {
+    if (ad.desired_status === 'live' && ad.meta_status !== 'ACTIVE') return true;
+    if (ad.desired_status === 'paused' && ad.meta_status !== 'PAUSED') return true;
+    return false;
+  }
+
+  function getSyncState(ad) {
+    if (needsSync(ad)) return 'pending';
+    if (ad.meta_ad_id) return 'synced';
+    return 'none';
+  }
+
+  // --- Init ---
+  async function initApp() {
+    if (appInitialised) return;
+    appInitialised = true;
+    await loadData();
+    $loading.classList.add('hidden');
+    $app.classList.remove('hidden');
+  }
+
+  // --- Boot ---
+  supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  supabaseClient.auth.onAuthStateChange(function(event, session) {
+    currentSession = session;
+    if (session) {
+      $loginScreen.classList.add('hidden');
+      initApp();
+    } else {
+      $loading.classList.add('hidden');
+      $loginScreen.classList.remove('hidden');
+      $app.classList.add('hidden');
+      appInitialised = false;
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
