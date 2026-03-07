@@ -360,6 +360,9 @@ verify_jwt = false
 [functions.composite]
 verify_jwt = false
 
+[functions.edit-image]
+verify_jwt = false
+
 [edge_runtime]
 enabled = true
 # Supported request policies: `oneshot`, `per_worker`.
