@@ -2837,44 +2837,33 @@
         }).catch(() => {});
     }
 
-    // Save brief to Storage (with timestamped backup)
-    $briefSave.addEventListener('click', async () => {
+    // Autosave brief on keystrokes (debounced, no backups)
+    let briefSaveTimer = null;
+    let briefSaving = false;
+
+    async function saveBrief() {
+      if (briefSaving) return;
       const text = $brief.value;
-      $briefSave.disabled = true;
+      if (text === briefLoadedContent) return;
+      briefSaving = true;
       $briefStatus.textContent = 'Saving...';
 
       try {
-        // Check for remote changes before saving
+        // If remote changed, take it and discard local edits
         try {
           const checkRes = await fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now());
           if (checkRes.ok) {
             const currentRemote = await checkRes.text();
             if (briefLoadedContent !== null && currentRemote !== briefLoadedContent) {
-              if (!confirm('The brief was updated by someone else since you loaded it. Save anyway and overwrite their changes?')) {
-                $briefSave.disabled = false;
-                $briefStatus.textContent = '';
-                return;
-              }
+              $brief.value = currentRemote;
+              briefLoadedContent = currentRemote;
+              $briefStatus.textContent = 'Updated from remote.';
+              setTimeout(() => { if ($briefStatus.textContent === 'Updated from remote.') $briefStatus.textContent = ''; }, 2000);
+              return;
             }
           }
         } catch (e) { /* ignore check errors, proceed with save */ }
 
-        // Backup current version before overwriting
-        try {
-          const res = await fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now());
-          if (res.ok) {
-            const oldText = await res.text();
-            const ts = new Date().toISOString().replace(/[:.]/g, '-');
-            const backupBlob = new Blob([oldText], { type: 'text/markdown' });
-            await supabaseClient.storage
-              .from('creative')
-              .upload('creative-brief-backups/' + ts + '.md', backupBlob);
-          }
-        } catch (backupErr) {
-          console.warn('Brief backup failed (continuing with save):', backupErr);
-        }
-
-        // Save the new version
         const blob = new Blob([text], { type: 'text/markdown' });
         const { error } = await supabaseClient.storage
           .from('creative')
@@ -2884,13 +2873,23 @@
 
         briefLoadedContent = text;
         $briefStatus.textContent = 'Saved.';
-        setTimeout(() => { $briefStatus.textContent = ''; }, 2000);
+        setTimeout(() => { if ($briefStatus.textContent === 'Saved.') $briefStatus.textContent = ''; }, 2000);
       } catch (err) {
         console.error('Failed to save brief:', err);
         $briefStatus.textContent = 'Save failed: ' + (err.message || 'Unknown error');
       } finally {
-        $briefSave.disabled = false;
+        briefSaving = false;
       }
+    }
+
+    $brief.addEventListener('input', () => {
+      clearTimeout(briefSaveTimer);
+      briefSaveTimer = setTimeout(saveBrief, 2000);
+    });
+
+    $briefSave.addEventListener('click', () => {
+      clearTimeout(briefSaveTimer);
+      saveBrief();
     });
 
     // Auto-refresh brief when tab regains focus
@@ -2905,17 +2904,10 @@
         if (remoteText === briefLoadedContent) return;
 
         const $briefEl = document.getElementById('generate-brief-text');
-        const $briefStatusEl = document.getElementById('generate-brief-status');
         if (!$briefEl) return;
 
-        const hasLocalEdits = $briefEl.value !== briefLoadedContent;
-
-        if (!hasLocalEdits) {
-          $briefEl.value = remoteText;
-          briefLoadedContent = remoteText;
-        } else if ($briefStatusEl) {
-          $briefStatusEl.textContent = 'Brief updated elsewhere. Save will overwrite.';
-        }
+        $briefEl.value = remoteText;
+        briefLoadedContent = remoteText;
       } catch (e) { /* ignore fetch errors */ }
     });
 

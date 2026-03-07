@@ -2255,44 +2255,33 @@
     }
   }
 
-  // Save brief to Storage (with timestamped backup)
-  $genBriefSave.addEventListener('click', async () => {
+  // Autosave brief on keystrokes (debounced, no backups)
+  let briefSaveTimer = null;
+  let briefSaving = false;
+
+  async function saveBrief() {
+    if (briefSaving) return;
     const text = $genBriefTextarea.value;
-    $genBriefSave.disabled = true;
+    if (text === briefLoadedContent) return;
+    briefSaving = true;
     $genBriefStatus.textContent = 'Saving...';
 
     try {
-      // Check for remote changes before saving
+      // If remote changed, take it and discard local edits
       try {
         const checkRes = await fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now());
         if (checkRes.ok) {
           const currentRemote = await checkRes.text();
           if (briefLoadedContent !== null && currentRemote !== briefLoadedContent) {
-            if (!confirm('The brief was updated by someone else since you loaded it. Save anyway and overwrite their changes?')) {
-              $genBriefSave.disabled = false;
-              $genBriefStatus.textContent = '';
-              return;
-            }
+            $genBriefTextarea.value = currentRemote;
+            briefLoadedContent = currentRemote;
+            $genBriefStatus.textContent = 'Updated from remote.';
+            setTimeout(() => { if ($genBriefStatus.textContent === 'Updated from remote.') $genBriefStatus.textContent = ''; }, 2000);
+            return;
           }
         }
       } catch (e) { /* ignore check errors, proceed with save */ }
 
-      // Backup current version before overwriting
-      try {
-        const res = await fetch(storageBaseUrl + '/creative-brief.md');
-        if (res.ok) {
-          const oldText = await res.text();
-          const ts = new Date().toISOString().replace(/[:.]/g, '-');
-          const backupBlob = new Blob([oldText], { type: 'text/markdown' });
-          await supabaseClient.storage
-            .from('creative')
-            .upload('creative-brief-backups/' + ts + '.md', backupBlob);
-        }
-      } catch (backupErr) {
-        console.warn('Brief backup failed (continuing with save):', backupErr);
-      }
-
-      // Save the new version
       const blob = new Blob([text], { type: 'text/markdown' });
       const { error } = await supabaseClient.storage
         .from('creative')
@@ -2302,13 +2291,23 @@
 
       briefLoadedContent = text;
       $genBriefStatus.textContent = 'Saved.';
-      setTimeout(() => { $genBriefStatus.textContent = ''; }, 2000);
+      setTimeout(() => { if ($genBriefStatus.textContent === 'Saved.') $genBriefStatus.textContent = ''; }, 2000);
     } catch (err) {
       console.error('Failed to save brief:', err);
       $genBriefStatus.textContent = 'Save failed: ' + (err.message || 'Unknown error');
     } finally {
-      $genBriefSave.disabled = false;
+      briefSaving = false;
     }
+  }
+
+  $genBriefTextarea.addEventListener('input', () => {
+    clearTimeout(briefSaveTimer);
+    briefSaveTimer = setTimeout(saveBrief, 2000);
+  });
+
+  $genBriefSave.addEventListener('click', () => {
+    clearTimeout(briefSaveTimer);
+    saveBrief();
   });
 
   // Auto-refresh brief when tab regains focus
@@ -2322,14 +2321,8 @@
       const remoteText = await res.text();
       if (remoteText === briefLoadedContent) return;
 
-      const hasLocalEdits = $genBriefTextarea.value !== briefLoadedContent;
-
-      if (!hasLocalEdits) {
-        $genBriefTextarea.value = remoteText;
-        briefLoadedContent = remoteText;
-      } else {
-        $genBriefStatus.textContent = 'Brief updated elsewhere. Save will overwrite.';
-      }
+      $genBriefTextarea.value = remoteText;
+      briefLoadedContent = remoteText;
     } catch (e) { /* ignore fetch errors */ }
   });
 
