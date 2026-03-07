@@ -1871,6 +1871,13 @@
     <button class="select-archive-btn" id="select-archive-btn">Archive</button>
   </div>
 
+  <!-- Ad select mode action bar -->
+  <div id="ad-select-action-bar" class="select-action-bar hidden">
+    <button class="select-cancel-btn" id="ad-select-cancel-btn">Cancel</button>
+    <span class="select-count" id="ad-select-count">0 selected</span>
+    <button class="select-archive-btn" id="ad-select-archive-btn">Archive</button>
+  </div>
+
   <!-- Fullscreen ad viewer -->
   <div id="ad-viewer" class="ad-viewer hidden">
     <div class="viewer-close" id="ad-viewer-close">&times;</div>
@@ -1937,6 +1944,9 @@
   let showArchived = false;
   let selectMode = false;
   let selectedImageIds = new Set();
+  let selectedAdIds = new Set();
+  let showArchivedAds = false;
+  let adSelectMode = false;
   let briefLoadedOnce = false;
   let briefLoadedContent = null;
   let editorCaptionId = null;
@@ -2024,6 +2034,10 @@
   const $adViewerCounter = document.getElementById('ad-viewer-counter');
   const $adViewerImage = document.getElementById('ad-viewer-image');
   const $adViewerDuplicateBtn = document.getElementById('ad-viewer-duplicate-btn');
+  // Ad select action bar refs
+  const $adSelectActionBar = document.getElementById('ad-select-action-bar');
+  const $adSelectCount = document.getElementById('ad-select-count');
+  const $adSelectArchiveBtn = document.getElementById('ad-select-archive-btn');
   // Builder DOM refs
   const $adBuilder = document.getElementById('ad-builder');
   const $builderClose = document.getElementById('builder-close');
@@ -2054,6 +2068,27 @@
       const { error } = await db().from('base_image').update({ archived_at: value }).in('id', ids);
       if (error) throw error;
       exitSelectMode();
+      await loadData();
+    } catch (err) {
+      alert('Failed to ' + action + ': ' + (err.message || err));
+    }
+  });
+
+  // Ad select action bar handlers
+  document.getElementById('ad-select-cancel-btn').addEventListener('click', () => exitAdSelectMode());
+  document.getElementById('ad-select-archive-btn').addEventListener('click', async () => {
+    const ids = Array.from(selectedAdIds);
+    if (ids.length === 0) return;
+    const action = showArchivedAds ? 'restore' : 'archive';
+    const msg = action === 'archive'
+      ? 'Archive ' + ids.length + ' ad' + (ids.length > 1 ? 's' : '') + '?'
+      : 'Restore ' + ids.length + ' ad' + (ids.length > 1 ? 's' : '') + '?';
+    if (!confirm(msg)) return;
+    try {
+      const value = action === 'archive' ? new Date().toISOString() : null;
+      const { error } = await db().from('ad').update({ archived_at: value }).in('id', ids);
+      if (error) throw error;
+      exitAdSelectMode();
       await loadData();
     } catch (err) {
       alert('Failed to ' + action + ': ' + (err.message || err));
@@ -2234,9 +2269,17 @@
         db().from('caption')
           .select('*, caption_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
           .order('created_at', { ascending: false }),
-        db().from('ad')
-          .select('*, base_image:base_image_id(*), ad_segment(segment_id, segment:segment_id(id, name)), ad_caption(caption_id, caption:caption_id(*))')
-          .order('created_at', { ascending: false }),
+        (() => {
+          const adQuery = db().from('ad')
+            .select('*, base_image:base_image_id(*), ad_segment(segment_id, segment:segment_id(id, name)), ad_caption(caption_id, caption:caption_id(*))')
+            .order('created_at', { ascending: false });
+          if (showArchivedAds) {
+            adQuery.not('archived_at', 'is', null);
+          } else {
+            adQuery.is('archived_at', null);
+          }
+          return adQuery;
+        })(),
         db().from('segment').select('*').order('name'),
       ]);
 
@@ -2720,6 +2763,7 @@
   // --- Library tab ---
   function switchLibraryView(view) {
     if (selectMode) exitSelectMode();
+    if (adSelectMode) exitAdSelectMode();
     libraryView = view;
     $libBtnImages.classList.toggle('active', view === 'images');
     $libBtnCaptions.classList.toggle('active', view === 'captions');
@@ -3052,34 +3096,113 @@
   }
 
   function renderAdsGrid(ads) {
+    // Archive toggle (always shown)
+    let html = '<div class="archive-toggle">'
+      + '<button class="archive-toggle-btn' + (!showArchivedAds ? ' active' : '') + '" data-show="active">Active</button>'
+      + '<button class="archive-toggle-btn' + (showArchivedAds ? ' active' : '') + '" data-show="archived">Archived</button>'
+      + '</div>';
+
     if (!ads.length) {
-      $libAdsView.innerHTML = '<div class="lib-empty">'
-        + '<div style="font-size:32px; opacity:0.3;">&#128240;</div>'
-        + '<div>No ads yet.</div>'
-        + '<div style="font-size:13px;">Open an image and tap Build Ad to create one.</div>'
-        + '</div>';
+      const emptyMsg = showArchivedAds
+        ? '<div>No archived ads.</div>'
+        : '<div>No ads yet.</div><div style="font-size:13px;">Open an image and tap Build Ad to create one.</div>';
+      $libAdsView.innerHTML = html
+        + '<div class="lib-empty"><div style="font-size:32px; opacity:0.3;">&#128240;</div>' + emptyMsg + '</div>';
+      attachAdArchiveToggleHandlers();
       return;
     }
 
-    let html = '<div class="image-grid">';
+    // Header with count + select button
+    html += '<div class="image-grid-header">'
+      + '<span class="image-grid-header-label">' + ads.length + ' ad' + (ads.length !== 1 ? 's' : '') + '</span>'
+      + '<button class="image-select-btn" id="ad-select-toggle">' + (adSelectMode ? 'Cancel' : 'Select') + '</button>'
+      + '</div>';
+
+    html += '<div class="image-grid' + (adSelectMode ? ' select-mode' : '') + '">';
     ads.forEach(ad => {
       const src = adImageUrl(ad);
       if (src) {
-        html += '<img data-ad-id="' + escapeHtml(ad.id) + '" '
-          + 'src="' + escapeHtml(src) + '" '
-          + 'loading="lazy" '
-          + 'alt="" />';
+        const selectedClass = selectedAdIds.has(ad.id) ? ' selected' : '';
+        html += '<div class="image-cell-wrap' + selectedClass + '" data-ad-id="' + escapeHtml(ad.id) + '">'
+          + '<div class="select-check"></div>'
+          + '<img src="' + escapeHtml(src) + '" loading="lazy" alt="" />'
+          + '</div>';
       }
     });
     html += '</div>';
     $libAdsView.innerHTML = html;
 
-    // Attach click handlers — open fullscreen ad viewer
-    $libAdsView.querySelectorAll('[data-ad-id]').forEach(cell => {
+    // Attach click handlers
+    $libAdsView.querySelectorAll('.image-cell-wrap').forEach(cell => {
       cell.addEventListener('click', () => {
-        openAdViewer(cell.dataset.adId);
+        if (adSelectMode) {
+          const id = cell.dataset.adId;
+          if (selectedAdIds.has(id)) {
+            selectedAdIds.delete(id);
+            cell.classList.remove('selected');
+          } else {
+            selectedAdIds.add(id);
+            cell.classList.add('selected');
+          }
+          updateAdSelectActionBar();
+        } else {
+          openAdViewer(cell.dataset.adId);
+        }
       });
     });
+
+    // Select toggle button
+    const $adSelectToggle = document.getElementById('ad-select-toggle');
+    if ($adSelectToggle) {
+      $adSelectToggle.addEventListener('click', () => {
+        if (adSelectMode) { exitAdSelectMode(); } else { enterAdSelectMode(); }
+      });
+    }
+
+    attachAdArchiveToggleHandlers();
+  }
+
+  function attachAdArchiveToggleHandlers() {
+    $libAdsView.querySelectorAll('.archive-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const newShowArchived = btn.dataset.show === 'archived';
+        if (newShowArchived === showArchivedAds) return;
+        showArchivedAds = newShowArchived;
+        if (adSelectMode) exitAdSelectMode();
+        await loadData();
+      });
+    });
+  }
+
+  function enterAdSelectMode() {
+    adSelectMode = true;
+    selectedAdIds.clear();
+    renderLibrary();
+    updateAdSelectActionBar();
+    show($adSelectActionBar);
+  }
+
+  function exitAdSelectMode() {
+    adSelectMode = false;
+    selectedAdIds.clear();
+    hide($adSelectActionBar);
+    renderLibrary();
+  }
+
+  function updateAdSelectActionBar() {
+    const count = selectedAdIds.size;
+    $adSelectCount.textContent = count + ' selected';
+
+    if (showArchivedAds) {
+      $adSelectArchiveBtn.textContent = 'Restore';
+      $adSelectArchiveBtn.className = 'select-archive-btn restore';
+    } else {
+      $adSelectArchiveBtn.textContent = 'Archive';
+      $adSelectArchiveBtn.className = 'select-archive-btn archive';
+    }
+
+    $adSelectArchiveBtn.disabled = count === 0;
+    $adSelectArchiveBtn.style.opacity = count === 0 ? '0.4' : '1';
   }
 
   // --- Fullscreen Ad Viewer ---
