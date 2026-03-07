@@ -3567,6 +3567,49 @@
 
   $captionEditorClose.addEventListener('click', closeCaptionEditor);
 
+  $captionEditorSave.addEventListener('click', async () => {
+    const textEl = document.getElementById('caption-editor-text');
+    const activeRole = $captionEditorBody.querySelector('.caption-editor-role-btn.active');
+    if (!textEl || !activeRole) return;
+
+    const newText = textEl.value.trim();
+    const newRole = activeRole.dataset.role;
+
+    if (!newText) {
+      alert('Caption text cannot be empty.');
+      return;
+    }
+
+    $captionEditorSave.disabled = true;
+
+    try {
+      if (editorIsLocked) {
+        // Duplicate: insert new caption with edited values
+        const { data: newCap, error } = await db().from('caption').insert({ text: newText, role: newRole }).select().single();
+        if (error) throw error;
+
+        // Copy segment assignments from original to new caption
+        const original = STATE.captions.find(c => c.id === editorCaptionId);
+        if (original && original.segments.length > 0) {
+          const segInserts = original.segments.map(s => ({ caption_id: newCap.id, segment_id: s.id }));
+          await db().from('caption_segment').insert(segInserts);
+        }
+      } else {
+        // Direct update
+        const { error } = await db().from('caption').update({ text: newText, role: newRole }).eq('id', editorCaptionId);
+        if (error) throw error;
+      }
+
+      await loadData();
+      closeCaptionEditor();
+    } catch (err) {
+      console.error('Save caption failed:', err);
+      alert('Failed to save caption.');
+    } finally {
+      $captionEditorSave.disabled = false;
+    }
+  });
+
   // --- Full-screen Ad Builder ---
 
   function openAdBuilder() {
