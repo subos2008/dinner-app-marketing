@@ -52,5 +52,8 @@ This repo is for:
 - Secrets: `GOOGLE_AI_API_KEY` set via `supabase secrets set` (SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY are auto-available)
 - AWS profile for deploy: `dinner-app-deploy` (set in deploy.sh)
 
+## Edge Function Error Responses
+All edge functions return errors as `{ "error": "Human-readable message" }` with an appropriate HTTP status code. One field only — no `detail`, `code`, or debug fields. The `error` string should be self-contained and suitable for displaying to the user (e.g. "Image generation failed: model timeout"). Both SPAs use an `fnError(error, data)` helper to extract the message from `supabase.functions.invoke` responses.
+
 ## Ways of Working
 This repo is a thinking space. We explore ideas, refine them, and produce actionable marketing output. Not everything here ships — some of it is just us working through the problem.
