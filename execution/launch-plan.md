@@ -134,3 +134,4 @@ Using Meta MCP + our ad copy:
 - **Onboarding app readiness?** Is the landing experience ready for paid traffic?
 - **Budget?** What's the initial test budget for Manchester?
 - **Manchester-specific angles?** Any local cultural hooks worth leaning into?
+- Gay - hire a gay marketing agency? 
