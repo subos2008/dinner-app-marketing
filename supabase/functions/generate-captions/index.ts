@@ -34,7 +34,8 @@ Deno.serve(async (req) => {
 
 // deno-lint-ignore no-explicit-any
 async function handleGenerate(body: any) {
-  const { role, brief, segment_hint } = body
+  const { prompt, role, brief, segment_hint } = body
+  if (!prompt) return jsonResponse({ error: 'prompt is required' }, 400)
   if (!role || !VALID_ROLES.includes(role)) {
     return jsonResponse({ error: `role is required and must be one of: ${VALID_ROLES.join(', ')}` }, 400)
   }
@@ -42,6 +43,7 @@ async function handleGenerate(body: any) {
   const geminiPrompt = [
     brief ? `Context — creative brief:\n${brief}\n\n---\n\n` : '',
     segment_hint ? `Segment style hint: ${segment_hint}\n\n` : '',
+    `Ad copy request: ${prompt}\n\n`,
     `${ROLE_PROMPTS[role]}\n\n`,
     `Keep copy warm, honest, direct. Not corporate. Not cringey.\n\n`,
     `Return a JSON array of objects with "text" and "role" fields. The "role" field should be "${role}" for all items.\n`,
