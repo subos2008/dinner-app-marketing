@@ -4,6 +4,8 @@
 
 Nano Banana's `edit_image` (Gemini) doesn't preserve the original aspect ratio. All 9:16 story images come back as 1:1 squares after text is composited onto them.
 
+ED: Also the more general issue that we seem to be always generating 1x1 aspect ratio which I don't think is going to be great for instagram
+
 Affected images (The Transplant):
 - `wednesday-night-problem-story-9x16-copy.png` — came back square
 - `google-search-story-9x16-copy.png` — came back square
