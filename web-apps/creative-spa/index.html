@@ -1245,14 +1245,66 @@
   .lib-caption-role.role-subline { background: #e2eef3; color: #3C6E8B; }
   .lib-caption-role.role-cta { background: #e6f3e2; color: #4A7B3C; }
   .lib-caption-role.role-tagline { background: #ede2f3; color: #6E3C8B; }
+  .lib-caption-card-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .lib-caption-segments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+  }
+  .lib-caption-seg-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(118, 118, 128, 0.12);
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .lib-caption-seg-chip button {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    font-size: 12px;
+    padding: 0;
+    margin-left: 1px;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .lib-caption-assign {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 16px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-appearance: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: 4px;
+  }
+  .lib-caption-assign:active {
+    background: var(--surface);
+  }
   .lib-caption-delete {
     background: none;
     border: none;
     color: #666;
     font-size: 18px;
     padding: 0 4px;
-    margin-left: 8px;
+    margin-left: 4px;
     cursor: pointer;
+    flex-shrink: 0;
   }
 
   .lib-placeholder {
@@ -2698,9 +2750,33 @@
       for (const cap of captions) {
         const roleClass = cap.role && knownRoles.includes(cap.role) ? 'role-' + cap.role : '';
         const roleBadge = cap.role ? '<span class="lib-caption-role ' + roleClass + '">' + escapeHtml(cap.role) + '</span>' : '';
+
+        // Segment chips
+        let segChips = '';
+        if (cap.segments && cap.segments.length > 0) {
+          segChips = '<div class="lib-caption-segments">';
+          for (const seg of cap.segments) {
+            segChips += '<span class="lib-caption-seg-chip">'
+              + escapeHtml(seg.name)
+              + '<button data-caption-id="' + cap.id + '" data-segment-id="' + seg.id + '" title="Remove from ' + escapeHtml(seg.name) + '">&times;</button>'
+              + '</span>';
+          }
+          segChips += '</div>';
+        }
+
+        // Show assign button if segment is active and caption isn't in it
+        const inActiveSegment = activeSegmentId && cap.segments && cap.segments.some(s => s.id === activeSegmentId);
+        const assignBtn = activeSegmentId && !inActiveSegment
+          ? '<button class="lib-caption-assign" data-caption-id="' + cap.id + '" title="Add to segment">+</button>'
+          : '';
+
         html += '<div class="lib-caption-card">'
+          + '<div class="lib-caption-card-body">'
           + '<div class="lib-caption-text">' + escapeHtml(cap.text) + '</div>'
+          + segChips
+          + '</div>'
           + roleBadge
+          + assignBtn
           + '<button class="lib-caption-delete" data-caption-id="' + cap.id + '" title="Delete">&times;</button>'
           + '</div>';
       }
@@ -2745,6 +2821,37 @@
         } catch (err) {
           console.error('Delete caption failed:', err);
           alert('Can\u2019t delete \u2014 this caption is used by an ad. Delete the ad first.');
+        }
+      });
+    });
+
+    // Assign to segment handlers
+    $libCaptionsView.querySelectorAll('.lib-caption-assign').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const captionId = btn.dataset.captionId;
+        if (!activeSegmentId) return;
+        btn.disabled = true;
+        try {
+          await db().from('caption_segment').insert({ caption_id: captionId, segment_id: activeSegmentId });
+          await loadData();
+        } catch (err) {
+          console.error('Assign caption to segment failed:', err);
+        }
+      });
+    });
+
+    // Remove from segment handlers
+    $libCaptionsView.querySelectorAll('.lib-caption-seg-chip button').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const captionId = btn.dataset.captionId;
+        const segmentId = btn.dataset.segmentId;
+        btn.closest('.lib-caption-seg-chip').style.opacity = '0.3';
+        try {
+          await db().from('caption_segment').delete()
+            .eq('caption_id', captionId).eq('segment_id', segmentId);
+          await loadData();
+        } catch (err) {
+          console.error('Remove caption from segment failed:', err);
         }
       });
     });
