@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: 'Unauthorized' }, 401)
     }
 
-    const { prompt, brief, segment_hint, aspect_ratio } = await req.json()
+    const { prompt, brief, segment_hint, aspect_ratio, include_text } = await req.json()
     if (!prompt) return jsonResponse({ error: 'prompt is required' }, 400)
     if (!aspect_ratio) return jsonResponse({ error: 'aspect_ratio is required' }, 400)
 
@@ -22,13 +22,36 @@ Deno.serve(async (req) => {
     const genPromptId = await upsertGenerationPrompt(userClient, 'image', prompt, brief)
 
     // Build Gemini prompt
-    const geminiPrompt = [
-      brief ? `Context — creative brief:\n${brief}\n\n---\n\n` : '',
-      segment_hint ? `Segment style hint: ${segment_hint}\n\n` : '',
-      `Generate an ad image based on this request: ${prompt}\n\n`,
-      'Make the image suitable for a social media ad (Instagram/Facebook). ',
-      'Do NOT include any text, words, letters, captions, headlines, or watermarks in the image. The image should be purely visual with no text overlay — text will be added separately later.',
-    ].join('')
+    let geminiPrompt: string
+    if (include_text && include_text.length > 0) {
+      const roleHints: Record<string, string> = {
+        headline: 'large, bold, upper area',
+        subline: 'medium, below headline',
+        cta: 'button style, lower area, accent color',
+        tagline: 'small, bottom edge',
+      }
+      const textLines = include_text.map((t: { text: string; role?: string }) => {
+        const hint = t.role && roleHints[t.role] ? ` (${roleHints[t.role]})` : ''
+        return `- ${(t.role || 'text').toUpperCase()}${hint}: "${t.text}"`
+      }).join('\n')
+
+      geminiPrompt = [
+        brief ? `Context — creative brief:\n${brief}\n\n---\n\n` : '',
+        segment_hint ? `Segment style hint: ${segment_hint}\n\n` : '',
+        `Generate an ad image based on this request: ${prompt}\n\n`,
+        'Make the image suitable for a social media ad (Instagram/Facebook).\n\n',
+        `Include the following text overlays, integrated beautifully into the design:\n${textLines}\n`,
+        'Make the text readable with appropriate contrast. Be creative with typography and placement.',
+      ].join('')
+    } else {
+      geminiPrompt = [
+        brief ? `Context — creative brief:\n${brief}\n\n---\n\n` : '',
+        segment_hint ? `Segment style hint: ${segment_hint}\n\n` : '',
+        `Generate an ad image based on this request: ${prompt}\n\n`,
+        'Make the image suitable for a social media ad (Instagram/Facebook). ',
+        'Do NOT include any text, words, letters, captions, headlines, or watermarks in the image. The image should be purely visual with no text overlay — text will be added separately later.',
+      ].join('')
+    }
 
     console.log('[generate-image] calling Gemini...')
     let imageData: Uint8Array
