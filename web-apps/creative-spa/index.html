@@ -1278,16 +1278,6 @@
     line-height: 1;
   }
 
-  .lib-caption-delete {
-    background: none;
-    border: none;
-    color: #666;
-    font-size: 18px;
-    padding: 0 4px;
-    margin-left: 4px;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
 
   .lib-placeholder {
     display: flex;
@@ -1699,6 +1689,8 @@
   .caption-editor-footer { padding: 16px; padding-bottom: calc(16px + var(--safe-bottom)); border-top: 1px solid var(--border); flex-shrink: 0; }
   .caption-editor-save { width: 100%; padding: 14px; border-radius: 12px; border: none; background: var(--accent); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; }
   .caption-editor-save:disabled { opacity: 0.5; cursor: default; }
+  .caption-editor-delete { width: 100%; padding: 14px; border-radius: 12px; border: none; background: none; color: #d33; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 8px; }
+  .caption-editor-delete:active { background: rgba(221,51,51,0.06); }
 </style>
 </head>
 <body>
@@ -1915,6 +1907,7 @@
   <div class="caption-editor-body" id="caption-editor-body"></div>
   <div class="caption-editor-footer">
     <button class="caption-editor-save" id="caption-editor-save">Save</button>
+    <button class="caption-editor-delete hidden" id="caption-editor-delete">Delete</button>
   </div>
 </div>
 
@@ -2040,6 +2033,7 @@
   const $captionEditorSave = document.getElementById('caption-editor-save');
   const $captionEditorClose = document.getElementById('caption-editor-close');
   const $captionEditorLockedBadge = document.getElementById('caption-editor-locked-badge');
+  const $captionEditorDelete = document.getElementById('caption-editor-delete');
 
   // Select action bar handlers
   document.getElementById('select-cancel-btn').addEventListener('click', () => exitSelectMode());
@@ -2795,7 +2789,6 @@
           + segChips
           + '</div>'
           + roleBadge
-          + '<button class="lib-caption-delete" data-caption-id="' + cap.id + '" title="Delete">&times;</button>'
           + '</div>';
       }
     }
@@ -2825,22 +2818,6 @@
       } finally {
         $addBtn.disabled = false;
       }
-    });
-
-    // Delete caption handlers
-    $libCaptionsView.querySelectorAll('.lib-caption-delete').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.dataset.captionId;
-        if (!confirm('Delete this caption?')) return;
-        try {
-          const { error } = await db().from('caption').delete().eq('id', id);
-          if (error) throw error;
-          await loadData();
-        } catch (err) {
-          console.error('Delete caption failed:', err);
-          alert('Can\u2019t delete \u2014 this caption is used by an ad. Delete the ad first.');
-        }
-      });
     });
 
     // Remove from segment handlers
@@ -3405,9 +3382,11 @@
 
     if (editorIsLocked) {
       show($captionEditorLockedBadge);
+      hide($captionEditorDelete);
       $captionEditorSave.textContent = 'Duplicate & Save';
     } else {
       hide($captionEditorLockedBadge);
+      show($captionEditorDelete);
       $captionEditorSave.textContent = 'Save';
     }
 
@@ -3526,6 +3505,20 @@
   }
 
   $captionEditorClose.addEventListener('click', closeCaptionEditor);
+
+  $captionEditorDelete.addEventListener('click', async () => {
+    if (!editorCaptionId) return;
+    if (!confirm('Delete this caption?')) return;
+    try {
+      const { error } = await db().from('caption').delete().eq('id', editorCaptionId);
+      if (error) throw error;
+      await loadData();
+      closeCaptionEditor();
+    } catch (err) {
+      console.error('Delete caption failed:', err);
+      alert('Can\u2019t delete \u2014 this caption is used by an ad. Delete the ad first.');
+    }
+  });
 
   $captionEditorSave.addEventListener('click', async () => {
     const textEl = document.getElementById('caption-editor-text');
