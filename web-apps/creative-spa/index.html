@@ -1878,6 +1878,9 @@
     <div class="viewer-image-wrap">
       <img id="ad-viewer-image" src="" alt="" />
     </div>
+    <div class="viewer-actions" id="ad-viewer-actions">
+      <button class="viewer-action-btn viewer-action-primary" id="ad-viewer-duplicate-btn">Duplicate & Tweak</button>
+    </div>
   </div>
 
   <!-- Full-screen Ad Builder -->
@@ -2020,6 +2023,7 @@
   const $adViewerClose = document.getElementById('ad-viewer-close');
   const $adViewerCounter = document.getElementById('ad-viewer-counter');
   const $adViewerImage = document.getElementById('ad-viewer-image');
+  const $adViewerDuplicateBtn = document.getElementById('ad-viewer-duplicate-btn');
   // Builder DOM refs
   const $adBuilder = document.getElementById('ad-builder');
   const $builderClose = document.getElementById('builder-close');
@@ -3126,6 +3130,16 @@
   // Ad viewer close button
   $adViewerClose.addEventListener('click', closeAdViewer);
 
+  // Ad viewer duplicate & tweak
+  $adViewerDuplicateBtn.addEventListener('click', () => {
+    const ads = filteredAds();
+    if (adViewerIndex < 0 || adViewerIndex >= ads.length) return;
+    const ad = ads[adViewerIndex];
+    hide($adViewer);
+    adViewerOpen = false;
+    openAdBuilderFromAd(ad);
+  });
+
   // Ad viewer swipe navigation
   (function() {
     let touchStartX = 0;
@@ -3573,6 +3587,21 @@
     builderPreviewAdId = null;
     builderSavedDirection = '';
     renderBuilderContent();
+    updateBuilderActionBtn();
+    show($adBuilder);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function openAdBuilderFromAd(ad) {
+    builderImageId = ad.base_image_id;
+    selectedCaptionIds = ad.captions.map(c => c.id);
+    builderCreating = false;
+    builderPreviewMode = false;
+    builderPreviewAdId = null;
+    builderSavedDirection = '';
+    renderBuilderContent();
+    const dirEl = document.getElementById('builder-direction');
+    if (dirEl && ad.feedback) dirEl.value = ad.feedback;
     updateBuilderActionBtn();
     show($adBuilder);
     document.body.style.overflow = 'hidden';
