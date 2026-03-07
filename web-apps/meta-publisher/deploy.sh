@@ -8,7 +8,7 @@ source "$REPO_ROOT/deploy-ids.sh"
 
 BUCKET_NAME="$PUBLISHER_S3_BUCKET"
 DISTRIBUTION_ID="$PUBLISHER_CF_ID"
-SITE_URL="https://publisher.comejoinus.app"
+SITE_URL="https://meta-publisher.comejoinus.app"
 
 export AWS_PROFILE="dinner-app-deploy"
 
