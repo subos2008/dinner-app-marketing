@@ -791,6 +791,60 @@
     to { transform: rotate(360deg); }
   }
 
+  .gen-ratio-select,
+  .gen-mode-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 16px 12px;
+  }
+  .gen-ratio-select label,
+  .gen-mode-select label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .gen-ratio-select select,
+  .gen-mode-select select {
+    flex: 1;
+    font-size: 14px;
+    padding: 8px 12px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background: #1a1a1a;
+    color: #fff;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .gen-caption-picker {
+    margin: 0 16px 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 8px;
+  }
+  .gen-caption-picker label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 4px;
+    font-size: 14px;
+    color: #ccc;
+    cursor: pointer;
+    border-bottom: 1px solid #222;
+  }
+  .gen-caption-picker label:last-child {
+    border-bottom: none;
+  }
+  .gen-caption-picker input[type="checkbox"] {
+    margin-top: 2px;
+    accent-color: #C8956C;
+  }
+
   /* --- Bottom tab bar --- */
   .tab-bar {
     position: relative;
@@ -886,8 +940,6 @@
 
   .image-grid img {
     width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
     display: block;
     cursor: pointer;
   }
@@ -1360,6 +1412,28 @@
         <button class="gen-type-btn" data-gen-type="caption" id="gen-type-caption">Caption</button>
       </div>
 
+      <!-- Aspect ratio dropdown -->
+      <div class="gen-ratio-select" id="gen-ratio-row">
+        <label>Ratio</label>
+        <select id="gen-ratio-select">
+          <option value="4:5">Feed (4:5)</option>
+          <option value="9:16">Story / Reels (9:16)</option>
+          <option value="2:3">Grindr Interstitial (2:3)</option>
+        </select>
+      </div>
+
+      <!-- Mode toggle -->
+      <div class="gen-mode-select" id="gen-mode-row">
+        <label>Mode</label>
+        <select id="gen-mode-select">
+          <option value="image-only">Image only</option>
+          <option value="image-text">Image + Text</option>
+        </select>
+      </div>
+
+      <!-- Caption picker (hidden until Image+Text mode) -->
+      <div class="gen-caption-picker hidden" id="gen-caption-picker"></div>
+
       <!-- Segment prompt hint -->
       <div class="gen-hint hidden" id="gen-hint">
         <span class="gen-hint-icon">&#x1F4A1;</span>
@@ -1514,6 +1588,11 @@
   const $genPrompt = document.getElementById('gen-prompt');
   const $genSubmit = document.getElementById('gen-submit');
   const $genResults = document.getElementById('generate-results');
+  const $genRatioRow = document.getElementById('gen-ratio-row');
+  const $genRatioSelect = document.getElementById('gen-ratio-select');
+  const $genModeRow = document.getElementById('gen-mode-row');
+  const $genModeSelect = document.getElementById('gen-mode-select');
+  const $genCaptionPicker = document.getElementById('gen-caption-picker');
 
   // Library tab DOM refs
   const $libBtnImages = document.getElementById('lib-btn-images');
@@ -1768,6 +1847,11 @@
     $genTypeImage.classList.toggle('active', type === 'image');
     $genTypeCaption.classList.toggle('active', type === 'caption');
 
+    // Show/hide ratio and mode controls (image only)
+    $genRatioRow.classList.toggle('hidden', type !== 'image');
+    $genModeRow.classList.toggle('hidden', type !== 'image');
+    if (type !== 'image') $genCaptionPicker.classList.add('hidden');
+
     // Update prompt placeholder + label
     if (type === 'image') {
       $genPrompt.placeholder = 'Describe the image you want...';
@@ -1796,6 +1880,26 @@
     const key = 'mobile-generate-prompt-' + generateType;
     localStorage.setItem(key, $genPrompt.value);
     updateGenSubmitState();
+  });
+
+  // Mode select: show/hide caption picker
+  $genModeSelect.addEventListener('change', () => {
+    if ($genModeSelect.value === 'image-text') {
+      // Populate caption picker from STATE.captions
+      const caps = STATE.captions || [];
+      if (caps.length === 0) {
+        $genCaptionPicker.innerHTML = '<div style="color:#666;font-size:13px;padding:8px">No captions yet. Generate some first.</div>';
+      } else {
+        $genCaptionPicker.innerHTML = caps.map(c => {
+          const roleLabel = c.role ? '<strong style="color:#C8956C">' + escapeHtml(c.role) + ':</strong> ' : '';
+          return '<label><input type="checkbox" value="' + c.id + '" data-text="' + escapeHtml(c.text) + '" data-role="' + (c.role || '') + '"> '
+            + roleLabel + escapeHtml(c.text) + '</label>';
+        }).join('');
+      }
+      $genCaptionPicker.classList.remove('hidden');
+    } else {
+      $genCaptionPicker.classList.add('hidden');
+    }
   });
 
   // Load saved prompt on init
@@ -1912,13 +2016,25 @@
 
     try {
       const fnName = generateType === 'image' ? 'generate-image' : 'generate-captions';
-      const { data, error } = await supabaseClient.functions.invoke(fnName, {
-        body: {
-          brief: briefText || undefined,
-          prompt: promptText,
-          segment_hint: segmentHint,
-        },
-      });
+      const body = {
+        brief: briefText || undefined,
+        prompt: promptText,
+        segment_hint: segmentHint,
+        aspect_ratio: generateType === 'image' ? $genRatioSelect.value : undefined,
+      };
+
+      // Add include_text for Image+Text mode
+      if (generateType === 'image' && $genModeSelect.value === 'image-text') {
+        const checked = $genCaptionPicker.querySelectorAll('input[type="checkbox"]:checked');
+        if (checked.length > 0) {
+          body.include_text = Array.from(checked).map(cb => ({
+            text: cb.dataset.text,
+            role: cb.dataset.role || undefined,
+          }));
+        }
+      }
+
+      const { data, error } = await supabaseClient.functions.invoke(fnName, { body });
 
       if (error) throw new Error(error.message || 'Edge Function error');
       if (data && data.error) throw new Error(data.error + (data.detail ? ': ' + data.detail : ''));
