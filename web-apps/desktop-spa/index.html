@@ -2645,8 +2645,6 @@
     // Only render the static shell once; subsequent calls skip
     if ($panelGenerate.querySelector('.generate-section')) return;
 
-    const briefFromStorage = localStorage.getItem('generate-brief') || '';
-
     let html = '';
 
     // Creative brief section
@@ -2655,7 +2653,7 @@
       + '<label>Creative Brief</label>'
       + '<button id="generate-brief-toggle">hide</button>'
       + '</div>'
-      + '<textarea id="generate-brief-text" placeholder="Loading creative brief...">' + escapeHtml(briefFromStorage) + '</textarea>'
+      + '<textarea id="generate-brief-text" placeholder="Loading creative brief..."></textarea>'
       + '<div class="generate-brief-actions">'
       + '<button class="btn-save-brief" id="generate-brief-save">Save Brief</button>'
       + '<span class="brief-status" id="generate-brief-status"></span>'
@@ -2718,7 +2716,7 @@
     const $genBtn = document.getElementById('generate-btn');
     const $genStatus = document.getElementById('generate-status');
 
-    // Always load brief from Storage (show cached while fetching)
+    // Load brief from Storage
     if (!generateBriefLoaded) {
       generateBriefLoaded = true;
       fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now())
@@ -2726,15 +2724,9 @@
         .then(text => {
           if (text) {
             $brief.value = text;
-            localStorage.setItem('generate-brief', text);
           }
         }).catch(() => {});
     }
-
-    // Save brief to localStorage on edit
-    $brief.addEventListener('input', () => {
-      localStorage.setItem('generate-brief', $brief.value);
-    });
 
     // Save brief to Storage (with timestamped backup)
     $briefSave.addEventListener('click', async () => {
@@ -2766,7 +2758,6 @@
 
         if (error) throw error;
 
-        localStorage.setItem('generate-brief', text);
         $briefStatus.textContent = 'Saved.';
         setTimeout(() => { $briefStatus.textContent = ''; }, 2000);
       } catch (err) {

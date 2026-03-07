@@ -2189,28 +2189,17 @@
   async function loadBrief() {
     briefLoadedOnce = true;
 
-    // Show cached version immediately while we fetch
-    const cached = localStorage.getItem('mobile-generate-brief');
-    if (cached) {
-      $genBriefTextarea.value = cached;
-    }
-
-    // Always fetch latest from Storage
     try {
       $genBriefTextarea.placeholder = 'Loading creative brief...';
       const res = await fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now());
       if (res.ok) {
-        const text = await res.text();
-        $genBriefTextarea.value = text;
-        localStorage.setItem('mobile-generate-brief', text);
-      } else if (!cached) {
+        $genBriefTextarea.value = await res.text();
+      } else {
         $genBriefTextarea.placeholder = 'Could not load brief. Type here to create one.';
       }
     } catch (err) {
       console.error('Failed to load brief:', err);
-      if (!cached) {
-        $genBriefTextarea.placeholder = 'Could not load brief. Type here to create one.';
-      }
+      $genBriefTextarea.placeholder = 'Could not load brief. Type here to create one.';
     }
   }
 
@@ -2244,7 +2233,6 @@
 
       if (error) throw error;
 
-      localStorage.setItem('mobile-generate-brief', text);
       $genBriefStatus.textContent = 'Saved.';
       setTimeout(() => { $genBriefStatus.textContent = ''; }, 2000);
     } catch (err) {
@@ -2294,7 +2282,7 @@
     }
 
     // Get brief text (from textarea if loaded, else from localStorage)
-    const briefText = $genBriefTextarea.value || localStorage.getItem('mobile-generate-brief') || '';
+    const briefText = $genBriefTextarea.value || '';
 
     try {
       const fnName = generateType === 'image' ? 'generate-image' : 'generate-captions';
