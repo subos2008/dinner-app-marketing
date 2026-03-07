@@ -2189,25 +2189,22 @@
   async function loadBrief() {
     briefLoadedOnce = true;
 
-    // Try localStorage cache first
+    // Show cached version immediately while we fetch
     const cached = localStorage.getItem('mobile-generate-brief');
     if (cached) {
       $genBriefTextarea.value = cached;
     }
 
-    // Then fetch from Storage
+    // Always fetch latest from Storage
     try {
       $genBriefTextarea.placeholder = 'Loading creative brief...';
-      const res = await fetch(storageBaseUrl + '/creative-brief.md');
+      const res = await fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now());
       if (res.ok) {
         const text = await res.text();
         $genBriefTextarea.value = text;
         localStorage.setItem('mobile-generate-brief', text);
-
-      } else {
-        if (!cached) {
-          $genBriefTextarea.placeholder = 'Could not load brief. Type here to create one.';
-        }
+      } else if (!cached) {
+        $genBriefTextarea.placeholder = 'Could not load brief. Type here to create one.';
       }
     } catch (err) {
       console.error('Failed to load brief:', err);
@@ -2217,13 +2214,29 @@
     }
   }
 
-  // Save brief to Storage
+  // Save brief to Storage (with timestamped backup)
   $genBriefSave.addEventListener('click', async () => {
     const text = $genBriefTextarea.value;
     $genBriefSave.disabled = true;
     $genBriefStatus.textContent = 'Saving...';
 
     try {
+      // Backup current version before overwriting
+      try {
+        const res = await fetch(storageBaseUrl + '/creative-brief.md');
+        if (res.ok) {
+          const oldText = await res.text();
+          const ts = new Date().toISOString().replace(/[:.]/g, '-');
+          const backupBlob = new Blob([oldText], { type: 'text/markdown' });
+          await supabaseClient.storage
+            .from('creative')
+            .upload('creative-brief-backups/' + ts + '.md', backupBlob);
+        }
+      } catch (backupErr) {
+        console.warn('Brief backup failed (continuing with save):', backupErr);
+      }
+
+      // Save the new version
       const blob = new Blob([text], { type: 'text/markdown' });
       const { error } = await supabaseClient.storage
         .from('creative')

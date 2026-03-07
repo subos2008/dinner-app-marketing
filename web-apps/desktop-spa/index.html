@@ -1406,6 +1406,36 @@
   .generate-brief textarea:focus {
     border-color: var(--amber);
   }
+  .generate-brief-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .generate-brief-actions .btn-save-brief {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border: 1px solid var(--amber);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--amber);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .generate-brief-actions .btn-save-brief:hover {
+    background: var(--amber);
+    color: #fff;
+  }
+  .generate-brief-actions .btn-save-brief:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .generate-brief-actions .brief-status {
+    font-size: 12px;
+    color: var(--warm-gray);
+  }
 
   .generate-ratio-row {
     display: flex;
@@ -2626,6 +2656,10 @@
       + '<button id="generate-brief-toggle">hide</button>'
       + '</div>'
       + '<textarea id="generate-brief-text" placeholder="Loading creative brief...">' + escapeHtml(briefFromStorage) + '</textarea>'
+      + '<div class="generate-brief-actions">'
+      + '<button class="btn-save-brief" id="generate-brief-save">Save Brief</button>'
+      + '<span class="brief-status" id="generate-brief-status"></span>'
+      + '</div>'
       + '</div>';
 
     // Type toggle
@@ -2678,17 +2712,19 @@
     // Wire up events
     const $brief = document.getElementById('generate-brief-text');
     const $briefToggle = document.getElementById('generate-brief-toggle');
+    const $briefSave = document.getElementById('generate-brief-save');
+    const $briefStatus = document.getElementById('generate-brief-status');
     const $prompt = document.getElementById('generate-prompt-text');
     const $genBtn = document.getElementById('generate-btn');
     const $genStatus = document.getElementById('generate-status');
 
-    // Load brief from Storage if not in localStorage
-    if (!briefFromStorage && !generateBriefLoaded) {
+    // Always load brief from Storage (show cached while fetching)
+    if (!generateBriefLoaded) {
       generateBriefLoaded = true;
-      fetch(storageBaseUrl + '/creative-brief.md')
+      fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now())
         .then(r => r.ok ? r.text() : Promise.reject())
         .then(text => {
-          if (text && !$brief.value) {
+          if (text) {
             $brief.value = text;
             localStorage.setItem('generate-brief', text);
           }
@@ -2698,6 +2734,47 @@
     // Save brief to localStorage on edit
     $brief.addEventListener('input', () => {
       localStorage.setItem('generate-brief', $brief.value);
+    });
+
+    // Save brief to Storage (with timestamped backup)
+    $briefSave.addEventListener('click', async () => {
+      const text = $brief.value;
+      $briefSave.disabled = true;
+      $briefStatus.textContent = 'Saving...';
+
+      try {
+        // Backup current version before overwriting
+        try {
+          const res = await fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now());
+          if (res.ok) {
+            const oldText = await res.text();
+            const ts = new Date().toISOString().replace(/[:.]/g, '-');
+            const backupBlob = new Blob([oldText], { type: 'text/markdown' });
+            await supabaseClient.storage
+              .from('creative')
+              .upload('creative-brief-backups/' + ts + '.md', backupBlob);
+          }
+        } catch (backupErr) {
+          console.warn('Brief backup failed (continuing with save):', backupErr);
+        }
+
+        // Save the new version
+        const blob = new Blob([text], { type: 'text/markdown' });
+        const { error } = await supabaseClient.storage
+          .from('creative')
+          .upload('creative-brief.md', blob, { upsert: true });
+
+        if (error) throw error;
+
+        localStorage.setItem('generate-brief', text);
+        $briefStatus.textContent = 'Saved.';
+        setTimeout(() => { $briefStatus.textContent = ''; }, 2000);
+      } catch (err) {
+        console.error('Failed to save brief:', err);
+        $briefStatus.textContent = 'Save failed: ' + (err.message || 'Unknown error');
+      } finally {
+        $briefSave.disabled = false;
+      }
     });
 
     // Toggle brief visibility
