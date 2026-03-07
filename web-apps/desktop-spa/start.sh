@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-npx serve .
+npx serve . -l 8642

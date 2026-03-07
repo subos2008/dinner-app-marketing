@@ -41,13 +41,16 @@ This repo is for:
 
 ## Running the Apps
 - SPAs live under `web-apps/` — each is a standalone static SPA with its own `start.sh`
-- **Desktop ad manager:** `cd web-apps/desktop-spa && npx serve .`
+- **Desktop ad manager:** `cd web-apps/desktop-spa && npx serve . -l 8642`
 - **Mobile app:** `cd web-apps/mobile-spa && npx serve .`
 - All data access goes directly to Supabase via the JS client (config is inlined in each `index.html`)
-- Generation (images, captions, ad compositing) uses the `generate` Supabase Edge Function
-- Edge Function source: `supabase/functions/generate/index.ts` with shared modules in `supabase/functions/_shared/`
-- Deploy Edge Function: `supabase functions deploy generate`
+
+## Deploying
+- **Mobile/creative SPA:** `bash web-apps/mobile-spa/deploy.sh` — syncs to S3 + CloudFront invalidation → https://creative.comejoinus.app
+- **Edge Functions:** `supabase functions deploy <function-name>` (e.g. `generate-image`, `composite`, `generate-captions`, `suggest-captions`)
+- Edge Function source: `supabase/functions/` with shared modules in `supabase/functions/_shared/`
 - Secrets: `GOOGLE_AI_API_KEY` set via `supabase secrets set` (SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY are auto-available)
+- AWS profile for deploy: `dinner-app-deploy` (set in deploy.sh)
 
 ## Ways of Working
 This repo is a thinking space. We explore ideas, refine them, and produce actionable marketing output. Not everything here ships — some of it is just us working through the problem.
