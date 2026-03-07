@@ -466,8 +466,6 @@
 
   .image-card img {
     width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
     display: block;
   }
 
@@ -1409,6 +1407,71 @@
     border-color: var(--amber);
   }
 
+  .generate-ratio-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .generate-ratio-row label,
+  .generate-mode-row label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .generate-ratio-row select,
+  .generate-mode-row select {
+    font-family: var(--font-body);
+    font-size: 13px;
+    padding: 4px 8px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--charcoal);
+  }
+  .generate-mode-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .generate-caption-picker {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    padding: 8px;
+    margin-bottom: 12px;
+  }
+  .generate-caption-picker label {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 4px 0;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .generate-caption-picker label:hover {
+    background: var(--cream);
+  }
+  .image-ratio-filter {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .image-ratio-filter select {
+    font-family: var(--font-body);
+    font-size: 13px;
+    padding: 4px 8px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--charcoal);
+  }
+
   .generate-type-toggle {
     display: flex;
     gap: 0;
@@ -2065,10 +2128,20 @@
       return;
     }
 
+    // Ratio filter
+    let ratioFilter = 'all';
+    const ratioFilterEl = $panelImages.querySelector('#image-ratio-filter');
+    if (ratioFilterEl) ratioFilter = ratioFilterEl.value;
+
+    let displayImages = filtered;
+    if (ratioFilter !== 'all') {
+      displayImages = filtered.filter(img => img.aspect_ratio === ratioFilter);
+    }
+
     // Group images by generation_prompt_id
     const groups = new Map(); // promptId -> { prompt, images }
     const ungrouped = [];
-    for (const img of filtered) {
+    for (const img of displayImages) {
       const gp = img.generation_prompt;
       if (gp && gp.id) {
         if (!groups.has(gp.id)) {
@@ -2081,6 +2154,17 @@
     }
 
     let html = '';
+
+    html += '<div class="image-ratio-filter">'
+      + '<select id="image-ratio-filter">'
+      + '<option value="all"' + (ratioFilter === 'all' ? ' selected' : '') + '>All ratios</option>'
+      + '<option value="4:5"' + (ratioFilter === '4:5' ? ' selected' : '') + '>Feed (4:5)</option>'
+      + '<option value="9:16"' + (ratioFilter === '9:16' ? ' selected' : '') + '>Story (9:16)</option>'
+      + '<option value="2:3"' + (ratioFilter === '2:3' ? ' selected' : '') + '>Grindr (2:3)</option>'
+      + '<option value="1:1"' + (ratioFilter === '1:1' ? ' selected' : '') + '>Square (1:1)</option>'
+      + '</select>'
+      + '<span style="font-size:12px;color:var(--warm-gray)">' + displayImages.length + ' images</span>'
+      + '</div>';
 
     function renderImageGrid(images) {
       let g = '<div class="image-grid">';
@@ -2139,6 +2223,12 @@
         reusePrompt(btn.dataset.promptText, btn.dataset.promptType);
       });
     });
+
+    // Ratio filter change handler
+    const filterSelect = $panelImages.querySelector('#image-ratio-filter');
+    if (filterSelect) {
+      filterSelect.addEventListener('change', () => renderImages());
+    }
   }
 
   // --- Captions panel ---
@@ -2376,6 +2466,28 @@
       + '<button data-gen-type="caption">Caption</button>'
       + '</div>';
 
+    // Aspect ratio dropdown (only for image type)
+    html += '<div class="generate-ratio-row" id="generate-ratio-row"' + (generateType !== 'image' ? ' style="display:none"' : '') + '>'
+      + '<label>Aspect Ratio</label>'
+      + '<select id="generate-ratio-select">'
+      + '<option value="4:5">Feed (4:5)</option>'
+      + '<option value="9:16">Story / Reels (9:16)</option>'
+      + '<option value="2:3">Grindr Interstitial (2:3)</option>'
+      + '</select>'
+      + '</div>';
+
+    // Mode toggle (only for image type)
+    html += '<div class="generate-mode-row" id="generate-mode-row"' + (generateType !== 'image' ? ' style="display:none"' : '') + '>'
+      + '<label>Mode</label>'
+      + '<select id="generate-mode-select">'
+      + '<option value="image-only">Image only</option>'
+      + '<option value="image-text">Image + Text</option>'
+      + '</select>'
+      + '</div>';
+
+    // Caption picker (hidden until Image+Text mode, populated from STATE.captions)
+    html += '<div class="generate-caption-picker" id="generate-caption-picker" style="display:none"></div>';
+
     // Prompt
     const promptFromStorage = localStorage.getItem('generate-prompt-' + generateType) || '';
     html += '<div class="generate-prompt">'
@@ -2422,6 +2534,13 @@
       $briefToggle.textContent = generateBriefVisible ? 'hide' : 'show';
     });
 
+    // Aspect ratio and mode selects
+    const $ratioSelect = document.getElementById('generate-ratio-select');
+    const $modeSelect = document.getElementById('generate-mode-select');
+    const $captionPicker = document.getElementById('generate-caption-picker');
+    const $ratioRow = document.getElementById('generate-ratio-row');
+    const $modeRow = document.getElementById('generate-mode-row');
+
     // Type toggle
     $panelGenerate.querySelectorAll('.generate-type-toggle button').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -2430,10 +2549,35 @@
         generateType = btn.dataset.genType;
         $panelGenerate.querySelectorAll('.generate-type-toggle button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        // Show/hide ratio and mode rows based on type
+        $ratioRow.style.display = btn.dataset.genType === 'image' ? '' : 'none';
+        $modeRow.style.display = btn.dataset.genType === 'image' ? '' : 'none';
+        if (btn.dataset.genType !== 'image') $captionPicker.style.display = 'none';
         // Restore prompt for new type
         $prompt.value = localStorage.getItem('generate-prompt-' + generateType) || '';
         updateGenBtn();
       });
+    });
+
+    // Mode select — show/hide caption picker
+    $modeSelect.addEventListener('change', () => {
+      if ($modeSelect.value === 'image-text') {
+        // Populate caption picker from STATE.captions
+        const caps = filterBySegment(STATE.captions);
+        if (caps.length === 0) {
+          $captionPicker.innerHTML = '<div style="color:var(--warm-gray);font-size:12px">No captions available. Generate some first.</div>';
+        } else {
+          $captionPicker.innerHTML = caps.map(c =>
+            '<label><input type="checkbox" value="' + c.id + '" data-text="' + escapeHtml(c.text) + '" data-role="' + (c.role || '') + '"> '
+            + (c.role ? '<strong>' + escapeHtml(c.role) + ':</strong> ' : '')
+            + escapeHtml(c.text)
+            + '</label>'
+          ).join('');
+        }
+        $captionPicker.style.display = '';
+      } else {
+        $captionPicker.style.display = 'none';
+      }
     });
 
     // Prompt input — enable/disable generate button + persist
@@ -2467,8 +2611,20 @@
         const body = {
           brief: $brief.value || '',
           prompt,
-          segment_hint: segmentHint || undefined
+          segment_hint: segmentHint || undefined,
+          aspect_ratio: generateType === 'image' ? $ratioSelect.value : undefined,
         };
+
+        // Add include_text for Image+Text mode
+        if (generateType === 'image' && $modeSelect.value === 'image-text') {
+          const checked = $captionPicker.querySelectorAll('input[type="checkbox"]:checked');
+          if (checked.length > 0) {
+            body.include_text = Array.from(checked).map(cb => ({
+              text: cb.dataset.text,
+              role: cb.dataset.role || undefined,
+            }));
+          }
+        }
         const { data, error } = await supabaseClient.functions.invoke(fnName, { body });
 
         if (error) {
