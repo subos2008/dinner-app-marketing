@@ -73,7 +73,7 @@ Deno.serve(async (req) => {
       compositedData = result.data
     } catch (err) {
       console.error('[composite] Gemini failed:', (err as Error).message)
-      return jsonResponse({ error: 'Image compositing failed', detail: (err as Error).message }, 500)
+      return jsonResponse({ error: 'Image compositing failed: ' + (err as Error).message }, 500)
     }
 
     // 6. Upload the composited image
@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
 
     if (uploadError) {
       console.error('[composite] Storage upload failed:', uploadError)
-      return jsonResponse({ error: 'Failed to upload composited image', detail: uploadError.message }, 500)
+      return jsonResponse({ error: 'Failed to upload composited image: ' + uploadError.message }, 500)
     }
 
     // 7. Update the ad row
@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
       .single()
 
     if (updateError) {
-      return jsonResponse({ error: 'Failed to update ad', detail: updateError.message }, 500)
+      return jsonResponse({ error: 'Failed to update ad: ' + updateError.message }, 500)
     }
 
     console.log(`[composite] Ad ${adId}: uploaded to ${compositedStoragePath}`)

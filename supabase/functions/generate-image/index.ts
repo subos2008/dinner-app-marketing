@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
       imageData = result.data
     } catch (err) {
       console.error('[generate-image] Gemini failed:', (err as Error).message)
-      return jsonResponse({ error: 'Image generation failed', detail: (err as Error).message }, 500)
+      return jsonResponse({ error: 'Image generation failed: ' + (err as Error).message }, 500)
     }
 
     // Upload to Storage via service client
@@ -78,7 +78,7 @@ Deno.serve(async (req) => {
 
     if (uploadError) {
       console.error('[generate-image] Storage upload failed:', uploadError)
-      return jsonResponse({ error: 'Failed to upload image', detail: uploadError.message }, 500)
+      return jsonResponse({ error: 'Failed to upload image: ' + uploadError.message }, 500)
     }
 
     // Create base_image row
@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
       .single()
 
     if (insertError) {
-      return jsonResponse({ error: 'Failed to create image row', detail: insertError.message }, 500)
+      return jsonResponse({ error: 'Failed to create image row: ' + insertError.message }, 500)
     }
 
     console.log(`[generate-image] created: ${image.id}`)

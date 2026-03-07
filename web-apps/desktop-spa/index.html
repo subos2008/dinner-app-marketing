@@ -1467,6 +1467,89 @@
     gap: 8px;
     margin-bottom: 12px;
   }
+  .generate-role-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .generate-role-row label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .generate-role-row select {
+    font-family: var(--font-body);
+    font-size: 13px;
+    padding: 4px 8px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--charcoal);
+  }
+  .generate-results {
+    margin-top: 16px;
+  }
+  .generate-results-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+  .gen-suggestion-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    margin-bottom: 6px;
+    background: #fff;
+  }
+  .gen-suggestion-card.saved {
+    opacity: 0.6;
+  }
+  .gen-suggestion-card-text {
+    flex: 1;
+    font-size: 14px;
+    color: var(--charcoal);
+  }
+  .gen-suggestion-role-badge {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--cream);
+    color: var(--warm-gray);
+    flex-shrink: 0;
+  }
+  .gen-suggestion-keep-btn {
+    padding: 4px 12px;
+    border: 1px solid var(--warm-terracotta);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--warm-terracotta);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .gen-suggestion-keep-btn:hover {
+    background: var(--warm-terracotta);
+    color: #fff;
+  }
+  .gen-suggestion-saved-label {
+    font-size: 12px;
+    color: var(--warm-gray);
+    flex-shrink: 0;
+  }
   .generate-caption-picker {
     max-height: 200px;
     overflow-y: auto;
@@ -1844,6 +1927,16 @@
   // --- Supabase helpers ---
   /** Marketing schema query builder */
   function db() { return supabaseClient.schema('marketing'); }
+
+  // Extract error message from supabase.functions.invoke response
+  function fnError(error, data) {
+    if (error) {
+      if (error.context && error.context.error) return error.context.error;
+      return error.message || 'Edge Function error';
+    }
+    if (data && data.error) return data.error;
+    return null;
+  }
 
   // --- DOM refs ---
   const $loading = document.getElementById('loading');
@@ -2690,6 +2783,17 @@
       + '</select>'
       + '</div>';
 
+    // Role selector (only for caption type)
+    html += '<div class="generate-role-row" id="generate-role-row"' + (generateType !== 'caption' ? ' style="display:none"' : '') + '>'
+      + '<label>Type</label>'
+      + '<select id="generate-role-select">'
+      + '<option value="headline">Headline</option>'
+      + '<option value="subline">Subline</option>'
+      + '<option value="cta">CTA</option>'
+      + '<option value="tagline">Tagline</option>'
+      + '</select>'
+      + '</div>';
+
     // Caption picker (hidden until Image+Text mode, populated from STATE.captions)
     html += '<div class="generate-caption-picker" id="generate-caption-picker" style="display:none"></div>';
 
@@ -2704,6 +2808,9 @@
       + '<button class="btn-primary" id="generate-btn" disabled>Generate</button>'
       + '<span class="generate-status" id="generate-status"></span>'
       + '</div>';
+
+    // Results area (for caption suggestions with Keep buttons)
+    html += '<div class="generate-results" id="generate-results"></div>';
 
     $panelGenerate.innerHTML = html;
 
@@ -2781,6 +2888,9 @@
     const $captionPicker = document.getElementById('generate-caption-picker');
     const $ratioRow = document.getElementById('generate-ratio-row');
     const $modeRow = document.getElementById('generate-mode-row');
+    const $roleRow = document.getElementById('generate-role-row');
+    const $roleSelect = document.getElementById('generate-role-select');
+    const $genResults = document.getElementById('generate-results');
 
     // Type toggle
     $panelGenerate.querySelectorAll('.generate-type-toggle button').forEach(btn => {
@@ -2790,9 +2900,10 @@
         generateType = btn.dataset.genType;
         $panelGenerate.querySelectorAll('.generate-type-toggle button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        // Show/hide ratio and mode rows based on type
+        // Show/hide ratio, mode, and role rows based on type
         $ratioRow.style.display = btn.dataset.genType === 'image' ? '' : 'none';
         $modeRow.style.display = btn.dataset.genType === 'image' ? '' : 'none';
+        $roleRow.style.display = btn.dataset.genType === 'caption' ? '' : 'none';
         if (btn.dataset.genType !== 'image') $captionPicker.style.display = 'none';
         // Restore prompt for new type
         $prompt.value = localStorage.getItem('generate-prompt-' + generateType) || '';
@@ -2843,6 +2954,7 @@
       if (!prompt) return;
 
       $genBtn.disabled = true;
+      $genResults.innerHTML = '';
       $genStatus.textContent = generateType === 'image'
         ? 'Generating image... this may take a minute'
         : 'Generating captions...';
@@ -2860,6 +2972,7 @@
           prompt,
           segment_hint: segmentHint || undefined,
           aspect_ratio: generateType === 'image' ? $ratioSelect.value : undefined,
+          role: generateType === 'caption' ? $roleSelect.value : undefined,
         };
 
         // Add include_text for Image+Text mode
@@ -2874,33 +2987,25 @@
         }
         const { data, error } = await supabaseClient.functions.invoke(fnName, { body });
 
-        if (error) {
-          $genStatus.textContent = 'Error: ' + (error.message || 'Generation failed');
-          return;
-        }
-        if (data && data.error) {
-          $genStatus.textContent = 'Error: ' + data.error;
+        const errMsg = fnError(error, data);
+        if (errMsg) {
+          $genStatus.textContent = 'Error: ' + errMsg;
           return;
         }
 
         $genStatus.textContent = '';
 
-        // Auto-assign active segment to generated items
-        if (activeSegment && activeSegment !== 'all' && activeSegment !== 'generic') {
-          if (data.image) {
+        if (data.image) {
+          // Image: auto-assign segment, reload, switch to images tab
+          if (activeSegment && activeSegment !== 'all' && activeSegment !== 'generic') {
             await db().from('base_image_segment').insert({ base_image_id: data.image.id, segment_id: activeSegment }).catch(() => {});
           }
-          if (data.captions) {
-            for (const cap of data.captions) {
-              await db().from('caption_segment').insert({ caption_id: cap.id, segment_id: activeSegment }).catch(() => {});
-            }
-          }
+          await loadData();
+          switchToTab('images');
+        } else if (data.suggestions) {
+          // Captions: render ephemeral suggestions with Keep buttons
+          renderCaptionSuggestions(data.suggestions, $genResults);
         }
-
-        // Reload data then switch to the appropriate tab
-        await loadData();
-        const targetTab = generateType === 'image' ? 'images' : 'captions';
-        switchToTab(targetTab);
 
       } catch (err) {
         $genStatus.textContent = 'Error: ' + err.message;
@@ -2909,6 +3014,57 @@
         updateGenBtn();
       }
     });
+  }
+
+  function renderCaptionSuggestions(suggestions, container) {
+    container.innerHTML = '<div class="generate-results-label">Caption Suggestions</div>';
+    for (const sug of suggestions) {
+      const text = sug.text || '';
+      const role = sug.role || '';
+      if (!text.trim()) continue;
+
+      const card = document.createElement('div');
+      card.className = 'gen-suggestion-card';
+
+      let badgeHtml = '';
+      if (role) {
+        badgeHtml = '<span class="gen-suggestion-role-badge">' + escapeHtml(role) + '</span>';
+      }
+
+      card.innerHTML =
+        '<div class="gen-suggestion-card-text">' + escapeHtml(text) + '</div>'
+        + badgeHtml
+        + '<button class="gen-suggestion-keep-btn">Keep</button>';
+
+      const keepBtn = card.querySelector('.gen-suggestion-keep-btn');
+      keepBtn.addEventListener('click', async () => {
+        keepBtn.disabled = true;
+        keepBtn.textContent = 'Saving...';
+        try {
+          const { data: cap, error } = await db().from('caption').insert({ text, role }).select().single();
+          if (error) throw error;
+
+          if (activeSegment && activeSegment !== 'all' && activeSegment !== 'generic' && cap) {
+            await db().from('caption_segment').insert({ caption_id: cap.id, segment_id: activeSegment }).catch(() => {});
+          }
+
+          card.classList.add('saved');
+          keepBtn.remove();
+          const savedLabel = document.createElement('span');
+          savedLabel.className = 'gen-suggestion-saved-label';
+          savedLabel.textContent = 'Saved';
+          card.appendChild(savedLabel);
+
+          await loadData();
+        } catch (err) {
+          console.error('Keep caption failed:', err);
+          keepBtn.disabled = false;
+          keepBtn.textContent = 'Keep';
+        }
+      });
+
+      container.appendChild(card);
+    }
   }
 
   // --- Segments management panel ---
@@ -3705,10 +3861,9 @@
       const { data, error } = await supabaseClient.functions.invoke('composite', {
         body: { adId: id }
       });
-      if (error) {
-        alert('Generation failed: ' + error.message);
-      } else if (data && data.error) {
-        alert((data.error || 'Generation failed') + (data.detail ? '\n\n' + data.detail : ''));
+      const errMsg = fnError(error, data);
+      if (errMsg) {
+        alert('Generation failed: ' + errMsg);
       }
     } catch (err) {
       alert('Generation failed: ' + err.message);

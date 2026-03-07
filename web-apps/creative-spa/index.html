@@ -1820,6 +1820,17 @@
   // --- Supabase helpers ---
   function db() { return supabaseClient.schema('marketing'); }
 
+  // Extract error message from supabase.functions.invoke response
+  function fnError(error, data) {
+    if (error) {
+      // Non-2xx: Supabase puts our JSON body in error.context
+      if (error.context && error.context.error) return error.context.error;
+      return error.message || 'Edge Function error';
+    }
+    if (data && data.error) return data.error;
+    return null;
+  }
+
   // --- DOM refs ---
   const $loading = document.getElementById('loading');
   const $loginScreen = document.getElementById('login-screen');
@@ -2345,8 +2356,8 @@
 
       const { data, error } = await supabaseClient.functions.invoke(fnName, { body });
 
-      if (error) throw new Error(error.message || 'Edge Function error');
-      if (data && data.error) throw new Error(data.error + (data.detail ? ': ' + data.detail : ''));
+      const errMsg = fnError(error, data);
+      if (errMsg) throw new Error(errMsg);
 
       if (generateType === 'image' && data && data.image) {
         // Auto-assign to active segment
@@ -2881,10 +2892,11 @@
     $adViewerRegenBtn.classList.add('loading');
 
     try {
-      const { error } = await supabaseClient.functions.invoke('composite', {
+      const { data, error } = await supabaseClient.functions.invoke('composite', {
         body: { adId: ad.id }
       });
-      if (error) throw error;
+      const errMsg = fnError(error, data);
+      if (errMsg) throw new Error(errMsg);
 
       // Realtime subscription will fire loadData() which calls render()
       // But also reload explicitly to be safe
@@ -3247,9 +3259,11 @@
         }
 
         // Trigger compositing
-        await supabaseClient.functions.invoke('composite', {
+        const { data: compData, error: compError } = await supabaseClient.functions.invoke('composite', {
           body: { adId: ad.id }
         });
+        const compErrMsg = fnError(compError, compData);
+        if (compErrMsg) throw new Error(compErrMsg);
       }
 
       // Close builder and viewer
