@@ -4,6 +4,7 @@ import { captions } from "./commands/captions.ts";
 import { bodyCopy } from "./commands/body-copy.ts";
 import { ads } from "./commands/ads.ts";
 import { adSets } from "./commands/ad-sets.ts";
+import { campaigns } from "./commands/campaigns.ts";
 import { sync } from "./commands/sync.ts";
 
 const USAGE = `Usage: deno task cli <command> <action> [args]
@@ -30,9 +31,15 @@ Commands:
   ads delete <id>
 
   ad-sets list
-  ad-sets create --name <n>
+  ad-sets create --name <n> [--campaign <id>] [--budget <gbp>] [--age-min <n>] [--age-max <n>]
+  ad-sets update <id> [--name <n>] [--budget <gbp>] [--desired-status <s>] ...
 
-  sync [--images-only]`;
+  campaigns list
+  campaigns create --name <n> [--objective <obj>]
+
+  sync plan [--ad-set <id>]
+  sync apply [--ad-set <id>]
+  sync [--images-only]          (legacy: upload images to storage)`;
 
 function parseFlags(args: string[]): Record<string, string> {
   const flags: Record<string, string> = {};
@@ -78,6 +85,9 @@ async function main() {
         break;
       case "ad-sets":
         await adSets(action, rest);
+        break;
+      case "campaigns":
+        await campaigns(action, rest);
         break;
       case "sync":
         // sync has no action — flags start from action position
