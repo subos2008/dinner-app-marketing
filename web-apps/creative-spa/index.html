@@ -1816,6 +1816,7 @@
   let selectMode = false;
   let selectedImageIds = new Set();
   let briefLoadedOnce = false;
+  let briefLoadedContent = null;
 
   // --- Supabase helpers ---
   function db() { return supabaseClient.schema('marketing'); }
@@ -2242,7 +2243,9 @@
       $genBriefTextarea.placeholder = 'Loading creative brief...';
       const res = await fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now());
       if (res.ok) {
-        $genBriefTextarea.value = await res.text();
+        const text = await res.text();
+        $genBriefTextarea.value = text;
+        briefLoadedContent = text;
       } else {
         $genBriefTextarea.placeholder = 'Could not load brief. Type here to create one.';
       }
@@ -2259,6 +2262,21 @@
     $genBriefStatus.textContent = 'Saving...';
 
     try {
+      // Check for remote changes before saving
+      try {
+        const checkRes = await fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now());
+        if (checkRes.ok) {
+          const currentRemote = await checkRes.text();
+          if (briefLoadedContent !== null && currentRemote !== briefLoadedContent) {
+            if (!confirm('The brief was updated by someone else since you loaded it. Save anyway and overwrite their changes?')) {
+              $genBriefSave.disabled = false;
+              $genBriefStatus.textContent = '';
+              return;
+            }
+          }
+        }
+      } catch (e) { /* ignore check errors, proceed with save */ }
+
       // Backup current version before overwriting
       try {
         const res = await fetch(storageBaseUrl + '/creative-brief.md');
@@ -2282,6 +2300,7 @@
 
       if (error) throw error;
 
+      briefLoadedContent = text;
       $genBriefStatus.textContent = 'Saved.';
       setTimeout(() => { $genBriefStatus.textContent = ''; }, 2000);
     } catch (err) {
@@ -2290,6 +2309,28 @@
     } finally {
       $genBriefSave.disabled = false;
     }
+  });
+
+  // Auto-refresh brief when tab regains focus
+  document.addEventListener('visibilitychange', async () => {
+    if (document.hidden) return;
+    if (!briefLoadedContent || !briefLoadedOnce) return;
+
+    try {
+      const res = await fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now());
+      if (!res.ok) return;
+      const remoteText = await res.text();
+      if (remoteText === briefLoadedContent) return;
+
+      const hasLocalEdits = $genBriefTextarea.value !== briefLoadedContent;
+
+      if (!hasLocalEdits) {
+        $genBriefTextarea.value = remoteText;
+        briefLoadedContent = remoteText;
+      } else {
+        $genBriefStatus.textContent = 'Brief updated elsewhere. Save will overwrite.';
+      }
+    } catch (e) { /* ignore fetch errors */ }
   });
 
   function renderGenerateTab() {

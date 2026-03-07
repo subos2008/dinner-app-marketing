@@ -2731,6 +2731,7 @@
 
   // --- Generate panel ---
   let generateBriefLoaded = false;
+  let briefLoadedContent = null;
   let generateType = 'image';
   let generateBriefVisible = true;
 
@@ -2831,6 +2832,7 @@
         .then(text => {
           if (text) {
             $brief.value = text;
+            briefLoadedContent = text;
           }
         }).catch(() => {});
     }
@@ -2842,6 +2844,21 @@
       $briefStatus.textContent = 'Saving...';
 
       try {
+        // Check for remote changes before saving
+        try {
+          const checkRes = await fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now());
+          if (checkRes.ok) {
+            const currentRemote = await checkRes.text();
+            if (briefLoadedContent !== null && currentRemote !== briefLoadedContent) {
+              if (!confirm('The brief was updated by someone else since you loaded it. Save anyway and overwrite their changes?')) {
+                $briefSave.disabled = false;
+                $briefStatus.textContent = '';
+                return;
+              }
+            }
+          }
+        } catch (e) { /* ignore check errors, proceed with save */ }
+
         // Backup current version before overwriting
         try {
           const res = await fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now());
@@ -2865,6 +2882,7 @@
 
         if (error) throw error;
 
+        briefLoadedContent = text;
         $briefStatus.textContent = 'Saved.';
         setTimeout(() => { $briefStatus.textContent = ''; }, 2000);
       } catch (err) {
@@ -2873,6 +2891,32 @@
       } finally {
         $briefSave.disabled = false;
       }
+    });
+
+    // Auto-refresh brief when tab regains focus
+    document.addEventListener('visibilitychange', async () => {
+      if (document.hidden) return;
+      if (!briefLoadedContent) return;
+
+      try {
+        const res = await fetch(storageBaseUrl + '/creative-brief.md?t=' + Date.now());
+        if (!res.ok) return;
+        const remoteText = await res.text();
+        if (remoteText === briefLoadedContent) return;
+
+        const $briefEl = document.getElementById('generate-brief-text');
+        const $briefStatusEl = document.getElementById('generate-brief-status');
+        if (!$briefEl) return;
+
+        const hasLocalEdits = $briefEl.value !== briefLoadedContent;
+
+        if (!hasLocalEdits) {
+          $briefEl.value = remoteText;
+          briefLoadedContent = remoteText;
+        } else if ($briefStatusEl) {
+          $briefStatusEl.textContent = 'Brief updated elsewhere. Save will overwrite.';
+        }
+      } catch (e) { /* ignore fetch errors */ }
     });
 
     // Toggle brief visibility
