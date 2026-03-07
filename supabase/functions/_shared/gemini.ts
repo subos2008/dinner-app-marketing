@@ -28,11 +28,12 @@ interface ImageResult {
 }
 
 /** Generate a new image from a text prompt */
-export async function generateImage(prompt: string): Promise<ImageResult> {
+export async function generateImage(prompt: string, aspectRatio?: string): Promise<ImageResult> {
   const client = getClient()
   const response = await client.models.generateContent({
     model: MODEL,
     contents: prompt,
+    config: aspectRatio ? { imageConfig: { aspectRatio } } : undefined,
   })
   return extractImage(response)
 }
@@ -41,7 +42,8 @@ export async function generateImage(prompt: string): Promise<ImageResult> {
 export async function editImage(
   imageData: Uint8Array,
   mimeType: string,
-  prompt: string
+  prompt: string,
+  aspectRatio?: string
 ): Promise<ImageResult> {
   const client = getClient()
   const response = await client.models.generateContent({
@@ -59,6 +61,7 @@ export async function editImage(
         ],
       },
     ],
+    config: aspectRatio ? { imageConfig: { aspectRatio } } : undefined,
   })
   return extractImage(response)
 }
