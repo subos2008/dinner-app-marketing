@@ -1378,38 +1378,6 @@
     display: none !important;
   }
 
-  .ad-viewer-regen-btn {
-    position: absolute;
-    bottom: calc(var(--safe-bottom) + 16px);
-    left: 16px;
-    right: 16px;
-    padding: 16px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius);
-    font-family: var(--font-body);
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    z-index: 10;
-    -webkit-appearance: none;
-    transition: background 0.15s, opacity 0.15s;
-  }
-
-  .ad-viewer-regen-btn:active {
-    background: var(--accent-dark);
-  }
-
-  .ad-viewer-regen-btn:disabled {
-    opacity: 0.6;
-    cursor: default;
-  }
-
-  .ad-viewer-regen-btn.loading {
-    background: var(--text-secondary);
-  }
-
   /* --- Full-screen Ad Builder --- */
   .ad-builder-screen {
     position: fixed;
@@ -1826,7 +1794,6 @@
     <div class="viewer-image-wrap">
       <img id="ad-viewer-image" src="" alt="" />
     </div>
-    <button class="ad-viewer-regen-btn" id="ad-viewer-regen-btn">Regenerate</button>
   </div>
 
   <!-- Full-screen Ad Builder -->
@@ -1953,8 +1920,6 @@
   const $adViewerClose = document.getElementById('ad-viewer-close');
   const $adViewerCounter = document.getElementById('ad-viewer-counter');
   const $adViewerImage = document.getElementById('ad-viewer-image');
-  const $adViewerRegenBtn = document.getElementById('ad-viewer-regen-btn');
-
   // Builder DOM refs
   const $adBuilder = document.getElementById('ad-builder');
   const $builderClose = document.getElementById('builder-close');
@@ -1993,7 +1958,6 @@
   // Ad viewer state
   let adViewerIndex = -1;
   let adViewerOpen = false;
-  let adRegenerating = false;
 
   // Builder state
   let selectedCaptionIds = [];
@@ -2950,13 +2914,6 @@
     $adViewerImage.src = adImageUrl(ad);
     $adViewerCounter.textContent = (adViewerIndex + 1) + ' of ' + ads.length;
     $adViewerImage.style.transform = '';
-
-    // Reset regenerate button state
-    if (!adRegenerating) {
-      $adViewerRegenBtn.textContent = 'Regenerate';
-      $adViewerRegenBtn.disabled = false;
-      $adViewerRegenBtn.classList.remove('loading');
-    }
   }
 
   function showNextAd() {
@@ -2976,50 +2933,6 @@
 
   // Ad viewer close button
   $adViewerClose.addEventListener('click', closeAdViewer);
-
-  // Regenerate button
-  $adViewerRegenBtn.addEventListener('click', async () => {
-    const ads = filteredAds();
-    if (adViewerIndex < 0 || adViewerIndex >= ads.length) return;
-    if (adRegenerating) return;
-
-    const ad = ads[adViewerIndex];
-    adRegenerating = true;
-    $adViewerRegenBtn.textContent = 'Regenerating...';
-    $adViewerRegenBtn.disabled = true;
-    $adViewerRegenBtn.classList.add('loading');
-
-    try {
-      const { data, error } = await supabaseClient.functions.invoke('composite', {
-        body: { adId: ad.id }
-      });
-      const errMsg = fnError(error, data);
-      if (errMsg) throw new Error(errMsg);
-
-      // Realtime subscription will fire loadData() which calls render()
-      // But also reload explicitly to be safe
-      await loadData();
-
-      // Update the current viewer image with latest data
-      const updatedAds = filteredAds();
-      const updatedIdx = updatedAds.findIndex(a => a.id === ad.id);
-      if (updatedIdx !== -1) {
-        adViewerIndex = updatedIdx;
-        updateAdViewerImage();
-      }
-
-      $adViewerRegenBtn.textContent = 'Regenerate';
-      $adViewerRegenBtn.disabled = false;
-      $adViewerRegenBtn.classList.remove('loading');
-    } catch (err) {
-      console.error('Regenerate failed:', err);
-      $adViewerRegenBtn.textContent = 'Failed — Tap to retry';
-      $adViewerRegenBtn.disabled = false;
-      $adViewerRegenBtn.classList.remove('loading');
-    } finally {
-      adRegenerating = false;
-    }
-  });
 
   // Ad viewer swipe navigation
   (function() {
