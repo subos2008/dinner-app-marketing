@@ -1410,94 +1410,73 @@
     background: var(--text-secondary);
   }
 
-  /* --- Ad Builder Bottom Sheet --- */
-  .builder-backdrop {
+  /* --- Full-screen Ad Builder --- */
+  .ad-builder-screen {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
     z-index: 220;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    pointer-events: none;
-  }
-
-  .builder-backdrop.visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .builder-backdrop.hidden {
-    display: none !important;
-  }
-
-  .builder-sheet {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    max-height: 70vh;
-    z-index: 230;
-    background: var(--surface);
-    border-radius: 14px 14px 0 0;
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+    background: var(--bg);
     display: flex;
     flex-direction: column;
-    transform: translateY(100%);
-    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
   }
-
-  .builder-sheet.visible {
-    transform: translateY(0);
-  }
-
-  .builder-sheet.hidden {
-    display: none !important;
-  }
-
-  .builder-handle {
-    width: 40px;
-    height: 4px;
-    background: var(--text-tertiary);
-    border-radius: 2px;
-    margin: 10px auto 0;
-    flex-shrink: 0;
-    opacity: 0.5;
-  }
-
-  .builder-content {
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 12px 16px 8px;
-  }
-
-  .builder-preview {
+  .ad-builder-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 0.5px solid var(--separator);
+    padding: calc(var(--safe-top) + 12px) 16px 12px;
+    border-bottom: 1px solid var(--border);
   }
-
-  .builder-preview img {
-    width: 56px;
-    height: 56px;
-    border-radius: 8px;
-    object-fit: cover;
+  .ad-builder-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: none;
+    font-size: 24px;
+    color: var(--text-primary);
+    cursor: pointer;
   }
-
-  .builder-preview-label {
-    font-size: 15px;
+  .ad-builder-title {
+    flex: 1;
+    text-align: center;
+    font-size: 17px;
     font-weight: 600;
     color: var(--text-primary);
+    margin-right: 36px;
   }
-
-  .builder-preview-sub {
+  .ad-builder-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .builder-preview-img {
+    width: 100%;
+    max-height: 280px;
+    object-fit: contain;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+  }
+  .builder-section-label {
     font-size: 13px;
+    font-weight: 600;
     color: var(--text-secondary);
-    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 16px 0 8px;
   }
+  .builder-direction-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: var(--font-body);
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  .builder-direction-textarea::placeholder { color: var(--text-tertiary); }
 
   .builder-role-section {
     margin-bottom: 14px;
@@ -1569,15 +1548,17 @@
     color: #fff;
   }
 
-  .builder-footer {
+  .ad-builder-footer {
     padding: 12px 16px;
     padding-bottom: calc(12px + var(--safe-bottom));
     border-top: 0.5px solid var(--separator);
     flex-shrink: 0;
+    display: flex;
+    gap: 10px;
   }
 
   .builder-action-btn {
-    width: 100%;
+    flex: 1;
     padding: 15px;
     background: var(--accent);
     color: #fff;
@@ -1617,6 +1598,23 @@
     border-top-color: white;
     border-radius: 50%;
     animation: gen-spin 0.6s linear infinite;
+  }
+
+  .builder-regen-btn {
+    flex: 1;
+    padding: 15px;
+    background: var(--surface);
+    color: var(--text-primary);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+  .builder-regen-btn:active {
+    background: var(--bg);
   }
 
   /* Builder success toast */
@@ -1831,12 +1829,15 @@
     <button class="ad-viewer-regen-btn" id="ad-viewer-regen-btn">Regenerate</button>
   </div>
 
-  <!-- Ad Builder Bottom Sheet -->
-  <div id="ad-builder-backdrop" class="builder-backdrop hidden"></div>
-  <div id="ad-builder" class="builder-sheet hidden">
-    <div class="builder-handle"></div>
-    <div class="builder-content" id="builder-content"></div>
-    <div class="builder-footer">
+  <!-- Full-screen Ad Builder -->
+  <div id="ad-builder" class="ad-builder-screen hidden">
+    <div class="ad-builder-header">
+      <button id="builder-close" class="ad-builder-close">&times;</button>
+      <span class="ad-builder-title">Build Ad</span>
+    </div>
+    <div class="ad-builder-body" id="builder-body"></div>
+    <div class="ad-builder-footer" id="builder-footer">
+      <button id="builder-regen-btn" class="builder-regen-btn hidden">Regenerate</button>
       <button id="builder-action-btn" class="builder-action-btn">Use as Ad</button>
     </div>
   </div>
@@ -1955,10 +1956,11 @@
   const $adViewerRegenBtn = document.getElementById('ad-viewer-regen-btn');
 
   // Builder DOM refs
-  const $builderBackdrop = document.getElementById('ad-builder-backdrop');
-  const $builderSheet = document.getElementById('ad-builder');
-  const $builderContent = document.getElementById('builder-content');
+  const $adBuilder = document.getElementById('ad-builder');
+  const $builderClose = document.getElementById('builder-close');
+  const $builderBody = document.getElementById('builder-body');
   const $builderActionBtn = document.getElementById('builder-action-btn');
+  const $builderRegenBtn = document.getElementById('builder-regen-btn');
   const $builderToast = document.getElementById('builder-toast');
 
   // Select action bar handlers
@@ -1996,6 +1998,9 @@
   // Builder state
   let selectedCaptionIds = [];
   let builderCreating = false;
+  let builderPreviewMode = false;
+  let builderPreviewAdId = null;
+  let builderSavedDirection = '';
 
   // --- Utility ---
   function show(el) { el.classList.remove('hidden'); }
@@ -3122,7 +3127,7 @@
   // Close button
   $viewerClose.addEventListener('click', closeViewer);
 
-  // Build Ad button — opens the ad builder bottom sheet
+  // Build Ad button — opens the full-screen ad builder
   $viewerBuildBtn.addEventListener('click', () => {
     const images = filteredImages();
     if (viewerImageIndex >= 0 && viewerImageIndex < images.length) {
@@ -3256,40 +3261,29 @@
     if (e.key === 'ArrowRight') showNextImage();
   });
 
-  // --- Ad Builder Bottom Sheet ---
+  // --- Full-screen Ad Builder ---
 
   function openAdBuilder() {
     if (!builderImageId) return;
     selectedCaptionIds = [];
     builderCreating = false;
+    builderPreviewMode = false;
+    builderPreviewAdId = null;
+    builderSavedDirection = '';
     renderBuilderContent();
     updateBuilderActionBtn();
-
-    // Show backdrop + sheet
-    $builderBackdrop.classList.remove('hidden');
-    $builderSheet.classList.remove('hidden');
-
-    // Trigger reflow then animate in
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        $builderBackdrop.classList.add('visible');
-        $builderSheet.classList.add('visible');
-      });
-    });
+    show($adBuilder);
+    document.body.style.overflow = 'hidden';
   }
 
   function closeAdBuilder() {
-    $builderBackdrop.classList.remove('visible');
-    $builderSheet.classList.remove('visible');
-
-    // Wait for transition to finish then hide
-    setTimeout(() => {
-      $builderBackdrop.classList.add('hidden');
-      $builderSheet.classList.add('hidden');
-      selectedCaptionIds = [];
-      builderImageId = null;
-      $builderContent.innerHTML = '';
-    }, 300);
+    hide($adBuilder);
+    document.body.style.overflow = '';
+    selectedCaptionIds = [];
+    builderImageId = null;
+    builderPreviewMode = false;
+    builderPreviewAdId = null;
+    $builderBody.innerHTML = '';
   }
 
   function renderBuilderContent() {
@@ -3312,16 +3306,10 @@
 
     let html = '';
 
-    // Image preview
-    html += '<div class="builder-preview">';
-    html += '<img src="' + escapeHtml(imgSrc) + '" alt="" />';
-    html += '<div>';
-    html += '<div class="builder-preview-label">Select captions</div>';
-    html += '<div class="builder-preview-sub">Or use image as-is</div>';
-    html += '</div>';
-    html += '</div>';
+    // Base image preview (larger than before)
+    html += '<img class="builder-preview-img" src="' + escapeHtml(imgSrc) + '" alt="" />';
 
-    // Render each role group
+    // Caption pickers by role
     const roleLabels = {
       headline: 'Headlines',
       subline: 'Sublines',
@@ -3349,14 +3337,34 @@
       html += '</div>';
     }
 
-    $builderContent.innerHTML = html;
+    // Creative direction textarea
+    html += '<div class="builder-section-label">Creative Direction</div>';
+    html += '<textarea class="builder-direction-textarea" id="builder-direction" '
+      + 'placeholder="e.g. white text, bottom third, minimal overlay..."></textarea>';
+
+    $builderBody.innerHTML = html;
 
     // Attach click handlers to caption cards
-    $builderContent.querySelectorAll('.builder-caption-card').forEach(card => {
+    $builderBody.querySelectorAll('.builder-caption-card').forEach(card => {
       card.addEventListener('click', () => {
         toggleCaption(card.dataset.captionId);
       });
     });
+  }
+
+  function renderBuilderPreview(imageUrl) {
+    // Save current creative direction before re-rendering
+    const dirEl = document.getElementById('builder-direction');
+    if (dirEl) builderSavedDirection = dirEl.value;
+
+    let html = '<img class="builder-preview-img" src="' + escapeHtml(imageUrl) + '?t=' + Date.now() + '" alt="Preview" />';
+    html += '<div class="builder-section-label">Creative Direction</div>';
+    html += '<textarea class="builder-direction-textarea" id="builder-direction" '
+      + 'placeholder="e.g. white text, bottom third, minimal overlay...">'
+      + escapeHtml(builderSavedDirection)
+      + '</textarea>';
+
+    $builderBody.innerHTML = html;
   }
 
   function toggleCaption(captionId) {
@@ -3367,8 +3375,7 @@
       selectedCaptionIds.splice(idx, 1);
     }
 
-    // Update card visuals
-    $builderContent.querySelectorAll('.builder-caption-card').forEach(card => {
+    $builderBody.querySelectorAll('.builder-caption-card').forEach(card => {
       const isSelected = selectedCaptionIds.includes(card.dataset.captionId);
       card.classList.toggle('selected', isSelected);
       const checkEl = card.querySelector('.builder-caption-check');
@@ -3379,17 +3386,36 @@
   }
 
   function updateBuilderActionBtn() {
-    if (selectedCaptionIds.length > 0) {
-      $builderActionBtn.textContent = 'Generate Ad (' + selectedCaptionIds.length + ')';
+    if (builderPreviewMode) {
+      $builderActionBtn.textContent = 'Accept';
+      show($builderRegenBtn);
     } else {
-      $builderActionBtn.textContent = 'Use as Ad';
+      hide($builderRegenBtn);
+      if (selectedCaptionIds.length > 0) {
+        $builderActionBtn.textContent = 'Generate Ad (' + selectedCaptionIds.length + ')';
+      } else {
+        $builderActionBtn.textContent = 'Use as Ad';
+      }
     }
   }
 
   async function handleCreateAd() {
     if (builderCreating || !builderImageId) return;
+
+    // In preview mode, "Accept" = close and navigate to ads
+    if (builderPreviewMode) {
+      closeAdBuilder();
+      closeViewer();
+      switchTab('library');
+      switchLibraryView('ads');
+      await loadData();
+      showBuilderToast('Ad created');
+      return;
+    }
+
     builderCreating = true;
     $builderActionBtn.disabled = true;
+    $builderActionBtn.textContent = 'Generating...';
     $builderActionBtn.classList.add('loading');
 
     const image = STATE.images.find(img => img.id === builderImageId);
@@ -3400,59 +3426,78 @@
       return;
     }
 
+    const directionEl = document.getElementById('builder-direction');
+    const creativeDirection = directionEl ? directionEl.value.trim() : '';
+    builderSavedDirection = creativeDirection;
+
     try {
       if (selectedCaptionIds.length === 0) {
-        // "Use as Ad" path — no captions, use base image directly
+        // "Use as Ad" — no captions, no compositing needed
+        const insertData = { base_image_id: builderImageId, composited_image_path: image.storage_path };
+        if (creativeDirection) insertData.feedback = creativeDirection;
         const { data: ad, error } = await db().from('ad')
-          .insert({ base_image_id: builderImageId, composited_image_path: image.storage_path })
-          .select().single();
+          .insert(insertData).select().single();
         if (error) throw error;
 
         if (activeSegmentId) {
           await db().from('ad_segment').insert({ ad_id: ad.id, segment_id: activeSegmentId });
         }
-      } else {
-        // "Generate Ad" path — with captions, trigger compositing
-        const { data: ad, error } = await db().from('ad')
-          .insert({ base_image_id: builderImageId })
-          .select().single();
-        if (error) throw error;
 
-        for (const captionId of selectedCaptionIds) {
-          await db().from('ad_caption').insert({ ad_id: ad.id, caption_id: captionId });
-        }
-
-        if (activeSegmentId) {
-          await db().from('ad_segment').insert({ ad_id: ad.id, segment_id: activeSegmentId });
-        }
-
-        // Trigger compositing
-        const { data: compData, error: compError } = await supabaseClient.functions.invoke('composite', {
-          body: { adId: ad.id }
-        });
-        const compErrMsg = fnError(compError, compData);
-        if (compErrMsg) throw new Error(compErrMsg);
+        // No preview needed — go straight to done
+        closeAdBuilder();
+        closeViewer();
+        switchTab('library');
+        switchLibraryView('ads');
+        await loadData();
+        showBuilderToast('Ad created');
+        return;
       }
 
-      // Close builder and viewer
-      closeAdBuilder();
-      closeViewer();
+      // "Generate Ad" — with captions, trigger compositing
+      let adId = builderPreviewAdId;
 
-      // Switch to Library tab > Ads view
-      switchTab('library');
-      switchLibraryView('ads');
+      if (!adId) {
+        // First generation — create the ad row
+        const insertData = { base_image_id: builderImageId };
+        if (creativeDirection) insertData.feedback = creativeDirection;
+        const { data: ad, error } = await db().from('ad')
+          .insert(insertData).select().single();
+        if (error) throw error;
+        adId = ad.id;
+        builderPreviewAdId = adId;
 
-      // Reload data
+        // Attach captions
+        for (const captionId of selectedCaptionIds) {
+          await db().from('ad_caption').insert({ ad_id: adId, caption_id: captionId });
+        }
+
+        if (activeSegmentId) {
+          await db().from('ad_segment').insert({ ad_id: adId, segment_id: activeSegmentId });
+        }
+      } else {
+        // Regenerating — update creative direction
+        await db().from('ad').update({ feedback: creativeDirection || null }).eq('id', adId);
+      }
+
+      // Trigger compositing
+      const { data: compData, error: compError } = await supabaseClient.functions.invoke('composite', {
+        body: { adId }
+      });
+      const compErrMsg = fnError(compError, compData);
+      if (compErrMsg) throw new Error(compErrMsg);
+
+      // Show preview
       await loadData();
-
-      // Show success toast
-      showBuilderToast('Ad created');
+      builderPreviewMode = true;
+      const previewUrl = compData.composited_image_url || (storageBaseUrl + '/' + compData.composited_image_path);
+      renderBuilderPreview(previewUrl);
+      updateBuilderActionBtn();
 
     } catch (err) {
       console.error('handleCreateAd failed:', err);
+      $builderActionBtn.textContent = 'Failed — Tap to retry';
       $builderActionBtn.disabled = false;
       $builderActionBtn.classList.remove('loading');
-      $builderActionBtn.textContent = 'Failed — Tap to retry';
       builderCreating = false;
       return;
     }
@@ -3460,7 +3505,6 @@
     builderCreating = false;
     $builderActionBtn.disabled = false;
     $builderActionBtn.classList.remove('loading');
-    updateBuilderActionBtn();
   }
 
   function showBuilderToast(msg) {
@@ -3472,8 +3516,16 @@
   }
 
   // Wire builder events
-  $builderBackdrop.addEventListener('click', closeAdBuilder);
+  $builderClose.addEventListener('click', closeAdBuilder);
   $builderActionBtn.addEventListener('click', handleCreateAd);
+  $builderRegenBtn.addEventListener('click', () => {
+    builderPreviewMode = false;
+    renderBuilderContent();
+    // Restore creative direction
+    const dirEl = document.getElementById('builder-direction');
+    if (dirEl && builderSavedDirection) dirEl.value = builderSavedDirection;
+    updateBuilderActionBtn();
+  });
 
   // --- Render ---
   function render() {
