@@ -14,8 +14,9 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: 'Unauthorized' }, 401)
     }
 
-    const { prompt, brief, segment_hint } = await req.json()
+    const { prompt, brief, segment_hint, aspect_ratio } = await req.json()
     if (!prompt) return jsonResponse({ error: 'prompt is required' }, 400)
+    if (!aspect_ratio) return jsonResponse({ error: 'aspect_ratio is required' }, 400)
 
     // Create generation_prompt row (reuse if exists)
     const genPromptId = await upsertGenerationPrompt(userClient, 'image', prompt, brief)
@@ -32,7 +33,7 @@ Deno.serve(async (req) => {
     console.log('[generate-image] calling Gemini...')
     let imageData: Uint8Array
     try {
-      const result = await generateImage(geminiPrompt)
+      const result = await generateImage(geminiPrompt, aspect_ratio)
       imageData = result.data
     } catch (err) {
       console.error('[generate-image] Gemini failed:', (err as Error).message)
@@ -60,7 +61,7 @@ Deno.serve(async (req) => {
     // Create base_image row
     const { data: image, error: insertError } = await userClient
       .from('base_image')
-      .insert({ filename, storage_path: storagePath, prompt, generation_prompt_id: genPromptId })
+      .insert({ filename, storage_path: storagePath, prompt, generation_prompt_id: genPromptId, aspect_ratio })
       .select()
       .single()
 
