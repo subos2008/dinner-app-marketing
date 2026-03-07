@@ -1321,10 +1321,12 @@
     background: rgba(0,0,0,0.5);
     color: #fff;
   }
+  .viewer-action-btn:active { opacity: 0.7; }
   .viewer-action-primary {
     background: var(--accent);
     border-color: var(--accent);
   }
+  .viewer-action-primary:active { background: var(--accent-dark); }
   .viewer-edit-form {
     position: absolute;
     bottom: calc(var(--safe-bottom) + 16px);
@@ -1356,6 +1358,8 @@
     font-family: var(--font-body);
     cursor: pointer;
   }
+  .viewer-edit-form button:active { background: var(--accent-dark); }
+  .viewer-edit-form button:disabled { opacity: 0.5; cursor: default; }
 
   /* --- Fullscreen Ad Viewer --- */
   .ad-viewer {
@@ -3090,6 +3094,14 @@
     $viewerImage.src = storageBaseUrl + '/' + img.storage_path;
     $viewerCounter.textContent = (viewerImageIndex + 1) + ' of ' + images.length;
     $viewerImage.style.transform = '';
+
+    // Reset edit form when navigating between images
+    if (viewerEditing) {
+      viewerEditing = false;
+      hide($viewerEditForm);
+      show($viewerActions);
+      $viewerEditInput.value = '';
+    }
   }
 
   function showNextImage() {
@@ -3125,11 +3137,16 @@
     if (viewerEditing) {
       hide($viewerActions);
       show($viewerEditForm);
+      $viewerEditSubmit.textContent = 'Edit';
       $viewerEditInput.focus();
     } else {
       show($viewerActions);
       hide($viewerEditForm);
     }
+  });
+
+  $viewerEditInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); $viewerEditSubmit.click(); }
   });
 
   // Edit submit — calls edit-image edge function
