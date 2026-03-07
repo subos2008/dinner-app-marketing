@@ -2770,7 +2770,7 @@
           ? '<button class="lib-caption-assign" data-caption-id="' + cap.id + '" title="Add to segment">+</button>'
           : '';
 
-        html += '<div class="lib-caption-card">'
+        html += '<div class="lib-caption-card" data-caption-id="' + cap.id + '">'
           + '<div class="lib-caption-card-body">'
           + '<div class="lib-caption-text">' + escapeHtml(cap.text) + '</div>'
           + segChips
@@ -2854,6 +2854,42 @@
           console.error('Remove caption from segment failed:', err);
         }
       });
+    });
+
+    // Long-press to edit
+    $libCaptionsView.querySelectorAll('.lib-caption-card').forEach(card => {
+      let pressTimer = null;
+      let didLongPress = false;
+
+      function startPress(e) {
+        didLongPress = false;
+        pressTimer = setTimeout(() => {
+          didLongPress = true;
+          const captionId = card.dataset.captionId;
+          if (captionId) openCaptionEditor(captionId);
+        }, 500);
+      }
+
+      function cancelPress() {
+        clearTimeout(pressTimer);
+      }
+
+      function endPress(e) {
+        clearTimeout(pressTimer);
+        if (didLongPress) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+
+      card.addEventListener('touchstart', startPress, { passive: true });
+      card.addEventListener('touchmove', cancelPress);
+      card.addEventListener('touchend', endPress);
+      card.addEventListener('touchcancel', cancelPress);
+      card.addEventListener('mousedown', startPress);
+      card.addEventListener('mousemove', cancelPress);
+      card.addEventListener('mouseup', endPress);
+      card.addEventListener('mouseleave', cancelPress);
     });
   }
 
@@ -3349,6 +3385,12 @@
     if (e.key === 'ArrowLeft') showPrevImage();
     if (e.key === 'ArrowRight') showNextImage();
   });
+
+  // --- Caption Editor ---
+
+  function openCaptionEditor(captionId) {
+    console.log('Open editor for caption:', captionId);
+  }
 
   // --- Full-screen Ad Builder ---
 
