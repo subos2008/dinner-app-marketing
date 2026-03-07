@@ -1472,6 +1472,79 @@
     color: var(--charcoal);
   }
 
+  /* Archive toggle */
+  .image-archive-toggle {
+    display: inline-flex;
+    background: var(--light-gray);
+    border-radius: var(--radius);
+    padding: 2px;
+  }
+  .image-archive-toggle button {
+    padding: 3px 10px;
+    border: none;
+    border-radius: calc(var(--radius) - 2px);
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--warm-gray);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .image-archive-toggle button.active {
+    background: #fff;
+    color: var(--charcoal);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Select mode */
+  .image-select-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    background: var(--warm-white);
+    border-radius: var(--radius);
+    border: 1px solid var(--light-gray);
+  }
+  .image-select-bar .select-count {
+    font-size: 13px;
+    color: var(--charcoal);
+    flex: 1;
+  }
+  .image-card .select-check {
+    display: none;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.8);
+    background: rgba(0,0,0,0.3);
+    z-index: 2;
+  }
+  .image-card.selectable { cursor: pointer; }
+  .image-card.selectable .select-check { display: block; }
+  .image-card.selected .select-check {
+    background: var(--amber);
+    border-color: var(--amber);
+  }
+  .image-card.selected .select-check::after {
+    content: '\2713';
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+  .image-card.selected { opacity: 0.7; }
+
   .generate-type-toggle {
     display: flex;
     gap: 0;
@@ -1728,6 +1801,9 @@
   let activeSegment = 'all'; // 'all', 'generic', or a segment UUID
   const storageBaseUrl = SUPABASE_URL + '/storage/v1/object/public/creative';
   let activeTab = 'images';
+  let showArchivedImages = false;
+  let imageSelectMode = false;
+  let selectedImageIds = new Set();
   let supabaseClient = null;
   let currentSession = null;
   let appInitialised = false;
@@ -1879,10 +1955,17 @@
   // --- Data loading (direct Supabase queries) ---
   async function loadData() {
     try {
+      const imageQuery = db().from('base_image')
+        .select('*, base_image_tag(tag_id, tag:tag_id(id, name)), base_image_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
+        .order('created_at', { ascending: false });
+      if (showArchivedImages) {
+        imageQuery.not('archived_at', 'is', null);
+      } else {
+        imageQuery.is('archived_at', null);
+      }
+
       const [rawImages, rawCaptions, rawBc, rawAds, rawAdSets, rawCampaigns, rawTags, rawSegments] = await Promise.all([
-        db().from('base_image')
-          .select('*, base_image_tag(tag_id, tag:tag_id(id, name)), base_image_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
-          .order('created_at', { ascending: false }),
+        imageQuery,
         db().from('caption')
           .select('*, caption_tag(tag_id, tag:tag_id(id, name)), caption_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
           .order('created_at', { ascending: false }),
@@ -2163,8 +2246,22 @@
       + '<option value="2:3"' + (ratioFilter === '2:3' ? ' selected' : '') + '>Grindr (2:3)</option>'
       + '<option value="1:1"' + (ratioFilter === '1:1' ? ' selected' : '') + '>Square (1:1)</option>'
       + '</select>'
+      + '<div class="image-archive-toggle">'
+      + '<button class="archive-btn' + (!showArchivedImages ? ' active' : '') + '" data-show="active">Active</button>'
+      + '<button class="archive-btn' + (showArchivedImages ? ' active' : '') + '" data-show="archived">Archived</button>'
+      + '</div>'
       + '<span style="font-size:12px;color:var(--warm-gray)">' + displayImages.length + ' images</span>'
+      + '<button id="image-select-toggle" style="margin-left:auto;font-size:12px;color:var(--amber);background:none;border:none;cursor:pointer;padding:4px 8px;font-family:var(--font-body)">'
+      + (imageSelectMode ? 'Cancel' : 'Select') + '</button>'
       + '</div>';
+
+    if (imageSelectMode) {
+      const action = showArchivedImages ? 'Restore' : 'Archive';
+      html += '<div class="image-select-bar">'
+        + '<span class="select-count" id="image-select-count">' + selectedImageIds.size + ' selected</span>'
+        + '<button class="btn-primary" id="image-select-action" style="font-size:12px;padding:6px 14px">' + action + '</button>'
+        + '</div>';
+    }
 
     function renderImageGrid(images) {
       let g = '<div class="image-grid">';
@@ -2176,11 +2273,17 @@
           + ' <span class="remove-seg" onclick="window.__removeImageSegment(\'' + img.id + '\', \'' + s.id + '\')">&times;</span>'
           + '</span>'
         ).join('');
-        g += '<div class="image-card" draggable="true" data-image-id="' + img.id + '">'
-          + '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(img.filename) + '" loading="lazy" onclick="window.__openLightbox(this.src, event)" style="cursor:zoom-in" />'
+        const selClass = imageSelectMode ? (selectedImageIds.has(img.id) ? ' selectable selected' : ' selectable') : '';
+        g += '<div class="image-card' + selClass + '" ' + (imageSelectMode ? '' : 'draggable="true" ') + 'data-image-id="' + img.id + '">'
+          + '<div class="select-check"></div>'
+          + '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(img.filename) + '" loading="lazy"'
+          + (imageSelectMode ? '' : ' onclick="window.__openLightbox(this.src, event)" style="cursor:zoom-in"')
+          + ' />'
           + '<div class="image-card-info">' + escapeHtml(img.filename) + '</div>'
           + (tagsHtml || segHtml ? '<div class="image-card-tags">' + tagsHtml + segHtml + '</div>' : '')
-          + '<button class="btn-delete" onclick="window.__deleteImage(\'' + img.id + '\')" title="Delete">&times;</button>'
+          + (imageSelectMode ? '' : (showArchivedImages
+              ? '<button class="btn-delete" onclick="window.__restoreImage(\'' + img.id + '\')" title="Restore">&#8634;</button>'
+              : '<button class="btn-delete" onclick="window.__deleteImage(\'' + img.id + '\')" title="Archive">&times;</button>'))
           + '</div>';
       }
       g += '</div>';
@@ -2228,6 +2331,71 @@
     const filterSelect = $panelImages.querySelector('#image-ratio-filter');
     if (filterSelect) {
       filterSelect.addEventListener('change', () => renderImages());
+    }
+
+    // Archive toggle
+    $panelImages.querySelectorAll('.archive-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const newVal = btn.dataset.show === 'archived';
+        if (newVal === showArchivedImages) return;
+        showArchivedImages = newVal;
+        imageSelectMode = false;
+        selectedImageIds.clear();
+        await loadData();
+      });
+    });
+
+    // Select toggle
+    const $selectToggle = $panelImages.querySelector('#image-select-toggle');
+    if ($selectToggle) {
+      $selectToggle.addEventListener('click', () => {
+        imageSelectMode = !imageSelectMode;
+        selectedImageIds.clear();
+        renderImages();
+      });
+    }
+
+    // Select mode click on cards
+    if (imageSelectMode) {
+      $panelImages.querySelectorAll('.image-card.selectable').forEach(card => {
+        card.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = card.dataset.imageId;
+          if (selectedImageIds.has(id)) {
+            selectedImageIds.delete(id);
+            card.classList.remove('selected');
+          } else {
+            selectedImageIds.add(id);
+            card.classList.add('selected');
+          }
+          const $count = document.getElementById('image-select-count');
+          if ($count) $count.textContent = selectedImageIds.size + ' selected';
+        });
+      });
+    }
+
+    // Bulk archive/restore action
+    const $selectAction = $panelImages.querySelector('#image-select-action');
+    if ($selectAction) {
+      $selectAction.addEventListener('click', async () => {
+        const ids = Array.from(selectedImageIds);
+        if (ids.length === 0) return;
+        const action = showArchivedImages ? 'restore' : 'archive';
+        const msg = action === 'archive'
+          ? 'Archive ' + ids.length + ' image' + (ids.length > 1 ? 's' : '') + '?'
+          : 'Restore ' + ids.length + ' image' + (ids.length > 1 ? 's' : '') + '?';
+        if (!confirm(msg)) return;
+        try {
+          const value = action === 'archive' ? new Date().toISOString() : null;
+          const { error } = await db().from('base_image').update({ archived_at: value }).in('id', ids);
+          if (error) throw error;
+          imageSelectMode = false;
+          selectedImageIds.clear();
+          await loadData();
+        } catch (err) {
+          alert('Failed to ' + action + ': ' + (err.message || err));
+        }
+      });
     }
   }
 
@@ -3356,20 +3524,33 @@
   };
 
   window.__deleteImage = async function(id) {
-    if (!confirm('Delete this image?')) return;
+    if (!confirm('Archive this image?')) return;
     try {
-      const { error } = await db().from('base_image').delete().eq('id', id);
+      const { error } = await db().from('base_image')
+        .update({ archived_at: new Date().toISOString() })
+        .eq('id', id);
       if (error) {
-        if (error.code === '23503') {
-          alert('Cannot delete image — it is used by one or more ads. Delete those ads first.');
-        } else {
-          alert(error.message || 'Failed to delete image');
-        }
+        alert(error.message || 'Failed to archive image');
         return;
       }
       await loadData();
     } catch (err) {
-      console.error('Delete image failed:', err);
+      console.error('Archive image failed:', err);
+    }
+  };
+
+  window.__restoreImage = async function(id) {
+    try {
+      const { error } = await db().from('base_image')
+        .update({ archived_at: null })
+        .eq('id', id);
+      if (error) {
+        alert(error.message || 'Failed to restore image');
+        return;
+      }
+      await loadData();
+    } catch (err) {
+      console.error('Restore image failed:', err);
     }
   };
 
