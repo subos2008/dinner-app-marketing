@@ -3270,14 +3270,7 @@
     const dirEl = document.getElementById('builder-direction');
     if (dirEl) builderSavedDirection = dirEl.value;
 
-    let html = '<img class="builder-preview-img" src="' + escapeHtml(imageUrl) + '?t=' + Date.now() + '" alt="Preview" />';
-    html += '<div class="builder-section-label">Creative Direction</div>';
-    html += '<textarea class="builder-direction-textarea" id="builder-direction" '
-      + 'placeholder="e.g. white text, bottom third, minimal overlay...">'
-      + escapeHtml(builderSavedDirection)
-      + '</textarea>';
-
-    $builderBody.innerHTML = html;
+    $builderBody.innerHTML = '<img class="builder-preview-img" src="' + escapeHtml(imageUrl) + '?t=' + Date.now() + '" alt="Preview" style="max-height:none;" />';
   }
 
   function toggleCaption(captionId) {
