@@ -166,6 +166,18 @@
     font-size: 11px; font-weight: 500; text-transform: none; letter-spacing: 0;
     padding: 2px 8px; border-radius: 6px;
   }
+  .campaign-status-btn {
+    font-size: 11px; font-weight: 600; text-transform: none; letter-spacing: 0;
+    padding: 4px 12px; border-radius: 8px; border: none; cursor: pointer;
+  }
+  .campaign-status-btn:disabled { opacity: 0.5; cursor: default; }
+  .campaign-status-btn.is-active { background: #D1F2D1; color: #1B7A1B; }
+  .campaign-status-btn.is-paused { background: #FFF3CD; color: #856404; }
+  .campaign-banner {
+    margin: 0 16px 8px; padding: 10px 14px; border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    background: #FFF3CD; color: #856404;
+  }
   .status-active { background: #D1F2D1; color: #1B7A1B; }
   .status-paused { background: #FFF3CD; color: #856404; }
   .status-other { background: #E8E8ED; color: var(--text-secondary); }
@@ -220,6 +232,7 @@
   .ad-row-status { font-size: 12px; color: var(--text-secondary); margin-top: 2px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
   .dot-draft { background: var(--text-tertiary); }
+  .dot-queued { background: #f59e0b; }
   .dot-approved { background: var(--blue); }
   .dot-live { background: var(--green); }
   .dot-paused { background: var(--orange); }
@@ -304,7 +317,7 @@
     </div>
     <div class="tab-bar">
       <button class="tab-btn active" id="tab-campaigns" data-tab="campaigns">Campaigns</button>
-      <button class="tab-btn" id="tab-unassigned" data-tab="unassigned">Unassigned</button>
+      <button class="tab-btn" id="tab-unassigned" data-tab="unassigned">Ads</button>
       <button class="tab-btn" id="tab-log" data-tab="log">Sync Log</button>
     </div>
   </div>
@@ -503,6 +516,30 @@
     }
   }
 
+  async function toggleCampaignStatus(campaignId, isCurrentlyActive) {
+    var newStatus = isCurrentlyActive ? 'paused' : 'live';
+    var msg = isCurrentlyActive
+      ? 'Pause this campaign? Ads will stop serving.'
+      : 'Activate this campaign? All synced ads will start serving and spending budget.';
+    if (!confirm(msg)) return;
+
+    // Update desired_status locally first
+    var res = await db().from('campaign').update({ desired_status: newStatus }).eq('id', campaignId);
+    if (res.error) { alert('Failed: ' + res.error.message); return; }
+
+    // Sync to Meta
+    var resp = await supabaseClient.functions.invoke('meta-sync', {
+      body: { action: 'sync_campaign', campaign_id: campaignId }
+    });
+    if (resp.error || (resp.data && resp.data.error)) {
+      alert('Sync failed: ' + fnError(resp.error, resp.data));
+      await loadData();
+      return;
+    }
+
+    await loadData();
+  }
+
   // --- Render: Campaigns view ---
   function renderCampaigns() {
     var html = '';
@@ -553,14 +590,22 @@
     if (STATE.campaigns.length > 0) {
       STATE.campaigns.forEach(function(c) {
         var cAdSets = campaignAdSets[c.id] || [];
-        var statusLabel = c.meta_status || c.desired_status || '';
-        var statusCls = metaStatusClass(c.meta_status);
+        var isActive = c.meta_status === 'ACTIVE';
+        var isPaused = !isActive;
+        var btnClass = isActive ? 'is-active' : 'is-paused';
+        var btnLabel = isActive ? 'Active' : 'Paused';
 
         html += '<div class="campaign-section">'
           + '<div class="campaign-header">'
           + '<span>' + escapeHtml(c.name) + ' (' + cAdSets.length + ' ad set' + (cAdSets.length !== 1 ? 's' : '') + ')</span>'
-          + (statusLabel ? '<span class="campaign-status ' + statusCls + '">' + statusLabel + '</span>' : '')
+          + (c.meta_campaign_id
+            ? '<button class="campaign-status-btn ' + btnClass + '" data-campaign-id="' + c.id + '" data-active="' + isActive + '">' + btnLabel + '</button>'
+            : '<span class="campaign-status status-other">No Meta ID</span>')
           + '</div>';
+
+        if (isPaused && c.meta_campaign_id) {
+          html += '<div class="campaign-banner">Campaign paused &mdash; ads will not serve until you activate this campaign.</div>';
+        }
 
         if (cAdSets.length === 0) {
           html += '<div style="padding: 12px 16px; font-size: 13px; color: var(--text-tertiary);">No ad sets in this campaign</div>';
@@ -597,6 +642,10 @@
 
     var dismissBtn = document.getElementById('dismiss-pull');
     if (dismissBtn) dismissBtn.addEventListener('click', function() { pullResultMsg = null; render(); });
+
+    $viewCampaigns.querySelectorAll('.campaign-status-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() { toggleCampaignStatus(btn.dataset.campaignId, btn.dataset.active === 'true'); });
+    });
 
     $viewCampaigns.querySelectorAll('.ad-set-card').forEach(function(card) {
       card.addEventListener('click', function() {
@@ -699,7 +748,7 @@
     var captionText = ad.ad_caption && ad.ad_caption[0] && ad.ad_caption[0].caption ? ad.ad_caption[0].caption.text : 'No caption';
     var syncState = getSyncState(ad);
 
-    var statusOptions = ['draft', 'approved', 'live', 'paused'].map(function(s) {
+    var statusOptions = ['draft', 'queued', 'live', 'paused'].map(function(s) {
       return '<option value="' + s + '"' + (ad.desired_status === s ? ' selected' : '') + '>' + s + '</option>';
     }).join('');
 
@@ -722,35 +771,87 @@
 
   // --- Render: Unassigned ---
   function renderUnassigned() {
-    var unassigned = STATE.ads.filter(function(a) { return !a.ad_set_id && a.desired_status !== 'draft'; });
+    var unassigned = STATE.ads.filter(function(a) { return !a.ad_set_id; });
+    var assigned = STATE.ads.filter(function(a) { return a.ad_set_id; });
 
-    if (unassigned.length === 0) {
-      $viewUnassigned.innerHTML = '<div class="empty-state"><div class="empty-state-title">No Unassigned Ads</div>All approved ads are assigned to ad sets, or all ads are still in draft.</div>';
+    if (STATE.ads.length === 0) {
+      $viewUnassigned.innerHTML = '<div class="empty-state"><div class="empty-state-title">No Ads</div>Create ads in the Creative app first.</div>';
       return;
     }
 
-    $viewUnassigned.innerHTML = '<div class="section-header">' + unassigned.length + ' unassigned ad' + (unassigned.length !== 1 ? 's' : '') + '</div>'
-      + unassigned.map(function(ad) {
-        var imgUrl = ad.composited_image_path
-          ? storageBaseUrl + '/' + ad.composited_image_path
-          : (ad.base_image ? storageBaseUrl + '/' + ad.base_image.storage_path : '');
-        var captionText = ad.ad_caption && ad.ad_caption[0] && ad.ad_caption[0].caption ? ad.ad_caption[0].caption.text : 'No caption';
+    var html = '';
 
-        return '<div class="ad-row">'
-          + (imgUrl ? '<img class="ad-row-thumb" src="' + imgUrl + '" alt="" />' : '<div class="ad-row-thumb"></div>')
-          + '<div class="ad-row-info">'
-          + '<div class="ad-row-caption">' + escapeHtml(captionText) + '</div>'
-          + '<div class="ad-row-status"><span class="status-dot dot-' + ad.desired_status + '"></span> ' + ad.desired_status + '</div>'
-          + '</div>'
-          + '<div class="ad-row-actions">'
-          + '<button class="assign-btn" data-ad-id="' + ad.id + '">Assign</button>'
-          + '</div>'
-          + '</div>';
+    // Unassigned ads
+    if (unassigned.length > 0) {
+      html += '<div class="section-header">' + unassigned.length + ' unassigned</div>';
+      html += unassigned.map(function(ad) { return renderAdCard(ad, true); }).join('');
+    }
+
+    // Assigned ads
+    if (assigned.length > 0) {
+      html += '<div class="section-header">' + assigned.length + ' assigned</div>';
+      html += assigned.map(function(ad) {
+        var adSet = STATE.adSets.find(function(as) { return as.id === ad.ad_set_id; });
+        return renderAdCard(ad, false, adSet);
       }).join('');
+    }
+
+    if (unassigned.length === 0) {
+      html = '<div class="section-header">All ' + STATE.ads.length + ' ads assigned</div>'
+        + assigned.map(function(ad) {
+          var adSet = STATE.adSets.find(function(as) { return as.id === ad.ad_set_id; });
+          return renderAdCard(ad, false, adSet);
+        }).join('');
+    }
+
+    $viewUnassigned.innerHTML = html;
 
     $viewUnassigned.querySelectorAll('.assign-btn').forEach(function(btn) {
       btn.addEventListener('click', function() { openAssignSheet(btn.dataset.adId); });
     });
+
+    $viewUnassigned.querySelectorAll('.status-select').forEach(function(sel) {
+      sel.addEventListener('change', async function() {
+        var adId = sel.dataset.adId;
+        var newStatus = sel.value;
+        var res = await db().from('ad').update({ desired_status: newStatus }).eq('id', adId);
+        if (res.error) { alert('Failed: ' + res.error.message); return; }
+        await loadData();
+      });
+    });
+  }
+
+  function renderAdCard(ad, showAssign, adSet) {
+    var imgUrl = ad.composited_image_path
+      ? storageBaseUrl + '/' + ad.composited_image_path
+      : (ad.base_image ? storageBaseUrl + '/' + ad.base_image.storage_path : '');
+    var captionText = ad.ad_caption && ad.ad_caption[0] && ad.ad_caption[0].caption ? ad.ad_caption[0].caption.text : '';
+    var bodyText = ad.body_copy ? ad.body_copy.headline || ad.body_copy.text || '' : '';
+    var label = captionText || bodyText || 'Ad ' + ad.id.slice(0, 8);
+
+    var statusOptions = ['draft', 'queued', 'live', 'paused'].map(function(s) {
+      return '<option value="' + s + '"' + (ad.desired_status === s ? ' selected' : '') + '>' + s + '</option>';
+    }).join('');
+
+    var actions = '<select class="status-select" data-ad-id="' + ad.id + '">' + statusOptions + '</select>';
+    if (showAssign) {
+      actions += ' <button class="assign-btn" data-ad-id="' + ad.id + '">Assign</button>';
+    }
+
+    var adSetLabel = adSet ? '<span style="color:var(--text-tertiary);font-size:11px;">' + escapeHtml(adSet.name) + '</span>' : '';
+
+    return '<div class="ad-row">'
+      + (imgUrl ? '<img class="ad-row-thumb" src="' + imgUrl + '" alt="" />' : '<div class="ad-row-thumb"></div>')
+      + '<div class="ad-row-info">'
+      + '<div class="ad-row-caption">' + escapeHtml(label) + '</div>'
+      + '<div class="ad-row-status">'
+      + '<span class="status-dot dot-' + ad.desired_status + '"></span> ' + ad.desired_status
+      + (ad.meta_status ? ' &rarr; Meta: ' + ad.meta_status : '')
+      + '</div>'
+      + adSetLabel
+      + '</div>'
+      + '<div class="ad-row-actions">' + actions + '</div>'
+      + '</div>';
   }
 
   // --- Assign sheet ---
@@ -851,6 +952,7 @@
 
   // --- Helpers ---
   function needsSync(ad) {
+    if (ad.desired_status === 'queued' && !ad.meta_ad_id) return true;
     if (ad.desired_status === 'live' && ad.meta_status !== 'ACTIVE') return true;
     if (ad.desired_status === 'paused' && ad.meta_status !== 'PAUSED') return true;
     return false;

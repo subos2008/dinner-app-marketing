@@ -1552,6 +1552,24 @@
     display: none !important;
   }
 
+  /* --- Ad Status Badges --- */
+  .ad-status-badge { position: absolute; top: 6px; right: 6px; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; z-index: 2; }
+  .ad-status-queued { background: #f59e0b; color: #fff; }
+  .ad-status-live { background: #22c55e; color: #fff; }
+  .ad-status-paused { background: #94a3b8; color: #fff; }
+
+  /* --- Ad Viewer Publish Button --- */
+  .ad-viewer-status { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+  .ad-publish-btn { padding: 8px 20px; border-radius: 20px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .ad-publish-btn.publish { background: #22c55e; color: #fff; }
+  .ad-publish-btn.publish:active { background: #16a34a; }
+  .ad-publish-btn.unpublish { background: #f59e0b; color: #fff; }
+  .ad-publish-btn.unpublish:active { background: #d97706; }
+  .ad-viewer-status-pill { padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+  .ad-viewer-status-pill.live { background: #22c55e; color: #fff; }
+  .ad-viewer-status-pill.paused { background: #94a3b8; color: #fff; }
+  .ad-locked-msg { color: #94a3b8; font-size: 13px; text-align: center; padding: 12px; }
+
   /* --- Full-screen Ad Builder --- */
   .ad-builder-screen {
     position: fixed;
@@ -2244,6 +2262,7 @@
       <img id="ad-viewer-image" src="" alt="" />
     </div>
     <div class="viewer-actions" id="ad-viewer-actions">
+      <div class="ad-viewer-status" id="ad-viewer-status"></div>
       <button class="viewer-action-btn viewer-action-primary" id="ad-viewer-duplicate-btn">Duplicate & Tweak</button>
     </div>
   </div>
@@ -2453,6 +2472,7 @@
   const $adViewerCounter = document.getElementById('ad-viewer-counter');
   const $adViewerImage = document.getElementById('ad-viewer-image');
   const $adViewerDuplicateBtn = document.getElementById('ad-viewer-duplicate-btn');
+  const $adViewerStatus = document.getElementById('ad-viewer-status');
   // Ad select action bar refs
   const $adSelectActionBar = document.getElementById('ad-select-action-bar');
   const $adSelectCount = document.getElementById('ad-select-count');
@@ -3999,8 +4019,12 @@
       const src = adImageUrl(ad);
       if (src) {
         const selectedClass = selectedAdIds.has(ad.id) ? ' selected' : '';
+        const statusBadge = ad.desired_status && ad.desired_status !== 'draft'
+          ? '<div class="ad-status-badge ad-status-' + escapeHtml(ad.desired_status) + '">' + escapeHtml(ad.desired_status.charAt(0).toUpperCase() + ad.desired_status.slice(1)) + '</div>'
+          : '';
         html += '<div class="image-cell-wrap' + selectedClass + '" data-ad-id="' + escapeHtml(ad.id) + '">'
           + '<div class="select-check"></div>'
+          + statusBadge
           + '<img src="' + escapeHtml(src) + '" loading="lazy" alt="" />'
           + '</div>';
       }
@@ -4312,6 +4336,46 @@
     $adViewerImage.src = adImageUrl(ad);
     $adViewerCounter.textContent = (adViewerIndex + 1) + ' of ' + ads.length;
     $adViewerImage.style.transform = '';
+    renderAdViewerStatus(ad);
+  }
+
+  function renderAdViewerStatus(ad) {
+    const status = ad.desired_status || 'draft';
+    if (status === 'draft') {
+      $adViewerStatus.innerHTML = '<button class="ad-publish-btn publish" id="ad-publish-btn">Publish</button>';
+      document.getElementById('ad-publish-btn').addEventListener('click', () => publishAd(ad));
+    } else if (status === 'queued' && !ad.meta_ad_id) {
+      $adViewerStatus.innerHTML = '<button class="ad-publish-btn unpublish" id="ad-unpublish-btn">Unpublish</button>';
+      document.getElementById('ad-unpublish-btn').addEventListener('click', () => unpublishAd(ad));
+    } else {
+      const label = status.charAt(0).toUpperCase() + status.slice(1);
+      const cls = status === 'live' ? 'live' : 'paused';
+      $adViewerStatus.innerHTML = '<span class="ad-viewer-status-pill ' + cls + '">' + escapeHtml(label) + '</span>';
+    }
+  }
+
+  async function publishAd(ad) {
+    if (!ad.composited_image_path) {
+      alert('Generate a composited image first');
+      return;
+    }
+    if (!ad.body_copy_id) {
+      alert('Add body copy before publishing');
+      return;
+    }
+    const { error } = await db().from('ad').update({ desired_status: 'queued' }).eq('id', ad.id);
+    if (error) { alert('Failed: ' + error.message); return; }
+    ad.desired_status = 'queued';
+    renderAdViewerStatus(ad);
+    renderLibrary();
+  }
+
+  async function unpublishAd(ad) {
+    const { error } = await db().from('ad').update({ desired_status: 'draft' }).eq('id', ad.id);
+    if (error) { alert('Failed: ' + error.message); return; }
+    ad.desired_status = 'draft';
+    renderAdViewerStatus(ad);
+    renderLibrary();
   }
 
   function showNextAd() {
@@ -4985,6 +5049,10 @@
   }
 
   function openAdBuilderFromAd(ad) {
+    if (ad.desired_status && ad.desired_status !== 'draft') {
+      alert('This ad is ' + ad.desired_status + ' and cannot be edited. Use "Duplicate & Tweak" to create a new draft.');
+      return;
+    }
     builderImageId = ad.base_image_id;
     selectedCaptionIds = ad.captions.map(c => c.id);
     selectedBodyCopyId = ad.body_copy_id || null;

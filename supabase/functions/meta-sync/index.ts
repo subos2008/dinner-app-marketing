@@ -1,6 +1,6 @@
 import { corsHeaders } from '../_shared/cors.ts'
 import { createUserClient, createServiceClient, createStorageClient } from '../_shared/supabase.ts'
-import { uploadAdImage, createAdCreative, createAd, updateAdStatus, fetchAdSets, fetchCampaigns, fetchAccountInfo } from '../_shared/meta.ts'
+import { uploadAdImage, createAdCreative, createAd, updateAdStatus, updateCampaignStatus, fetchAdSets, fetchCampaigns, fetchAccountInfo } from '../_shared/meta.ts'
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -163,6 +163,25 @@ Deno.serve(async (req) => {
       return jsonResponse({ pulled: metaAdSets.length, created, updated })
     }
 
+    // --- Sync campaign status ---
+    if (action === 'sync_campaign') {
+      const { campaign_id } = body
+      if (!campaign_id) return jsonResponse({ error: 'campaign_id is required' }, 400)
+
+      const { data: campaign, error: cErr } = await userClient
+        .from('campaign').select('*').eq('id', campaign_id).single()
+      if (cErr || !campaign) return jsonResponse({ error: 'Campaign not found' }, 404)
+      if (!campaign.meta_campaign_id) return jsonResponse({ error: 'Campaign has no Meta campaign ID' }, 400)
+
+      const metaStatus = campaign.desired_status === 'live' ? 'ACTIVE' : 'PAUSED'
+      await updateCampaignStatus(campaign.meta_campaign_id, metaStatus)
+
+      await userClient.from('campaign')
+        .update({ meta_status: metaStatus }).eq('id', campaign_id)
+
+      return jsonResponse({ campaign_id, meta_status: metaStatus })
+    }
+
     // --- Sync ads to Meta ---
     const { ad_set_id } = body
     if (!ad_set_id) return jsonResponse({ error: 'ad_set_id is required' }, 400)
@@ -193,7 +212,7 @@ Deno.serve(async (req) => {
       .from('ad')
       .select('*, base_image:base_image_id(*), ad_caption(caption:caption_id(*)), body_copy:body_copy_id(*)')
       .eq('ad_set_id', ad_set_id)
-      .in('desired_status', ['live', 'paused'])
+      .in('desired_status', ['queued', 'live', 'paused'])
 
     if (adsErr) {
       return jsonResponse({ error: 'Failed to fetch ads: ' + adsErr.message }, 500)
@@ -201,6 +220,7 @@ Deno.serve(async (req) => {
 
     // Filter to ads that actually need syncing
     const toSync = (ads || []).filter(ad => {
+      if (ad.desired_status === 'queued' && !ad.meta_ad_id) return true
       if (ad.desired_status === 'live' && ad.meta_status !== 'ACTIVE') return true
       if (ad.desired_status === 'paused' && ad.meta_status !== 'PAUSED') return true
       return false
@@ -262,10 +282,10 @@ Deno.serve(async (req) => {
             status: metaStatus,
           })
 
-          // 6. Update local DB
+          // 6. Update local DB (queued → live after successful creation)
           await userClient
             .from('ad')
-            .update({ meta_ad_id: metaAdId, meta_status: metaStatus })
+            .update({ meta_ad_id: metaAdId, meta_status: metaStatus, desired_status: 'live' })
             .eq('id', ad.id)
 
           // 7. Log

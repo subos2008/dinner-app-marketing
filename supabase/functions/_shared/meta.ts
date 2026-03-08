@@ -132,6 +132,13 @@ export async function updateAdStatus(metaAdId: string, status: 'ACTIVE' | 'PAUSE
 }
 
 /**
+ * Update a campaign's status.
+ */
+export async function updateCampaignStatus(metaCampaignId: string, status: 'ACTIVE' | 'PAUSED'): Promise<void> {
+  await graphPost(`/${metaCampaignId}`, { status })
+}
+
+/**
  * Fetch basic ad account info to verify connection.
  */
 // deno-lint-ignore no-explicit-any
