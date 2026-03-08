@@ -1,5 +1,5 @@
 import { corsHeaders } from '../_shared/cors.ts'
-import { createUserClient, createServiceClient } from '../_shared/supabase.ts'
+import { createUserClient, createStorageClient } from  '../_shared/supabase.ts'
 import { checkVideoOperation } from '../_shared/veo.ts'
 
 Deno.serve(async (req) => {
@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
     const videoBytes = new Uint8Array(await videoResp.arrayBuffer())
 
     // Upload to Storage
-    const serviceClient = createServiceClient()
+    const serviceClient = createStorageClient()
     const timestamp = Date.now()
     const storagePath = `generated/${timestamp}.mp4`
     const filename = `generated-${timestamp}.mp4`

@@ -1,5 +1,5 @@
 import { corsHeaders } from '../_shared/cors.ts'
-import { createUserClient, createServiceClient } from '../_shared/supabase.ts'
+import { createUserClient, createStorageClient } from  '../_shared/supabase.ts'
 import { submitVideoGeneration } from '../_shared/veo.ts'
 
 Deno.serve(async (req) => {
@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
         return jsonResponse({ error: 'Source image not found' }, 404)
       }
 
-      const serviceClient = createServiceClient()
+      const serviceClient = createStorageClient()
       const { data: fileData, error: dlError } = await serviceClient.storage
         .from('creative')
         .download(imgRow.storage_path)
@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
       sourceImageMimeType = 'image/png'
     } else if (source_image_path) {
       // Download directly by storage path (for composited images)
-      const serviceClient = createServiceClient()
+      const serviceClient = createStorageClient()
       const { data: fileData, error: dlError } = await serviceClient.storage
         .from('creative')
         .download(source_image_path)

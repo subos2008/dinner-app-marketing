@@ -1,5 +1,5 @@
 import { corsHeaders } from '../_shared/cors.ts'
-import { createUserClient, createServiceClient } from '../_shared/supabase.ts'
+import { createUserClient, createStorageClient } from  '../_shared/supabase.ts'
 import { editImage } from '../_shared/gemini.ts'
 
 Deno.serve(async (req) => {
@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
     }
 
     // 6. Upload the composited image
-    const serviceClient = createServiceClient()
+    const serviceClient = createStorageClient()
     const compositedStoragePath = `composited/${adId}.png`
 
     const { error: uploadError } = await serviceClient.storage

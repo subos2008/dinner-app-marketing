@@ -12,8 +12,17 @@ export function createUserClient(req: Request) {
   )
 }
 
-/** Service role client for Storage uploads (bypasses RLS) */
+/** Service role client (bypasses RLS), uses marketing schema */
 export function createServiceClient() {
+  return createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+    { db: { schema: 'marketing' } }
+  )
+}
+
+/** Service role client for Storage (uses default public schema) */
+export function createStorageClient() {
   return createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!

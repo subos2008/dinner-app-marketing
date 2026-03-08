@@ -132,13 +132,37 @@ export async function updateAdStatus(metaAdId: string, status: 'ACTIVE' | 'PAUSE
 }
 
 /**
+ * Fetch basic ad account info to verify connection.
+ */
+// deno-lint-ignore no-explicit-any
+export async function fetchAccountInfo(): Promise<any> {
+  const accountId = getAdAccountId()
+  return await graphGet(`/${accountId}`, {
+    fields: 'id,name,account_status,currency,timezone_name,amount_spent',
+  })
+}
+
+/**
+ * Fetch campaigns from the ad account.
+ */
+// deno-lint-ignore no-explicit-any
+export async function fetchCampaigns(): Promise<any[]> {
+  const accountId = getAdAccountId()
+  const data = await graphGet(`/${accountId}/campaigns`, {
+    fields: 'id,name,status,effective_status,objective,daily_budget,start_time,stop_time',
+    limit: '100',
+  })
+  return data.data || []
+}
+
+/**
  * Fetch ad sets from the ad account.
  */
 // deno-lint-ignore no-explicit-any
 export async function fetchAdSets(): Promise<any[]> {
   const accountId = getAdAccountId()
   const data = await graphGet(`/${accountId}/adsets`, {
-    fields: 'id,name,status,daily_budget,start_time,end_time',
+    fields: 'id,name,status,effective_status,daily_budget,start_time,end_time,campaign_id',
     limit: '100',
   })
   return data.data || []

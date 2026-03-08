@@ -1,5 +1,5 @@
 import { corsHeaders } from '../_shared/cors.ts'
-import { createUserClient, createServiceClient } from '../_shared/supabase.ts'
+import { createUserClient, createStorageClient } from  '../_shared/supabase.ts'
 import { editImage } from '../_shared/gemini.ts'
 
 Deno.serve(async (req) => {
@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
     }
 
     // 4. Upload to Storage
-    const serviceClient = createServiceClient()
+    const serviceClient = createStorageClient()
     const timestamp = Date.now()
     const storagePath = `generated/${timestamp}.png`
     const filename = `edited-${timestamp}.png`

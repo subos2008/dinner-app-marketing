@@ -1,6 +1,6 @@
 import { corsHeaders } from '../_shared/cors.ts'
-import { createUserClient, createServiceClient } from '../_shared/supabase.ts'
-import { uploadAdImage, createAdCreative, createAd, updateAdStatus } from '../_shared/meta.ts'
+import { createUserClient, createServiceClient, createStorageClient } from '../_shared/supabase.ts'
+import { uploadAdImage, createAdCreative, createAd, updateAdStatus, fetchAdSets, fetchCampaigns, fetchAccountInfo } from '../_shared/meta.ts'
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -14,7 +14,157 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: 'Unauthorized' }, 401)
     }
 
-    const { ad_set_id } = await req.json()
+    const body = await req.json()
+    const { action } = body
+
+    // --- Diagnose connection ---
+    if (action === 'diagnose') {
+      const account = await fetchAccountInfo()
+      const campaigns = await fetchCampaigns()
+      const adSets = await fetchAdSets()
+      return jsonResponse({
+        account,
+        campaigns_count: campaigns.length,
+        campaigns: campaigns.map((c: any) => ({ id: c.id, name: c.name, status: c.status, effective_status: c.effective_status })),
+        ad_sets_count: adSets.length,
+        ad_sets: adSets.map((a: any) => ({ id: a.id, name: a.name, status: a.status, effective_status: a.effective_status, campaign_id: a.campaign_id })),
+      })
+    }
+
+    // --- Pull campaigns + ad sets from Meta ---
+    if (action === 'pull') {
+      const serviceClient = createServiceClient()
+
+      // 1. Pull campaigns
+      const metaCampaigns = await fetchCampaigns()
+      let campaignsCreated = 0, campaignsUpdated = 0
+
+      for (const mc of metaCampaigns) {
+        const { data: existing } = await serviceClient
+          .from('campaign')
+          .select('id')
+          .eq('meta_campaign_id', mc.id)
+          .maybeSingle()
+
+        if (existing) {
+          await serviceClient
+            .from('campaign')
+            .update({
+              name: mc.name,
+              meta_status: mc.effective_status || mc.status,
+              objective: mc.objective || 'OUTCOME_TRAFFIC',
+            })
+            .eq('id', existing.id)
+          campaignsUpdated++
+        } else {
+          await serviceClient
+            .from('campaign')
+            .insert({
+              name: mc.name,
+              meta_campaign_id: mc.id,
+              meta_status: mc.effective_status || mc.status,
+              desired_status: (mc.effective_status || mc.status) === 'ACTIVE' ? 'live' : 'paused',
+              objective: mc.objective || 'OUTCOME_TRAFFIC',
+            })
+          campaignsCreated++
+        }
+      }
+
+      // 2. Pull ad sets (and link to campaigns)
+      const metaAdSets = await fetchAdSets()
+      let adSetsCreated = 0, adSetsUpdated = 0
+
+      for (const ms of metaAdSets) {
+        // Find local campaign for this ad set's campaign_id
+        let localCampaignId = null
+        if (ms.campaign_id) {
+          const { data: camp } = await serviceClient
+            .from('campaign')
+            .select('id')
+            .eq('meta_campaign_id', ms.campaign_id)
+            .maybeSingle()
+          if (camp) localCampaignId = camp.id
+        }
+
+        const { data: existing } = await serviceClient
+          .from('ad_set')
+          .select('id')
+          .eq('meta_ad_set_id', ms.id)
+          .maybeSingle()
+
+        const upsertData = {
+          name: ms.name,
+          meta_status: ms.effective_status || ms.status,
+          daily_budget_cents: ms.daily_budget ? parseInt(ms.daily_budget) : null,
+          ...(localCampaignId ? { campaign_id: localCampaignId } : {}),
+        }
+
+        if (existing) {
+          await serviceClient.from('ad_set').update(upsertData).eq('id', existing.id)
+          adSetsUpdated++
+        } else {
+          await serviceClient.from('ad_set').insert({
+            ...upsertData,
+            meta_ad_set_id: ms.id,
+            desired_status: (ms.effective_status || ms.status) === 'ACTIVE' ? 'live' : 'paused',
+          })
+          adSetsCreated++
+        }
+      }
+
+      return jsonResponse({
+        campaigns: { pulled: metaCampaigns.length, created: campaignsCreated, updated: campaignsUpdated },
+        adSets: { pulled: metaAdSets.length, created: adSetsCreated, updated: adSetsUpdated },
+      })
+    }
+
+    // --- Pull ad sets only (legacy) ---
+    if (action === 'pull_ad_sets') {
+      const metaAdSets = await fetchAdSets()
+      const serviceClient = createServiceClient()
+
+      let created = 0
+      let updated = 0
+
+      for (const ms of metaAdSets) {
+        // Check if we already have this meta ad set
+        const { data: existing } = await serviceClient
+          .from('ad_set')
+          .select('id')
+          .eq('meta_ad_set_id', ms.id)
+          .maybeSingle()
+
+        if (existing) {
+          // Update name and status
+          await serviceClient
+            .from('ad_set')
+            .update({
+              name: ms.name,
+              meta_status: ms.status,
+              daily_budget_cents: ms.daily_budget ? parseInt(ms.daily_budget) : null,
+            })
+            .eq('id', existing.id)
+          updated++
+        } else {
+          // Create new ad_set row
+          await serviceClient
+            .from('ad_set')
+            .insert({
+              name: ms.name,
+              meta_ad_set_id: ms.id,
+              meta_status: ms.status,
+              desired_status: ms.status === 'ACTIVE' ? 'live' : 'paused',
+              daily_budget_cents: ms.daily_budget ? parseInt(ms.daily_budget) : null,
+            })
+          created++
+        }
+      }
+
+      return jsonResponse({ pulled: metaAdSets.length, created, updated })
+    }
+
+    // --- Sync ads to Meta ---
+    const { ad_set_id } = body
     if (!ad_set_id) return jsonResponse({ error: 'ad_set_id is required' }, 400)
 
     // Get the ad set to verify it exists and has a meta_ad_set_id
@@ -75,7 +225,7 @@ Deno.serve(async (req) => {
             continue
           }
 
-          const { data: fileData, error: dlErr } = await serviceClient.storage
+          const { data: fileData, error: dlErr } = await createStorageClient().storage
             .from('creative')
             .download(imagePath)
           if (dlErr || !fileData) {

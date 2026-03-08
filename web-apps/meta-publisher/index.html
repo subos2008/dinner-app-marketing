@@ -66,16 +66,8 @@
     z-index: 150;
   }
 
-  .login-card {
-    width: 100%; max-width: 360px; text-align: center;
-  }
-
-  .login-card h1 {
-    font-family: var(--font-display);
-    font-size: 28px; font-weight: 400;
-    margin-bottom: 8px;
-  }
-
+  .login-card { width: 100%; max-width: 360px; text-align: center; }
+  .login-card h1 { font-family: var(--font-display); font-size: 28px; font-weight: 400; margin-bottom: 8px; }
   .login-card p { color: var(--text-secondary); margin-bottom: 28px; font-size: 15px; }
 
   .login-card input {
@@ -98,7 +90,6 @@
 
   .login-card button:active { background: var(--accent-dark); }
   .login-card button:disabled { opacity: 0.5; cursor: default; }
-
   .login-message { margin-top: 16px; font-size: 14px; color: var(--green); }
   .login-message.error { color: var(--red); }
 
@@ -123,145 +114,111 @@
     height: 44px; padding: 0 16px;
   }
 
-  .topbar-title {
-    font-family: var(--font-display);
-    font-size: 17px; font-weight: 400;
-    letter-spacing: -0.2px;
+  .topbar-title { font-family: var(--font-display); font-size: 17px; font-weight: 400; letter-spacing: -0.2px; }
+  .topbar-btn { background: none; border: none; color: var(--accent); font-size: 15px; cursor: pointer; padding: 4px 8px; font-family: var(--font-body); }
+
+  .tab-bar { display: flex; gap: 0; padding: 6px 16px 4px; background: var(--top-bar-bg); }
+  .tab-btn {
+    flex: 1; text-align: center; padding: 8px 0;
+    background: none; border: none; font-family: var(--font-body); font-size: 13px;
+    color: var(--text-tertiary); cursor: pointer; position: relative; font-weight: 500;
+  }
+  .tab-btn.active { color: var(--accent); }
+  .tab-btn.active::after {
+    content: ''; position: absolute; bottom: 0; left: 20%; right: 20%;
+    height: 2px; background: var(--accent); border-radius: 1px;
   }
 
-  .topbar-btn {
-    background: none; border: none;
-    color: var(--accent); font-size: 15px;
-    cursor: pointer; padding: 4px 8px;
+  .content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: calc(var(--safe-bottom) + 16px); }
+
+  /* Connection banner */
+  .connection-banner {
+    margin: 12px 16px; padding: 14px 16px;
+    background: var(--surface); border: 1px solid var(--separator);
+    border-radius: var(--radius-lg);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .connection-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .connection-dot.connected { background: var(--green); }
+  .connection-dot.disconnected { background: var(--text-tertiary); }
+  .connection-dot.error { background: var(--red); }
+  .connection-info { flex: 1; min-width: 0; }
+  .connection-name { font-size: 15px; font-weight: 600; }
+  .connection-detail { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+  .connection-actions { flex-shrink: 0; }
+
+  .pull-btn {
+    padding: 8px 14px; background: var(--blue); color: white; border: none;
+    border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
     font-family: var(--font-body);
   }
+  .pull-btn:active { opacity: 0.8; }
+  .pull-btn:disabled { opacity: 0.5; cursor: default; }
 
-  .tab-bar {
-    display: flex; gap: 0;
-    padding: 6px 16px 4px;
-    background: var(--top-bar-bg);
+  /* Campaign section */
+  .campaign-section { margin: 16px 0; }
+  .campaign-header {
+    padding: 8px 16px; font-size: 12px; font-weight: 600;
+    color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;
+    display: flex; justify-content: space-between; align-items: center;
   }
-
-  .tab-btn {
-    flex: 1; text-align: center;
-    padding: 8px 0;
-    background: none; border: none;
-    font-family: var(--font-body); font-size: 13px;
-    color: var(--text-tertiary);
-    cursor: pointer; position: relative;
-    font-weight: 500;
-  }
-
-  .tab-btn.active { color: var(--accent); }
-
-  .tab-btn.active::after {
-    content: '';
-    position: absolute; bottom: 0; left: 20%; right: 20%;
-    height: 2px; background: var(--accent);
-    border-radius: 1px;
-  }
-
-  .content {
-    flex: 1; overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: calc(var(--safe-bottom) + 16px);
-  }
-
-  .ad-set-card {
-    background: var(--surface);
-    margin: 12px 16px;
-    border-radius: var(--radius-lg);
-    padding: 16px;
-    cursor: pointer;
-    border: 1px solid var(--separator);
-    transition: background 0.15s;
-  }
-
-  .ad-set-card:active { background: #F0F0F5; }
-
-  .ad-set-name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-
-  .ad-set-meta {
-    font-size: 13px; color: var(--text-secondary);
-    display: flex; gap: 12px; flex-wrap: wrap;
-  }
-
-  .ad-set-badge {
-    display: inline-block;
+  .campaign-status {
+    font-size: 11px; font-weight: 500; text-transform: none; letter-spacing: 0;
     padding: 2px 8px; border-radius: 6px;
-    font-size: 11px; font-weight: 600;
-    text-transform: uppercase;
   }
+  .status-active { background: #D1F2D1; color: #1B7A1B; }
+  .status-paused { background: #FFF3CD; color: #856404; }
+  .status-other { background: #E8E8ED; color: var(--text-secondary); }
 
+  /* Ad set cards */
+  .ad-set-card {
+    background: var(--surface); margin: 0 16px 8px;
+    border-radius: var(--radius-lg); padding: 14px 16px;
+    cursor: pointer; border: 1px solid var(--separator); transition: background 0.15s;
+  }
+  .ad-set-card:active { background: #F0F0F5; }
+  .ad-set-name { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+  .ad-set-meta { font-size: 12px; color: var(--text-secondary); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 6px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+  }
   .badge-synced { background: #D1F2D1; color: #1B7A1B; }
   .badge-pending { background: #FFF3CD; color: #856404; }
   .badge-error { background: #F8D7DA; color: #721C24; }
   .badge-no-meta { background: #E8E8ED; color: var(--text-secondary); }
 
+  /* Orphaned ad sets (no campaign) */
+  .orphan-section { margin: 16px 0; }
+  .orphan-header { padding: 8px 16px; font-size: 12px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Detail view */
   .detail-header {
-    padding: 16px;
-    display: flex; align-items: center; gap: 12px;
-    border-bottom: 0.5px solid var(--separator);
-    background: var(--surface);
+    padding: 16px; display: flex; align-items: center; gap: 12px;
+    border-bottom: 0.5px solid var(--separator); background: var(--surface);
   }
-
-  .detail-back {
-    background: none; border: none;
-    font-size: 24px; color: var(--accent);
-    cursor: pointer; padding: 0 4px;
-    line-height: 1;
-  }
-
+  .detail-back { background: none; border: none; font-size: 24px; color: var(--accent); cursor: pointer; padding: 0 4px; line-height: 1; }
   .detail-title { font-size: 17px; font-weight: 600; flex: 1; }
 
   .sync-btn {
-    padding: 10px 20px;
-    background: var(--accent); color: white;
-    border: none; border-radius: var(--radius);
-    font-size: 15px; font-weight: 600;
-    cursor: pointer; width: calc(100% - 32px);
-    margin: 16px;
+    padding: 10px 20px; background: var(--accent); color: white;
+    border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600;
+    cursor: pointer; width: calc(100% - 32px); margin: 16px;
     font-family: var(--font-body);
   }
-
   .sync-btn:active { background: var(--accent-dark); }
   .sync-btn:disabled { opacity: 0.5; cursor: default; }
 
   .ad-row {
     display: flex; gap: 12px; align-items: center;
-    padding: 12px 16px;
-    border-bottom: 0.5px solid var(--separator);
-    background: var(--surface);
+    padding: 12px 16px; border-bottom: 0.5px solid var(--separator); background: var(--surface);
   }
-
-  .ad-row-thumb {
-    width: 56px; height: 56px;
-    border-radius: 8px;
-    object-fit: cover;
-    background: var(--separator);
-    flex-shrink: 0;
-  }
-
+  .ad-row-thumb { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; background: var(--separator); flex-shrink: 0; }
   .ad-row-info { flex: 1; min-width: 0; }
-
-  .ad-row-caption {
-    font-size: 14px; font-weight: 500;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-
-  .ad-row-status {
-    font-size: 12px; color: var(--text-secondary);
-    margin-top: 2px;
-    display: flex; gap: 8px; align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .status-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-  }
-
+  .ad-row-caption { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ad-row-status { font-size: 12px; color: var(--text-secondary); margin-top: 2px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
   .dot-draft { background: var(--text-tertiary); }
   .dot-approved { background: var(--blue); }
   .dot-live { background: var(--green); }
@@ -270,100 +227,57 @@
   .dot-pending { background: var(--orange); }
 
   .ad-row-actions { flex-shrink: 0; }
-
   .status-select {
-    padding: 6px 8px;
-    border: 1px solid var(--separator);
-    border-radius: 6px;
-    font-size: 13px;
-    background: var(--surface);
-    color: var(--text-primary);
+    padding: 6px 8px; border: 1px solid var(--separator); border-radius: 6px;
+    font-size: 13px; background: var(--surface); color: var(--text-primary);
     font-family: var(--font-body);
   }
 
-  .sync-result {
-    margin: 12px 16px;
-    padding: 12px;
-    border-radius: var(--radius);
-    font-size: 13px;
-  }
-
+  .sync-result { margin: 12px 16px; padding: 12px; border-radius: var(--radius); font-size: 13px; }
   .sync-result-success { background: #D1F2D1; color: #1B7A1B; }
   .sync-result-error { background: #F8D7DA; color: #721C24; }
 
-  .log-entry {
-    padding: 12px 16px;
-    border-bottom: 0.5px solid var(--separator);
-    font-size: 13px;
-  }
-
+  .log-entry { padding: 12px 16px; border-bottom: 0.5px solid var(--separator); font-size: 13px; }
   .log-time { color: var(--text-tertiary); font-size: 11px; }
   .log-action { font-weight: 500; }
   .log-error { color: var(--red); margin-top: 4px; }
 
   .assign-btn {
-    padding: 4px 10px;
-    background: var(--accent-light); color: var(--accent-dark);
-    border: 1px solid var(--accent);
-    border-radius: 6px;
-    font-size: 12px; font-weight: 500;
-    cursor: pointer; font-family: var(--font-body);
+    padding: 4px 10px; background: var(--accent-light); color: var(--accent-dark);
+    border: 1px solid var(--accent); border-radius: 6px;
+    font-size: 12px; font-weight: 500; cursor: pointer; font-family: var(--font-body);
   }
-
   .assign-btn:active { background: var(--accent); color: white; }
 
-  .assign-sheet-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 300;
-  }
-
+  .assign-sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 300; }
   .assign-sheet {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: var(--surface);
-    border-radius: 14px 14px 0 0;
-    padding: 20px 16px calc(var(--safe-bottom) + 20px);
-    z-index: 301;
-    max-height: 60vh;
-    overflow-y: auto;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--surface); border-radius: 14px 14px 0 0;
+    padding: 20px 16px calc(var(--safe-bottom) + 20px); z-index: 301;
+    max-height: 60vh; overflow-y: auto;
   }
-
   .assign-sheet h3 { font-size: 17px; font-weight: 600; margin-bottom: 12px; }
-
   .assign-option {
-    padding: 12px;
-    border: 1px solid var(--separator);
-    border-radius: var(--radius);
-    margin-bottom: 8px;
-    cursor: pointer;
-    font-size: 15px;
+    padding: 12px; border: 1px solid var(--separator); border-radius: var(--radius);
+    margin-bottom: 8px; cursor: pointer; font-size: 15px;
   }
-
   .assign-option:active { background: var(--accent-light); }
 
-  .empty-state {
-    text-align: center;
-    padding: 60px 24px;
-    color: var(--text-secondary);
-    font-size: 15px;
-  }
-
-  .empty-state-title {
-    font-family: var(--font-display);
-    font-size: 20px;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-  }
-
+  .empty-state { text-align: center; padding: 60px 24px; color: var(--text-secondary); font-size: 15px; }
+  .empty-state-title { font-family: var(--font-display); font-size: 20px; color: var(--text-primary); margin-bottom: 8px; }
   .section-header {
-    padding: 20px 16px 8px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    padding: 20px 16px 8px; font-size: 13px; font-weight: 600;
+    color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;
   }
+
+  /* Pull result toast */
+  .pull-result {
+    margin: 0 16px 12px; padding: 10px 14px;
+    background: #D1F2D1; color: #1B7A1B;
+    border-radius: var(--radius); font-size: 13px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .pull-result .dismiss { background: none; border: none; color: #1B7A1B; cursor: pointer; font-size: 16px; padding: 0 4px; }
 </style>
 </head>
 <body>
@@ -389,14 +303,14 @@
       <button class="topbar-btn" id="signout-btn">Sign Out</button>
     </div>
     <div class="tab-bar">
-      <button class="tab-btn active" id="tab-ad-sets" data-tab="ad-sets">Ad Sets</button>
+      <button class="tab-btn active" id="tab-campaigns" data-tab="campaigns">Campaigns</button>
       <button class="tab-btn" id="tab-unassigned" data-tab="unassigned">Unassigned</button>
       <button class="tab-btn" id="tab-log" data-tab="log">Sync Log</button>
     </div>
   </div>
 
   <div class="content" id="content">
-    <div id="view-ad-sets"></div>
+    <div id="view-campaigns"></div>
     <div id="view-detail" class="hidden"></div>
     <div id="view-unassigned" class="hidden"></div>
     <div id="view-log" class="hidden"></div>
@@ -414,24 +328,25 @@
 (function() {
   'use strict';
 
-  const SUPABASE_URL = 'https://pqrhphvbyjqhntqjzljc.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_vJfmD1tuFO7X2tiKTmRe3Q_-Py5ObXh';
-  const storageBaseUrl = SUPABASE_URL + '/storage/v1/object/public/creative';
+  var SUPABASE_URL = 'https://pqrhphvbyjqhntqjzljc.supabase.co';
+  var SUPABASE_ANON_KEY = 'sb_publishable_vJfmD1tuFO7X2tiKTmRe3Q_-Py5ObXh';
+  var storageBaseUrl = SUPABASE_URL + '/storage/v1/object/public/creative';
 
-  let supabaseClient = null;
-  let currentSession = null;
-  let appInitialised = false;
+  var supabaseClient = null;
+  var currentSession = null;
+  var appInitialised = false;
 
-  let STATE = { adSets: [], ads: [], syncLog: [] };
-  let activeTab = 'ad-sets';
-  let detailAdSetId = null;
-  let assigningAdId = null;
+  var STATE = { account: null, campaigns: [], adSets: [], ads: [], syncLog: [] };
+  var activeTab = 'campaigns';
+  var detailAdSetId = null;
+  var assigningAdId = null;
+  var pullResultMsg = null;
 
   function db() { return supabaseClient.schema('marketing'); }
 
   function fnError(error, data) {
     if (error) {
-      console.error('fnError raw:', { error, data, context: error.context, msg: error.message });
+      console.error('fnError raw:', { error: error, data: data });
       if (error.context) {
         if (typeof error.context === 'object' && error.context.error) return error.context.error;
         if (typeof error.context === 'string') return error.context;
@@ -443,45 +358,51 @@
   }
 
   function escapeHtml(s) {
-    const d = document.createElement('div');
+    var d = document.createElement('div');
     d.textContent = s || '';
     return d.innerHTML;
   }
 
-  const $loading = document.getElementById('loading');
-  const $loginScreen = document.getElementById('login-screen');
-  const $loginForm = document.getElementById('login-form');
-  const $loginEmail = document.getElementById('login-email');
-  const $loginBtn = document.getElementById('login-btn');
-  const $loginMessage = document.getElementById('login-message');
-  const $app = document.getElementById('app');
-  const $signoutBtn = document.getElementById('signout-btn');
+  function metaStatusClass(status) {
+    if (!status) return 'status-other';
+    if (status === 'ACTIVE') return 'status-active';
+    if (status === 'PAUSED' || status === 'CAMPAIGN_PAUSED' || status === 'ADSET_PAUSED') return 'status-paused';
+    return 'status-other';
+  }
 
-  const $viewAdSets = document.getElementById('view-ad-sets');
-  const $viewDetail = document.getElementById('view-detail');
-  const $viewUnassigned = document.getElementById('view-unassigned');
-  const $viewLog = document.getElementById('view-log');
+  var $loading = document.getElementById('loading');
+  var $loginScreen = document.getElementById('login-screen');
+  var $loginForm = document.getElementById('login-form');
+  var $loginEmail = document.getElementById('login-email');
+  var $loginBtn = document.getElementById('login-btn');
+  var $loginMessage = document.getElementById('login-message');
+  var $app = document.getElementById('app');
+  var $signoutBtn = document.getElementById('signout-btn');
 
-  const $assignOverlay = document.getElementById('assign-overlay');
-  const $assignSheet = document.getElementById('assign-sheet');
-  const $assignOptions = document.getElementById('assign-options');
+  var $viewCampaigns = document.getElementById('view-campaigns');
+  var $viewDetail = document.getElementById('view-detail');
+  var $viewUnassigned = document.getElementById('view-unassigned');
+  var $viewLog = document.getElementById('view-log');
+
+  var $assignOverlay = document.getElementById('assign-overlay');
+  var $assignSheet = document.getElementById('assign-sheet');
+  var $assignOptions = document.getElementById('assign-options');
 
   // --- Auth ---
-  // Restore last used email
-  const savedEmail = localStorage.getItem('cju-login-email');
+  var savedEmail = localStorage.getItem('cju-login-email');
   if (savedEmail) $loginEmail.value = savedEmail;
 
-  $loginForm.addEventListener('submit', async (e) => {
+  $loginForm.addEventListener('submit', async function(e) {
     e.preventDefault();
-    const email = $loginEmail.value.trim();
+    var email = $loginEmail.value.trim();
     if (!email) return;
     localStorage.setItem('cju-login-email', email);
     $loginBtn.disabled = true;
     $loginMessage.classList.add('hidden');
 
-    const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin } });
-    if (error) {
-      $loginMessage.textContent = error.message;
+    var result = await supabaseClient.auth.signInWithOtp({ email: email, options: { emailRedirectTo: window.location.origin } });
+    if (result.error) {
+      $loginMessage.textContent = result.error.message;
       $loginMessage.className = 'login-message error';
       $loginMessage.classList.remove('hidden');
     } else {
@@ -492,7 +413,7 @@
     $loginBtn.disabled = false;
   });
 
-  $signoutBtn.addEventListener('click', async () => {
+  $signoutBtn.addEventListener('click', async function() {
     await supabaseClient.auth.signOut();
     currentSession = null;
     $app.classList.add('hidden');
@@ -500,86 +421,220 @@
   });
 
   // --- Tabs ---
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  document.querySelectorAll('.tab-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() { switchTab(btn.dataset.tab); });
   });
 
   function switchTab(tab) {
     activeTab = tab;
     detailAdSetId = null;
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-    $viewAdSets.classList.toggle('hidden', tab !== 'ad-sets');
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.tab === tab); });
+    $viewCampaigns.classList.toggle('hidden', tab !== 'campaigns');
     $viewDetail.classList.add('hidden');
     $viewUnassigned.classList.toggle('hidden', tab !== 'unassigned');
     $viewLog.classList.toggle('hidden', tab !== 'log');
-    if (tab === 'ad-sets') renderAdSets();
-    if (tab === 'unassigned') renderUnassigned();
-    if (tab === 'log') renderSyncLog();
+    render();
   }
 
   // --- Data loading ---
   async function loadData() {
-    const [adSetsRes, adsRes, logRes] = await Promise.all([
+    var results = await Promise.all([
+      db().from('campaign').select('*').order('created_at', { ascending: false }),
       db().from('ad_set').select('*').order('created_at', { ascending: false }),
-      db().from('ad').select('*, base_image:base_image_id(*), caption:caption_id(*), body_copy:body_copy_id(*)').order('created_at', { ascending: false }),
+      db().from('ad').select('*, base_image:base_image_id(*), body_copy:body_copy_id(*), ad_caption(caption_id, caption:caption_id(*))').order('created_at', { ascending: false }),
       db().from('sync_log').select('*').order('synced_at', { ascending: false }).limit(50),
     ]);
 
-    STATE.adSets = adSetsRes.data || [];
-    STATE.ads = adsRes.data || [];
-    STATE.syncLog = logRes.data || [];
+    STATE.campaigns = results[0].data || [];
+    STATE.adSets = results[1].data || [];
+    STATE.ads = results[2].data || [];
+    STATE.syncLog = results[3].data || [];
 
     render();
   }
 
   function render() {
-    if (activeTab === 'ad-sets') {
+    if (activeTab === 'campaigns') {
       if (detailAdSetId) renderDetail();
-      else renderAdSets();
+      else renderCampaigns();
     }
     if (activeTab === 'unassigned') renderUnassigned();
     if (activeTab === 'log') renderSyncLog();
   }
 
-  // --- Render: Ad Sets list ---
-  function renderAdSets() {
-    if (STATE.adSets.length === 0) {
-      $viewAdSets.innerHTML = '<div class="empty-state"><div class="empty-state-title">No Ad Sets</div>Create ad sets in Meta, then set their meta_ad_set_id in the database.</div>';
-      return;
+  // --- Pull from Meta ---
+  async function pullFromMeta() {
+    var btn = document.getElementById('pull-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Pulling...'; }
+    try {
+      var resp = await supabaseClient.functions.invoke('meta-sync', { body: { action: 'pull' } });
+      if (resp.error || (resp.data && resp.data.error)) {
+        alert('Pull failed: ' + fnError(resp.error, resp.data));
+        return;
+      }
+      var c = resp.data.campaigns;
+      var a = resp.data.adSets;
+      pullResultMsg = 'Pulled ' + c.pulled + ' campaign' + (c.pulled !== 1 ? 's' : '') + ', ' + a.pulled + ' ad set' + (a.pulled !== 1 ? 's' : '');
+      await loadData();
+    } catch (err) {
+      console.error('Pull error:', err);
+      alert('Pull failed: ' + err.message);
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Pull from Meta'; }
+    }
+  }
+
+  async function diagnoseConnection() {
+    var btn = document.getElementById('diagnose-btn');
+    if (btn) { btn.disabled = true; btn.textContent = '...'; }
+    try {
+      var resp = await supabaseClient.functions.invoke('meta-sync', { body: { action: 'diagnose' } });
+      if (resp.error || (resp.data && resp.data.error)) {
+        STATE.account = { error: fnError(resp.error, resp.data) };
+      } else {
+        STATE.account = resp.data.account;
+      }
+      render();
+    } catch (err) {
+      STATE.account = { error: err.message };
+      render();
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Test'; }
+    }
+  }
+
+  // --- Render: Campaigns view ---
+  function renderCampaigns() {
+    var html = '';
+
+    // Connection banner
+    if (STATE.account && STATE.account.error) {
+      html += '<div class="connection-banner">'
+        + '<div class="connection-dot error"></div>'
+        + '<div class="connection-info"><div class="connection-name">Connection Error</div>'
+        + '<div class="connection-detail">' + escapeHtml(STATE.account.error) + '</div></div>'
+        + '<div class="connection-actions"><button class="pull-btn" id="diagnose-btn" style="background:var(--text-tertiary)">Test</button></div>'
+        + '</div>';
+    } else if (STATE.account && STATE.account.name) {
+      html += '<div class="connection-banner">'
+        + '<div class="connection-dot connected"></div>'
+        + '<div class="connection-info"><div class="connection-name">' + escapeHtml(STATE.account.name) + '</div>'
+        + '<div class="connection-detail">' + STATE.account.currency + ' &middot; ' + escapeHtml(STATE.account.timezone_name || '') + ' &middot; ID: ' + STATE.account.id + '</div></div>'
+        + '<div class="connection-actions"><button class="pull-btn" id="pull-btn">Pull from Meta</button></div>'
+        + '</div>';
+    } else {
+      html += '<div class="connection-banner">'
+        + '<div class="connection-dot disconnected"></div>'
+        + '<div class="connection-info"><div class="connection-name">Meta Ad Account</div>'
+        + '<div class="connection-detail">Test connection to see account info</div></div>'
+        + '<div class="connection-actions"><button class="pull-btn" id="diagnose-btn">Connect</button></div>'
+        + '</div>';
     }
 
-    $viewAdSets.innerHTML = STATE.adSets.map(function(as) {
-      var ads = STATE.ads.filter(function(a) { return a.ad_set_id === as.id; });
-      var total = ads.length;
-      var synced = ads.filter(function(a) { return a.meta_ad_id && a.desired_status === 'live' && a.meta_status === 'ACTIVE'; }).length;
-      var pending = ads.filter(function(a) { return needsSync(a); }).length;
+    // Pull result toast
+    if (pullResultMsg) {
+      html += '<div class="pull-result"><span>' + escapeHtml(pullResultMsg) + '</span><button class="dismiss" id="dismiss-pull">&times;</button></div>';
+    }
 
-      var badge = '';
-      if (!as.meta_ad_set_id) {
-        badge = '<span class="ad-set-badge badge-no-meta">No Meta ID</span>';
-      } else if (pending > 0) {
-        badge = '<span class="ad-set-badge badge-pending">' + pending + ' pending</span>';
-      } else if (synced > 0) {
-        badge = '<span class="ad-set-badge badge-synced">In sync</span>';
+    // Group ad sets by campaign
+    var campaignAdSets = {};
+    var orphanAdSets = [];
+
+    STATE.adSets.forEach(function(as) {
+      if (as.campaign_id) {
+        if (!campaignAdSets[as.campaign_id]) campaignAdSets[as.campaign_id] = [];
+        campaignAdSets[as.campaign_id].push(as);
+      } else {
+        orphanAdSets.push(as);
       }
+    });
 
-      return '<div class="ad-set-card" data-id="' + as.id + '">'
-        + '<div class="ad-set-name">' + escapeHtml(as.name) + '</div>'
-        + '<div class="ad-set-meta">'
-        + '<span>' + total + ' ad' + (total !== 1 ? 's' : '') + '</span>'
-        + badge
-        + '</div>'
-        + '</div>';
-    }).join('');
+    // Campaigns with their ad sets
+    if (STATE.campaigns.length > 0) {
+      STATE.campaigns.forEach(function(c) {
+        var cAdSets = campaignAdSets[c.id] || [];
+        var statusLabel = c.meta_status || c.desired_status || '';
+        var statusCls = metaStatusClass(c.meta_status);
 
-    $viewAdSets.querySelectorAll('.ad-set-card').forEach(function(card) {
+        html += '<div class="campaign-section">'
+          + '<div class="campaign-header">'
+          + '<span>' + escapeHtml(c.name) + ' (' + cAdSets.length + ' ad set' + (cAdSets.length !== 1 ? 's' : '') + ')</span>'
+          + (statusLabel ? '<span class="campaign-status ' + statusCls + '">' + statusLabel + '</span>' : '')
+          + '</div>';
+
+        if (cAdSets.length === 0) {
+          html += '<div style="padding: 12px 16px; font-size: 13px; color: var(--text-tertiary);">No ad sets in this campaign</div>';
+        } else {
+          cAdSets.forEach(function(as) { html += renderAdSetCard(as); });
+        }
+
+        html += '</div>';
+      });
+    }
+
+    // Orphaned ad sets
+    if (orphanAdSets.length > 0) {
+      html += '<div class="orphan-section">'
+        + '<div class="orphan-header">No Campaign (' + orphanAdSets.length + ' ad set' + (orphanAdSets.length !== 1 ? 's' : '') + ')</div>';
+      orphanAdSets.forEach(function(as) { html += renderAdSetCard(as); });
+      html += '</div>';
+    }
+
+    // Empty state
+    if (STATE.campaigns.length === 0 && STATE.adSets.length === 0) {
+      html += '<div class="empty-state"><div class="empty-state-title">No Campaigns</div>'
+        + 'Connect to your Meta account and pull campaigns to get started.</div>';
+    }
+
+    $viewCampaigns.innerHTML = html;
+
+    // Wire up buttons
+    var pullBtn = document.getElementById('pull-btn');
+    if (pullBtn) pullBtn.addEventListener('click', pullFromMeta);
+
+    var diagnoseBtn = document.getElementById('diagnose-btn');
+    if (diagnoseBtn) diagnoseBtn.addEventListener('click', diagnoseConnection);
+
+    var dismissBtn = document.getElementById('dismiss-pull');
+    if (dismissBtn) dismissBtn.addEventListener('click', function() { pullResultMsg = null; render(); });
+
+    $viewCampaigns.querySelectorAll('.ad-set-card').forEach(function(card) {
       card.addEventListener('click', function() {
         detailAdSetId = card.dataset.id;
-        $viewAdSets.classList.add('hidden');
+        $viewCampaigns.classList.add('hidden');
         $viewDetail.classList.remove('hidden');
         renderDetail();
       });
     });
+  }
+
+  function renderAdSetCard(as) {
+    var ads = STATE.ads.filter(function(a) { return a.ad_set_id === as.id; });
+    var total = ads.length;
+    var synced = ads.filter(function(a) { return a.meta_ad_id && a.desired_status === 'live' && a.meta_status === 'ACTIVE'; }).length;
+    var pending = ads.filter(function(a) { return needsSync(a); }).length;
+
+    var badge = '';
+    if (!as.meta_ad_set_id) {
+      badge = '<span class="badge badge-no-meta">No Meta ID</span>';
+    } else if (pending > 0) {
+      badge = '<span class="badge badge-pending">' + pending + ' pending</span>';
+    } else if (synced > 0) {
+      badge = '<span class="badge badge-synced">In sync</span>';
+    }
+
+    var statusLabel = as.meta_status || '';
+    var statusCls = metaStatusClass(as.meta_status);
+
+    return '<div class="ad-set-card" data-id="' + as.id + '">'
+      + '<div class="ad-set-name">' + escapeHtml(as.name) + '</div>'
+      + '<div class="ad-set-meta">'
+      + '<span>' + total + ' ad' + (total !== 1 ? 's' : '') + '</span>'
+      + (statusLabel ? '<span class="campaign-status ' + statusCls + '">' + statusLabel + '</span>' : '')
+      + (as.daily_budget_cents ? '<span>' + (as.daily_budget_cents / 100).toFixed(2) + '/day</span>' : '')
+      + badge
+      + '</div>'
+      + '</div>';
   }
 
   // --- Render: Ad Set Detail ---
@@ -604,7 +659,7 @@
     if (adSet.meta_ad_set_id && pendingCount > 0) {
       html += '<button class="sync-btn" id="sync-btn">Sync ' + pendingCount + ' Ad' + (pendingCount !== 1 ? 's' : '') + '</button>';
     } else if (!adSet.meta_ad_set_id) {
-      html += '<div class="empty-state" style="padding:24px">Set meta_ad_set_id before syncing.</div>';
+      html += '<div class="empty-state" style="padding:24px">This ad set has no Meta ID yet. Pull from Meta to link it.</div>';
     } else if (pendingCount === 0 && ads.length > 0) {
       html += '<div class="empty-state" style="padding:24px;color:var(--green)">All ads in sync.</div>';
     }
@@ -616,8 +671,8 @@
     document.getElementById('detail-back').addEventListener('click', function() {
       detailAdSetId = null;
       $viewDetail.classList.add('hidden');
-      $viewAdSets.classList.remove('hidden');
-      renderAdSets();
+      $viewCampaigns.classList.remove('hidden');
+      renderCampaigns();
     });
 
     $viewDetail.querySelectorAll('.status-select').forEach(function(sel) {
@@ -625,10 +680,7 @@
         var adId = sel.dataset.adId;
         var newStatus = sel.value;
         var res = await db().from('ad').update({ desired_status: newStatus }).eq('id', adId);
-        if (res.error) {
-          alert('Failed to update status: ' + res.error.message);
-          return;
-        }
+        if (res.error) { alert('Failed: ' + res.error.message); return; }
         await loadData();
       });
     });
@@ -644,7 +696,7 @@
       ? storageBaseUrl + '/' + ad.composited_image_path
       : (ad.base_image ? storageBaseUrl + '/' + ad.base_image.storage_path : '');
 
-    var captionText = ad.caption ? ad.caption.text : 'No caption';
+    var captionText = ad.ad_caption && ad.ad_caption[0] && ad.ad_caption[0].caption ? ad.ad_caption[0].caption.text : 'No caption';
     var syncState = getSyncState(ad);
 
     var statusOptions = ['draft', 'approved', 'live', 'paused'].map(function(s) {
@@ -682,7 +734,7 @@
         var imgUrl = ad.composited_image_path
           ? storageBaseUrl + '/' + ad.composited_image_path
           : (ad.base_image ? storageBaseUrl + '/' + ad.base_image.storage_path : '');
-        var captionText = ad.caption ? ad.caption.text : 'No caption';
+        var captionText = ad.ad_caption && ad.ad_caption[0] && ad.ad_caption[0].caption ? ad.ad_caption[0].caption.text : 'No caption';
 
         return '<div class="ad-row">'
           + (imgUrl ? '<img class="ad-row-thumb" src="' + imgUrl + '" alt="" />' : '<div class="ad-row-thumb"></div>')
@@ -707,7 +759,7 @@
     var adSetsWithMeta = STATE.adSets.filter(function(as) { return as.meta_ad_set_id; });
 
     if (adSetsWithMeta.length === 0) {
-      alert('No ad sets with a Meta ID. Create ad sets in Meta first.');
+      alert('No ad sets with a Meta ID. Pull from Meta first.');
       return;
     }
 
@@ -722,10 +774,7 @@
       opt.addEventListener('click', async function() {
         var asId = opt.dataset.asId;
         var res = await db().from('ad').update({ ad_set_id: asId }).eq('id', assigningAdId);
-        if (res.error) {
-          alert('Failed to assign: ' + res.error.message);
-          return;
-        }
+        if (res.error) { alert('Failed: ' + res.error.message); return; }
         closeAssignSheet();
         await loadData();
       });
@@ -767,22 +816,14 @@
   async function handleSync(adSetId) {
     var $syncBtn = document.getElementById('sync-btn');
     var $syncResults = document.getElementById('sync-results');
-    if ($syncBtn) {
-      $syncBtn.disabled = true;
-      $syncBtn.textContent = 'Syncing...';
-    }
+    if ($syncBtn) { $syncBtn.disabled = true; $syncBtn.textContent = 'Syncing...'; }
 
     try {
-      var resp = await supabaseClient.functions.invoke('meta-sync', {
-        body: { ad_set_id: adSetId },
-      });
-
+      var resp = await supabaseClient.functions.invoke('meta-sync', { body: { ad_set_id: adSetId } });
       var errMsg = fnError(resp.error, resp.data);
       if (errMsg) {
         console.error('Sync error:', errMsg);
-        if ($syncResults) {
-          $syncResults.innerHTML = '<div class="sync-result sync-result-error">' + escapeHtml(errMsg) + '</div>';
-        }
+        if ($syncResults) { $syncResults.innerHTML = '<div class="sync-result sync-result-error">' + escapeHtml(errMsg) + '</div>'; }
         return;
       }
 
@@ -800,17 +841,11 @@
       }
 
       await loadData();
-
     } catch (err) {
       console.error('Sync error:', err);
-      if ($syncResults) {
-        $syncResults.innerHTML = '<div class="sync-result sync-result-error">' + escapeHtml(err.message || 'Sync failed') + '</div>';
-      }
+      if ($syncResults) { $syncResults.innerHTML = '<div class="sync-result sync-result-error">' + escapeHtml(err.message || 'Sync failed') + '</div>'; }
     } finally {
-      if ($syncBtn) {
-        $syncBtn.disabled = false;
-        $syncBtn.textContent = 'Sync';
-      }
+      if ($syncBtn) { $syncBtn.disabled = false; $syncBtn.textContent = 'Sync'; }
     }
   }
 

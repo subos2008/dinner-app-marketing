@@ -1,5 +1,5 @@
 import { corsHeaders } from '../_shared/cors.ts'
-import { createUserClient, createServiceClient } from '../_shared/supabase.ts'
+import { createUserClient, createStorageClient } from  '../_shared/supabase.ts'
 import { generateImage } from '../_shared/gemini.ts'
 
 Deno.serve(async (req) => {
@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
     }
 
     // Upload to Storage via service client
-    const serviceClient = createServiceClient()
+    const serviceClient = createStorageClient()
     const timestamp = Date.now()
     const storagePath = `generated/${timestamp}.png`
     const filename = `generated-${timestamp}.png`
