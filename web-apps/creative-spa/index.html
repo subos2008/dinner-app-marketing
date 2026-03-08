@@ -4669,7 +4669,7 @@
     hide($loginMessage);
 
     try {
-      const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin + window.location.pathname } });
+      const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin } });
       if (error) throw error;
       $loginMessage.textContent = 'Check your email for the magic link.';
       $loginMessage.className = 'login-message';

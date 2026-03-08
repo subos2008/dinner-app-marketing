@@ -479,7 +479,7 @@
     $loginBtn.disabled = true;
     $loginMessage.classList.add('hidden');
 
-    const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin + window.location.pathname } });
+    const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin } });
     if (error) {
       $loginMessage.textContent = error.message;
       $loginMessage.className = 'login-message error';
