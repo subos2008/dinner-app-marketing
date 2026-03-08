@@ -34,10 +34,13 @@ This repo is for:
 - Primary ad platform: **Meta** (Facebook/Instagram)
 - Need to connect AI tooling to Meta's marketing APIs for automation
 
-## Database Migrations
-- Migrations live in `supabase/migrations/` with sequential numbering (`00001_`, `00002_`, etc.)
-- **Always apply migrations with `supabase db push --linked`** — do NOT use `psql` directly
-- The Supabase CLI is installed and the project is already linked
+## Database
+- **Unified Supabase project** with dinner-matcher (`kcovnnebeowyrgbnnrof`) — marketing schema lives alongside the product schema
+- Marketing tables are in the `marketing` schema, product tables are in `public`
+- Migrations for the marketing schema live in `~/dinner-matcher/supabase/migrations/` (starting at `00040_marketing_schema.sql`)
+- **Always apply migrations with `supabase db push --linked`** from the dinner-matcher repo
+- Edge functions are also deployed from the dinner-matcher repo: `supabase functions deploy <function-name>`
+- The `city` table in `public` has `meta_geo_key` for Meta targeting — ad sets can reference cities via `city_id` FK
 
 ## Running the Apps
 - SPAs live under `web-apps/` — each is a standalone static SPA with its own `start.sh`
@@ -47,29 +50,27 @@ This repo is for:
 
 ## Deploying
 - **Creative SPA:** `bash web-apps/creative-spa/deploy.sh` — syncs to S3 + CloudFront invalidation → https://creative.comejoinus.app
-- **Edge Functions:** `supabase functions deploy <function-name>` (e.g. `generate-image`, `composite`, `generate-captions`, `suggest-captions`)
-- Edge Function source: `supabase/functions/` with shared modules in `supabase/functions/_shared/`
-- Secrets: `GOOGLE_AI_API_KEY` set via `supabase secrets set` (SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY are auto-available)
+- **Edge Functions:** Deploy from `~/dinner-matcher/`: `supabase functions deploy <function-name>` (e.g. `generate-image`, `composite`, `meta-sync`)
+- Edge Function source: `~/dinner-matcher/supabase/functions/` with shared modules in `_shared/`
+- Marketing secrets on dinner-matcher project: `GOOGLE_AI_API_KEY`, `META_ACCESS_TOKEN`, `META_AD_ACCOUNT_ID`, `META_PAGE_ID`, `META_LINK_URL`
 - AWS profile for deploy: `dinner-app-deploy` (set in deploy.sh)
 
 ## Testing Edge Functions (Getting a User JWT)
 To test edge functions via curl, you need a real user JWT (not the anon or service role key). Steps:
-1. Get the JWT-format keys: `supabase projects api-keys --project-ref pqrhphvbyjqhntqjzljc`
-2. Generate a magic link: `curl -s -X POST "https://pqrhphvbyjqhntqjzljc.supabase.co/auth/v1/admin/generate_link" -H "apikey: $ANON_KEY" -H "Authorization: Bearer $SERVICE_KEY" -H "Content-Type: application/json" -d '{"type":"magiclink","email":"ryan@ryancocks.net"}'`
+1. Get the JWT-format keys: `supabase projects api-keys --project-ref kcovnnebeowyrgbnnrof`
+2. Generate a magic link: `curl -s -X POST "https://kcovnnebeowyrgbnnrof.supabase.co/auth/v1/admin/generate_link" -H "apikey: $ANON_KEY" -H "Authorization: Bearer $SERVICE_KEY" -H "Content-Type: application/json" -d '{"type":"magiclink","email":"ryan@ryancocks.net"}'`
 3. Extract the `action_link` from the response
 4. Follow it with curl: `curl -s -L -o /dev/null -w '%{url_effective}' "$ACTION_LINK"` — the redirect URL fragment contains `access_token=...`
 5. Use that access token as `Authorization: Bearer $ACCESS_TOKEN`
-
-Note: The keys in `.env` / `.env.local` are short-format keys (`sb_publishable_...` / `sb_secret_...`), NOT JWTs. Use `supabase projects api-keys` to get the JWT-format keys needed for the admin API.
 
 ## Edge Function Logs
 The Supabase CLI doesn't support `functions logs`. View logs in the dashboard or query via the Management API:
 ```
 curl -s -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
-  "https://api.supabase.com/v1/projects/pqrhphvbyjqhntqjzljc/analytics/endpoints/logs.edge-functions?iso_timestamp_start=$(date -u -v-1H +%Y-%m-%dT%H:%M:%SZ)" \
+  "https://api.supabase.com/v1/projects/kcovnnebeowyrgbnnrof/analytics/endpoints/logs.edge-functions?iso_timestamp_start=$(date -u -v-1H +%Y-%m-%dT%H:%M:%SZ)" \
   | python3 -m json.tool
 ```
-Or just open: https://supabase.com/dashboard/project/pqrhphvbyjqhntqjzljc/functions
+Or just open: https://supabase.com/dashboard/project/kcovnnebeowyrgbnnrof/functions
 
 ## Edge Function Error Responses
 All edge functions return errors as `{ "error": "Human-readable message" }` with an appropriate HTTP status code. One field only — no `detail`, `code`, or debug fields. The `error` string should be self-contained and suitable for displaying to the user (e.g. "Image generation failed: model timeout"). Both SPAs use an `fnError(error, data)` helper to extract the message from `supabase.functions.invoke` responses.

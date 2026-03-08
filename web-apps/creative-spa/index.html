@@ -2014,6 +2014,7 @@
   .gen-body-copy-suggestion-headline { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
   .gen-body-copy-suggestion-text { font-size: 14px; color: var(--text-secondary); line-height: 1.4; }
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body>
 
@@ -2027,6 +2028,7 @@
     <p>Sign in to continue</p>
     <form id="login-form">
       <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email" />
+      <div id="turnstile-widget"></div>
       <button type="submit" id="login-btn">Send magic link</button>
     </form>
     <div id="login-message" class="login-message hidden"></div>
@@ -2318,8 +2320,8 @@
   'use strict';
 
   // --- Config (public/publishable values) ---
-  const SUPABASE_URL = 'https://pqrhphvbyjqhntqjzljc.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_vJfmD1tuFO7X2tiKTmRe3Q_-Py5ObXh';
+  const SUPABASE_URL = 'https://kcovnnebeowyrgbnnrof.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtjb3ZubmViZW93eXJnYm5ucm9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MDkwNDQsImV4cCI6MjA4NzE4NTA0NH0.RNVn4MWplhTOVXSN7JH_9CMdGvoTwm_rx3UmHGthuLc';
 
   // --- State ---
   const storageBaseUrl = SUPABASE_URL + '/storage/v1/object/public/creative';
@@ -5409,6 +5411,28 @@
     loadBrief();
   }
 
+  // --- Turnstile captcha ---
+  let turnstileWidgetId = null;
+  let turnstileResolve = null;
+  function initTurnstile() {
+    if (turnstileWidgetId != null || typeof turnstile === 'undefined') return;
+    turnstileWidgetId = turnstile.render('#turnstile-widget', {
+      sitekey: '0x4AAAAAACg-ntBwO6e-cTBi',
+      size: 'invisible',
+      execution: 'execute',
+      callback: (token) => { if (turnstileResolve) { turnstileResolve(token); turnstileResolve = null; } },
+      'error-callback': () => { if (turnstileResolve) { turnstileResolve(null); turnstileResolve = null; } },
+    });
+  }
+  if (typeof turnstile !== 'undefined') initTurnstile();
+  else document.querySelector('script[src*="turnstile"]').addEventListener('load', initTurnstile);
+
+  function getCaptchaToken() {
+    if (turnstileWidgetId == null) return Promise.resolve(null);
+    turnstile.reset(turnstileWidgetId);
+    return new Promise((resolve) => { turnstileResolve = resolve; turnstile.execute(turnstileWidgetId); });
+  }
+
   // --- Login form ---
   // Restore last used email
   const savedEmail = localStorage.getItem('cju-login-email');
@@ -5425,7 +5449,8 @@
     hide($loginMessage);
 
     try {
-      const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin } });
+      const captchaToken = await getCaptchaToken();
+      const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin, captchaToken } });
       if (error) throw error;
       $loginMessage.textContent = 'Check your email for the magic link.';
       $loginMessage.className = 'login-message';
