@@ -52,8 +52,30 @@ This repo is for:
 - Secrets: `GOOGLE_AI_API_KEY` set via `supabase secrets set` (SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY are auto-available)
 - AWS profile for deploy: `dinner-app-deploy` (set in deploy.sh)
 
+## Testing Edge Functions (Getting a User JWT)
+To test edge functions via curl, you need a real user JWT (not the anon or service role key). Steps:
+1. Get the JWT-format keys: `supabase projects api-keys --project-ref pqrhphvbyjqhntqjzljc`
+2. Generate a magic link: `curl -s -X POST "https://pqrhphvbyjqhntqjzljc.supabase.co/auth/v1/admin/generate_link" -H "apikey: $ANON_KEY" -H "Authorization: Bearer $SERVICE_KEY" -H "Content-Type: application/json" -d '{"type":"magiclink","email":"ryan@ryancocks.net"}'`
+3. Extract the `action_link` from the response
+4. Follow it with curl: `curl -s -L -o /dev/null -w '%{url_effective}' "$ACTION_LINK"` — the redirect URL fragment contains `access_token=...`
+5. Use that access token as `Authorization: Bearer $ACCESS_TOKEN`
+
+Note: The keys in `.env` / `.env.local` are short-format keys (`sb_publishable_...` / `sb_secret_...`), NOT JWTs. Use `supabase projects api-keys` to get the JWT-format keys needed for the admin API.
+
+## Edge Function Logs
+The Supabase CLI doesn't support `functions logs`. View logs in the dashboard or query via the Management API:
+```
+curl -s -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+  "https://api.supabase.com/v1/projects/pqrhphvbyjqhntqjzljc/analytics/endpoints/logs.edge-functions?iso_timestamp_start=$(date -u -v-1H +%Y-%m-%dT%H:%M:%SZ)" \
+  | python3 -m json.tool
+```
+Or just open: https://supabase.com/dashboard/project/pqrhphvbyjqhntqjzljc/functions
+
 ## Edge Function Error Responses
 All edge functions return errors as `{ "error": "Human-readable message" }` with an appropriate HTTP status code. One field only — no `detail`, `code`, or debug fields. The `error` string should be self-contained and suitable for displaying to the user (e.g. "Image generation failed: model timeout"). Both SPAs use an `fnError(error, data)` helper to extract the message from `supabase.functions.invoke` responses.
+
+## Error Display Rule
+**Every error MUST be shown to the user in the UI.** Never swallow errors silently. Every `catch` block and error response must render the error message visibly — use `renderGenerateError()` in the Creative SPA, `alert()`, or an inline error element. Also `console.error()` the raw error for debugging. If the user has to open DevTools to see what went wrong, that's a bug.
 
 ## Ways of Working
 This repo is a thinking space. We explore ideas, refine them, and produce actionable marketing output. Not everything here ships — some of it is just us working through the problem.
