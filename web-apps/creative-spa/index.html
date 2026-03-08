@@ -367,6 +367,120 @@
     background: rgba(118, 118, 128, 0.08);
   }
 
+  /* Video controls */
+  .gen-video-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .gen-video-source {
+    margin-top: 4px;
+  }
+
+  .gen-video-source-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .gen-video-source-toggle input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+  }
+
+  .gen-video-source-picker {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .gen-video-source-picker .source-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 3px solid transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color 0.15s;
+  }
+
+  .gen-video-source-picker .source-img.selected {
+    border-color: var(--accent);
+  }
+
+  .gen-video-source-type-toggle {
+    display: flex;
+    background: rgba(118, 118, 128, 0.12);
+    border-radius: 6px;
+    padding: 2px;
+    margin-top: 8px;
+    margin-bottom: 4px;
+  }
+
+  .gen-video-source-type-btn {
+    flex: 1;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    -webkit-appearance: none;
+    transition: all 0.15s;
+  }
+
+  .gen-video-source-type-btn.active {
+    background: var(--surface);
+    color: var(--text-primary);
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+
+  .gen-video-cost-hint {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  /* Video cell in grid */
+  .video-cell-wrap {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .video-cell-wrap video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .video-cell-badge {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
   /* Segment prompt hint */
   .gen-hint {
     display: flex;
@@ -1742,6 +1856,7 @@
       <div class="gen-type-toggle">
         <button class="gen-type-btn active" data-gen-type="image" id="gen-type-image">Image</button>
         <button class="gen-type-btn" data-gen-type="caption" id="gen-type-caption">Caption</button>
+        <button class="gen-type-btn" data-gen-type="video" id="gen-type-video">Video</button>
       </div>
 
       <!-- Aspect ratio dropdown -->
@@ -1776,6 +1891,36 @@
 
       <!-- Caption picker (hidden until Image+Text mode) -->
       <div class="gen-caption-picker hidden" id="gen-caption-picker"></div>
+
+      <!-- Video controls (hidden until Video type) -->
+      <div class="gen-video-controls hidden" id="gen-video-controls">
+        <div class="gen-ratio-select">
+          <label>Duration</label>
+          <select id="gen-video-duration">
+            <option value="4">4 seconds</option>
+            <option value="6">6 seconds</option>
+            <option value="8" selected>8 seconds</option>
+          </select>
+        </div>
+        <div class="gen-ratio-select">
+          <label>Quality</label>
+          <select id="gen-video-quality">
+            <option value="fast">Fast ($0.15/sec)</option>
+            <option value="standard">Standard ($0.40/sec)</option>
+          </select>
+        </div>
+        <div class="gen-video-source">
+          <label class="gen-video-source-toggle">
+            <input type="checkbox" id="gen-video-from-image" />
+            <span>From image</span>
+          </label>
+          <div class="gen-video-source-type-toggle hidden" id="gen-video-source-type-toggle">
+            <button class="gen-video-source-type-btn active" data-source-type="images" id="source-type-images">Images</button>
+            <button class="gen-video-source-type-btn" data-source-type="composites" id="source-type-composites">Composites</button>
+          </div>
+          <div class="gen-video-source-picker hidden" id="gen-video-source-picker"></div>
+        </div>
+      </div>
 
       <!-- Segment prompt hint -->
       <div class="gen-hint hidden" id="gen-hint">
@@ -1813,12 +1958,15 @@
       <div class="lib-sub-toggle">
         <button class="lib-sub-btn active" data-lib-view="images" id="lib-btn-images">Images</button>
         <button class="lib-sub-btn" data-lib-view="captions" id="lib-btn-captions">Captions</button>
+        <button class="lib-sub-btn" data-lib-view="videos" id="lib-btn-videos">Videos</button>
         <button class="lib-sub-btn" data-lib-view="ads" id="lib-btn-ads">Ads</button>
       </div>
       <!-- Image grid container -->
       <div id="lib-image-grid"></div>
       <!-- Captions list container -->
       <div id="lib-captions-view" class="hidden"></div>
+      <!-- Videos grid container -->
+      <div id="lib-videos-view" class="hidden"></div>
       <!-- Ads placeholder container -->
       <div id="lib-ads-view" class="hidden"></div>
     </div>
@@ -1876,6 +2024,22 @@
     <button class="select-cancel-btn" id="ad-select-cancel-btn">Cancel</button>
     <span class="select-count" id="ad-select-count">0 selected</span>
     <button class="select-archive-btn" id="ad-select-archive-btn">Archive</button>
+  </div>
+
+  <!-- Video select mode action bar -->
+  <div id="video-select-action-bar" class="select-action-bar hidden">
+    <button class="select-cancel-btn" id="video-select-cancel-btn">Cancel</button>
+    <span class="select-count" id="video-select-count">0 selected</span>
+    <button class="select-archive-btn" id="video-select-archive-btn">Archive</button>
+  </div>
+
+  <!-- Fullscreen video viewer -->
+  <div id="video-viewer" class="image-viewer hidden">
+    <div class="viewer-close" id="video-viewer-close">&times;</div>
+    <div class="viewer-counter" id="video-viewer-counter">1 of 1</div>
+    <div class="viewer-image-wrap">
+      <video id="video-viewer-video" autoplay loop muted playsinline style="width:100%; height:100%; object-fit:contain;"></video>
+    </div>
   </div>
 
   <!-- Fullscreen ad viewer -->
@@ -1936,17 +2100,21 @@
   let currentSession = null;
   let appInitialised = false;
 
-  let STATE = { images: [], captions: [], ads: [], segments: [] };
+  let STATE = { images: [], captions: [], ads: [], segments: [], videos: [] };
   let activeSegmentId = localStorage.getItem('mobile-active-segment') || null;
   let activeTab = 'generate';
-  let generateType = 'image'; // 'image' | 'caption'
-  let libraryView = 'images'; // 'images' | 'captions' | 'ads'
+  let generateType = 'image'; // 'image' | 'caption' | 'video'
+  let libraryView = 'images'; // 'images' | 'captions' | 'videos' | 'ads'
   let showArchived = false;
   let selectMode = false;
   let selectedImageIds = new Set();
   let selectedAdIds = new Set();
   let showArchivedAds = false;
   let adSelectMode = false;
+  let showArchivedVideos = false;
+  let videoSelectMode = false;
+  let selectedVideoIds = new Set();
+  let videoSourceImageId = null;
   let briefLoadedOnce = false;
   let briefLoadedContent = null;
   let editorCaptionId = null;
@@ -1958,8 +2126,13 @@
   // Extract error message from supabase.functions.invoke response
   function fnError(error, data) {
     if (error) {
+      console.error('fnError raw:', { error, data, context: error.context, msg: error.message });
       // Non-2xx: Supabase puts our JSON body in error.context
-      if (error.context && error.context.error) return error.context.error;
+      if (error.context) {
+        // context may be the parsed JSON body or a Response object
+        if (typeof error.context === 'object' && error.context.error) return error.context.error;
+        if (typeof error.context === 'string') return error.context;
+      }
       return error.message || 'Edge Function error';
     }
     if (data && data.error) return data.error;
@@ -1984,6 +2157,7 @@
   // Generate tab DOM refs
   const $genTypeImage = document.getElementById('gen-type-image');
   const $genTypeCaption = document.getElementById('gen-type-caption');
+  const $genTypeVideo = document.getElementById('gen-type-video');
   const $genHint = document.getElementById('gen-hint');
   const $genHintText = document.getElementById('gen-hint-text');
   const $genBrief = document.getElementById('gen-brief');
@@ -2001,6 +2175,15 @@
   const $genCaptionPicker = document.getElementById('gen-caption-picker');
   const $genRoleRow = document.getElementById('gen-role-row');
   const $genRoleSelect = document.getElementById('gen-role-select');
+  const $genVideoControls = document.getElementById('gen-video-controls');
+  const $genVideoDuration = document.getElementById('gen-video-duration');
+  const $genVideoQuality = document.getElementById('gen-video-quality');
+  const $genVideoFromImage = document.getElementById('gen-video-from-image');
+  const $genVideoSourceTypeToggle = document.getElementById('gen-video-source-type-toggle');
+  const $genVideoSourcePicker = document.getElementById('gen-video-source-picker');
+  const $sourceTypeImages = document.getElementById('source-type-images');
+  const $sourceTypeComposites = document.getElementById('source-type-composites');
+  let videoSourceType = 'images'; // 'images' | 'composites'
 
   // Restore saved ratio and mode from localStorage
   const savedRatio = localStorage.getItem('mobile-generate-ratio') || '9:16';
@@ -2011,10 +2194,22 @@
   // Library tab DOM refs
   const $libBtnImages = document.getElementById('lib-btn-images');
   const $libBtnCaptions = document.getElementById('lib-btn-captions');
+  const $libBtnVideos = document.getElementById('lib-btn-videos');
   const $libBtnAds = document.getElementById('lib-btn-ads');
   const $libImageGrid = document.getElementById('lib-image-grid');
   const $libCaptionsView = document.getElementById('lib-captions-view');
+  const $libVideosView = document.getElementById('lib-videos-view');
   const $libAdsView = document.getElementById('lib-ads-view');
+
+  // Video viewer DOM refs
+  const $videoViewer = document.getElementById('video-viewer');
+  const $videoViewerClose = document.getElementById('video-viewer-close');
+  const $videoViewerCounter = document.getElementById('video-viewer-counter');
+  const $videoViewerVideo = document.getElementById('video-viewer-video');
+  // Video select action bar refs
+  const $videoSelectActionBar = document.getElementById('video-select-action-bar');
+  const $videoSelectCount = document.getElementById('video-select-count');
+  const $videoSelectArchiveBtn = document.getElementById('video-select-archive-btn');
 
   // Viewer DOM refs
   const $viewer = document.getElementById('image-viewer');
@@ -2089,6 +2284,27 @@
       const { error } = await db().from('ad').update({ archived_at: value }).in('id', ids);
       if (error) throw error;
       exitAdSelectMode();
+      await loadData();
+    } catch (err) {
+      alert('Failed to ' + action + ': ' + (err.message || err));
+    }
+  });
+
+  // Video select action bar handlers
+  document.getElementById('video-select-cancel-btn').addEventListener('click', () => exitVideoSelectMode());
+  document.getElementById('video-select-archive-btn').addEventListener('click', async () => {
+    const ids = Array.from(selectedVideoIds);
+    if (ids.length === 0) return;
+    const action = showArchivedVideos ? 'restore' : 'archive';
+    const msg = action === 'archive'
+      ? 'Archive ' + ids.length + ' video' + (ids.length > 1 ? 's' : '') + '?'
+      : 'Restore ' + ids.length + ' video' + (ids.length > 1 ? 's' : '') + '?';
+    if (!confirm(msg)) return;
+    try {
+      const value = action === 'archive' ? new Date().toISOString() : null;
+      const { error } = await db().from('base_video').update({ archived_at: value }).in('id', ids);
+      if (error) throw error;
+      exitVideoSelectMode();
       await loadData();
     } catch (err) {
       alert('Failed to ' + action + ': ' + (err.message || err));
@@ -2245,6 +2461,13 @@
     );
   }
 
+  function filteredVideos() {
+    if (!activeSegmentId) return STATE.videos;
+    return STATE.videos.filter(v =>
+      (v.segments || []).some(s => s.id === activeSegmentId)
+    );
+  }
+
   function filteredAds() {
     if (!activeSegmentId) return STATE.ads;
     return STATE.ads.filter(ad =>
@@ -2264,7 +2487,7 @@
         imageQuery.is('archived_at', null);
       }
 
-      const [rawImages, rawCaptions, rawAds, rawSegments] = await Promise.all([
+      const [rawImages, rawCaptions, rawAds, rawSegments, rawVideos] = await Promise.all([
         imageQuery,
         db().from('caption')
           .select('*, caption_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
@@ -2281,6 +2504,17 @@
           return adQuery;
         })(),
         db().from('segment').select('*').order('name'),
+        (() => {
+          const videoQuery = db().from('base_video')
+            .select('*, base_video_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
+            .order('created_at', { ascending: false });
+          if (showArchivedVideos) {
+            videoQuery.not('archived_at', 'is', null);
+          } else {
+            videoQuery.is('archived_at', null);
+          }
+          return videoQuery;
+        })(),
       ]);
 
       // Log any query errors
@@ -2289,6 +2523,7 @@
         rawCaptions.error && `captions: ${rawCaptions.error.message}`,
         rawAds.error && `ads: ${rawAds.error.message}`,
         rawSegments.error && `segments: ${rawSegments.error.message}`,
+        rawVideos.error && `videos: ${rawVideos.error.message}`,
       ].filter(Boolean);
       if (queryErrors.length) console.error('loadData query errors:', queryErrors);
 
@@ -2312,10 +2547,17 @@
         return { ...rest, segments, captions: adCaptions };
       });
 
+      const videos = (rawVideos.data || []).map(row => {
+        const segments = (row.base_video_segment || []).map(js => js.segment).filter(Boolean);
+        const { base_video_segment, ...rest } = row;
+        return { ...rest, segments };
+      });
+
       STATE = {
         images,
         captions,
         ads,
+        videos,
         segments: rawSegments.data || [],
       };
 
@@ -2347,19 +2589,26 @@
     // Update toggle buttons
     $genTypeImage.classList.toggle('active', type === 'image');
     $genTypeCaption.classList.toggle('active', type === 'caption');
+    $genTypeVideo.classList.toggle('active', type === 'video');
 
     // Show/hide ratio and mode controls (image only)
-    $genRatioRow.classList.toggle('hidden', type !== 'image');
+    $genRatioRow.classList.toggle('hidden', type !== 'image' && type !== 'video');
     $genModeRow.classList.toggle('hidden', type !== 'image');
     if (type !== 'image') $genCaptionPicker.classList.add('hidden');
 
     // Show/hide role selector (caption only)
     $genRoleRow.classList.toggle('hidden', type !== 'caption');
 
+    // Show/hide video controls (video only)
+    $genVideoControls.classList.toggle('hidden', type !== 'video');
+
     // Update prompt placeholder + label
     if (type === 'image') {
       $genPrompt.placeholder = 'Describe the image you want...';
       $genSubmit.textContent = 'Generate Image';
+    } else if (type === 'video') {
+      $genPrompt.placeholder = 'Describe the video you want...';
+      $genSubmit.textContent = 'Generate Video';
     } else {
       $genPrompt.placeholder = 'Describe the captions you want...';
       $genSubmit.textContent = 'Generate Captions';
@@ -2378,6 +2627,82 @@
   // Type toggle click handlers
   $genTypeImage.addEventListener('click', () => setGenerateType('image'));
   $genTypeCaption.addEventListener('click', () => setGenerateType('caption'));
+  $genTypeVideo.addEventListener('click', () => setGenerateType('video'));
+
+  // Video: "From image" toggle
+  $genVideoFromImage.addEventListener('change', () => {
+    if ($genVideoFromImage.checked) {
+      videoSourceType = 'images';
+      $sourceTypeImages.classList.add('active');
+      $sourceTypeComposites.classList.remove('active');
+      show($genVideoSourceTypeToggle);
+      populateSourcePicker();
+      show($genVideoSourcePicker);
+    } else {
+      videoSourceImageId = null;
+      videoSourceImagePath = null;
+      hide($genVideoSourceTypeToggle);
+      hide($genVideoSourcePicker);
+    }
+  });
+
+  // Source type toggle (Images vs Composites)
+  $sourceTypeImages.addEventListener('click', () => {
+    videoSourceType = 'images';
+    $sourceTypeImages.classList.add('active');
+    $sourceTypeComposites.classList.remove('active');
+    populateSourcePicker();
+  });
+  $sourceTypeComposites.addEventListener('click', () => {
+    videoSourceType = 'composites';
+    $sourceTypeComposites.classList.add('active');
+    $sourceTypeImages.classList.remove('active');
+    populateSourcePicker();
+  });
+
+  let videoSourceImagePath = null;
+
+  function populateSourcePicker() {
+    videoSourceImageId = null;
+    videoSourceImagePath = null;
+    let items = [];
+
+    if (videoSourceType === 'images') {
+      items = STATE.images.slice(0, 30).map(img => ({
+        id: img.id,
+        storagePath: img.storage_path,
+        src: storageBaseUrl + '/' + img.storage_path,
+      }));
+    } else {
+      // Composites: ads with composited_image_path
+      items = STATE.ads
+        .filter(ad => ad.composited_image_path)
+        .slice(0, 30)
+        .map(ad => ({
+          id: null,
+          storagePath: ad.composited_image_path,
+          src: storageBaseUrl + '/' + ad.composited_image_path + (ad.updated_at ? '?t=' + new Date(ad.updated_at).getTime() : ''),
+        }));
+    }
+
+    if (items.length === 0) {
+      $genVideoSourcePicker.innerHTML = '<div style="color:#666;font-size:13px;padding:4px">No ' + videoSourceType + ' yet.</div>';
+      return;
+    }
+
+    $genVideoSourcePicker.innerHTML = items.map(item =>
+      '<img class="source-img" src="' + escapeHtml(item.src) + '" data-image-id="' + (item.id || '') + '" data-storage-path="' + escapeHtml(item.storagePath) + '" />'
+    ).join('');
+
+    $genVideoSourcePicker.querySelectorAll('.source-img').forEach(el => {
+      el.addEventListener('click', () => {
+        $genVideoSourcePicker.querySelectorAll('.source-img').forEach(e => e.classList.remove('selected'));
+        el.classList.add('selected');
+        videoSourceImageId = el.dataset.imageId || null;
+        videoSourceImagePath = el.dataset.storagePath || null;
+      });
+    });
+  }
 
   // Prompt: save to localStorage on input, update button state
   $genPrompt.addEventListener('input', () => {
@@ -2559,59 +2884,134 @@
     const briefText = $genBriefTextarea.value || '';
 
     try {
-      const fnName = generateType === 'image' ? 'generate-image' : 'generate-captions';
-      const body = {
-        brief: briefText || undefined,
-        prompt: promptText,
-        segment_hint: segmentHint,
-        aspect_ratio: generateType === 'image' ? $genRatioSelect.value : undefined,
-        role: generateType === 'caption' ? $genRoleSelect.value : undefined,
-      };
+      if (generateType === 'video') {
+        // Video generation: submit → poll flow
+        const body = {
+          brief: briefText || undefined,
+          prompt: promptText,
+          segment_hint: segmentHint,
+          aspect_ratio: $genRatioSelect.value,
+          duration: parseInt($genVideoDuration.value, 10),
+          model_tier: $genVideoQuality.value,
+          source_image_id: videoSourceImageId || undefined,
+          source_image_path: (!videoSourceImageId && videoSourceImagePath) ? videoSourceImagePath : undefined,
+        };
 
-      // Add include_text for Image+Text mode
-      if (generateType === 'image' && $genModeSelect.value === 'image-text') {
-        const checked = $genCaptionPicker.querySelectorAll('input[type="checkbox"]:checked');
-        if (checked.length > 0) {
-          body.include_text = Array.from(checked).map(cb => ({
-            text: cb.dataset.text,
-            role: cb.dataset.role || undefined,
-          }));
+        // Submit the job
+        const { data, error } = await supabaseClient.functions.invoke('generate-video', { body });
+        const errMsg = fnError(error, data);
+        if (errMsg) throw new Error(errMsg);
+        if (!data || !data.operationName) throw new Error(data?.error || 'No operation returned from server');
+
+        // Show cost hint
+        const dur = parseInt($genVideoDuration.value, 10);
+        const cost = $genVideoQuality.value === 'fast' ? (dur * 0.15).toFixed(2) : (dur * 0.40).toFixed(2);
+        $genResults.innerHTML = '<div class="gen-video-cost-hint">Estimated cost: $' + cost + '</div>';
+
+        // Poll for completion
+        const operationName = data.operationName;
+        const pollBody = {
+          operationName,
+          generationPromptId: data.generationPromptId,
+          prompt: promptText,
+          aspect_ratio: $genRatioSelect.value,
+          duration: parseInt($genVideoDuration.value, 10),
+          model_tier: $genVideoQuality.value,
+          source_image_id: videoSourceImageId || undefined,
+        };
+
+        const maxPolls = 30; // 5 minutes at 10s intervals
+        let pollCount = 0;
+        let done = false;
+
+        while (!done && pollCount < maxPolls) {
+          await new Promise(resolve => setTimeout(resolve, 10000));
+          pollCount++;
+          $genSubmit.textContent = 'Generating... (' + (pollCount * 10) + 's)';
+
+          const { data: statusData, error: statusError } = await supabaseClient.functions.invoke('video-status', { body: pollBody });
+          const statusErrMsg = fnError(statusError, statusData);
+          if (statusErrMsg) throw new Error(statusErrMsg);
+
+          if (statusData.status === 'done' && statusData.video) {
+            done = true;
+            // Auto-assign to active segment
+            if (activeSegmentId) {
+              await db().from('base_video_segment').insert({
+                base_video_id: statusData.video.id,
+                segment_id: activeSegmentId,
+              });
+            }
+            renderVideoResult(statusData.video);
+            await loadData();
+          } else if (statusData.status === 'error') {
+            throw new Error(statusData.error || 'Video generation failed');
+          }
+          // else pending — continue polling
         }
-      }
 
-      const { data, error } = await supabaseClient.functions.invoke(fnName, { body });
-
-      const errMsg = fnError(error, data);
-      if (errMsg) throw new Error(errMsg);
-
-      if (generateType === 'image' && data && data.image) {
-        // Auto-assign to active segment
-        if (activeSegmentId) {
-          await db().from('base_image_segment').insert({
-            base_image_id: data.image.id,
-            segment_id: activeSegmentId,
-          });
+        if (!done) {
+          throw new Error('Video generation timed out after 5 minutes. Check Library tab later.');
         }
-        renderImageResult(data.image);
 
-        // Fire suggest-captions call (non-blocking — image is already shown)
-        fireSuggestCaptions(briefText, segmentHint, promptText);
-
-        // Reload data so Library tab picks up new image
-        await loadData();
-
-      } else if (generateType === 'caption' && data && data.suggestions) {
-        renderSuggestions(data.suggestions);
       } else {
-        throw new Error('Unexpected response from server');
+        // Image or Caption generation (existing flow)
+        const fnName = generateType === 'image' ? 'generate-image' : 'generate-captions';
+        const body = {
+          brief: briefText || undefined,
+          prompt: promptText,
+          segment_hint: segmentHint,
+          aspect_ratio: generateType === 'image' ? $genRatioSelect.value : undefined,
+          role: generateType === 'caption' ? $genRoleSelect.value : undefined,
+        };
+
+        // Add include_text for Image+Text mode
+        if (generateType === 'image' && $genModeSelect.value === 'image-text') {
+          const checked = $genCaptionPicker.querySelectorAll('input[type="checkbox"]:checked');
+          if (checked.length > 0) {
+            body.include_text = Array.from(checked).map(cb => ({
+              text: cb.dataset.text,
+              role: cb.dataset.role || undefined,
+            }));
+          }
+        }
+
+        const { data, error } = await supabaseClient.functions.invoke(fnName, { body });
+
+        const errMsg = fnError(error, data);
+        if (errMsg) throw new Error(errMsg);
+
+        if (generateType === 'image' && data && data.image) {
+          // Auto-assign to active segment
+          if (activeSegmentId) {
+            await db().from('base_image_segment').insert({
+              base_image_id: data.image.id,
+              segment_id: activeSegmentId,
+            });
+          }
+          renderImageResult(data.image);
+
+          // Fire suggest-captions call (non-blocking — image is already shown)
+          fireSuggestCaptions(briefText, segmentHint, promptText);
+
+          // Reload data so Library tab picks up new image
+          await loadData();
+
+        } else if (generateType === 'caption' && data && data.suggestions) {
+          renderSuggestions(data.suggestions);
+        } else {
+          throw new Error('Unexpected response from server');
+        }
       }
 
     } catch (err) {
+      console.error('Generation error:', err);
       renderGenerateError(err.message || 'Generation failed');
     } finally {
       isGenerating = false;
       $genSubmit.classList.remove('loading');
-      $genSubmit.textContent = generateType === 'image' ? 'Generate Image' : 'Generate Captions';
+      const btnLabels = { image: 'Generate Image', caption: 'Generate Captions', video: 'Generate Video' };
+      $genSubmit.textContent = btnLabels[generateType] || 'Generate';
       updateGenSubmitState();
     }
   }
@@ -2621,6 +3021,14 @@
     const card = document.createElement('div');
     card.className = 'gen-result-card';
     card.innerHTML = '<img src="' + escapeHtml(imgUrl) + '?t=' + Date.now() + '" alt="Generated image" />';
+    $genResults.appendChild(card);
+  }
+
+  function renderVideoResult(video) {
+    const videoUrl = storageBaseUrl + '/' + video.storage_path;
+    const card = document.createElement('div');
+    card.className = 'gen-result-card';
+    card.innerHTML = '<video src="' + escapeHtml(videoUrl) + '?t=' + Date.now() + '" autoplay loop muted playsinline style="width:100%; border-radius:var(--radius);" />';
     $genResults.appendChild(card);
   }
 
@@ -2764,20 +3172,24 @@
   function switchLibraryView(view) {
     if (selectMode) exitSelectMode();
     if (adSelectMode) exitAdSelectMode();
+    if (videoSelectMode) exitVideoSelectMode();
     libraryView = view;
     $libBtnImages.classList.toggle('active', view === 'images');
     $libBtnCaptions.classList.toggle('active', view === 'captions');
+    $libBtnVideos.classList.toggle('active', view === 'videos');
     $libBtnAds.classList.toggle('active', view === 'ads');
     renderLibrary();
   }
 
   $libBtnImages.addEventListener('click', () => switchLibraryView('images'));
   $libBtnCaptions.addEventListener('click', () => switchLibraryView('captions'));
+  $libBtnVideos.addEventListener('click', () => switchLibraryView('videos'));
   $libBtnAds.addEventListener('click', () => switchLibraryView('ads'));
 
   function renderLibrary() {
     hide($libImageGrid);
     hide($libCaptionsView);
+    hide($libVideosView);
     hide($libAdsView);
 
     if (libraryView === 'images') {
@@ -2786,6 +3198,9 @@
     } else if (libraryView === 'captions') {
       show($libCaptionsView);
       renderCaptionsList();
+    } else if (libraryView === 'videos') {
+      show($libVideosView);
+      renderVideosGrid(filteredVideos());
     } else {
       show($libAdsView);
       renderAdsGrid(filteredAds());
@@ -3205,6 +3620,209 @@
     $adSelectArchiveBtn.style.opacity = count === 0 ? '0.4' : '1';
   }
 
+  // --- Videos Grid ---
+  function renderVideosGrid(videos) {
+    let html = '<div class="archive-toggle">'
+      + '<button class="archive-toggle-btn' + (!showArchivedVideos ? ' active' : '') + '" data-show="active">Active</button>'
+      + '<button class="archive-toggle-btn' + (showArchivedVideos ? ' active' : '') + '" data-show="archived">Archived</button>'
+      + '</div>';
+
+    if (!videos.length) {
+      const emptyMsg = showArchivedVideos
+        ? '<div>No archived videos.</div>'
+        : '<div>No videos yet.</div><div style="font-size:13px;">Head to Generate to create some.</div>';
+      $libVideosView.innerHTML = html
+        + '<div class="lib-empty"><div style="font-size:32px; opacity:0.3;">&#127909;</div>' + emptyMsg + '</div>';
+      attachVideoArchiveToggleHandlers();
+      return;
+    }
+
+    html += '<div class="image-grid-header">'
+      + '<span class="image-grid-header-label">' + videos.length + ' video' + (videos.length !== 1 ? 's' : '') + '</span>'
+      + '<button class="image-select-btn" id="video-select-toggle">' + (videoSelectMode ? 'Cancel' : 'Select') + '</button>'
+      + '</div>';
+
+    html += '<div class="image-grid' + (videoSelectMode ? ' select-mode' : '') + '">';
+    videos.forEach(v => {
+      const src = storageBaseUrl + '/' + v.storage_path;
+      const selectedClass = selectedVideoIds.has(v.id) ? ' selected' : '';
+      html += '<div class="image-cell-wrap video-cell-wrap' + selectedClass + '" data-video-id="' + escapeHtml(v.id) + '">'
+        + '<div class="select-check"></div>'
+        + '<video src="' + escapeHtml(src) + '" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;display:block;"></video>'
+        + '<span class="video-cell-badge">' + (v.duration_seconds || '?') + 's</span>'
+        + '</div>';
+    });
+    html += '</div>';
+    $libVideosView.innerHTML = html;
+
+    // Click handlers
+    $libVideosView.querySelectorAll('.video-cell-wrap').forEach(cell => {
+      cell.addEventListener('click', () => {
+        if (videoSelectMode) {
+          const id = cell.dataset.videoId;
+          if (selectedVideoIds.has(id)) {
+            selectedVideoIds.delete(id);
+            cell.classList.remove('selected');
+          } else {
+            selectedVideoIds.add(id);
+            cell.classList.add('selected');
+          }
+          updateVideoSelectActionBar();
+        } else {
+          openVideoViewer(cell.dataset.videoId);
+        }
+      });
+    });
+
+    // Select toggle
+    const $videoSelectToggle = document.getElementById('video-select-toggle');
+    if ($videoSelectToggle) {
+      $videoSelectToggle.addEventListener('click', () => {
+        if (videoSelectMode) { exitVideoSelectMode(); } else { enterVideoSelectMode(); }
+      });
+    }
+
+    attachVideoArchiveToggleHandlers();
+  }
+
+  function attachVideoArchiveToggleHandlers() {
+    $libVideosView.querySelectorAll('.archive-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const newShowArchived = btn.dataset.show === 'archived';
+        if (newShowArchived === showArchivedVideos) return;
+        showArchivedVideos = newShowArchived;
+        if (videoSelectMode) exitVideoSelectMode();
+        await loadData();
+      });
+    });
+  }
+
+  function enterVideoSelectMode() {
+    videoSelectMode = true;
+    selectedVideoIds.clear();
+    renderLibrary();
+    updateVideoSelectActionBar();
+    show($videoSelectActionBar);
+  }
+
+  function exitVideoSelectMode() {
+    videoSelectMode = false;
+    selectedVideoIds.clear();
+    hide($videoSelectActionBar);
+    renderLibrary();
+  }
+
+  function updateVideoSelectActionBar() {
+    const count = selectedVideoIds.size;
+    $videoSelectCount.textContent = count + ' selected';
+
+    if (showArchivedVideos) {
+      $videoSelectArchiveBtn.textContent = 'Restore';
+      $videoSelectArchiveBtn.className = 'select-archive-btn restore';
+    } else {
+      $videoSelectArchiveBtn.textContent = 'Archive';
+      $videoSelectArchiveBtn.className = 'select-archive-btn archive';
+    }
+
+    $videoSelectArchiveBtn.disabled = count === 0;
+    $videoSelectArchiveBtn.style.opacity = count === 0 ? '0.4' : '1';
+  }
+
+  // --- Fullscreen Video Viewer ---
+  let videoViewerIndex = -1;
+  let videoViewerOpen = false;
+
+  function openVideoViewer(videoId) {
+    const videos = filteredVideos();
+    const idx = videos.findIndex(v => v.id === videoId);
+    if (idx === -1) return;
+
+    videoViewerIndex = idx;
+    videoViewerOpen = true;
+    updateVideoViewerContent();
+    show($videoViewer);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeVideoViewer() {
+    videoViewerOpen = false;
+    videoViewerIndex = -1;
+    hide($videoViewer);
+    document.body.style.overflow = '';
+    $videoViewerVideo.src = '';
+    $videoViewerVideo.style.transform = '';
+  }
+
+  function updateVideoViewerContent() {
+    const videos = filteredVideos();
+    if (videoViewerIndex < 0 || videoViewerIndex >= videos.length) return;
+    const v = videos[videoViewerIndex];
+    $videoViewerVideo.src = storageBaseUrl + '/' + v.storage_path;
+    $videoViewerCounter.textContent = (videoViewerIndex + 1) + ' of ' + videos.length;
+    $videoViewerVideo.style.transform = '';
+  }
+
+  function showNextVideo() {
+    const videos = filteredVideos();
+    if (videoViewerIndex < videos.length - 1) {
+      videoViewerIndex++;
+      updateVideoViewerContent();
+    }
+  }
+
+  function showPrevVideo() {
+    if (videoViewerIndex > 0) {
+      videoViewerIndex--;
+      updateVideoViewerContent();
+    }
+  }
+
+  $videoViewerClose.addEventListener('click', closeVideoViewer);
+
+  // Video viewer swipe navigation
+  (function() {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchDeltaX = 0;
+    let swiping = false;
+
+    $videoViewer.addEventListener('touchstart', function(e) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchDeltaX = 0;
+      swiping = false;
+      $videoViewerVideo.style.transition = 'none';
+    }, { passive: true });
+
+    $videoViewer.addEventListener('touchmove', function(e) {
+      const dx = e.touches[0].clientX - touchStartX;
+      const dy = e.touches[0].clientY - touchStartY;
+      if (!swiping && Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      if (!swiping) {
+        if (Math.abs(dy) > Math.abs(dx)) return;
+        swiping = true;
+      }
+      if (swiping) {
+        e.preventDefault();
+        touchDeltaX = dx;
+        $videoViewerVideo.style.transform = 'translateX(' + touchDeltaX + 'px)';
+      }
+    }, { passive: false });
+
+    $videoViewer.addEventListener('touchend', function() {
+      $videoViewerVideo.style.transition = 'transform 0.25s ease-out';
+      if (touchDeltaX > 50) {
+        showPrevVideo();
+      } else if (touchDeltaX < -50) {
+        showNextVideo();
+      } else {
+        $videoViewerVideo.style.transform = '';
+      }
+      touchDeltaX = 0;
+      swiping = false;
+    }, { passive: true });
+  })();
+
   // --- Fullscreen Ad Viewer ---
   function openAdViewer(adId) {
     const ads = filteredAds();
@@ -3491,6 +4109,12 @@
 
   // Close viewer on escape key (for desktop testing)
   document.addEventListener('keydown', function(e) {
+    if (videoViewerOpen) {
+      if (e.key === 'Escape') closeVideoViewer();
+      if (e.key === 'ArrowLeft') showPrevVideo();
+      if (e.key === 'ArrowRight') showNextVideo();
+      return;
+    }
     if (adViewerOpen) {
       if (e.key === 'Escape') closeAdViewer();
       if (e.key === 'ArrowLeft') showPrevAd();
@@ -4030,17 +4654,22 @@
   }
 
   // --- Login form ---
+  // Restore last used email
+  const savedEmail = localStorage.getItem('cju-login-email');
+  if (savedEmail) $loginEmail.value = savedEmail;
+
   $loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = $loginEmail.value.trim();
     if (!email) return;
+    localStorage.setItem('cju-login-email', email);
 
     $loginBtn.disabled = true;
     $loginBtn.textContent = 'Sending...';
     hide($loginMessage);
 
     try {
-      const { error } = await supabaseClient.auth.signInWithOtp({ email });
+      const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin + window.location.pathname } });
       if (error) throw error;
       $loginMessage.textContent = 'Check your email for the magic link.';
       $loginMessage.className = 'login-message';
@@ -4062,7 +4691,7 @@
     try { await supabaseClient.auth.signOut(); } catch (e) {}
     currentSession = null;
     appInitialised = false;
-    STATE = { images: [], captions: [], ads: [], segments: [] };
+    STATE = { images: [], captions: [], ads: [], segments: [], videos: [] };
     showLogin();
   }
 

@@ -467,14 +467,19 @@
   const $assignOptions = document.getElementById('assign-options');
 
   // --- Auth ---
+  // Restore last used email
+  const savedEmail = localStorage.getItem('cju-login-email');
+  if (savedEmail) $loginEmail.value = savedEmail;
+
   $loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = $loginEmail.value.trim();
     if (!email) return;
+    localStorage.setItem('cju-login-email', email);
     $loginBtn.disabled = true;
     $loginMessage.classList.add('hidden');
 
-    const { error } = await supabaseClient.auth.signInWithOtp({ email });
+    const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin + window.location.pathname } });
     if (error) {
       $loginMessage.textContent = error.message;
       $loginMessage.className = 'login-message error';
