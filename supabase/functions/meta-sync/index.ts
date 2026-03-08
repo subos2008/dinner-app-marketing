@@ -191,7 +191,7 @@ Deno.serve(async (req) => {
     // Fetch ads that need syncing: desired_status is live or paused
     const { data: ads, error: adsErr } = await userClient
       .from('ad')
-      .select('*, base_image:base_image_id(*), caption:caption_id(*), body_copy:body_copy_id(*)')
+      .select('*, base_image:base_image_id(*), ad_caption(caption:caption_id(*)), body_copy:body_copy_id(*)')
       .eq('ad_set_id', ad_set_id)
       .in('desired_status', ['live', 'paused'])
 
@@ -240,7 +240,7 @@ Deno.serve(async (req) => {
           // 3. Build ad name and text
           const bodyText = ad.body_copy?.text || ''
           const headline = ad.body_copy?.headline || 'Come Join Us'
-          const captionText = ad.caption?.text || ''
+          const captionText = ad.ad_caption?.[0]?.caption?.text || ''
           const adName = `Ad ${ad.id.slice(0, 8)} - ${captionText.slice(0, 30) || 'untitled'}`
 
           // 4. Create creative

@@ -1805,6 +1805,196 @@
   .caption-editor-save:disabled { opacity: 0.5; cursor: default; }
   .caption-editor-delete { width: 100%; padding: 14px; border-radius: 12px; border: none; background: none; color: #d33; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 8px; }
   .caption-editor-delete:active { background: rgba(221,51,51,0.06); }
+
+  /* Body copy list */
+  .lib-body-copy-add {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .lib-body-copy-add input,
+  .lib-body-copy-add textarea {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    box-sizing: border-box;
+  }
+  .lib-body-copy-add input::placeholder,
+  .lib-body-copy-add textarea::placeholder { color: var(--text-tertiary); }
+  .lib-body-copy-add textarea { min-height: 60px; resize: vertical; }
+  .lib-body-copy-add .lib-body-copy-add-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .lib-body-copy-add button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 10px;
+    background: #C8956C;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .lib-body-copy-add button:disabled { opacity: 0.4; }
+  .lib-body-copy-card {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .lib-body-copy-headline {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .lib-body-copy-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .lib-body-copy-segments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .lib-body-copy-seg-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(118, 118, 128, 0.12);
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .lib-body-copy-seg-chip button {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    font-size: 12px;
+    padding: 0;
+    margin-left: 1px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  /* Body copy editor (mirrors caption editor) */
+  .body-copy-editor { position: fixed; inset: 0; z-index: 220; background: var(--bg); display: flex; flex-direction: column; }
+  .body-copy-editor.hidden { display: none !important; }
+  .body-copy-editor-header { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  .body-copy-editor-close { background: none; border: none; font-size: 28px; padding: 0 12px 0 0; cursor: pointer; color: var(--text-primary); line-height: 1; }
+  .body-copy-editor-title { font-size: 17px; font-weight: 600; flex: 1; }
+  .body-copy-editor-badge { font-size: 11px; padding: 3px 8px; border-radius: 10px; background: #FFF3CD; color: #856404; }
+  .body-copy-editor-body { flex: 1; overflow-y: auto; padding: 20px 16px; display: flex; flex-direction: column; gap: 20px; }
+  .body-copy-editor-section label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .body-copy-editor-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; font-family: inherit; background: var(--card-bg); color: var(--text-primary); box-sizing: border-box; }
+  .body-copy-editor-textarea { width: 100%; min-height: 120px; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; font-family: inherit; resize: vertical; background: var(--card-bg); color: var(--text-primary); box-sizing: border-box; }
+  .body-copy-editor-footer { padding: 16px; padding-bottom: calc(16px + var(--safe-bottom)); border-top: 1px solid var(--border); flex-shrink: 0; }
+  .body-copy-editor-save { width: 100%; padding: 14px; border-radius: 12px; border: none; background: var(--accent); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; }
+  .body-copy-editor-save:disabled { opacity: 0.5; cursor: default; }
+  .body-copy-editor-delete { width: 100%; padding: 14px; border-radius: 12px; border: none; background: none; color: #d33; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 8px; }
+  .body-copy-editor-delete:active { background: rgba(221,51,51,0.06); }
+
+  /* Body copy picker in ad builder */
+  .builder-body-copy-section { margin-top: 16px; }
+  .builder-body-copy-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+    padding: 0 4px;
+  }
+  .builder-body-copy-card {
+    background: var(--surface);
+    border: 1.5px solid var(--separator);
+    border-radius: var(--radius);
+    padding: 12px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .builder-body-copy-card.selected {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+  .builder-body-copy-card-body { flex: 1; min-width: 0; }
+  .builder-body-copy-card-headline {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .builder-body-copy-card-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .builder-body-copy-check {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--separator);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .builder-body-copy-card.selected .builder-body-copy-check {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+  }
+  .builder-body-copy-empty {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    padding: 8px 4px;
+  }
+
+  /* Body copy suggestion cards */
+  .gen-body-copy-suggestion {
+    background: var(--bg);
+    border-radius: var(--radius);
+    border: 1.5px dashed var(--separator);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: border-color 0.25s, background 0.25s, border-style 0.25s;
+  }
+  .gen-body-copy-suggestion.saved {
+    background: var(--surface);
+    border: 1px solid var(--green);
+    border-style: solid;
+  }
+  .gen-body-copy-suggestion-body { flex: 1; }
+  .gen-body-copy-suggestion-headline { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .gen-body-copy-suggestion-text { font-size: 14px; color: var(--text-secondary); line-height: 1.4; }
 </style>
 </head>
 <body>
@@ -1856,6 +2046,7 @@
       <div class="gen-type-toggle">
         <button class="gen-type-btn active" data-gen-type="image" id="gen-type-image">Image</button>
         <button class="gen-type-btn" data-gen-type="caption" id="gen-type-caption">Caption</button>
+        <button class="gen-type-btn" data-gen-type="body-copy" id="gen-type-body-copy">Body Copy</button>
         <button class="gen-type-btn" data-gen-type="video" id="gen-type-video">Video</button>
       </div>
 
@@ -1959,6 +2150,7 @@
         <button class="lib-sub-btn active" data-lib-view="images" id="lib-btn-images">Images</button>
         <button class="lib-sub-btn" data-lib-view="captions" id="lib-btn-captions">Captions</button>
         <button class="lib-sub-btn" data-lib-view="videos" id="lib-btn-videos">Videos</button>
+        <button class="lib-sub-btn" data-lib-view="body-copy" id="lib-btn-body-copy">Copy</button>
         <button class="lib-sub-btn" data-lib-view="ads" id="lib-btn-ads">Ads</button>
       </div>
       <!-- Image grid container -->
@@ -1967,6 +2159,8 @@
       <div id="lib-captions-view" class="hidden"></div>
       <!-- Videos grid container -->
       <div id="lib-videos-view" class="hidden"></div>
+      <!-- Body copy list container -->
+      <div id="lib-body-copy-view" class="hidden"></div>
       <!-- Ads placeholder container -->
       <div id="lib-ads-view" class="hidden"></div>
     </div>
@@ -2085,6 +2279,20 @@
   </div>
 </div>
 
+<!-- Body copy editor -->
+<div id="body-copy-editor" class="body-copy-editor hidden">
+  <div class="body-copy-editor-header">
+    <button class="body-copy-editor-close" id="body-copy-editor-close">&times;</button>
+    <div class="body-copy-editor-title">Edit Body Copy</div>
+    <span class="body-copy-editor-badge hidden" id="body-copy-editor-locked-badge">In Use</span>
+  </div>
+  <div class="body-copy-editor-body" id="body-copy-editor-body"></div>
+  <div class="body-copy-editor-footer">
+    <button class="body-copy-editor-save" id="body-copy-editor-save">Save</button>
+    <button class="body-copy-editor-delete hidden" id="body-copy-editor-delete">Delete</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 (function() {
@@ -2100,11 +2308,11 @@
   let currentSession = null;
   let appInitialised = false;
 
-  let STATE = { images: [], captions: [], ads: [], segments: [], videos: [] };
+  let STATE = { images: [], captions: [], ads: [], segments: [], videos: [], bodyCopy: [] };
   let activeSegmentId = localStorage.getItem('mobile-active-segment') || null;
   let activeTab = 'generate';
-  let generateType = 'image'; // 'image' | 'caption' | 'video'
-  let libraryView = 'images'; // 'images' | 'captions' | 'videos' | 'ads'
+  let generateType = 'image'; // 'image' | 'caption' | 'video' | 'body-copy'
+  let libraryView = 'images'; // 'images' | 'captions' | 'videos' | 'body-copy' | 'ads'
   let showArchived = false;
   let selectMode = false;
   let selectedImageIds = new Set();
@@ -2119,6 +2327,9 @@
   let briefLoadedContent = null;
   let editorCaptionId = null;
   let editorIsLocked = false;
+  let editorBodyCopyId = null;
+  let editorBodyCopyIsLocked = false;
+  let selectedBodyCopyId = null;
 
   // --- Supabase helpers ---
   function db() { return supabaseClient.schema('marketing'); }
@@ -2191,15 +2402,28 @@
   const savedMode = localStorage.getItem('mobile-generate-mode') || 'image-only';
   $genModeSelect.value = savedMode;
 
+  // Generate tab: body copy type button
+  const $genTypeBodyCopy = document.getElementById('gen-type-body-copy');
+
   // Library tab DOM refs
   const $libBtnImages = document.getElementById('lib-btn-images');
   const $libBtnCaptions = document.getElementById('lib-btn-captions');
   const $libBtnVideos = document.getElementById('lib-btn-videos');
+  const $libBtnBodyCopy = document.getElementById('lib-btn-body-copy');
   const $libBtnAds = document.getElementById('lib-btn-ads');
   const $libImageGrid = document.getElementById('lib-image-grid');
   const $libCaptionsView = document.getElementById('lib-captions-view');
   const $libVideosView = document.getElementById('lib-videos-view');
+  const $libBodyCopyView = document.getElementById('lib-body-copy-view');
   const $libAdsView = document.getElementById('lib-ads-view');
+
+  // Body copy editor DOM refs
+  const $bodyCopyEditor = document.getElementById('body-copy-editor');
+  const $bodyCopyEditorClose = document.getElementById('body-copy-editor-close');
+  const $bodyCopyEditorBody = document.getElementById('body-copy-editor-body');
+  const $bodyCopyEditorSave = document.getElementById('body-copy-editor-save');
+  const $bodyCopyEditorDelete = document.getElementById('body-copy-editor-delete');
+  const $bodyCopyEditorLockedBadge = document.getElementById('body-copy-editor-locked-badge');
 
   // Video viewer DOM refs
   const $videoViewer = document.getElementById('video-viewer');
@@ -2468,6 +2692,13 @@
     );
   }
 
+  function filteredBodyCopy() {
+    if (!activeSegmentId) return STATE.bodyCopy;
+    return STATE.bodyCopy.filter(bc =>
+      (bc.segments || []).some(s => s.id === activeSegmentId)
+    );
+  }
+
   function filteredAds() {
     if (!activeSegmentId) return STATE.ads;
     return STATE.ads.filter(ad =>
@@ -2487,7 +2718,7 @@
         imageQuery.is('archived_at', null);
       }
 
-      const [rawImages, rawCaptions, rawAds, rawSegments, rawVideos] = await Promise.all([
+      const [rawImages, rawCaptions, rawAds, rawSegments, rawVideos, rawBodyCopy] = await Promise.all([
         imageQuery,
         db().from('caption')
           .select('*, caption_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
@@ -2515,6 +2746,9 @@
           }
           return videoQuery;
         })(),
+        db().from('body_copy')
+          .select('*, body_copy_segment(segment_id, segment:segment_id(id, name))')
+          .order('created_at', { ascending: false }),
       ]);
 
       // Log any query errors
@@ -2524,6 +2758,7 @@
         rawAds.error && `ads: ${rawAds.error.message}`,
         rawSegments.error && `segments: ${rawSegments.error.message}`,
         rawVideos.error && `videos: ${rawVideos.error.message}`,
+        rawBodyCopy.error && `bodyCopy: ${rawBodyCopy.error.message}`,
       ].filter(Boolean);
       if (queryErrors.length) console.error('loadData query errors:', queryErrors);
 
@@ -2553,11 +2788,18 @@
         return { ...rest, segments };
       });
 
+      const bodyCopy = (rawBodyCopy.data || []).map(row => {
+        const segments = (row.body_copy_segment || []).map(js => js.segment).filter(Boolean);
+        const { body_copy_segment, ...rest } = row;
+        return { ...rest, segments };
+      });
+
       STATE = {
         images,
         captions,
         ads,
         videos,
+        bodyCopy,
         segments: rawSegments.data || [],
       };
 
@@ -2589,6 +2831,7 @@
     // Update toggle buttons
     $genTypeImage.classList.toggle('active', type === 'image');
     $genTypeCaption.classList.toggle('active', type === 'caption');
+    $genTypeBodyCopy.classList.toggle('active', type === 'body-copy');
     $genTypeVideo.classList.toggle('active', type === 'video');
 
     // Show/hide ratio and mode controls (image only)
@@ -2609,6 +2852,9 @@
     } else if (type === 'video') {
       $genPrompt.placeholder = 'Describe the video you want...';
       $genSubmit.textContent = 'Generate Video';
+    } else if (type === 'body-copy') {
+      $genPrompt.placeholder = 'Describe the ad and audience...';
+      $genSubmit.textContent = 'Generate Body Copy';
     } else {
       $genPrompt.placeholder = 'Describe the captions you want...';
       $genSubmit.textContent = 'Generate Captions';
@@ -2627,6 +2873,7 @@
   // Type toggle click handlers
   $genTypeImage.addEventListener('click', () => setGenerateType('image'));
   $genTypeCaption.addEventListener('click', () => setGenerateType('caption'));
+  $genTypeBodyCopy.addEventListener('click', () => setGenerateType('body-copy'));
   $genTypeVideo.addEventListener('click', () => setGenerateType('video'));
 
   // Video: "From image" toggle
@@ -2954,6 +3201,25 @@
           throw new Error('Video generation timed out after 5 minutes. Check Library tab later.');
         }
 
+      } else if (generateType === 'body-copy') {
+        // Body copy generation
+        const body = {
+          brief: briefText || undefined,
+          prompt: promptText,
+          segment_hint: segmentHint,
+        };
+
+        const { data, error } = await supabaseClient.functions.invoke('generate-body-copy', { body });
+
+        const errMsg = fnError(error, data);
+        if (errMsg) throw new Error(errMsg);
+
+        if (data && data.suggestions) {
+          renderBodyCopySuggestions(data.suggestions);
+        } else {
+          throw new Error('Unexpected response from server');
+        }
+
       } else {
         // Image or Caption generation (existing flow)
         const fnName = generateType === 'image' ? 'generate-image' : 'generate-captions';
@@ -3010,7 +3276,7 @@
     } finally {
       isGenerating = false;
       $genSubmit.classList.remove('loading');
-      const btnLabels = { image: 'Generate Image', caption: 'Generate Captions', video: 'Generate Video' };
+      const btnLabels = { image: 'Generate Image', caption: 'Generate Captions', 'body-copy': 'Generate Body Copy', video: 'Generate Video' };
       $genSubmit.textContent = btnLabels[generateType] || 'Generate';
       updateGenSubmitState();
     }
@@ -3165,6 +3431,73 @@
     }
   }
 
+  function renderBodyCopySuggestions(suggestions) {
+    const label = document.createElement('div');
+    label.className = 'gen-suggestions-label';
+    label.textContent = 'Body Copy Suggestions';
+    $genResults.appendChild(label);
+
+    for (const sug of suggestions) {
+      const headline = sug.headline || '';
+      const text = sug.text || '';
+      if (!text.trim()) continue;
+
+      const card = document.createElement('div');
+      card.className = 'gen-body-copy-suggestion';
+      card.innerHTML =
+        '<div class="gen-suggestion-card-body">'
+        + '<div style="font-weight:600; margin-bottom:4px;">' + escapeHtml(headline) + '</div>'
+        + '<div class="gen-suggestion-card-text">' + escapeHtml(text) + '</div>'
+        + '</div>'
+        + '<button class="gen-suggestion-keep-btn">Keep</button>';
+
+      const keepBtn = card.querySelector('.gen-suggestion-keep-btn');
+      keepBtn.addEventListener('click', () => keepBodyCopySuggestion(headline, text, card));
+
+      $genResults.appendChild(card);
+    }
+  }
+
+  async function keepBodyCopySuggestion(headline, text, cardElement) {
+    const keepBtn = cardElement.querySelector('.gen-suggestion-keep-btn');
+    if (keepBtn) {
+      keepBtn.disabled = true;
+      keepBtn.textContent = 'Saving...';
+    }
+
+    try {
+      const insertObj = { text };
+      if (headline) insertObj.headline = headline;
+
+      const { data: bc, error } = await db().from('body_copy').insert(insertObj).select().single();
+      if (error) throw error;
+
+      if (activeSegmentId && bc) {
+        await db().from('body_copy_segment').insert({
+          body_copy_id: bc.id,
+          segment_id: activeSegmentId,
+        });
+      }
+
+      cardElement.classList.add('saved');
+      if (keepBtn) keepBtn.remove();
+
+      const savedLabel = document.createElement('span');
+      savedLabel.className = 'gen-suggestion-saved-label';
+      savedLabel.innerHTML = '&#10003; Saved';
+      cardElement.appendChild(savedLabel);
+
+      await loadData();
+
+    } catch (err) {
+      console.error('keepBodyCopySuggestion failed:', err);
+      if (keepBtn) {
+        keepBtn.disabled = false;
+        keepBtn.textContent = 'Keep';
+      }
+    }
+  }
+
   // Wire Generate button click
   $genSubmit.addEventListener('click', handleGenerate);
 
@@ -3177,6 +3510,7 @@
     $libBtnImages.classList.toggle('active', view === 'images');
     $libBtnCaptions.classList.toggle('active', view === 'captions');
     $libBtnVideos.classList.toggle('active', view === 'videos');
+    $libBtnBodyCopy.classList.toggle('active', view === 'body-copy');
     $libBtnAds.classList.toggle('active', view === 'ads');
     renderLibrary();
   }
@@ -3184,12 +3518,14 @@
   $libBtnImages.addEventListener('click', () => switchLibraryView('images'));
   $libBtnCaptions.addEventListener('click', () => switchLibraryView('captions'));
   $libBtnVideos.addEventListener('click', () => switchLibraryView('videos'));
+  $libBtnBodyCopy.addEventListener('click', () => switchLibraryView('body-copy'));
   $libBtnAds.addEventListener('click', () => switchLibraryView('ads'));
 
   function renderLibrary() {
     hide($libImageGrid);
     hide($libCaptionsView);
     hide($libVideosView);
+    hide($libBodyCopyView);
     hide($libAdsView);
 
     if (libraryView === 'images') {
@@ -3201,6 +3537,9 @@
     } else if (libraryView === 'videos') {
       show($libVideosView);
       renderVideosGrid(filteredVideos());
+    } else if (libraryView === 'body-copy') {
+      show($libBodyCopyView);
+      renderBodyCopyList();
     } else {
       show($libAdsView);
       renderAdsGrid(filteredAds());
@@ -3310,6 +3649,128 @@
           didLongPress = true;
           const captionId = card.dataset.captionId;
           if (captionId) openCaptionEditor(captionId);
+        }, 500);
+      }
+
+      function cancelPress() {
+        clearTimeout(pressTimer);
+      }
+
+      function endPress(e) {
+        clearTimeout(pressTimer);
+        if (didLongPress) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+
+      card.addEventListener('touchstart', startPress, { passive: true });
+      card.addEventListener('touchmove', cancelPress);
+      card.addEventListener('touchend', endPress);
+      card.addEventListener('touchcancel', cancelPress);
+      card.addEventListener('mousedown', startPress);
+      card.addEventListener('mousemove', cancelPress);
+      card.addEventListener('mouseup', endPress);
+      card.addEventListener('mouseleave', cancelPress);
+    });
+  }
+
+  function renderBodyCopyList() {
+    const items = filteredBodyCopy();
+
+    let html = '<div class="lib-body-copy-add">'
+      + '<input type="text" id="lib-bc-headline-input" placeholder="Headline..." />'
+      + '<textarea id="lib-bc-text-input" placeholder="Body text..."></textarea>'
+      + '<div class="lib-body-copy-add-row">'
+      + '<div style="flex:1;"></div>'
+      + '<button id="lib-bc-add-btn">Add</button>'
+      + '</div>'
+      + '</div>';
+
+    if (items.length === 0) {
+      html += '<div class="lib-empty">'
+        + '<div style="font-size:32px; opacity:0.3;">&#128221;</div>'
+        + '<div>No body copy yet.</div>'
+        + '<div style="font-size:13px;">Add one above or generate via the Generate tab.</div>'
+        + '</div>';
+    } else {
+      for (const bc of items) {
+        let segChips = '';
+        if (bc.segments && bc.segments.length > 0) {
+          segChips = '<div class="lib-body-copy-segments">';
+          for (const seg of bc.segments) {
+            segChips += '<span class="lib-body-copy-seg-chip">'
+              + escapeHtml(seg.name)
+              + '<button data-bc-id="' + bc.id + '" data-segment-id="' + seg.id + '" title="Remove from ' + escapeHtml(seg.name) + '">&times;</button>'
+              + '</span>';
+          }
+          segChips += '</div>';
+        }
+
+        html += '<div class="lib-body-copy-card" data-bc-id="' + bc.id + '">'
+          + '<div class="lib-body-copy-headline">' + escapeHtml(bc.headline || '') + '</div>'
+          + '<div class="lib-body-copy-text">' + escapeHtml(bc.text || '') + '</div>'
+          + segChips
+          + '</div>';
+      }
+    }
+
+    $libBodyCopyView.innerHTML = html;
+
+    // Add body copy handler
+    const $hlInput = document.getElementById('lib-bc-headline-input');
+    const $txtInput = document.getElementById('lib-bc-text-input');
+    const $addBtn = document.getElementById('lib-bc-add-btn');
+
+    $addBtn.addEventListener('click', async () => {
+      const headline = $hlInput.value.trim();
+      const text = $txtInput.value.trim();
+      if (!headline && !text) return;
+      $addBtn.disabled = true;
+      try {
+        const insert = { headline: headline || null, text: text || null };
+        const { data: bc, error } = await db().from('body_copy').insert(insert).select().single();
+        if (error) throw error;
+        if (activeSegmentId && bc) {
+          await db().from('body_copy_segment').insert({ body_copy_id: bc.id, segment_id: activeSegmentId }).catch(() => {});
+        }
+        $hlInput.value = '';
+        $txtInput.value = '';
+        await loadData();
+      } catch (err) {
+        console.error('Add body copy failed:', err);
+      } finally {
+        $addBtn.disabled = false;
+      }
+    });
+
+    // Remove from segment handlers
+    $libBodyCopyView.querySelectorAll('.lib-body-copy-seg-chip button').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const bcId = btn.dataset.bcId;
+        const segmentId = btn.dataset.segmentId;
+        btn.closest('.lib-body-copy-seg-chip').style.opacity = '0.3';
+        try {
+          await db().from('body_copy_segment').delete()
+            .eq('body_copy_id', bcId).eq('segment_id', segmentId);
+          await loadData();
+        } catch (err) {
+          console.error('Remove body copy from segment failed:', err);
+        }
+      });
+    });
+
+    // Long-press to edit
+    $libBodyCopyView.querySelectorAll('.lib-body-copy-card').forEach(card => {
+      let pressTimer = null;
+      let didLongPress = false;
+
+      function startPress() {
+        didLongPress = false;
+        pressTimer = setTimeout(() => {
+          didLongPress = true;
+          const bcId = card.dataset.bcId;
+          if (bcId) openBodyCopyEditor(bcId);
         }, 500);
       }
 
@@ -4324,11 +4785,195 @@
     }
   });
 
+  // --- Body Copy Editor ---
+
+  async function openBodyCopyEditor(bcId) {
+    const bc = STATE.bodyCopy.find(b => b.id === bcId);
+    if (!bc) return;
+
+    editorBodyCopyId = bcId;
+
+    // Check if body copy is used by any ad
+    const { data: usages } = await db().from('ad').select('id').eq('body_copy_id', bcId).limit(1);
+    editorBodyCopyIsLocked = (usages && usages.length > 0);
+
+    renderBodyCopyEditorBody(bc);
+
+    if (editorBodyCopyIsLocked) {
+      show($bodyCopyEditorLockedBadge);
+      hide($bodyCopyEditorDelete);
+      $bodyCopyEditorSave.textContent = 'Duplicate & Save';
+    } else {
+      hide($bodyCopyEditorLockedBadge);
+      show($bodyCopyEditorDelete);
+      $bodyCopyEditorSave.textContent = 'Save';
+    }
+
+    show($bodyCopyEditor);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeBodyCopyEditor() {
+    hide($bodyCopyEditor);
+    document.body.style.overflow = '';
+    editorBodyCopyId = null;
+    editorBodyCopyIsLocked = false;
+  }
+
+  function renderBodyCopyEditorBody(bc) {
+    let segsHtml = '';
+    for (const seg of (bc.segments || [])) {
+      segsHtml += '<span class="caption-editor-seg-chip">'
+        + escapeHtml(seg.name)
+        + ' <button data-segment-id="' + seg.id + '" title="Remove">&times;</button>'
+        + '</span>';
+    }
+    segsHtml += '<button class="caption-editor-seg-add" id="bc-editor-add-seg">+ Segment</button>';
+
+    let html = '';
+
+    if (editorBodyCopyIsLocked) {
+      html += '<div class="caption-editor-locked">This body copy is used by an ad. Editing will create a duplicate.</div>';
+    }
+
+    html += '<div class="body-copy-editor-section"><label>Headline</label>'
+      + '<input class="body-copy-editor-input" id="bc-editor-headline" value="' + escapeHtml(bc.headline || '') + '" placeholder="Short, punchy headline..." />'
+      + '</div>';
+
+    html += '<div class="body-copy-editor-section"><label>Body Text</label>'
+      + '<textarea class="body-copy-editor-textarea" id="bc-editor-text" placeholder="Main ad body text...">' + escapeHtml(bc.text || '') + '</textarea>'
+      + '</div>';
+
+    html += '<div class="body-copy-editor-section"><label>Segments</label>'
+      + '<div class="caption-editor-segments">' + segsHtml + '</div>'
+      + '</div>';
+
+    $bodyCopyEditorBody.innerHTML = html;
+
+    // Remove segment chip
+    $bodyCopyEditorBody.querySelectorAll('.caption-editor-seg-chip button').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const segId = btn.dataset.segmentId;
+        await db().from('body_copy_segment').delete().eq('body_copy_id', editorBodyCopyId).eq('segment_id', segId);
+        await loadData();
+        const updated = STATE.bodyCopy.find(b => b.id === editorBodyCopyId);
+        if (updated) renderBodyCopyEditorBody(updated);
+      });
+    });
+
+    // Add segment button
+    const addSegBtn = document.getElementById('bc-editor-add-seg');
+    if (addSegBtn) {
+      addSegBtn.addEventListener('click', () => {
+        showBcEditorSegmentPicker();
+      });
+    }
+  }
+
+  function showBcEditorSegmentPicker() {
+    const bc = STATE.bodyCopy.find(b => b.id === editorBodyCopyId);
+    if (!bc) return;
+    const assignedIds = new Set((bc.segments || []).map(s => s.id));
+    const available = STATE.segments.filter(s => !assignedIds.has(s.id));
+
+    if (available.length === 0) {
+      alert('Already assigned to all segments.');
+      return;
+    }
+
+    const dropdown = $segmentDropdown;
+    let html = '<div class="segment-dropdown-title">Add to Segment</div>';
+    for (const seg of available) {
+      html += '<div class="segment-dropdown-item" data-seg-id="' + seg.id + '">' + escapeHtml(seg.name) + '</div>';
+    }
+    dropdown.innerHTML = html;
+    $segmentDropdownOverlay.classList.add('visible');
+
+    dropdown.querySelectorAll('.segment-dropdown-item').forEach(item => {
+      item.addEventListener('click', async () => {
+        const segId = item.dataset.segId;
+        $segmentDropdownOverlay.classList.remove('visible');
+        await db().from('body_copy_segment').insert({ body_copy_id: editorBodyCopyId, segment_id: segId });
+        await loadData();
+        const updated = STATE.bodyCopy.find(b => b.id === editorBodyCopyId);
+        if (updated) renderBodyCopyEditorBody(updated);
+      });
+    });
+
+    const backdropHandler = (e) => {
+      if (e.target === $segmentDropdownOverlay) {
+        $segmentDropdownOverlay.classList.remove('visible');
+        $segmentDropdownOverlay.removeEventListener('click', backdropHandler);
+      }
+    };
+    $segmentDropdownOverlay.addEventListener('click', backdropHandler);
+  }
+
+  $bodyCopyEditorClose.addEventListener('click', closeBodyCopyEditor);
+
+  $bodyCopyEditorDelete.addEventListener('click', async () => {
+    if (!editorBodyCopyId) return;
+    if (!confirm('Delete this body copy?')) return;
+    try {
+      const { error } = await db().from('body_copy').delete().eq('id', editorBodyCopyId);
+      if (error) throw error;
+      await loadData();
+      closeBodyCopyEditor();
+    } catch (err) {
+      console.error('Delete body copy failed:', err);
+      alert('Can\u2019t delete \u2014 this body copy is used by an ad. Remove it from ads first.');
+    }
+  });
+
+  $bodyCopyEditorSave.addEventListener('click', async () => {
+    const hlEl = document.getElementById('bc-editor-headline');
+    const txtEl = document.getElementById('bc-editor-text');
+    if (!hlEl || !txtEl) return;
+
+    const newHeadline = hlEl.value.trim();
+    const newText = txtEl.value.trim();
+
+    if (!newHeadline && !newText) {
+      alert('Headline or body text is required.');
+      return;
+    }
+
+    $bodyCopyEditorSave.disabled = true;
+
+    try {
+      if (editorBodyCopyIsLocked) {
+        // Duplicate: insert new body copy with edited values
+        const { data: newBc, error } = await db().from('body_copy').insert({ headline: newHeadline || null, text: newText || null }).select().single();
+        if (error) throw error;
+
+        // Copy segment assignments from original
+        const original = STATE.bodyCopy.find(b => b.id === editorBodyCopyId);
+        if (original && original.segments.length > 0) {
+          const segInserts = original.segments.map(s => ({ body_copy_id: newBc.id, segment_id: s.id }));
+          await db().from('body_copy_segment').insert(segInserts);
+        }
+      } else {
+        // Direct update
+        const { error } = await db().from('body_copy').update({ headline: newHeadline || null, text: newText || null }).eq('id', editorBodyCopyId);
+        if (error) throw error;
+      }
+
+      await loadData();
+      closeBodyCopyEditor();
+    } catch (err) {
+      console.error('Save body copy failed:', err);
+      alert('Failed to save body copy.');
+    } finally {
+      $bodyCopyEditorSave.disabled = false;
+    }
+  });
+
   // --- Full-screen Ad Builder ---
 
   function openAdBuilder() {
     if (!builderImageId) return;
     selectedCaptionIds = [];
+    selectedBodyCopyId = null;
     builderCreating = false;
     builderPreviewMode = false;
     builderPreviewAdId = null;
@@ -4342,6 +4987,7 @@
   function openAdBuilderFromAd(ad) {
     builderImageId = ad.base_image_id;
     selectedCaptionIds = ad.captions.map(c => c.id);
+    selectedBodyCopyId = ad.body_copy_id || null;
     builderCreating = false;
     builderPreviewMode = false;
     builderPreviewAdId = null;
@@ -4358,6 +5004,7 @@
     hide($adBuilder);
     document.body.style.overflow = '';
     selectedCaptionIds = [];
+    selectedBodyCopyId = null;
     builderImageId = null;
     builderPreviewMode = false;
     builderPreviewAdId = null;
@@ -4415,6 +5062,26 @@
       html += '</div>';
     }
 
+    // Body copy picker
+    const bodyCopyItems = filteredBodyCopy();
+    html += '<div class="builder-body-copy-section">';
+    html += '<div class="builder-body-copy-title">Body Copy (below image)</div>';
+    if (bodyCopyItems.length === 0) {
+      html += '<div class="builder-body-copy-empty">No body copy yet. Add some in Library &gt; Copy.</div>';
+    } else {
+      for (const bc of bodyCopyItems) {
+        const isSelected = selectedBodyCopyId === bc.id;
+        html += '<div class="builder-body-copy-card' + (isSelected ? ' selected' : '') + '" data-bc-id="' + escapeHtml(bc.id) + '">';
+        html += '<div class="builder-body-copy-card-body">';
+        html += '<div class="builder-body-copy-card-headline">' + escapeHtml(bc.headline || '') + '</div>';
+        html += '<div class="builder-body-copy-card-text">' + escapeHtml(bc.text || '') + '</div>';
+        html += '</div>';
+        html += '<div class="builder-body-copy-check">' + (isSelected ? '&#10003;' : '') + '</div>';
+        html += '</div>';
+      }
+    }
+    html += '</div>';
+
     // Creative direction textarea
     html += '<div class="builder-section-label">Creative Direction</div>';
     html += '<textarea class="builder-direction-textarea" id="builder-direction" '
@@ -4426,6 +5093,13 @@
     $builderBody.querySelectorAll('.builder-caption-card').forEach(card => {
       card.addEventListener('click', () => {
         toggleCaption(card.dataset.captionId);
+      });
+    });
+
+    // Attach click handlers to body copy cards
+    $builderBody.querySelectorAll('.builder-body-copy-card').forEach(card => {
+      card.addEventListener('click', () => {
+        toggleBodyCopy(card.dataset.bcId);
       });
     });
   }
@@ -4454,6 +5128,18 @@
     });
 
     updateBuilderActionBtn();
+  }
+
+  function toggleBodyCopy(bcId) {
+    // Single-select: toggle on/off
+    selectedBodyCopyId = selectedBodyCopyId === bcId ? null : bcId;
+
+    $builderBody.querySelectorAll('.builder-body-copy-card').forEach(card => {
+      const isSelected = selectedBodyCopyId === card.dataset.bcId;
+      card.classList.toggle('selected', isSelected);
+      const checkEl = card.querySelector('.builder-body-copy-check');
+      if (checkEl) checkEl.innerHTML = isSelected ? '&#10003;' : '';
+    });
   }
 
   function updateBuilderActionBtn() {
@@ -4506,6 +5192,7 @@
         // "Use as Ad" — no captions, no compositing needed
         const insertData = { base_image_id: builderImageId, composited_image_path: image.storage_path };
         if (creativeDirection) insertData.feedback = creativeDirection;
+        if (selectedBodyCopyId) insertData.body_copy_id = selectedBodyCopyId;
         const { data: ad, error } = await db().from('ad')
           .insert(insertData).select().single();
         if (error) throw error;
@@ -4531,6 +5218,7 @@
         // First generation — create the ad row
         const insertData = { base_image_id: builderImageId };
         if (creativeDirection) insertData.feedback = creativeDirection;
+        if (selectedBodyCopyId) insertData.body_copy_id = selectedBodyCopyId;
         const { data: ad, error } = await db().from('ad')
           .insert(insertData).select().single();
         if (error) throw error;
