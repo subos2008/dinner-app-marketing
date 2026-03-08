@@ -1,0 +1,1 @@
+the index file is getting a bit long ~4k lines. Let's refactor it and also add proper url routing to the app. Brainstorm this to figure out the best approach - its a lot of change maybe do it in phases/chunks.

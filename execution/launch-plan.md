@@ -135,3 +135,7 @@ Using Meta MCP + our ad copy:
 - **Budget?** What's the initial test budget for Manchester?
 - **Manchester-specific angles?** Any local cultural hooks worth leaning into?
 - Gay - hire a gay marketing agency? 
+
+# Idea
+
+- Get enough going to afford a marketing agency
