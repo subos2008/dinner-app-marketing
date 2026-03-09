@@ -336,24 +336,6 @@
   }
   .new-adset-btn:active { opacity: 0.8; }
 
-  /* City resolution */
-  .city-resolve-section {
-    margin: 0 16px 12px; padding: 12px 14px;
-    background: var(--surface); border: 1px solid var(--separator);
-    border-radius: var(--radius-lg); font-size: 13px;
-  }
-  .city-resolve-section h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-  .city-resolve-item { padding: 8px 0; border-bottom: 0.5px solid var(--separator); }
-  .city-resolve-item:last-child { border-bottom: none; }
-  .city-resolve-item .city-name { font-weight: 600; margin-bottom: 4px; }
-  .city-pick-option {
-    display: block; width: 100%; text-align: left;
-    padding: 6px 10px; margin: 3px 0; border: 1px solid var(--separator);
-    border-radius: 6px; background: var(--surface); cursor: pointer;
-    font-family: var(--font-body); font-size: 12px;
-  }
-  .city-pick-option:hover { background: var(--accent-light); }
-
   /* Campaign info row */
   .campaign-info {
     padding: 4px 16px 8px; font-size: 12px; color: var(--text-secondary);
@@ -379,6 +361,35 @@
     display: flex; justify-content: space-between; align-items: center;
   }
   .pull-result .dismiss { background: none; border: none; color: #1B7A1B; cursor: pointer; font-size: 16px; padding: 0 4px; }
+
+  /* City cards */
+  .city-card {
+    background: var(--surface); margin: 0 16px 8px;
+    border-radius: var(--radius-lg); padding: 14px 16px;
+    cursor: pointer; border: 1px solid var(--separator); transition: background 0.15s;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .city-card:active { background: #F0F0F5; }
+  .city-card-name { font-size: 15px; font-weight: 600; }
+  .city-card-detail { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .city-card-config { text-align: right; font-size: 12px; }
+  .city-card-config.configured { color: var(--green); }
+  .city-card-config.unconfigured { color: var(--orange); font-weight: 600; }
+
+  .geo-result-btn {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; padding: 10px 12px; border: 1px solid var(--separator);
+    border-radius: var(--radius); background: var(--surface); cursor: pointer;
+    font-family: var(--font-body); font-size: 14px; text-align: left;
+  }
+  .geo-result-btn:active { background: var(--accent-light); }
+  .geo-type-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 5px;
+    font-size: 11px; font-weight: 600; flex-shrink: 0; margin-left: 8px;
+  }
+  .geo-type-badge.type-city { background: #E8F0FE; color: #1A73E8; }
+  .geo-type-badge.type-medium_geo_area { background: #FEF3E8; color: #C87A1A; }
+  .geo-type-badge.type-region { background: #E8FEF0; color: #1A8B5E; }
 </style>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
@@ -408,6 +419,7 @@
     <div class="tab-bar">
       <button class="tab-btn active" id="tab-unassigned" data-tab="unassigned">Creatives</button>
       <button class="tab-btn" id="tab-campaigns" data-tab="campaigns">Campaigns</button>
+      <button class="tab-btn" id="tab-cities" data-tab="cities">Cities</button>
       <button class="tab-btn" id="tab-log" data-tab="log">Sync Log</button>
     </div>
   </div>
@@ -416,6 +428,7 @@
     <div id="view-campaigns" class="hidden"></div>
     <div id="view-detail" class="hidden"></div>
     <div id="view-unassigned"></div>
+    <div id="view-cities" class="hidden"></div>
     <div id="view-log" class="hidden"></div>
   </div>
 </div>
@@ -472,6 +485,13 @@
   <div id="ad-detail-content"></div>
 </div>
 
+<div id="city-search-overlay" class="assign-sheet-overlay hidden"></div>
+<div id="city-search-sheet" class="assign-sheet hidden" style="max-height:75vh;">
+  <h3 id="city-search-title">Configure City</h3>
+  <input type="text" id="city-search-input" placeholder="Search geo locations..." style="width:100%;padding:10px 12px;border:1px solid var(--separator);border-radius:var(--radius);font-size:14px;font-family:var(--font-body);margin-bottom:12px;" />
+  <div id="city-search-results" style="display:flex;flex-direction:column;gap:6px;"></div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 (function() {
@@ -490,7 +510,7 @@
   var detailAdSetId = null;
   var deployingCreativeId = null;
   var pullResultMsg = null;
-  var cityResolveResult = null;
+  var citySearchCityId = null;
 
   function db() { return supabaseClient.schema('marketing'); }
 
@@ -536,6 +556,7 @@
   var $viewCampaigns = document.getElementById('view-campaigns');
   var $viewDetail = document.getElementById('view-detail');
   var $viewUnassigned = document.getElementById('view-unassigned');
+  var $viewCities = document.getElementById('view-cities');
   var $viewLog = document.getElementById('view-log');
 
   var $assignOverlay = document.getElementById('assign-overlay');
@@ -548,6 +569,11 @@
   var $adDetailOverlay = document.getElementById('ad-detail-overlay');
   var $adDetailSheet = document.getElementById('ad-detail-sheet');
   var $adDetailContent = document.getElementById('ad-detail-content');
+
+  var $citySearchOverlay = document.getElementById('city-search-overlay');
+  var $citySearchSheet = document.getElementById('city-search-sheet');
+  var $citySearchInput = document.getElementById('city-search-input');
+  var $citySearchResults = document.getElementById('city-search-results');
 
   // --- Turnstile captcha ---
   var turnstileWidgetId = null;
@@ -616,6 +642,7 @@
     $viewCampaigns.classList.toggle('hidden', tab !== 'campaigns');
     $viewDetail.classList.add('hidden');
     $viewUnassigned.classList.toggle('hidden', tab !== 'unassigned');
+    $viewCities.classList.toggle('hidden', tab !== 'cities');
     $viewLog.classList.toggle('hidden', tab !== 'log');
     render();
   }
@@ -629,7 +656,7 @@
       db().from('sync_log').select('*').order('synced_at', { ascending: false }).limit(50),
       db().from('image_creative').select('*, base_image:base_image_id(*), image_creative_caption(caption_id, caption:caption_id(*))').in('status', ['ready', 'deployed']).order('created_at', { ascending: false }),
       db().from('body_copy').select('*').order('created_at', { ascending: false }),
-      supabaseClient.from('city').select('id, name, slug, meta_geo_key, active, country:country_id(id, name, language_code)').eq('active', true).order('name'),
+      supabaseClient.from('city').select('id, name, slug, meta_geo_key, meta_geo_type, active, country:country_id(id, name, language_code)').eq('active', true).order('name'),
       supabaseClient.from('language').select('*').order('name'),
     ]);
 
@@ -643,12 +670,6 @@
     STATE.languages = results[7].data || [];
 
     render();
-
-    // Auto-populate missing Meta geo keys
-    var citiesMissingKeys = STATE.cities.filter(function(c) { return !c.meta_geo_key; });
-    if (citiesMissingKeys.length > 0 && !cityResolveResult) {
-      resolveCityKeys();
-    }
   }
 
   function render() {
@@ -657,6 +678,7 @@
       else renderCampaigns();
     }
     if (activeTab === 'unassigned') renderUnassigned();
+    if (activeTab === 'cities') renderCities();
     if (activeTab === 'log') renderSyncLog();
   }
 
@@ -699,34 +721,6 @@
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = 'Test'; }
     }
-  }
-
-  async function resolveCityKeys() {
-    try {
-      var resp = await supabaseClient.functions.invoke('meta-sync', { body: { action: 'resolve_city_keys' } });
-      var errMsg = await fnError(resp.error, resp.data);
-      if (errMsg) { console.error('City key resolve failed:', errMsg); return; }
-      cityResolveResult = resp.data;
-      // Reload cities to pick up auto-resolved keys
-      var citiesResp = await supabaseClient.from('city').select('id, name, slug, meta_geo_key, active, country:country_id(id, name, language_code)').eq('active', true).order('name');
-      STATE.cities = citiesResp.data || [];
-      render();
-    } catch (err) {
-      console.error('City key resolve error:', err);
-    }
-  }
-
-  async function pickCityKey(cityId, metaGeoKey) {
-    var resp = await supabaseClient.functions.invoke('meta-sync', {
-      body: { action: 'set_city_key', city_id: cityId, meta_geo_key: metaGeoKey }
-    });
-    var errMsg = await fnError(resp.error, resp.data);
-    if (errMsg) { alert('Failed: ' + errMsg); return; }
-    // Remove from ambiguous list
-    if (cityResolveResult && cityResolveResult.ambiguous) {
-      cityResolveResult.ambiguous = cityResolveResult.ambiguous.filter(function(a) { return a.city_id !== cityId; });
-    }
-    await loadData();
   }
 
   async function toggleCampaignStatus(campaignId, isCurrentlyActive) {
@@ -784,35 +778,6 @@
     // Pull result toast
     if (pullResultMsg) {
       html += '<div class="pull-result"><span>' + escapeHtml(pullResultMsg) + '</span><button class="dismiss" id="dismiss-pull">&times;</button></div>';
-    }
-
-    // City key resolution results
-    if (cityResolveResult) {
-      var cr = cityResolveResult;
-      if (cr.resolved && cr.resolved.length > 0) {
-        html += '<div class="pull-result"><span>'
-          + cr.resolved.length + ' cit' + (cr.resolved.length === 1 ? 'y' : 'ies') + ' auto-resolved: '
-          + cr.resolved.map(function(r) { return escapeHtml(r.city_name) + ' &rarr; ' + r.key; }).join(', ')
-          + '</span><button class="dismiss" id="dismiss-resolve">&times;</button></div>';
-      }
-      if (cr.no_match && cr.no_match.length > 0) {
-        html += '<div class="sync-result sync-result-error" style="margin:0 16px 8px;">No Meta match: '
-          + cr.no_match.map(function(n) { return escapeHtml(n.city_name); }).join(', ')
-          + '</div>';
-      }
-      if (cr.ambiguous && cr.ambiguous.length > 0) {
-        html += '<div class="city-resolve-section"><h4>Populate City Targeting Keys — ' + cr.ambiguous.length + ' cit' + (cr.ambiguous.length === 1 ? 'y needs' : 'ies need') + ' manual selection</h4>';
-        cr.ambiguous.forEach(function(a) {
-          html += '<div class="city-resolve-item">'
-            + '<div class="city-name">' + escapeHtml(a.city_name) + '</div>'
-            + a.results.map(function(r) {
-                var label = r.name + (r.region ? ', ' + r.region : '') + (r.country_name ? ' (' + r.country_name + ')' : '') + ' — key: ' + r.key;
-                return '<button class="city-pick-option" data-city-id="' + a.city_id + '" data-key="' + r.key + '">' + escapeHtml(label) + '</button>';
-              }).join('')
-            + '</div>';
-        });
-        html += '</div>';
-      }
     }
 
     // Group ad sets by campaign
@@ -907,13 +872,6 @@
     var dismissBtn = document.getElementById('dismiss-pull');
     if (dismissBtn) dismissBtn.addEventListener('click', function() { pullResultMsg = null; render(); });
 
-    var dismissResolve = document.getElementById('dismiss-resolve');
-    if (dismissResolve) dismissResolve.addEventListener('click', function() { cityResolveResult = null; render(); });
-
-    $viewCampaigns.querySelectorAll('.city-pick-option').forEach(function(btn) {
-      btn.addEventListener('click', function() { pickCityKey(btn.dataset.cityId, btn.dataset.key); });
-    });
-
     $viewCampaigns.querySelectorAll('.campaign-lang-select').forEach(function(sel) {
       sel.addEventListener('change', async function(e) {
         e.stopPropagation();
@@ -936,6 +894,149 @@
         renderDetail();
       });
     });
+  }
+
+  // --- Render: Cities tab ---
+  function renderCities() {
+    var unconfigured = STATE.cities.filter(function(c) { return !c.meta_geo_key; });
+    var configured = STATE.cities.filter(function(c) { return c.meta_geo_key; });
+
+    var html = '';
+
+    if (unconfigured.length > 0) {
+      html += '<div class="section-header" style="color:var(--orange);">' + unconfigured.length + ' need configuration</div>';
+      unconfigured.forEach(function(city) {
+        html += renderCityCard(city);
+      });
+    }
+
+    if (configured.length > 0) {
+      html += '<div class="section-header">' + configured.length + ' configured</div>';
+      configured.forEach(function(city) {
+        html += renderCityCard(city);
+      });
+    }
+
+    if (STATE.cities.length === 0) {
+      html += '<div class="empty-state"><div class="empty-state-title">No Cities</div>Add active cities in the product database.</div>';
+    }
+
+    $viewCities.innerHTML = html;
+
+    $viewCities.querySelectorAll('.city-card').forEach(function(card) {
+      card.addEventListener('click', function() {
+        openCitySearch(card.dataset.cityId);
+      });
+    });
+  }
+
+  function renderCityCard(city) {
+    var countryName = city.country ? city.country.name : '';
+    var configHtml = '';
+    if (city.meta_geo_key) {
+      var typeLabel = (city.meta_geo_type || 'city').replace(/_/g, ' ');
+      configHtml = '<div class="city-card-config configured">'
+        + '<div>key: ' + escapeHtml(city.meta_geo_key) + '</div>'
+        + '<div>' + escapeHtml(typeLabel) + '</div>'
+        + '</div>';
+    } else {
+      configHtml = '<div class="city-card-config unconfigured">Not configured</div>';
+    }
+
+    return '<div class="city-card" data-city-id="' + city.id + '">'
+      + '<div>'
+      + '<div class="city-card-name">' + escapeHtml(city.name) + '</div>'
+      + '<div class="city-card-detail">' + escapeHtml(countryName) + '</div>'
+      + '</div>'
+      + configHtml
+      + '</div>';
+  }
+
+  // --- City search sheet ---
+  var citySearchDebounce = null;
+
+  function openCitySearch(cityId) {
+    citySearchCityId = cityId;
+    var city = STATE.cities.find(function(c) { return c.id === cityId; });
+    if (!city) return;
+
+    document.getElementById('city-search-title').textContent = 'Configure: ' + city.name;
+    $citySearchInput.value = city.name;
+    $citySearchResults.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);padding:20px;">Searching...</div>';
+    $citySearchSheet.classList.remove('hidden');
+    $citySearchOverlay.classList.remove('hidden');
+    $citySearchInput.focus();
+
+    // Trigger initial search
+    searchCityGeo(city.name);
+  }
+
+  function closeCitySearch() {
+    $citySearchSheet.classList.add('hidden');
+    $citySearchOverlay.classList.add('hidden');
+    citySearchCityId = null;
+  }
+
+  $citySearchOverlay.addEventListener('click', closeCitySearch);
+
+  $citySearchInput.addEventListener('input', function() {
+    clearTimeout(citySearchDebounce);
+    citySearchDebounce = setTimeout(function() {
+      var q = $citySearchInput.value.trim();
+      if (q.length >= 2) searchCityGeo(q);
+    }, 400);
+  });
+
+  async function searchCityGeo(query) {
+    $citySearchResults.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);padding:20px;">Searching...</div>';
+    try {
+      var resp = await supabaseClient.functions.invoke('meta-sync', {
+        body: { action: 'search_geo_locations', query: query }
+      });
+      var errMsg = await fnError(resp.error, resp.data);
+      if (errMsg) {
+        $citySearchResults.innerHTML = '<div style="color:var(--red);padding:12px;">' + escapeHtml(errMsg) + '</div>';
+        return;
+      }
+      var results = resp.data.results || [];
+      if (results.length === 0) {
+        $citySearchResults.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);padding:20px;">No results</div>';
+        return;
+      }
+      $citySearchResults.innerHTML = results.map(function(r) {
+        var typeLabel = (r.geo_type || 'city').replace(/_/g, ' ');
+        var badgeCls = 'type-' + (r.geo_type || 'city');
+        var label = r.name + (r.region ? ', ' + r.region : '') + (r.country_name ? ' (' + r.country_name + ')' : '');
+        return '<button class="geo-result-btn" data-key="' + r.key + '" data-geo-type="' + (r.geo_type || 'city') + '">'
+          + '<span>' + escapeHtml(label) + '</span>'
+          + '<span class="geo-type-badge ' + badgeCls + '">' + escapeHtml(typeLabel) + '</span>'
+          + '</button>';
+      }).join('');
+
+      $citySearchResults.querySelectorAll('.geo-result-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          selectCityGeo(citySearchCityId, btn.dataset.key, btn.dataset.geoType);
+        });
+      });
+    } catch (err) {
+      console.error('City geo search error:', err);
+      $citySearchResults.innerHTML = '<div style="color:var(--red);padding:12px;">' + escapeHtml(err.message || 'Search failed') + '</div>';
+    }
+  }
+
+  async function selectCityGeo(cityId, key, geoType) {
+    try {
+      var resp = await supabaseClient.functions.invoke('meta-sync', {
+        body: { action: 'set_city_key', city_id: cityId, meta_geo_key: key, meta_geo_type: geoType }
+      });
+      var errMsg = await fnError(resp.error, resp.data);
+      if (errMsg) { alert('Failed: ' + errMsg); return; }
+      closeCitySearch();
+      await loadData();
+    } catch (err) {
+      console.error('Set city key error:', err);
+      alert('Failed: ' + (err.message || 'Unknown error'));
+    }
   }
 
   function renderCampaignInfo(c) {
@@ -1280,9 +1381,11 @@
     var cities = getCitiesForCampaign(campaignId);
     var $list = document.getElementById('cas-cities-list');
     $list.innerHTML = cities.map(function(city) {
-      return '<label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;">'
-        + '<input type="checkbox" value="' + city.meta_geo_key + '" data-name="' + escapeHtml(city.name) + '" />'
-        + escapeHtml(city.name)
+      var disabled = !city.meta_geo_key;
+      var label = city.name + (disabled ? ' (not configured)' : '');
+      return '<label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:' + (disabled ? 'default' : 'pointer') + ';' + (disabled ? 'opacity:0.5;' : '') + '">'
+        + '<input type="checkbox" value="' + (city.meta_geo_key || '') + '" data-name="' + escapeHtml(city.name) + '" data-geo-type="' + (city.meta_geo_type || 'city') + '"' + (disabled ? ' disabled' : '') + ' />'
+        + escapeHtml(label)
         + '</label>';
     }).join('');
   }
@@ -1343,26 +1446,31 @@
     if (!name) { $error.textContent = 'Name is required'; $error.classList.remove('hidden'); return; }
     if (!campaignId) { $error.textContent = 'Campaign is required'; $error.classList.remove('hidden'); return; }
 
-    // Build city list based on scope
+    // Build city list based on scope (only configured cities)
     var selectedCities = [];
     if (cityScope === 'all') {
-      selectedCities = getCitiesForCampaign(campaignId);
+      selectedCities = getCitiesForCampaign(campaignId).filter(function(c) { return c.meta_geo_key; });
     } else {
       document.querySelectorAll('#cas-cities-list input:checked').forEach(function(cb) {
-        selectedCities.push({ meta_geo_key: cb.value, name: cb.dataset.name });
+        selectedCities.push({ meta_geo_key: cb.value, name: cb.dataset.name, meta_geo_type: cb.dataset.geoType || 'city' });
       });
     }
 
     if (selectedCities.length === 0) {
-      $error.textContent = cityScope === 'all' ? 'No active cities found for this campaign language' : 'Select at least one city';
+      $error.textContent = cityScope === 'all' ? 'No configured cities found for this campaign language — configure cities in the Cities tab' : 'Select at least one city';
       $error.classList.remove('hidden');
       return;
     }
 
     var targeting = { age_min: ageMin, age_max: ageMax };
-    targeting.geo_locations = {
-      cities: selectedCities.map(function(c) { return { key: c.meta_geo_key }; })
-    };
+    var geoLocations = {};
+    selectedCities.forEach(function(c) {
+      var field = c.meta_geo_type === 'medium_geo_area' ? 'medium_geo_areas'
+                : c.meta_geo_type === 'region' ? 'regions' : 'cities';
+      if (!geoLocations[field]) geoLocations[field] = [];
+      geoLocations[field].push({ key: c.meta_geo_key });
+    });
+    targeting.geo_locations = geoLocations;
 
     btn.disabled = true;
     btn.textContent = 'Creating...';
@@ -1592,8 +1700,13 @@
   }
 
   function getAdSetTargetedCityKeys(adSet) {
-    if (!adSet.targeting || !adSet.targeting.geo_locations || !adSet.targeting.geo_locations.cities) return [];
-    return adSet.targeting.geo_locations.cities.map(function(c) { return c.key || c.key_; });
+    if (!adSet.targeting || !adSet.targeting.geo_locations) return [];
+    var gl = adSet.targeting.geo_locations;
+    var keys = [];
+    if (gl.cities) gl.cities.forEach(function(c) { keys.push(c.key || c.key_); });
+    if (gl.medium_geo_areas) gl.medium_geo_areas.forEach(function(c) { keys.push(c.key || c.key_); });
+    if (gl.regions) gl.regions.forEach(function(c) { keys.push(c.key || c.key_); });
+    return keys;
   }
 
   function getGeoLocationNames(gl) {
