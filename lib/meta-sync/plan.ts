@@ -9,14 +9,13 @@ import type {
   SyncPlan,
   CampaignRow,
   AdSetRow,
-  AdRow,
+  MetaAdRow,
 } from "./types.ts";
 
 /** Map desired_status to Meta API status */
 function toMetaStatus(desired: string): string {
   switch (desired) {
-    case "approved":
-    case "active":
+    case "live":
       return "PAUSED"; // Create as PAUSED, user activates via Meta or future flow
     case "paused":
       return "PAUSED";
@@ -150,33 +149,33 @@ export async function buildPlan(
     }
   }
 
-  // --- Ads ---
+  // --- Meta Ads ---
   let adQuery = db
-    .from("ad")
-    .select("*, ad_set:ad_set_id(*, campaign:campaign_id(*)), body_copy:body_copy_id(text, headline)");
+    .from("meta_ad")
+    .select("*, ad_set:ad_set_id(*, campaign:campaign_id(*)), body_copy:body_copy_id(text, headline), image_creative:image_creative_id(composited_image_path)");
   if (options?.adSetId) {
     adQuery = adQuery.eq("ad_set_id", options.adSetId);
   }
   const { data: ads, error: adErr } = await adQuery;
-  if (adErr) throw new Error(`Failed to load ads: ${adErr.message}`);
+  if (adErr) throw new Error(`Failed to load meta_ads: ${adErr.message}`);
 
-  for (const ad of (ads || []) as AdRow[]) {
-    // Only sync ads that are approved and have all required fields
+  for (const ad of (ads || []) as MetaAdRow[]) {
+    const imagePath = ad.image_creative?.composited_image_path;
+    // Only sync ads that are queued and have all required fields
     if (
       !ad.meta_ad_id &&
-      ad.desired_status === "approved" &&
-      ad.composited_image_path &&
-      ad.ad_set_id &&
+      ad.desired_status === "queued" &&
+      imagePath &&
       ad.ad_set?.meta_ad_set_id
     ) {
       plan.creates.push({
         type: "create",
-        entity: "ad",
+        entity: "meta_ad",
         id: ad.id,
-        name: ad.composited_image_path.split("/").pop() || ad.id,
+        name: imagePath.split("/").pop() || ad.id,
         adSetId: ad.ad_set_id,
         data: {
-          composited_image_path: ad.composited_image_path,
+          composited_image_path: imagePath,
           body_text: ad.body_copy?.text || "",
           headline: ad.body_copy?.headline || "",
           metaAdSetId: ad.ad_set?.meta_ad_set_id,
@@ -190,24 +189,24 @@ export async function buildPlan(
         if (metaTarget === "PAUSED") {
           plan.pauses.push({
             type: "pause",
-            entity: "ad",
+            entity: "meta_ad",
             id: ad.id,
-            name: ad.composited_image_path?.split("/").pop() || ad.id,
+            name: imagePath?.split("/").pop() || ad.id,
             data: { metaAdId: ad.meta_ad_id },
           });
         } else {
           plan.unpauses.push({
             type: "unpause",
-            entity: "ad",
+            entity: "meta_ad",
             id: ad.id,
-            name: ad.composited_image_path?.split("/").pop() || ad.id,
+            name: imagePath?.split("/").pop() || ad.id,
             data: { metaAdId: ad.meta_ad_id },
           });
         }
       } else {
         plan.inSync.push({
-          entity: "ad",
-          name: ad.composited_image_path?.split("/").pop() || ad.id,
+          entity: "meta_ad",
+          name: imagePath?.split("/").pop() || ad.id,
         });
       }
     }

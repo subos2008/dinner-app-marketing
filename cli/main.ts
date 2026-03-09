@@ -26,8 +26,8 @@ Commands:
   body-copy delete <id>
 
   ads list
-  ads create --image <id> [--caption <id>] [--body-copy <id>]
-  ads update <id> --desired-status <s> [--feedback <f>]
+  ads create --image <id>
+  ads update <id> [--status <s>] [--feedback <f>]
   ads delete <id>
 
   ad-sets list

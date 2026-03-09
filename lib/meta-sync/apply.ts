@@ -167,7 +167,7 @@ async function executeAction(
         break;
       }
 
-      case "ad": {
+      case "meta_ad": {
         if (action.type === "create") {
           // Resolve ad set Meta ID — may have just been created
           let metaAdSetId = action.data.metaAdSetId as string | undefined;
@@ -181,7 +181,7 @@ async function executeAction(
           }
           if (!metaAdSetId) {
             throw new Error(
-              `Ad set for ad "${action.name}" has no Meta ID — create the ad set first`
+              `Ad set for meta_ad "${action.name}" has no Meta ID — create the ad set first`
             );
           }
 
@@ -207,7 +207,7 @@ async function executeAction(
           });
 
           await db
-            .from("ad")
+            .from("meta_ad")
             .update({ meta_ad_id: res.id, meta_status: "paused" })
             .eq("id", action.id);
           return { action, status: "success", metaId: res.id };
@@ -218,7 +218,7 @@ async function executeAction(
             "PAUSED"
           );
           await db
-            .from("ad")
+            .from("meta_ad")
             .update({ meta_status: "paused" })
             .eq("id", action.id);
           return {
@@ -233,7 +233,7 @@ async function executeAction(
             "ACTIVE"
           );
           await db
-            .from("ad")
+            .from("meta_ad")
             .update({ meta_status: "active" })
             .eq("id", action.id);
           return {
@@ -267,7 +267,7 @@ export async function applyPlan(
   const ordered: SyncAction[] = [
     ...plan.creates.filter((a) => a.entity === "campaign"),
     ...plan.creates.filter((a) => a.entity === "ad_set"),
-    ...plan.creates.filter((a) => a.entity === "ad"),
+    ...plan.creates.filter((a) => a.entity === "meta_ad"),
     ...plan.pauses,
     ...plan.unpauses,
     ...plan.updates,

@@ -19,8 +19,8 @@ export async function ads(action: string, args: string[]) {
 
 async function list() {
   const { data, error } = await supabase
-    .from("ad")
-    .select("*, base_image:base_image_id(*), caption:caption_id(*), body_copy:body_copy_id(*), ad_set:ad_set_id(id, name)")
+    .from("image_creative")
+    .select("*, base_image:base_image_id(*), image_creative_caption(caption_id, caption:caption_id(*)), image_creative_segment(segment_id, segment:segment_id(id, name))")
     .order("created_at", { ascending: false });
 
   if (error) throw new Error(error.message);
@@ -39,11 +39,8 @@ async function create(args: string[]) {
     base_image_id: flags.image,
   };
 
-  if (flags.caption) row.caption_id = flags.caption;
-  if (flags["body-copy"]) row.body_copy_id = flags["body-copy"];
-
   const { data, error } = await supabase
-    .from("ad")
+    .from("image_creative")
     .insert(row)
     .select()
     .single();
@@ -60,21 +57,18 @@ async function update(id: string, rest: string[]) {
   }
 
   const flags = parseFlags(rest);
-  if (!flags["desired-status"]) {
-    console.error("ads update: missing --desired-status");
+  const row: Record<string, unknown> = {};
+
+  if (flags.status) row.status = flags.status;
+  if (flags.feedback !== undefined) row.feedback = flags.feedback;
+
+  if (Object.keys(row).length === 0) {
+    console.error("ads update: provide --status or --feedback");
     Deno.exit(1);
   }
 
-  const row: Record<string, unknown> = {
-    desired_status: flags["desired-status"],
-  };
-
-  if (flags.feedback !== undefined) {
-    row.feedback = flags.feedback;
-  }
-
   const { data, error } = await supabase
-    .from("ad")
+    .from("image_creative")
     .update(row)
     .eq("id", id)
     .select()
@@ -92,7 +86,7 @@ async function remove(id: string) {
   }
 
   const { error } = await supabase
-    .from("ad")
+    .from("image_creative")
     .delete()
     .eq("id", id);
 

@@ -1,6 +1,6 @@
 /** Sync action types for plan/apply workflow */
 
-export type EntityType = "campaign" | "ad_set" | "ad";
+export type EntityType = "campaign" | "ad_set" | "meta_ad";
 export type ActionType = "create" | "pause" | "unpause" | "update";
 
 export interface SyncAction {
@@ -89,15 +89,15 @@ export interface AdSetRow {
   campaign?: CampaignRow;
 }
 
-export interface AdRow {
+export interface MetaAdRow {
   id: string;
-  ad_set_id: string | null;
-  base_image_id: string;
+  image_creative_id: string;
+  ad_set_id: string;
   body_copy_id: string | null;
-  composited_image_path: string | null;
   desired_status: string;
   meta_status: string | null;
   meta_ad_id: string | null;
   ad_set?: AdSetRow;
   body_copy?: { text: string; headline: string | null };
+  image_creative?: { composited_image_path: string | null };
 }
