@@ -326,16 +326,16 @@
       <button class="topbar-btn" id="signout-btn">Sign Out</button>
     </div>
     <div class="tab-bar">
-      <button class="tab-btn active" id="tab-campaigns" data-tab="campaigns">Campaigns</button>
-      <button class="tab-btn" id="tab-unassigned" data-tab="unassigned">Deploy</button>
+      <button class="tab-btn active" id="tab-unassigned" data-tab="unassigned">Creatives</button>
+      <button class="tab-btn" id="tab-campaigns" data-tab="campaigns">Campaigns</button>
       <button class="tab-btn" id="tab-log" data-tab="log">Sync Log</button>
     </div>
   </div>
 
   <div class="content" id="content">
-    <div id="view-campaigns"></div>
+    <div id="view-campaigns" class="hidden"></div>
     <div id="view-detail" class="hidden"></div>
-    <div id="view-unassigned" class="hidden"></div>
+    <div id="view-unassigned"></div>
     <div id="view-log" class="hidden"></div>
   </div>
 </div>
@@ -345,6 +345,11 @@
 <div id="assign-sheet" class="assign-sheet hidden">
   <h3>Deploy to Ad Set</h3>
   <div id="assign-options"></div>
+</div>
+
+<div id="ad-detail-overlay" class="assign-sheet-overlay hidden"></div>
+<div id="ad-detail-sheet" class="assign-sheet hidden">
+  <div id="ad-detail-content"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -361,7 +366,7 @@
   var appInitialised = false;
 
   var STATE = { account: null, campaigns: [], adSets: [], ads: [], creatives: [], bodyCopy: [], syncLog: [] };
-  var activeTab = 'campaigns';
+  var activeTab = 'unassigned';
   var detailAdSetId = null;
   var deployingCreativeId = null;
   var pullResultMsg = null;
@@ -415,6 +420,10 @@
   var $assignOverlay = document.getElementById('assign-overlay');
   var $assignSheet = document.getElementById('assign-sheet');
   var $assignOptions = document.getElementById('assign-options');
+
+  var $adDetailOverlay = document.getElementById('ad-detail-overlay');
+  var $adDetailSheet = document.getElementById('ad-detail-sheet');
+  var $adDetailContent = document.getElementById('ad-detail-content');
 
   // --- Turnstile captcha ---
   var turnstileWidgetId = null;
@@ -776,6 +785,13 @@
       });
     });
 
+    $viewDetail.querySelectorAll('.ad-row[data-meta-ad-id]').forEach(function(row) {
+      row.addEventListener('click', function(e) {
+        if (e.target.closest('select') || e.target.closest('button')) return;
+        openAdDetail(row.dataset.metaAdId);
+      });
+    });
+
     wireThumbClicks($viewDetail);
 
     var $syncBtn = document.getElementById('sync-btn');
@@ -798,7 +814,7 @@
       return '<option value="' + s + '"' + (ad.desired_status === s ? ' selected' : '') + '>' + s + '</option>';
     }).join('');
 
-    return '<div class="ad-row">'
+    return '<div class="ad-row" data-meta-ad-id="' + ad.id + '" style="cursor:pointer;">'
       + (imgUrl ? '<img class="ad-row-thumb" src="' + imgUrl + '" alt="" />' : '<div class="ad-row-thumb"></div>')
       + '<div class="ad-row-info">'
       + '<div class="ad-row-caption">' + escapeHtml(captionText) + '</div>'
@@ -860,6 +876,13 @@
       });
     });
 
+    $viewUnassigned.querySelectorAll('.ad-row[data-meta-ad-id]').forEach(function(row) {
+      row.addEventListener('click', function(e) {
+        if (e.target.closest('select') || e.target.closest('button')) return;
+        openAdDetail(row.dataset.metaAdId);
+      });
+    });
+
     wireThumbClicks($viewUnassigned);
   }
 
@@ -906,7 +929,7 @@
 
     var adSetLabel = adSet ? '<span style="color:var(--text-tertiary);font-size:11px;">' + escapeHtml(adSet.name) + '</span>' : '';
 
-    return '<div class="ad-row">'
+    return '<div class="ad-row" data-meta-ad-id="' + ad.id + '" style="cursor:pointer;">'
       + (imgUrl ? '<img class="ad-row-thumb" src="' + imgUrl + '" alt="" />' : '<div class="ad-row-thumb"></div>')
       + '<div class="ad-row-info">'
       + '<div class="ad-row-caption">' + escapeHtml(label) + '</div>'
@@ -969,6 +992,73 @@
   }
 
   $assignOverlay.addEventListener('click', closeAssignSheet);
+
+  // --- Ad detail sheet ---
+  function openAdDetail(adId) {
+    var ad = STATE.ads.find(function(a) { return a.id === adId; });
+    if (!ad) return;
+
+    var ic = ad.image_creative || {};
+    var imgUrl = ic.composited_image_path
+      ? storageBaseUrl + '/' + ic.composited_image_path
+      : (ic.base_image ? storageBaseUrl + '/' + ic.base_image.storage_path : '');
+    var captions = ic.image_creative_caption || [];
+    var captionText = captions.map(function(c) { return c.caption ? c.caption.text : ''; }).filter(Boolean).join(', ');
+    var adSet = STATE.adSets.find(function(as) { return as.id === ad.ad_set_id; });
+
+    var bcOptions = '<option value="">No body copy</option>' + STATE.bodyCopy.map(function(bc) {
+      var label = bc.headline || bc.text || 'Body ' + bc.id.slice(0, 8);
+      if (label.length > 60) label = label.slice(0, 57) + '...';
+      var selected = ad.body_copy_id === bc.id ? ' selected' : '';
+      return '<option value="' + bc.id + '"' + selected + '>' + escapeHtml(label) + '</option>';
+    }).join('');
+
+    $adDetailContent.innerHTML = ''
+      + (imgUrl ? '<img src="' + imgUrl + '" alt="" style="width:100%;border-radius:var(--radius);margin-bottom:12px;" />' : '')
+      + (captionText ? '<div style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;">' + escapeHtml(captionText) + '</div>' : '')
+      + '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">'
+        + '<div style="display:flex;justify-content:space-between;font-size:13px;">'
+          + '<span style="color:var(--text-secondary);">Ad Set</span>'
+          + '<span>' + escapeHtml(adSet ? adSet.name : 'Unassigned') + '</span>'
+        + '</div>'
+        + '<div style="display:flex;justify-content:space-between;font-size:13px;">'
+          + '<span style="color:var(--text-secondary);">Desired Status</span>'
+          + '<span>' + escapeHtml(ad.desired_status) + '</span>'
+        + '</div>'
+        + '<div style="display:flex;justify-content:space-between;font-size:13px;">'
+          + '<span style="color:var(--text-secondary);">Meta Status</span>'
+          + '<span>' + (ad.meta_status ? escapeHtml(ad.meta_status) : '\u2014') + '</span>'
+        + '</div>'
+        + '<div style="display:flex;justify-content:space-between;font-size:13px;">'
+          + '<span style="color:var(--text-secondary);">Meta Ad ID</span>'
+          + '<span style="font-family:monospace;font-size:11px;">' + (ad.meta_ad_id ? escapeHtml(ad.meta_ad_id) : 'Not yet synced') + '</span>'
+        + '</div>'
+      + '</div>'
+      + '<label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Body Copy</label>'
+      + '<select id="detail-body-copy" style="width:100%;padding:8px;border:1px solid var(--separator);border-radius:var(--radius);font-size:14px;font-family:var(--font-body);margin-bottom:12px;">'
+      + bcOptions
+      + '</select>'
+      + '<button id="detail-save-btn" style="width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:15px;font-weight:600;cursor:pointer;">Save</button>';
+
+    $adDetailSheet.classList.remove('hidden');
+    $adDetailOverlay.classList.remove('hidden');
+
+    document.getElementById('detail-save-btn').addEventListener('click', async function() {
+      var bcSelect = document.getElementById('detail-body-copy');
+      var updateObj = { body_copy_id: bcSelect.value || null };
+      var res = await db().from('meta_ad').update(updateObj).eq('id', adId);
+      if (res.error) { alert('Failed: ' + res.error.message); return; }
+      closeAdDetail();
+      await loadData();
+    });
+  }
+
+  function closeAdDetail() {
+    $adDetailSheet.classList.add('hidden');
+    $adDetailOverlay.classList.add('hidden');
+  }
+
+  $adDetailOverlay.addEventListener('click', closeAdDetail);
 
   // --- Fullscreen image viewer ---
   var $fullscreenOverlay = document.getElementById('fullscreen-overlay');
