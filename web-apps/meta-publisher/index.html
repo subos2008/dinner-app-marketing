@@ -425,12 +425,15 @@
     <input type="number" id="cas-budget" min="1" step="0.01" placeholder="Optional" />
   </div>
   <div class="form-field">
-    <label>City</label>
-    <select id="cas-city">
-      <option value="">No location targeting</option>
-      <option value="manchester" data-key="2643123">Manchester</option>
-      <option value="london" data-key="2643743">London</option>
+    <label>City Scope</label>
+    <select id="cas-scope">
+      <option value="all">All cities for campaign language</option>
+      <option value="specific">Specific cities</option>
     </select>
+  </div>
+  <div class="form-field hidden" id="cas-cities-field">
+    <label>Cities</label>
+    <div id="cas-cities-list" style="display:flex;flex-direction:column;gap:6px;max-height:150px;overflow-y:auto;"></div>
   </div>
   <div class="form-row">
     <div class="form-field">
@@ -464,7 +467,7 @@
   var currentSession = null;
   var appInitialised = false;
 
-  var STATE = { account: null, campaigns: [], adSets: [], ads: [], creatives: [], bodyCopy: [], syncLog: [] };
+  var STATE = { account: null, campaigns: [], adSets: [], ads: [], creatives: [], bodyCopy: [], syncLog: [], cities: [], languages: [] };
   var activeTab = 'unassigned';
   var detailAdSetId = null;
   var deployingCreativeId = null;
@@ -607,6 +610,8 @@
       db().from('sync_log').select('*').order('synced_at', { ascending: false }).limit(50),
       db().from('image_creative').select('*, base_image:base_image_id(*), image_creative_caption(caption_id, caption:caption_id(*))').in('status', ['ready', 'deployed']).order('created_at', { ascending: false }),
       db().from('body_copy').select('*').order('created_at', { ascending: false }),
+      supabaseClient.from('city').select('id, name, slug, meta_geo_key, active, country:country_id(id, name, language_code)').eq('active', true).not('meta_geo_key', 'is', null).order('name'),
+      supabaseClient.from('language').select('*').order('name'),
     ]);
 
     STATE.campaigns = results[0].data || [];
@@ -615,6 +620,8 @@
     STATE.syncLog = results[3].data || [];
     STATE.creatives = results[4].data || [];
     STATE.bodyCopy = results[5].data || [];
+    STATE.cities = results[6].data || [];
+    STATE.languages = results[7].data || [];
 
     render();
   }
@@ -758,6 +765,23 @@
 
         html += renderCampaignInfo(c);
 
+        // Mismatch banners for "all cities" scope ad sets
+        var expectedCities = getCampaignExpectedCities(c);
+        if (expectedCities.length > 0) {
+          cAdSets.filter(function(as) { return as.city_scope === 'all'; }).forEach(function(as) {
+            var targeted = getAdSetTargetedCityKeys(as);
+            var missing = expectedCities.filter(function(city) {
+              return targeted.indexOf(city.meta_geo_key) === -1;
+            });
+            if (missing.length > 0) {
+              var names = missing.map(function(city) { return city.name; }).join(', ');
+              html += '<div class="campaign-banner" style="background:#F8D7DA;color:#721C24;">'
+                + escapeHtml(as.name) + ': ' + missing.length + ' live cit' + (missing.length === 1 ? 'y' : 'ies') + ' not targeted — ' + escapeHtml(names)
+                + '</div>';
+            }
+          });
+        }
+
         if (isPaused && c.meta_campaign_id) {
           html += '<div class="campaign-banner">Campaign paused &mdash; ads will not serve until you activate this campaign.</div>';
         }
@@ -845,6 +869,12 @@
       if (cats.length > 0) tags.push({ label: cats.join(', ') });
     }
 
+    // Language
+    if (c.language_code) {
+      var lang = STATE.languages.find(function(l) { return l.code === c.language_code; });
+      tags.push({ label: lang ? lang.name : c.language_code });
+    }
+
     // Objective
     if (c.objective) {
       var obj = c.objective.replace('OUTCOME_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
@@ -877,13 +907,33 @@
 
     var targetingSummary = getTargetingSummary(as.targeting);
 
+    // City badge
+    var cityBadge = '';
+    var targeted = getAdSetTargetedCityKeys(as);
+    if (as.city_scope === 'all' && as.campaign_id) {
+      var campaign = STATE.campaigns.find(function(c) { return c.id === as.campaign_id; });
+      if (campaign) {
+        var expected = getCampaignExpectedCities(campaign);
+        var covered = expected.filter(function(city) { return targeted.indexOf(city.meta_geo_key) !== -1; }).length;
+        var isMismatch = covered < expected.length;
+        cityBadge = '<span class="badge ' + (isMismatch ? 'badge-error' : 'badge-synced') + '">'
+          + covered + '/' + expected.length + ' cities</span>';
+      }
+    } else if (targeted.length > 0) {
+      var cityNames = targeted.map(function(key) {
+        var city = STATE.cities.find(function(c) { return c.meta_geo_key === key; });
+        return city ? city.name : key;
+      });
+      cityBadge = '<span style="font-size:11px;color:var(--text-tertiary);">' + escapeHtml(cityNames.join(', ')) + '</span>';
+    }
+
     return '<div class="ad-set-card" data-id="' + as.id + '">'
       + '<div class="ad-set-name">' + escapeHtml(as.name) + '</div>'
       + '<div class="ad-set-meta">'
       + '<span>' + total + ' ad' + (total !== 1 ? 's' : '') + '</span>'
       + (statusLabel ? '<span class="campaign-status ' + statusCls + '">' + statusLabel + '</span>' : '')
       + (as.daily_budget_cents ? '<span>' + (as.daily_budget_cents / 100).toFixed(2) + '/day</span>' : '')
-      + badge
+      + badge + cityBadge
       + '</div>'
       + (targetingSummary ? '<div style="font-size:11px;color:var(--text-tertiary);margin-top:3px;">' + escapeHtml(targetingSummary) + '</div>' : '')
       + '</div>';
@@ -904,6 +954,9 @@
 
     // Targeting info
     html += renderTargetingInfo(adSet.targeting);
+
+    // City coverage detail
+    html += renderCityDetail(adSet);
 
     if (ads.length === 0) {
       html += '<div class="empty-state">No ads in this ad set.<br>Deploy creatives from the Deploy tab.</div>';
@@ -1113,6 +1166,25 @@
   }
 
   // --- Create ad set sheet ---
+  function getCitiesForCampaign(campaignId) {
+    var campaign = STATE.campaigns.find(function(c) { return c.id === campaignId; });
+    if (!campaign || !campaign.language_code) return STATE.cities;
+    return STATE.cities.filter(function(city) {
+      return city.country && city.country.language_code === campaign.language_code;
+    });
+  }
+
+  function renderCityCheckboxes(campaignId) {
+    var cities = getCitiesForCampaign(campaignId);
+    var $list = document.getElementById('cas-cities-list');
+    $list.innerHTML = cities.map(function(city) {
+      return '<label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;">'
+        + '<input type="checkbox" value="' + city.meta_geo_key + '" data-name="' + escapeHtml(city.name) + '" />'
+        + escapeHtml(city.name)
+        + '</label>';
+    }).join('');
+  }
+
   function openCreateAdSetSheet() {
     var campaignsWithMeta = STATE.campaigns.filter(function(c) { return c.meta_campaign_id; });
     if (campaignsWithMeta.length === 0) {
@@ -1121,15 +1193,19 @@
     }
     var $casCampaign = document.getElementById('cas-campaign');
     $casCampaign.innerHTML = campaignsWithMeta.map(function(c) {
-      return '<option value="' + c.id + '">' + escapeHtml(c.name) + '</option>';
+      var lang = c.language_code ? ' (' + c.language_code + ')' : '';
+      return '<option value="' + c.id + '">' + escapeHtml(c.name) + lang + '</option>';
     }).join('');
 
     document.getElementById('cas-name').value = '';
     document.getElementById('cas-budget').value = '';
-    document.getElementById('cas-city').value = '';
+    document.getElementById('cas-scope').value = 'all';
+    document.getElementById('cas-cities-field').classList.add('hidden');
     document.getElementById('cas-age-min').value = '18';
     document.getElementById('cas-age-max').value = '65';
     document.getElementById('cas-error').classList.add('hidden');
+
+    renderCityCheckboxes($casCampaign.value);
 
     $createAdSetSheet.classList.remove('hidden');
     $createAdSetOverlay.classList.remove('hidden');
@@ -1142,6 +1218,14 @@
 
   $createAdSetOverlay.addEventListener('click', closeCreateAdSetSheet);
 
+  document.getElementById('cas-scope').addEventListener('change', function() {
+    document.getElementById('cas-cities-field').classList.toggle('hidden', this.value === 'all');
+  });
+
+  document.getElementById('cas-campaign').addEventListener('change', function() {
+    renderCityCheckboxes(this.value);
+  });
+
   document.getElementById('cas-submit').addEventListener('click', async function() {
     var btn = document.getElementById('cas-submit');
     var $error = document.getElementById('cas-error');
@@ -1150,18 +1234,33 @@
     var name = document.getElementById('cas-name').value.trim();
     var campaignId = document.getElementById('cas-campaign').value;
     var budgetGbp = parseFloat(document.getElementById('cas-budget').value);
-    var citySelect = document.getElementById('cas-city');
-    var cityOption = citySelect.options[citySelect.selectedIndex];
+    var cityScope = document.getElementById('cas-scope').value;
     var ageMin = parseInt(document.getElementById('cas-age-min').value) || 18;
     var ageMax = parseInt(document.getElementById('cas-age-max').value) || 65;
 
     if (!name) { $error.textContent = 'Name is required'; $error.classList.remove('hidden'); return; }
     if (!campaignId) { $error.textContent = 'Campaign is required'; $error.classList.remove('hidden'); return; }
 
-    var targeting = { age_min: ageMin, age_max: ageMax };
-    if (cityOption && cityOption.dataset.key) {
-      targeting.geo_locations = { cities: [{ key: cityOption.dataset.key }] };
+    // Build city list based on scope
+    var selectedCities = [];
+    if (cityScope === 'all') {
+      selectedCities = getCitiesForCampaign(campaignId);
+    } else {
+      document.querySelectorAll('#cas-cities-list input:checked').forEach(function(cb) {
+        selectedCities.push({ meta_geo_key: cb.value, name: cb.dataset.name });
+      });
     }
+
+    if (selectedCities.length === 0) {
+      $error.textContent = cityScope === 'all' ? 'No active cities found for this campaign language' : 'Select at least one city';
+      $error.classList.remove('hidden');
+      return;
+    }
+
+    var targeting = { age_min: ageMin, age_max: ageMax };
+    targeting.geo_locations = {
+      cities: selectedCities.map(function(c) { return { key: c.meta_geo_key }; })
+    };
 
     btn.disabled = true;
     btn.textContent = 'Creating...';
@@ -1172,6 +1271,7 @@
         campaign_id: campaignId,
         name: name,
         targeting: targeting,
+        city_scope: cityScope,
       };
       if (budgetGbp && budgetGbp > 0) reqBody.daily_budget_cents = Math.round(budgetGbp * 100);
       var resp = await supabaseClient.functions.invoke('meta-sync', { body: reqBody });
@@ -1342,6 +1442,58 @@
   }
 
   // --- Helpers ---
+  function getCampaignExpectedCities(campaign) {
+    if (!campaign.language_code) return [];
+    return STATE.cities.filter(function(city) {
+      return city.country && city.country.language_code === campaign.language_code;
+    });
+  }
+
+  function renderCityDetail(adSet) {
+    var targeted = getAdSetTargetedCityKeys(adSet);
+    if (targeted.length === 0 && adSet.city_scope !== 'all') return '';
+
+    var html = '<div style="padding:8px 16px 12px;">';
+    html += '<div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">'
+      + 'Cities' + (adSet.city_scope === 'all' ? ' (all for language)' : ' (specific)')
+      + '</div>';
+
+    // Targeted cities
+    var targetedNames = targeted.map(function(key) {
+      var city = STATE.cities.find(function(c) { return c.meta_geo_key === key; });
+      return city ? city.name : 'key:' + key;
+    });
+    if (targetedNames.length > 0) {
+      html += targetedNames.map(function(name) {
+        return '<span style="display:inline-block;padding:2px 8px;margin:0 4px 4px 0;background:#D1F2D1;color:#1B7A1B;border-radius:5px;font-size:12px;">' + escapeHtml(name) + '</span>';
+      }).join('');
+    }
+
+    // Missing cities (only for "all" scope)
+    if (adSet.city_scope === 'all' && adSet.campaign_id) {
+      var campaign = STATE.campaigns.find(function(c) { return c.id === adSet.campaign_id; });
+      if (campaign) {
+        var expected = getCampaignExpectedCities(campaign);
+        var missing = expected.filter(function(city) {
+          return targeted.indexOf(city.meta_geo_key) === -1;
+        });
+        if (missing.length > 0) {
+          html += missing.map(function(city) {
+            return '<span style="display:inline-block;padding:2px 8px;margin:0 4px 4px 0;background:#F8D7DA;color:#721C24;border-radius:5px;font-size:12px;">' + escapeHtml(city.name) + ' (missing)</span>';
+          }).join('');
+        }
+      }
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  function getAdSetTargetedCityKeys(adSet) {
+    if (!adSet.targeting || !adSet.targeting.geo_locations || !adSet.targeting.geo_locations.cities) return [];
+    return adSet.targeting.geo_locations.cities.map(function(c) { return c.key || c.key_; });
+  }
+
   function getTargetingSummary(targeting) {
     if (!targeting) return '';
     var parts = [];
