@@ -1554,9 +1554,8 @@
 
   /* --- Ad Status Badges --- */
   .ad-status-badge { position: absolute; top: 6px; right: 6px; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; z-index: 2; }
-  .ad-status-queued { background: #f59e0b; color: #fff; }
-  .ad-status-live { background: #22c55e; color: #fff; }
-  .ad-status-paused { background: #94a3b8; color: #fff; }
+  .ad-status-ready { background: #f59e0b; color: #fff; }
+  .ad-status-deployed { background: #22c55e; color: #fff; }
 
   /* --- Ad Viewer Publish Button --- */
   .ad-viewer-status { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
@@ -1566,8 +1565,7 @@
   .ad-publish-btn.unpublish { background: #f59e0b; color: #fff; }
   .ad-publish-btn.unpublish:active { background: #d97706; }
   .ad-viewer-status-pill { padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; }
-  .ad-viewer-status-pill.live { background: #22c55e; color: #fff; }
-  .ad-viewer-status-pill.paused { background: #94a3b8; color: #fff; }
+  .ad-viewer-status-pill.deployed { background: #22c55e; color: #fff; }
   .ad-locked-msg { color: #94a3b8; font-size: 13px; text-align: center; padding: 12px; }
 
   /* --- Full-screen Ad Builder --- */
@@ -2530,7 +2528,7 @@
     if (!confirm(msg)) return;
     try {
       const value = action === 'archive' ? new Date().toISOString() : null;
-      const { error } = await db().from('ad').update({ archived_at: value }).in('id', ids);
+      const { error } = await db().from('image_creative').update({ archived_at: value }).in('id', ids);
       if (error) throw error;
       exitAdSelectMode();
       await loadData();
@@ -2749,8 +2747,8 @@
           .select('*, caption_segment(segment_id, segment:segment_id(id, name)), generation_prompt:generation_prompt_id(id, type, prompt, created_at)')
           .order('created_at', { ascending: false }),
         (() => {
-          const adQuery = db().from('ad')
-            .select('*, base_image:base_image_id(*), ad_segment(segment_id, segment:segment_id(id, name)), ad_caption(caption_id, caption:caption_id(*))')
+          const adQuery = db().from('image_creative')
+            .select('*, base_image:base_image_id(*), image_creative_segment(segment_id, segment:segment_id(id, name)), image_creative_caption(caption_id, caption:caption_id(*))')
             .order('created_at', { ascending: false });
           if (showArchivedAds) {
             adQuery.not('archived_at', 'is', null);
@@ -2801,9 +2799,9 @@
       });
 
       const ads = (rawAds.data || []).map(row => {
-        const segments = (row.ad_segment || []).map(js => js.segment).filter(Boolean);
-        const adCaptions = (row.ad_caption || []).map(jc => jc.caption).filter(Boolean);
-        const { ad_segment, ad_caption, ...rest } = row;
+        const segments = (row.image_creative_segment || []).map(js => js.segment).filter(Boolean);
+        const adCaptions = (row.image_creative_caption || []).map(jc => jc.caption).filter(Boolean);
+        const { image_creative_segment, image_creative_caption, ...rest } = row;
         return { ...rest, segments, captions: adCaptions };
       });
 
@@ -2839,7 +2837,7 @@
   function connectRealtime() {
     supabaseClient
       .channel('marketing-changes')
-      .on('postgres_changes', { event: '*', schema: 'marketing', table: 'ad' }, () => loadData())
+      .on('postgres_changes', { event: '*', schema: 'marketing', table: 'image_creative' }, () => loadData())
       .subscribe();
   }
 
@@ -4024,8 +4022,8 @@
       const src = adImageUrl(ad);
       if (src) {
         const selectedClass = selectedAdIds.has(ad.id) ? ' selected' : '';
-        const statusBadge = ad.desired_status && ad.desired_status !== 'draft'
-          ? '<div class="ad-status-badge ad-status-' + escapeHtml(ad.desired_status) + '">' + escapeHtml(ad.desired_status.charAt(0).toUpperCase() + ad.desired_status.slice(1)) + '</div>'
+        const statusBadge = ad.status && ad.status !== 'draft'
+          ? '<div class="ad-status-badge ad-status-' + escapeHtml(ad.status) + '">' + escapeHtml(ad.status.charAt(0).toUpperCase() + ad.status.slice(1)) + '</div>'
           : '';
         html += '<div class="image-cell-wrap' + selectedClass + '" data-ad-id="' + escapeHtml(ad.id) + '">'
           + '<div class="select-check"></div>'
@@ -4345,17 +4343,16 @@
   }
 
   function renderAdViewerStatus(ad) {
-    const status = ad.desired_status || 'draft';
+    const status = ad.status || 'draft';
     if (status === 'draft') {
-      $adViewerStatus.innerHTML = '<button class="ad-publish-btn publish" id="ad-publish-btn">Publish</button>';
+      $adViewerStatus.innerHTML = '<button class="ad-publish-btn publish" id="ad-publish-btn">Ready</button>';
       document.getElementById('ad-publish-btn').addEventListener('click', () => publishAd(ad));
-    } else if (status === 'queued' && !ad.meta_ad_id) {
-      $adViewerStatus.innerHTML = '<button class="ad-publish-btn unpublish" id="ad-unpublish-btn">Unpublish</button>';
+    } else if (status === 'ready') {
+      $adViewerStatus.innerHTML = '<button class="ad-publish-btn unpublish" id="ad-unpublish-btn">Back to Draft</button>';
       document.getElementById('ad-unpublish-btn').addEventListener('click', () => unpublishAd(ad));
     } else {
       const label = status.charAt(0).toUpperCase() + status.slice(1);
-      const cls = status === 'live' ? 'live' : 'paused';
-      $adViewerStatus.innerHTML = '<span class="ad-viewer-status-pill ' + cls + '">' + escapeHtml(label) + '</span>';
+      $adViewerStatus.innerHTML = '<span class="ad-viewer-status-pill deployed">' + escapeHtml(label) + '</span>';
     }
   }
 
@@ -4364,21 +4361,17 @@
       alert('Generate a composited image first');
       return;
     }
-    if (!ad.body_copy_id) {
-      alert('Add body copy before publishing');
-      return;
-    }
-    const { error } = await db().from('ad').update({ desired_status: 'queued' }).eq('id', ad.id);
+    const { error } = await db().from('image_creative').update({ status: 'ready' }).eq('id', ad.id);
     if (error) { alert('Failed: ' + error.message); return; }
-    ad.desired_status = 'queued';
+    ad.status = 'ready';
     renderAdViewerStatus(ad);
     renderLibrary();
   }
 
   async function unpublishAd(ad) {
-    const { error } = await db().from('ad').update({ desired_status: 'draft' }).eq('id', ad.id);
+    const { error } = await db().from('image_creative').update({ status: 'draft' }).eq('id', ad.id);
     if (error) { alert('Failed: ' + error.message); return; }
-    ad.desired_status = 'draft';
+    ad.status = 'draft';
     renderAdViewerStatus(ad);
     renderLibrary();
   }
@@ -4666,7 +4659,7 @@
     editorCaptionId = captionId;
 
     // Check if caption is used by any ad
-    const { data: usages } = await db().from('ad_caption').select('ad_id').eq('caption_id', captionId).limit(1);
+    const { data: usages } = await db().from('image_creative_caption').select('image_creative_id').eq('caption_id', captionId).limit(1);
     editorIsLocked = (usages && usages.length > 0);
 
     renderCaptionEditorBody(caption);
@@ -4862,9 +4855,8 @@
 
     editorBodyCopyId = bcId;
 
-    // Check if body copy is used by any ad
-    const { data: usages } = await db().from('ad').select('id').eq('body_copy_id', bcId).limit(1);
-    editorBodyCopyIsLocked = (usages && usages.length > 0);
+    // Body copy assignment now lives on meta_ad (Publisher), so never locked here
+    editorBodyCopyIsLocked = false;
 
     renderBodyCopyEditorBody(bc);
 
@@ -5054,13 +5046,13 @@
   }
 
   function openAdBuilderFromAd(ad) {
-    if (ad.desired_status && ad.desired_status !== 'draft') {
-      alert('This ad is ' + ad.desired_status + ' and cannot be edited. Use "Duplicate & Tweak" to create a new draft.');
+    if (ad.status && ad.status !== 'draft') {
+      alert('This ad is ' + ad.status + ' and cannot be edited. Use "Duplicate & Tweak" to create a new draft.');
       return;
     }
     builderImageId = ad.base_image_id;
     selectedCaptionIds = ad.captions.map(c => c.id);
-    selectedBodyCopyId = ad.body_copy_id || null;
+    selectedBodyCopyId = null;
     builderCreating = false;
     builderPreviewMode = false;
     builderPreviewAdId = null;
@@ -5263,15 +5255,14 @@
     try {
       if (selectedCaptionIds.length === 0) {
         // "Use as Ad" — no captions, no compositing needed
-        const insertData = { base_image_id: builderImageId, composited_image_path: image.storage_path };
+        const insertData = { base_image_id: builderImageId, composited_image_path: image.storage_path, status: 'ready' };
         if (creativeDirection) insertData.feedback = creativeDirection;
-        if (selectedBodyCopyId) insertData.body_copy_id = selectedBodyCopyId;
-        const { data: ad, error } = await db().from('ad')
+        const { data: ad, error } = await db().from('image_creative')
           .insert(insertData).select().single();
         if (error) throw error;
 
         if (activeSegmentId) {
-          await db().from('ad_segment').insert({ ad_id: ad.id, segment_id: activeSegmentId });
+          await db().from('image_creative_segment').insert({ image_creative_id: ad.id, segment_id: activeSegmentId });
         }
 
         // No preview needed — go straight to done
@@ -5291,8 +5282,7 @@
         // First generation — create the ad row
         const insertData = { base_image_id: builderImageId };
         if (creativeDirection) insertData.feedback = creativeDirection;
-        if (selectedBodyCopyId) insertData.body_copy_id = selectedBodyCopyId;
-        const { data: ad, error } = await db().from('ad')
+        const { data: ad, error } = await db().from('image_creative')
           .insert(insertData).select().single();
         if (error) throw error;
         adId = ad.id;
@@ -5300,15 +5290,15 @@
 
         // Attach captions
         for (const captionId of selectedCaptionIds) {
-          await db().from('ad_caption').insert({ ad_id: adId, caption_id: captionId });
+          await db().from('image_creative_caption').insert({ image_creative_id: adId, caption_id: captionId });
         }
 
         if (activeSegmentId) {
-          await db().from('ad_segment').insert({ ad_id: adId, segment_id: activeSegmentId });
+          await db().from('image_creative_segment').insert({ image_creative_id: adId, segment_id: activeSegmentId });
         }
       } else {
         // Regenerating — update creative direction
-        await db().from('ad').update({ feedback: creativeDirection || null }).eq('id', adId);
+        await db().from('image_creative').update({ feedback: creativeDirection || null }).eq('id', adId);
       }
 
       // Trigger compositing
