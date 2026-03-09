@@ -476,8 +476,70 @@
       <input type="number" id="cas-age-max" min="18" max="65" value="65" />
     </div>
   </div>
+  <div class="form-field">
+    <label>Optimization Goal</label>
+    <select id="cas-optimization-goal">
+      <option value="OFFSITE_CONVERSIONS">Conversions</option>
+      <option value="LINK_CLICKS">Link Clicks</option>
+      <option value="LANDING_PAGE_VIEWS">Landing Page Views</option>
+      <option value="REACH">Reach</option>
+      <option value="IMPRESSIONS">Impressions</option>
+    </select>
+  </div>
+  <div class="form-field">
+    <label>Call to Action</label>
+    <select id="cas-cta">
+      <option value="LEARN_MORE">Learn More</option>
+      <option value="SIGN_UP">Sign Up</option>
+      <option value="SHOP_NOW">Shop Now</option>
+      <option value="BOOK_TRAVEL">Book Now</option>
+      <option value="SUBSCRIBE">Subscribe</option>
+      <option value="GET_OFFER">Get Offer</option>
+    </select>
+  </div>
   <button class="form-submit" id="cas-submit">Create on Meta</button>
   <div class="form-error hidden" id="cas-error"></div>
+</div>
+
+<div id="edit-adset-overlay" class="create-sheet-overlay hidden"></div>
+<div id="edit-adset-sheet" class="create-sheet hidden">
+  <h3>Edit Ad Set</h3>
+  <div class="form-field">
+    <label>Name</label>
+    <input type="text" id="eas-name" />
+  </div>
+  <div class="form-field">
+    <label>Daily Budget (GBP) <span style="font-weight:400;color:var(--text-tertiary);">— blank for Advantage+ campaign budget</span></label>
+    <input type="number" id="eas-budget" min="1" step="0.01" placeholder="Optional" />
+  </div>
+  <div class="form-field">
+    <label>Call to Action</label>
+    <select id="eas-cta">
+      <option value="LEARN_MORE">Learn More</option>
+      <option value="SIGN_UP">Sign Up</option>
+      <option value="SHOP_NOW">Shop Now</option>
+      <option value="BOOK_TRAVEL">Book Now</option>
+      <option value="SUBSCRIBE">Subscribe</option>
+      <option value="GET_OFFER">Get Offer</option>
+    </select>
+  </div>
+  <div class="form-field">
+    <label>City Scope</label>
+    <select id="eas-scope">
+      <option value="all">All cities for campaign language</option>
+      <option value="specific">Specific cities</option>
+    </select>
+  </div>
+  <div class="form-field hidden" id="eas-cities-field">
+    <label>Cities</label>
+    <div id="eas-cities-list" style="display:flex;flex-direction:column;gap:6px;max-height:150px;overflow-y:auto;"></div>
+  </div>
+  <div class="form-field" id="eas-optimization-field">
+    <label>Optimization Goal <span style="font-weight:400;color:var(--text-tertiary);">— read-only after creation</span></label>
+    <input type="text" id="eas-optimization-goal" disabled style="background:#f5f5f5;" />
+  </div>
+  <button class="form-submit" id="eas-submit">Save</button>
+  <div class="form-error hidden" id="eas-error"></div>
 </div>
 
 <div id="ad-detail-overlay" class="assign-sheet-overlay hidden"></div>
@@ -565,6 +627,9 @@
 
   var $createAdSetOverlay = document.getElementById('create-adset-overlay');
   var $createAdSetSheet = document.getElementById('create-adset-sheet');
+  var $editAdSetOverlay = document.getElementById('edit-adset-overlay');
+  var $editAdSetSheet = document.getElementById('edit-adset-sheet');
+  var editingAdSetId = null;
 
   var $adDetailOverlay = document.getElementById('ad-detail-overlay');
   var $adDetailSheet = document.getElementById('ad-detail-sheet');
@@ -1153,6 +1218,7 @@
     var html = '<div class="detail-header">'
       + '<button class="detail-back" id="detail-back">&larr;</button>'
       + '<div class="detail-title">' + escapeHtml(adSet.name) + '</div>'
+      + '<button id="edit-adset-btn" style="margin-left:auto;padding:6px 14px;font-size:13px;font-weight:600;background:none;border:1px solid var(--separator);border-radius:var(--radius);color:var(--text-primary);cursor:pointer;">Edit</button>'
       + '</div>';
 
     // Targeting info
@@ -1201,6 +1267,10 @@
     if ($syncBtn) {
       $syncBtn.addEventListener('click', function() { handleSync(adSet.id); });
     }
+
+    document.getElementById('edit-adset-btn').addEventListener('click', function() {
+      openEditAdSetSheet(adSet);
+    });
   }
 
   function renderAdRow(ad) {
@@ -1408,6 +1478,8 @@
     document.getElementById('cas-cities-field').classList.add('hidden');
     document.getElementById('cas-age-min').value = '18';
     document.getElementById('cas-age-max').value = '65';
+    document.getElementById('cas-optimization-goal').value = 'OFFSITE_CONVERSIONS';
+    document.getElementById('cas-cta').value = 'LEARN_MORE';
     document.getElementById('cas-error').classList.add('hidden');
 
     renderCityCheckboxes($casCampaign.value);
@@ -1442,6 +1514,8 @@
     var cityScope = document.getElementById('cas-scope').value;
     var ageMin = parseInt(document.getElementById('cas-age-min').value) || 18;
     var ageMax = parseInt(document.getElementById('cas-age-max').value) || 65;
+    var optimizationGoal = document.getElementById('cas-optimization-goal').value;
+    var callToAction = document.getElementById('cas-cta').value;
 
     if (!name) { $error.textContent = 'Name is required'; $error.classList.remove('hidden'); return; }
     if (!campaignId) { $error.textContent = 'Campaign is required'; $error.classList.remove('hidden'); return; }
@@ -1482,6 +1556,9 @@
         name: name,
         targeting: targeting,
         city_scope: cityScope,
+        optimization_goal: optimizationGoal,
+        billing_event: 'IMPRESSIONS',
+        call_to_action: callToAction,
       };
       if (budgetGbp && budgetGbp > 0) reqBody.daily_budget_cents = Math.round(budgetGbp * 100);
       var resp = await supabaseClient.functions.invoke('meta-sync', { body: reqBody });
@@ -1500,6 +1577,124 @@
     } finally {
       btn.disabled = false;
       btn.textContent = 'Create on Meta';
+    }
+  });
+
+  // --- Edit ad set sheet ---
+  function renderEditCityCheckboxes(adSet) {
+    var campaignId = adSet.campaign_id;
+    var cities = campaignId ? getCitiesForCampaign(campaignId) : STATE.cities;
+    var targeted = getAdSetTargetedCityKeys(adSet);
+    var $list = document.getElementById('eas-cities-list');
+    $list.innerHTML = cities.map(function(city) {
+      var disabled = !city.meta_geo_key;
+      var checked = targeted.indexOf(city.meta_geo_key) !== -1;
+      var label = city.name + (disabled ? ' (not configured)' : '');
+      return '<label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:' + (disabled ? 'default' : 'pointer') + ';' + (disabled ? 'opacity:0.5;' : '') + '">'
+        + '<input type="checkbox" value="' + (city.meta_geo_key || '') + '" data-name="' + escapeHtml(city.name) + '" data-geo-type="' + (city.meta_geo_type || 'city') + '"' + (disabled ? ' disabled' : '') + (checked ? ' checked' : '') + ' />'
+        + escapeHtml(label)
+        + '</label>';
+    }).join('');
+  }
+
+  function openEditAdSetSheet(adSet) {
+    editingAdSetId = adSet.id;
+    document.getElementById('eas-name').value = adSet.name || '';
+    document.getElementById('eas-budget').value = adSet.daily_budget_cents ? (adSet.daily_budget_cents / 100).toFixed(2) : '';
+    document.getElementById('eas-cta').value = adSet.call_to_action || 'LEARN_MORE';
+    document.getElementById('eas-scope').value = adSet.city_scope || 'all';
+    document.getElementById('eas-cities-field').classList.toggle('hidden', (adSet.city_scope || 'all') === 'all');
+    document.getElementById('eas-optimization-goal').value = adSet.optimization_goal || '(not set)';
+    document.getElementById('eas-error').classList.add('hidden');
+    renderEditCityCheckboxes(adSet);
+    $editAdSetSheet.classList.remove('hidden');
+    $editAdSetOverlay.classList.remove('hidden');
+  }
+
+  function closeEditAdSetSheet() {
+    $editAdSetSheet.classList.add('hidden');
+    $editAdSetOverlay.classList.add('hidden');
+    editingAdSetId = null;
+  }
+
+  $editAdSetOverlay.addEventListener('click', closeEditAdSetSheet);
+
+  document.getElementById('eas-scope').addEventListener('change', function() {
+    document.getElementById('eas-cities-field').classList.toggle('hidden', this.value === 'all');
+  });
+
+  document.getElementById('eas-submit').addEventListener('click', async function() {
+    var btn = document.getElementById('eas-submit');
+    var $error = document.getElementById('eas-error');
+    $error.classList.add('hidden');
+
+    var name = document.getElementById('eas-name').value.trim();
+    var budgetGbp = parseFloat(document.getElementById('eas-budget').value);
+    var callToAction = document.getElementById('eas-cta').value;
+    var cityScope = document.getElementById('eas-scope').value;
+
+    if (!name) { $error.textContent = 'Name is required'; $error.classList.remove('hidden'); return; }
+
+    // Build city targeting
+    var adSet = STATE.adSets.find(function(as) { return as.id === editingAdSetId; });
+    var selectedCities = [];
+    if (cityScope === 'all') {
+      selectedCities = getCitiesForCampaign(adSet.campaign_id).filter(function(c) { return c.meta_geo_key; });
+    } else {
+      document.querySelectorAll('#eas-cities-list input:checked').forEach(function(cb) {
+        selectedCities.push({ meta_geo_key: cb.value, name: cb.dataset.name, meta_geo_type: cb.dataset.geoType || 'city' });
+      });
+    }
+
+    if (selectedCities.length === 0) {
+      $error.textContent = cityScope === 'all' ? 'No configured cities found — configure cities in the Cities tab' : 'Select at least one city';
+      $error.classList.remove('hidden');
+      return;
+    }
+
+    // Build targeting object, preserving age from existing targeting
+    var existingTargeting = adSet.targeting || {};
+    var targeting = { age_min: existingTargeting.age_min || 18, age_max: existingTargeting.age_max || 65 };
+    var geoLocations = {};
+    selectedCities.forEach(function(c) {
+      var field = c.meta_geo_type === 'medium_geo_area' ? 'medium_geo_areas'
+                : c.meta_geo_type === 'region' ? 'regions' : 'cities';
+      if (!geoLocations[field]) geoLocations[field] = [];
+      geoLocations[field].push({ key: c.meta_geo_key });
+    });
+    targeting.geo_locations = geoLocations;
+
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    try {
+      var reqBody = {
+        action: 'update_ad_set',
+        ad_set_id: editingAdSetId,
+        name: name,
+        daily_budget_cents: (budgetGbp && budgetGbp > 0) ? Math.round(budgetGbp * 100) : null,
+        call_to_action: callToAction,
+        city_scope: cityScope,
+        targeting: targeting,
+      };
+      var resp = await supabaseClient.functions.invoke('meta-sync', { body: reqBody });
+      var errMsg = await fnError(resp.error, resp.data);
+      if (errMsg) {
+        $error.textContent = errMsg;
+        $error.classList.remove('hidden');
+        return;
+      }
+
+      closeEditAdSetSheet();
+      await loadData();
+      renderDetail();
+    } catch (err) {
+      console.error('Edit ad set error:', err);
+      $error.textContent = err.message || 'Failed to save';
+      $error.classList.remove('hidden');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Save';
     }
   });
 
