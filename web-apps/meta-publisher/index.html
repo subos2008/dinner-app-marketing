@@ -270,6 +270,16 @@
   }
   .assign-btn:active { background: var(--accent); color: white; }
 
+  .status-action-btn {
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font-body);
+    border: none; white-space: nowrap;
+  }
+  .status-action-btn.action-queue { background: var(--blue); color: #fff; }
+  .status-action-btn.action-unqueue { background: var(--text-secondary); color: #fff; }
+  .status-action-btn.action-pause { background: var(--orange); color: #fff; }
+  .status-action-btn.action-unpause { background: var(--green); color: #fff; }
+
   .assign-sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 300; }
   .assign-sheet {
     position: fixed; bottom: 0; left: 0; right: 0;
@@ -775,15 +785,7 @@
       renderCampaigns();
     });
 
-    $viewDetail.querySelectorAll('.status-select').forEach(function(sel) {
-      sel.addEventListener('change', async function() {
-        var adId = sel.dataset.adId;
-        var newStatus = sel.value;
-        var res = await db().from('meta_ad').update({ desired_status: newStatus }).eq('id', adId);
-        if (res.error) { alert('Failed: ' + res.error.message); return; }
-        await loadData();
-      });
-    });
+    wireStatusActions($viewDetail);
 
     $viewDetail.querySelectorAll('.ad-row[data-meta-ad-id]').forEach(function(row) {
       row.addEventListener('click', function(e) {
@@ -810,23 +812,18 @@
     var captionText = captions[0] && captions[0].caption ? captions[0].caption.text : 'No caption';
     var syncState = getSyncState(ad);
 
-    var statusOptions = ['draft', 'queued', 'live', 'paused'].map(function(s) {
-      return '<option value="' + s + '"' + (ad.desired_status === s ? ' selected' : '') + '>' + s + '</option>';
-    }).join('');
-
     return '<div class="ad-row" data-meta-ad-id="' + ad.id + '" style="cursor:pointer;">'
       + (imgUrl ? '<img class="ad-row-thumb" src="' + imgUrl + '" alt="" />' : '<div class="ad-row-thumb"></div>')
       + '<div class="ad-row-info">'
       + '<div class="ad-row-caption">' + escapeHtml(captionText) + '</div>'
       + '<div class="ad-row-status">'
-      + '<span class="status-dot dot-' + ad.desired_status + '"></span>'
-      + '<span>' + ad.desired_status + '</span>'
-      + (ad.meta_status ? ' &rarr; <span class="status-dot dot-' + (ad.meta_status === 'ACTIVE' ? 'synced' : 'pending') + '"></span> Meta: ' + ad.meta_status : '')
+      + '<span class="status-dot dot-' + ad.desired_status + '"></span> ' + ad.desired_status
+      + (ad.meta_status ? ' &rarr; Meta: ' + ad.meta_status : '')
       + (syncState === 'pending' ? ' <span style="color:var(--orange);font-weight:600">(needs sync)</span>' : '')
       + '</div>'
       + '</div>'
       + '<div class="ad-row-actions">'
-      + '<select class="status-select" data-ad-id="' + ad.id + '">' + statusOptions + '</select>'
+      + statusActionHtml(ad)
       + '</div>'
       + '</div>';
   }
@@ -866,15 +863,7 @@
       btn.addEventListener('click', function() { openAssignSheet(btn.dataset.creativeId); });
     });
 
-    $viewUnassigned.querySelectorAll('.status-select').forEach(function(sel) {
-      sel.addEventListener('change', async function() {
-        var adId = sel.dataset.adId;
-        var newStatus = sel.value;
-        var res = await db().from('meta_ad').update({ desired_status: newStatus }).eq('id', adId);
-        if (res.error) { alert('Failed: ' + res.error.message); return; }
-        await loadData();
-      });
-    });
+    wireStatusActions($viewUnassigned);
 
     $viewUnassigned.querySelectorAll('.ad-row[data-meta-ad-id]').forEach(function(row) {
       row.addEventListener('click', function(e) {
@@ -918,11 +907,7 @@
     var bodyText = ad.body_copy ? ad.body_copy.headline || ad.body_copy.text || '' : '';
     var label = captionText || bodyText || 'Ad ' + ad.id.slice(0, 8);
 
-    var statusOptions = ['draft', 'queued', 'live', 'paused'].map(function(s) {
-      return '<option value="' + s + '"' + (ad.desired_status === s ? ' selected' : '') + '>' + s + '</option>';
-    }).join('');
-
-    var actions = '<select class="status-select" data-ad-id="' + ad.id + '">' + statusOptions + '</select>';
+    var actions = statusActionHtml(ad);
     if (showAssign) {
       actions += ' <button class="assign-btn" data-ad-id="' + ad.id + '">Assign</button>';
     }
@@ -1021,19 +1006,20 @@
           + '<span style="color:var(--text-secondary);">Ad Set</span>'
           + '<span>' + escapeHtml(adSet ? adSet.name : 'Unassigned') + '</span>'
         + '</div>'
-        + '<div style="display:flex;justify-content:space-between;font-size:13px;">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">'
           + '<span style="color:var(--text-secondary);">Desired Status</span>'
-          + '<span>' + escapeHtml(ad.desired_status) + '</span>'
+          + '<span><span class="status-dot dot-' + ad.desired_status + '"></span> ' + escapeHtml(ad.desired_status) + '</span>'
         + '</div>'
-        + '<div style="display:flex;justify-content:space-between;font-size:13px;">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">'
           + '<span style="color:var(--text-secondary);">Meta Status</span>'
           + '<span>' + (ad.meta_status ? escapeHtml(ad.meta_status) : '\u2014') + '</span>'
         + '</div>'
-        + '<div style="display:flex;justify-content:space-between;font-size:13px;">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">'
           + '<span style="color:var(--text-secondary);">Meta Ad ID</span>'
           + '<span style="font-family:monospace;font-size:11px;">' + (ad.meta_ad_id ? escapeHtml(ad.meta_ad_id) : 'Not yet synced') + '</span>'
         + '</div>'
       + '</div>'
+      + '<div style="margin-bottom:12px;">' + statusActionHtml(ad) + '</div>'
       + '<label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Body Copy</label>'
       + '<select id="detail-body-copy" style="width:100%;padding:8px;border:1px solid var(--separator);border-radius:var(--radius);font-size:14px;font-family:var(--font-body);margin-bottom:12px;">'
       + bcOptions
@@ -1042,6 +1028,8 @@
 
     $adDetailSheet.classList.remove('hidden');
     $adDetailOverlay.classList.remove('hidden');
+
+    wireStatusActions($adDetailSheet);
 
     document.getElementById('detail-save-btn').addEventListener('click', async function() {
       var bcSelect = document.getElementById('detail-body-copy');
@@ -1135,6 +1123,30 @@
   }
 
   // --- Helpers ---
+  function statusActionHtml(ad) {
+    var btn = '';
+    if (ad.desired_status === 'draft') btn = '<button class="status-action-btn action-queue" data-ad-id="' + ad.id + '" data-next="queued">Queue</button>';
+    else if (ad.desired_status === 'queued') btn = '<button class="status-action-btn action-unqueue" data-ad-id="' + ad.id + '" data-next="draft">Back to Draft</button>';
+    else if (ad.desired_status === 'live') btn = '<button class="status-action-btn action-pause" data-ad-id="' + ad.id + '" data-next="paused">Pause</button>';
+    else if (ad.desired_status === 'paused') btn = '<button class="status-action-btn action-unpause" data-ad-id="' + ad.id + '" data-next="live">Unpause</button>';
+    return btn;
+  }
+
+  function wireStatusActions(container) {
+    container.querySelectorAll('.status-action-btn').forEach(function(btn) {
+      btn.addEventListener('click', async function(e) {
+        e.stopPropagation();
+        var adId = btn.dataset.adId;
+        var next = btn.dataset.next;
+        btn.disabled = true;
+        var res = await db().from('meta_ad').update({ desired_status: next }).eq('id', adId);
+        if (res.error) { alert('Failed: ' + res.error.message); btn.disabled = false; return; }
+        if (!$adDetailSheet.classList.contains('hidden')) closeAdDetail();
+        await loadData();
+      });
+    });
+  }
+
   function needsSync(ad) {
     if (ad.desired_status === 'queued' && !ad.meta_ad_id) return true;
     if (ad.desired_status === 'live' && ad.meta_status !== 'ACTIVE') return true;
