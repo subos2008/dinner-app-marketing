@@ -301,6 +301,47 @@
     color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;
   }
 
+  /* Create ad set sheet */
+  .create-sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 300; }
+  .create-sheet {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--surface); border-radius: 14px 14px 0 0;
+    padding: 20px 16px calc(var(--safe-bottom) + 20px); z-index: 301;
+    max-height: 80vh; overflow-y: auto;
+  }
+  .create-sheet h3 { font-size: 17px; font-weight: 600; margin-bottom: 16px; }
+  .form-field { margin-bottom: 14px; }
+  .form-field label { font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px; font-weight: 500; }
+  .form-field input, .form-field select {
+    width: 100%; padding: 10px 12px;
+    border: 1px solid var(--separator); border-radius: var(--radius);
+    font-size: 14px; font-family: var(--font-body); background: var(--surface); color: var(--text-primary);
+  }
+  .form-field input:focus, .form-field select:focus { outline: none; border-color: var(--accent); }
+  .form-row { display: flex; gap: 12px; }
+  .form-row .form-field { flex: 1; }
+  .form-submit {
+    width: 100%; padding: 12px; background: var(--accent); color: #fff;
+    border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600;
+    cursor: pointer; font-family: var(--font-body); margin-top: 4px;
+  }
+  .form-submit:active { background: var(--accent-dark); }
+  .form-submit:disabled { opacity: 0.5; cursor: default; }
+  .form-error { color: var(--red); font-size: 13px; margin-top: 8px; }
+
+  .new-adset-btn {
+    padding: 8px 14px; background: var(--accent); color: white; border: none;
+    border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: var(--font-body); margin-left: 8px;
+  }
+  .new-adset-btn:active { opacity: 0.8; }
+
+  /* Targeting display */
+  .targeting-info {
+    padding: 0 16px 12px; font-size: 13px; color: var(--text-secondary); line-height: 1.5;
+  }
+  .targeting-info span { margin-right: 12px; }
+
   /* Pull result toast */
   .pull-result {
     margin: 0 16px 12px; padding: 10px 14px;
@@ -355,6 +396,43 @@
 <div id="assign-sheet" class="assign-sheet hidden">
   <h3>Deploy to Ad Set</h3>
   <div id="assign-options"></div>
+</div>
+
+<div id="create-adset-overlay" class="create-sheet-overlay hidden"></div>
+<div id="create-adset-sheet" class="create-sheet hidden">
+  <h3>New Ad Set</h3>
+  <div class="form-field">
+    <label>Name</label>
+    <input type="text" id="cas-name" placeholder="e.g. Manchester 18-35" />
+  </div>
+  <div class="form-field">
+    <label>Campaign</label>
+    <select id="cas-campaign"></select>
+  </div>
+  <div class="form-field">
+    <label>Daily Budget (GBP)</label>
+    <input type="number" id="cas-budget" min="1" step="0.01" placeholder="5.00" />
+  </div>
+  <div class="form-field">
+    <label>City</label>
+    <select id="cas-city">
+      <option value="">No location targeting</option>
+      <option value="manchester" data-key="2643123">Manchester</option>
+      <option value="london" data-key="2643743">London</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <div class="form-field">
+      <label>Min Age</label>
+      <input type="number" id="cas-age-min" min="18" max="65" value="18" />
+    </div>
+    <div class="form-field">
+      <label>Max Age</label>
+      <input type="number" id="cas-age-max" min="18" max="65" value="65" />
+    </div>
+  </div>
+  <button class="form-submit" id="cas-submit">Create on Meta</button>
+  <div class="form-error hidden" id="cas-error"></div>
 </div>
 
 <div id="ad-detail-overlay" class="assign-sheet-overlay hidden"></div>
@@ -430,6 +508,9 @@
   var $assignOverlay = document.getElementById('assign-overlay');
   var $assignSheet = document.getElementById('assign-sheet');
   var $assignOptions = document.getElementById('assign-options');
+
+  var $createAdSetOverlay = document.getElementById('create-adset-overlay');
+  var $createAdSetSheet = document.getElementById('create-adset-sheet');
 
   var $adDetailOverlay = document.getElementById('ad-detail-overlay');
   var $adDetailSheet = document.getElementById('ad-detail-sheet');
@@ -618,7 +699,7 @@
         + '<div class="connection-dot connected"></div>'
         + '<div class="connection-info"><div class="connection-name">' + escapeHtml(STATE.account.name) + '</div>'
         + '<div class="connection-detail">' + STATE.account.currency + ' &middot; ' + escapeHtml(STATE.account.timezone_name || '') + ' &middot; ID: ' + STATE.account.id + '</div></div>'
-        + '<div class="connection-actions"><button class="pull-btn" id="pull-btn">Pull from Meta</button></div>'
+        + '<div class="connection-actions"><button class="new-adset-btn" id="new-adset-btn">+ Ad Set</button><button class="pull-btn" id="pull-btn" style="margin-left:6px;">Pull</button></div>'
         + '</div>';
     } else {
       html += '<div class="connection-banner">'
@@ -698,6 +779,9 @@
     var pullBtn = document.getElementById('pull-btn');
     if (pullBtn) pullBtn.addEventListener('click', pullFromMeta);
 
+    var newAdSetBtn = document.getElementById('new-adset-btn');
+    if (newAdSetBtn) newAdSetBtn.addEventListener('click', openCreateAdSetSheet);
+
     var diagnoseBtn = document.getElementById('diagnose-btn');
     if (diagnoseBtn) diagnoseBtn.addEventListener('click', diagnoseConnection);
 
@@ -736,6 +820,8 @@
     var statusLabel = as.meta_status || '';
     var statusCls = metaStatusClass(as.meta_status);
 
+    var targetingSummary = getTargetingSummary(as.targeting);
+
     return '<div class="ad-set-card" data-id="' + as.id + '">'
       + '<div class="ad-set-name">' + escapeHtml(as.name) + '</div>'
       + '<div class="ad-set-meta">'
@@ -744,6 +830,7 @@
       + (as.daily_budget_cents ? '<span>' + (as.daily_budget_cents / 100).toFixed(2) + '/day</span>' : '')
       + badge
       + '</div>'
+      + (targetingSummary ? '<div style="font-size:11px;color:var(--text-tertiary);margin-top:3px;">' + escapeHtml(targetingSummary) + '</div>' : '')
       + '</div>';
   }
 
@@ -759,6 +846,9 @@
       + '<button class="detail-back" id="detail-back">&larr;</button>'
       + '<div class="detail-title">' + escapeHtml(adSet.name) + '</div>'
       + '</div>';
+
+    // Targeting info
+    html += renderTargetingInfo(adSet.targeting);
 
     if (ads.length === 0) {
       html += '<div class="empty-state">No ads in this ad set.<br>Deploy creatives from the Deploy tab.</div>';
@@ -967,6 +1057,89 @@
     });
   }
 
+  // --- Create ad set sheet ---
+  function openCreateAdSetSheet() {
+    var campaignsWithMeta = STATE.campaigns.filter(function(c) { return c.meta_campaign_id; });
+    if (campaignsWithMeta.length === 0) {
+      alert('No campaigns with Meta ID. Pull from Meta first.');
+      return;
+    }
+    var $casCampaign = document.getElementById('cas-campaign');
+    $casCampaign.innerHTML = campaignsWithMeta.map(function(c) {
+      return '<option value="' + c.id + '">' + escapeHtml(c.name) + '</option>';
+    }).join('');
+
+    document.getElementById('cas-name').value = '';
+    document.getElementById('cas-budget').value = '';
+    document.getElementById('cas-city').value = '';
+    document.getElementById('cas-age-min').value = '18';
+    document.getElementById('cas-age-max').value = '65';
+    document.getElementById('cas-error').classList.add('hidden');
+
+    $createAdSetSheet.classList.remove('hidden');
+    $createAdSetOverlay.classList.remove('hidden');
+  }
+
+  function closeCreateAdSetSheet() {
+    $createAdSetSheet.classList.add('hidden');
+    $createAdSetOverlay.classList.add('hidden');
+  }
+
+  $createAdSetOverlay.addEventListener('click', closeCreateAdSetSheet);
+
+  document.getElementById('cas-submit').addEventListener('click', async function() {
+    var btn = document.getElementById('cas-submit');
+    var $error = document.getElementById('cas-error');
+    $error.classList.add('hidden');
+
+    var name = document.getElementById('cas-name').value.trim();
+    var campaignId = document.getElementById('cas-campaign').value;
+    var budgetGbp = parseFloat(document.getElementById('cas-budget').value);
+    var citySelect = document.getElementById('cas-city');
+    var cityOption = citySelect.options[citySelect.selectedIndex];
+    var ageMin = parseInt(document.getElementById('cas-age-min').value) || 18;
+    var ageMax = parseInt(document.getElementById('cas-age-max').value) || 65;
+
+    if (!name) { $error.textContent = 'Name is required'; $error.classList.remove('hidden'); return; }
+    if (!campaignId) { $error.textContent = 'Campaign is required'; $error.classList.remove('hidden'); return; }
+    if (!budgetGbp || budgetGbp <= 0) { $error.textContent = 'Budget must be positive'; $error.classList.remove('hidden'); return; }
+
+    var targeting = { age_min: ageMin, age_max: ageMax };
+    if (cityOption && cityOption.dataset.key) {
+      targeting.geo_locations = { cities: [{ key: cityOption.dataset.key }] };
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Creating...';
+
+    try {
+      var resp = await supabaseClient.functions.invoke('meta-sync', {
+        body: {
+          action: 'create_ad_set',
+          campaign_id: campaignId,
+          name: name,
+          daily_budget_cents: Math.round(budgetGbp * 100),
+          targeting: targeting,
+        }
+      });
+      var errMsg = await fnError(resp.error, resp.data);
+      if (errMsg) {
+        $error.textContent = errMsg;
+        $error.classList.remove('hidden');
+        return;
+      }
+      closeCreateAdSetSheet();
+      await loadData();
+    } catch (err) {
+      console.error('Create ad set error:', err);
+      $error.textContent = err.message || 'Failed to create ad set';
+      $error.classList.remove('hidden');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Create on Meta';
+    }
+  });
+
   function closeAssignSheet() {
     $assignSheet.classList.add('hidden');
     $assignOverlay.classList.add('hidden');
@@ -1116,15 +1289,55 @@
   }
 
   // --- Helpers ---
+  function getTargetingSummary(targeting) {
+    if (!targeting) return '';
+    var parts = [];
+    if (targeting.age_min || targeting.age_max) parts.push((targeting.age_min || '?') + '–' + (targeting.age_max || '?'));
+    if (targeting.geo_locations) {
+      var gl = targeting.geo_locations;
+      if (gl.cities && gl.cities.length > 0) parts.push(gl.cities.map(function(c) { return c.name || ('key:' + c.key); }).join(', '));
+      if (gl.countries && gl.countries.length > 0) parts.push(gl.countries.join(', '));
+    }
+    return parts.join(' · ');
+  }
+
+  function renderTargetingInfo(targeting) {
+    if (!targeting) return '';
+    var parts = [];
+    if (targeting.age_min || targeting.age_max) {
+      parts.push((targeting.age_min || '?') + '–' + (targeting.age_max || '?'));
+    }
+    if (targeting.geo_locations) {
+      var gl = targeting.geo_locations;
+      if (gl.cities && gl.cities.length > 0) {
+        var cityNames = gl.cities.map(function(c) { return c.name || ('key:' + c.key); });
+        parts.push(cityNames.join(', '));
+      }
+      if (gl.countries && gl.countries.length > 0) parts.push(gl.countries.join(', '));
+    }
+    if (targeting.genders && targeting.genders.length > 0 && targeting.genders.length < 2) {
+      parts.push(targeting.genders[0] === 1 ? 'Male' : 'Female');
+    }
+    if (targeting.flexible_spec && targeting.flexible_spec.length > 0) {
+      var interests = [];
+      targeting.flexible_spec.forEach(function(spec) {
+        if (spec.interests) spec.interests.forEach(function(i) { interests.push(i.name || i.id); });
+      });
+      if (interests.length > 0) parts.push(interests.join(', '));
+    }
+    if (parts.length === 0) return '';
+    return '<div class="targeting-info">' + parts.map(function(p) { return '<span>' + escapeHtml(p) + '</span>'; }).join(' · ') + '</div>';
+  }
+
   function statusLabel(ad) {
     var d = ad.desired_status;
     var m = ad.meta_status;
     if (d === 'draft') return '<span class="status-dot dot-draft"></span> Draft';
     if (d === 'queued' && !m) return '<span class="status-dot dot-queued"></span> Queued for publishing';
     if (d === 'live' && m === 'ACTIVE') return '<span class="status-dot dot-synced"></span> Live';
-    if (d === 'live' && m === 'PAUSED') return '<span class="status-dot dot-pending"></span> Paused on Meta &middot; queued to unpause';
+    if (d === 'live' && m === 'PAUSED') return '<span class="status-dot dot-pending"></span> Paused on Meta &middot; pending unpause';
     if (d === 'live' && !m) return '<span class="status-dot dot-pending"></span> Queued to go live';
-    if (d === 'paused' && m === 'ACTIVE') return '<span class="status-dot dot-pending"></span> Live on Meta &middot; queued to pause';
+    if (d === 'paused' && m === 'ACTIVE') return '<span class="status-dot dot-pending"></span> Live on Meta &middot; pending pause';
     if (d === 'paused' && m === 'PAUSED') return '<span class="status-dot dot-paused"></span> Paused';
     if (d === 'paused' && !m) return '<span class="status-dot dot-paused"></span> Paused';
     return '<span class="status-dot dot-' + d + '"></span> ' + d + (m ? ' &rarr; Meta: ' + m : '');
@@ -1146,8 +1359,28 @@
         var adId = btn.dataset.adId;
         var next = btn.dataset.next;
         btn.disabled = true;
-        var res = await db().from('meta_ad').update({ desired_status: next }).eq('id', adId);
-        if (res.error) { alert('Failed: ' + res.error.message); btn.disabled = false; return; }
+
+        // For synced ads (pause/unpause), call Meta immediately
+        var ad = STATE.ads.find(function(a) { return a.id === adId; });
+        if (ad && ad.meta_ad_id && (next === 'live' || next === 'paused')) {
+          try {
+            var resp = await supabaseClient.functions.invoke('meta-sync', {
+              body: { action: 'update_ad_status', ad_id: adId, desired_status: next }
+            });
+            var errMsg = await fnError(resp.error, resp.data);
+            if (errMsg) { alert('Failed: ' + errMsg); btn.disabled = false; return; }
+          } catch (err) {
+            console.error('Update ad status error:', err);
+            alert('Failed: ' + (err.message || 'Unknown error'));
+            btn.disabled = false;
+            return;
+          }
+        } else {
+          // Local-only status change (draft/queued)
+          var res = await db().from('meta_ad').update({ desired_status: next }).eq('id', adId);
+          if (res.error) { alert('Failed: ' + res.error.message); btn.disabled = false; return; }
+        }
+
         if (!$adDetailSheet.classList.contains('hidden')) closeAdDetail();
         await loadData();
       });
