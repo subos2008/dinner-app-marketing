@@ -336,6 +336,17 @@
   }
   .new-adset-btn:active { opacity: 0.8; }
 
+  /* Campaign info row */
+  .campaign-info {
+    padding: 4px 16px 8px; font-size: 12px; color: var(--text-secondary);
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+  }
+  .campaign-info .info-tag {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 2px 7px; background: var(--bg); border-radius: 5px; font-size: 11px; font-weight: 500;
+  }
+  .info-tag.advantage { background: #E8F0FE; color: #1A73E8; }
+
   /* Targeting display */
   .targeting-info {
     padding: 0 16px 12px; font-size: 13px; color: var(--text-secondary); line-height: 1.5;
@@ -410,8 +421,8 @@
     <select id="cas-campaign"></select>
   </div>
   <div class="form-field">
-    <label>Daily Budget (GBP)</label>
-    <input type="number" id="cas-budget" min="1" step="0.01" placeholder="5.00" />
+    <label>Daily Budget (GBP) <span style="font-weight:400;color:var(--text-tertiary);">— leave blank for Advantage+ campaign budget</span></label>
+    <input type="number" id="cas-budget" min="1" step="0.01" placeholder="Optional" />
   </div>
   <div class="form-field">
     <label>City</label>
@@ -745,6 +756,8 @@
             : '<span class="campaign-status status-other">No Meta ID</span>')
           + '</div>';
 
+        html += renderCampaignInfo(c);
+
         if (isPaused && c.meta_campaign_id) {
           html += '<div class="campaign-banner">Campaign paused &mdash; ads will not serve until you activate this campaign.</div>';
         }
@@ -800,6 +813,48 @@
         renderDetail();
       });
     });
+  }
+
+  function renderCampaignInfo(c) {
+    var tags = [];
+
+    // Budget
+    var hasCampaignBudget = c.daily_budget_cents || c.lifetime_budget_cents;
+    if (hasCampaignBudget) {
+      tags.push({ label: 'Advantage+ Budget', cls: 'advantage' });
+      if (c.daily_budget_cents) tags.push({ label: (c.daily_budget_cents / 100).toFixed(2) + '/day' });
+      if (c.lifetime_budget_cents) tags.push({ label: (c.lifetime_budget_cents / 100).toFixed(2) + ' lifetime' });
+      if (c.budget_remaining_cents != null) tags.push({ label: (c.budget_remaining_cents / 100).toFixed(2) + ' remaining' });
+    }
+
+    // Bid strategy
+    if (c.bid_strategy) {
+      var bs = c.bid_strategy.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+      tags.push({ label: bs });
+    }
+
+    // Buying type
+    if (c.buying_type && c.buying_type !== 'AUCTION') tags.push({ label: c.buying_type });
+
+    // Spend cap
+    if (c.spend_cap_cents) tags.push({ label: 'Cap: ' + (c.spend_cap_cents / 100).toFixed(2) });
+
+    // Special ad categories
+    if (c.special_ad_categories && c.special_ad_categories.length > 0) {
+      var cats = c.special_ad_categories.filter(function(s) { return s !== 'NONE'; });
+      if (cats.length > 0) tags.push({ label: cats.join(', ') });
+    }
+
+    // Objective
+    if (c.objective) {
+      var obj = c.objective.replace('OUTCOME_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+      tags.push({ label: obj });
+    }
+
+    if (tags.length === 0) return '';
+    return '<div class="campaign-info">'
+      + tags.map(function(t) { return '<span class="info-tag' + (t.cls ? ' ' + t.cls : '') + '">' + escapeHtml(t.label) + '</span>'; }).join('')
+      + '</div>';
   }
 
   function renderAdSetCard(as) {
@@ -1102,7 +1157,6 @@
 
     if (!name) { $error.textContent = 'Name is required'; $error.classList.remove('hidden'); return; }
     if (!campaignId) { $error.textContent = 'Campaign is required'; $error.classList.remove('hidden'); return; }
-    if (!budgetGbp || budgetGbp <= 0) { $error.textContent = 'Budget must be positive'; $error.classList.remove('hidden'); return; }
 
     var targeting = { age_min: ageMin, age_max: ageMax };
     if (cityOption && cityOption.dataset.key) {
@@ -1113,15 +1167,14 @@
     btn.textContent = 'Creating...';
 
     try {
-      var resp = await supabaseClient.functions.invoke('meta-sync', {
-        body: {
-          action: 'create_ad_set',
-          campaign_id: campaignId,
-          name: name,
-          daily_budget_cents: Math.round(budgetGbp * 100),
-          targeting: targeting,
-        }
-      });
+      var reqBody = {
+        action: 'create_ad_set',
+        campaign_id: campaignId,
+        name: name,
+        targeting: targeting,
+      };
+      if (budgetGbp && budgetGbp > 0) reqBody.daily_budget_cents = Math.round(budgetGbp * 100);
+      var resp = await supabaseClient.functions.invoke('meta-sync', { body: reqBody });
       var errMsg = await fnError(resp.error, resp.data);
       if (errMsg) {
         $error.textContent = errMsg;
