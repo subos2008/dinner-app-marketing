@@ -825,6 +825,16 @@
     var dismissBtn = document.getElementById('dismiss-pull');
     if (dismissBtn) dismissBtn.addEventListener('click', function() { pullResultMsg = null; render(); });
 
+    $viewCampaigns.querySelectorAll('.campaign-lang-select').forEach(function(sel) {
+      sel.addEventListener('change', async function(e) {
+        e.stopPropagation();
+        var val = sel.value || null;
+        var res = await db().from('campaign').update({ language_code: val }).eq('id', sel.dataset.campaignId);
+        if (res.error) { alert('Failed: ' + res.error.message); return; }
+        await loadData();
+      });
+    });
+
     $viewCampaigns.querySelectorAll('.campaign-status-btn').forEach(function(btn) {
       btn.addEventListener('click', function() { toggleCampaignStatus(btn.dataset.campaignId, btn.dataset.active === 'true'); });
     });
@@ -869,21 +879,24 @@
       if (cats.length > 0) tags.push({ label: cats.join(', ') });
     }
 
-    // Language
-    if (c.language_code) {
-      var lang = STATE.languages.find(function(l) { return l.code === c.language_code; });
-      tags.push({ label: lang ? lang.name : c.language_code });
-    }
-
     // Objective
     if (c.objective) {
       var obj = c.objective.replace('OUTCOME_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
       tags.push({ label: obj });
     }
 
-    if (tags.length === 0) return '';
+    // Language selector (inline)
+    var langSelect = '<select class="campaign-lang-select" data-campaign-id="' + c.id + '" style="padding:2px 6px;border:1px solid var(--separator);border-radius:5px;font-size:11px;font-weight:500;font-family:var(--font-body);background:var(--surface);color:var(--text-primary);cursor:pointer;">'
+      + '<option value=""' + (!c.language_code ? ' selected' : '') + '>No language</option>'
+      + STATE.languages.map(function(l) {
+          return '<option value="' + l.code + '"' + (c.language_code === l.code ? ' selected' : '') + '>' + escapeHtml(l.name) + '</option>';
+        }).join('')
+      + '</select>';
+
+    if (tags.length === 0 && STATE.languages.length === 0) return '';
     return '<div class="campaign-info">'
       + tags.map(function(t) { return '<span class="info-tag' + (t.cls ? ' ' + t.cls : '') + '">' + escapeHtml(t.label) + '</span>'; }).join('')
+      + langSelect
       + '</div>';
   }
 
