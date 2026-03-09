@@ -327,7 +327,7 @@
     </div>
     <div class="tab-bar">
       <button class="tab-btn active" id="tab-campaigns" data-tab="campaigns">Campaigns</button>
-      <button class="tab-btn" id="tab-unassigned" data-tab="unassigned">Ads</button>
+      <button class="tab-btn" id="tab-unassigned" data-tab="unassigned">Deploy</button>
       <button class="tab-btn" id="tab-log" data-tab="log">Sync Log</button>
     </div>
   </div>
@@ -343,7 +343,7 @@
 <div id="fullscreen-overlay" class="fullscreen-overlay hidden"></div>
 <div id="assign-overlay" class="assign-sheet-overlay hidden"></div>
 <div id="assign-sheet" class="assign-sheet hidden">
-  <h3>Assign to Ad Set</h3>
+  <h3>Deploy to Ad Set</h3>
   <div id="assign-options"></div>
 </div>
 
@@ -360,10 +360,10 @@
   var currentSession = null;
   var appInitialised = false;
 
-  var STATE = { account: null, campaigns: [], adSets: [], ads: [], syncLog: [] };
+  var STATE = { account: null, campaigns: [], adSets: [], ads: [], creatives: [], bodyCopy: [], syncLog: [] };
   var activeTab = 'campaigns';
   var detailAdSetId = null;
-  var assigningAdId = null;
+  var deployingCreativeId = null;
   var pullResultMsg = null;
 
   function db() { return supabaseClient.schema('marketing'); }
@@ -492,14 +492,18 @@
     var results = await Promise.all([
       db().from('campaign').select('*').order('created_at', { ascending: false }),
       db().from('ad_set').select('*').order('created_at', { ascending: false }),
-      db().from('ad').select('*, base_image:base_image_id(*), body_copy:body_copy_id(*), ad_caption(caption_id, caption:caption_id(*))').order('created_at', { ascending: false }),
+      db().from('meta_ad').select('*, image_creative:image_creative_id(*, base_image:base_image_id(*), image_creative_caption(caption_id, caption:caption_id(*))), body_copy:body_copy_id(*)').order('created_at', { ascending: false }),
       db().from('sync_log').select('*').order('synced_at', { ascending: false }).limit(50),
+      db().from('image_creative').select('*, base_image:base_image_id(*), image_creative_caption(caption_id, caption:caption_id(*))').in('status', ['ready', 'deployed']).order('created_at', { ascending: false }),
+      db().from('body_copy').select('*').order('created_at', { ascending: false }),
     ]);
 
     STATE.campaigns = results[0].data || [];
     STATE.adSets = results[1].data || [];
     STATE.ads = results[2].data || [];
     STATE.syncLog = results[3].data || [];
+    STATE.creatives = results[4].data || [];
+    STATE.bodyCopy = results[5].data || [];
 
     render();
   }
@@ -738,7 +742,7 @@
       + '</div>';
 
     if (ads.length === 0) {
-      html += '<div class="empty-state">No ads assigned to this ad set.<br>Assign ads from the Unassigned tab.</div>';
+      html += '<div class="empty-state">No ads in this ad set.<br>Deploy creatives from the Deploy tab.</div>';
     } else {
       html += ads.map(function(ad) { return renderAdRow(ad); }).join('');
     }
@@ -766,7 +770,7 @@
       sel.addEventListener('change', async function() {
         var adId = sel.dataset.adId;
         var newStatus = sel.value;
-        var res = await db().from('ad').update({ desired_status: newStatus }).eq('id', adId);
+        var res = await db().from('meta_ad').update({ desired_status: newStatus }).eq('id', adId);
         if (res.error) { alert('Failed: ' + res.error.message); return; }
         await loadData();
       });
@@ -781,11 +785,13 @@
   }
 
   function renderAdRow(ad) {
-    var imgUrl = ad.composited_image_path
-      ? storageBaseUrl + '/' + ad.composited_image_path
-      : (ad.base_image ? storageBaseUrl + '/' + ad.base_image.storage_path : '');
+    var ic = ad.image_creative || {};
+    var imgUrl = ic.composited_image_path
+      ? storageBaseUrl + '/' + ic.composited_image_path
+      : (ic.base_image ? storageBaseUrl + '/' + ic.base_image.storage_path : '');
 
-    var captionText = ad.ad_caption && ad.ad_caption[0] && ad.ad_caption[0].caption ? ad.ad_caption[0].caption.text : 'No caption';
+    var captions = ic.image_creative_caption || [];
+    var captionText = captions[0] && captions[0].caption ? captions[0].caption.text : 'No caption';
     var syncState = getSyncState(ad);
 
     var statusOptions = ['draft', 'queued', 'live', 'paused'].map(function(s) {
@@ -809,52 +815,46 @@
       + '</div>';
   }
 
-  // --- Render: Unassigned ---
+  // --- Render: Deploy tab ---
   function renderUnassigned() {
-    var unassigned = STATE.ads.filter(function(a) { return !a.ad_set_id; });
-    var assigned = STATE.ads.filter(function(a) { return a.ad_set_id; });
+    var deployedCreativeIds = STATE.ads.map(function(a) { return a.image_creative_id; });
+    var readyCreatives = STATE.creatives.filter(function(c) {
+      return c.status === 'ready' && deployedCreativeIds.indexOf(c.id) === -1;
+    });
 
-    if (STATE.ads.length === 0) {
-      $viewUnassigned.innerHTML = '<div class="empty-state"><div class="empty-state-title">No Ads</div>Create ads in the Creative app first.</div>';
+    if (readyCreatives.length === 0 && STATE.ads.length === 0) {
+      $viewUnassigned.innerHTML = '<div class="empty-state"><div class="empty-state-title">No Creatives</div>Create creatives in the Creative app first.</div>';
       return;
     }
 
     var html = '';
 
-    // Unassigned ads
-    if (unassigned.length > 0) {
-      html += '<div class="section-header">' + unassigned.length + ' unassigned</div>';
-      html += unassigned.map(function(ad) { return renderAdCard(ad, true); }).join('');
+    // Ready creatives (not yet deployed as meta_ads)
+    if (readyCreatives.length > 0) {
+      html += '<div class="section-header">' + readyCreatives.length + ' ready to deploy</div>';
+      html += readyCreatives.map(function(c) { return renderCreativeCard(c); }).join('');
     }
 
-    // Assigned ads
-    if (assigned.length > 0) {
-      html += '<div class="section-header">' + assigned.length + ' assigned</div>';
-      html += assigned.map(function(ad) {
+    // Existing meta_ads
+    if (STATE.ads.length > 0) {
+      html += '<div class="section-header">' + STATE.ads.length + ' deployed</div>';
+      html += STATE.ads.map(function(ad) {
         var adSet = STATE.adSets.find(function(as) { return as.id === ad.ad_set_id; });
         return renderAdCard(ad, false, adSet);
       }).join('');
     }
 
-    if (unassigned.length === 0) {
-      html = '<div class="section-header">All ' + STATE.ads.length + ' ads assigned</div>'
-        + assigned.map(function(ad) {
-          var adSet = STATE.adSets.find(function(as) { return as.id === ad.ad_set_id; });
-          return renderAdCard(ad, false, adSet);
-        }).join('');
-    }
-
     $viewUnassigned.innerHTML = html;
 
-    $viewUnassigned.querySelectorAll('.assign-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() { openAssignSheet(btn.dataset.adId); });
+    $viewUnassigned.querySelectorAll('.deploy-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() { openAssignSheet(btn.dataset.creativeId); });
     });
 
     $viewUnassigned.querySelectorAll('.status-select').forEach(function(sel) {
       sel.addEventListener('change', async function() {
         var adId = sel.dataset.adId;
         var newStatus = sel.value;
-        var res = await db().from('ad').update({ desired_status: newStatus }).eq('id', adId);
+        var res = await db().from('meta_ad').update({ desired_status: newStatus }).eq('id', adId);
         if (res.error) { alert('Failed: ' + res.error.message); return; }
         await loadData();
       });
@@ -863,11 +863,35 @@
     wireThumbClicks($viewUnassigned);
   }
 
+  function renderCreativeCard(c) {
+    var imgUrl = c.composited_image_path
+      ? storageBaseUrl + '/' + c.composited_image_path
+      : (c.base_image ? storageBaseUrl + '/' + c.base_image.storage_path : '');
+    var captions = c.image_creative_caption || [];
+    var captionText = captions[0] && captions[0].caption ? captions[0].caption.text : '';
+    var label = captionText || 'Creative ' + c.id.slice(0, 8);
+
+    return '<div class="ad-row">'
+      + (imgUrl ? '<img class="ad-row-thumb" src="' + imgUrl + '" alt="" />' : '<div class="ad-row-thumb"></div>')
+      + '<div class="ad-row-info">'
+      + '<div class="ad-row-caption">' + escapeHtml(label) + '</div>'
+      + '<div class="ad-row-status">'
+      + '<span class="status-dot dot-' + c.status + '"></span> ' + c.status
+      + '</div>'
+      + '</div>'
+      + '<div class="ad-row-actions">'
+      + '<button class="assign-btn deploy-btn" data-creative-id="' + c.id + '">Deploy</button>'
+      + '</div>'
+      + '</div>';
+  }
+
   function renderAdCard(ad, showAssign, adSet) {
-    var imgUrl = ad.composited_image_path
-      ? storageBaseUrl + '/' + ad.composited_image_path
-      : (ad.base_image ? storageBaseUrl + '/' + ad.base_image.storage_path : '');
-    var captionText = ad.ad_caption && ad.ad_caption[0] && ad.ad_caption[0].caption ? ad.ad_caption[0].caption.text : '';
+    var ic = ad.image_creative || {};
+    var imgUrl = ic.composited_image_path
+      ? storageBaseUrl + '/' + ic.composited_image_path
+      : (ic.base_image ? storageBaseUrl + '/' + ic.base_image.storage_path : '');
+    var captions = ic.image_creative_caption || [];
+    var captionText = captions[0] && captions[0].caption ? captions[0].caption.text : '';
     var bodyText = ad.body_copy ? ad.body_copy.headline || ad.body_copy.text || '' : '';
     var label = captionText || bodyText || 'Ad ' + ad.id.slice(0, 8);
 
@@ -896,9 +920,9 @@
       + '</div>';
   }
 
-  // --- Assign sheet ---
-  function openAssignSheet(adId) {
-    assigningAdId = adId;
+  // --- Deploy sheet ---
+  function openAssignSheet(creativeId) {
+    deployingCreativeId = creativeId;
     var adSetsWithMeta = STATE.adSets.filter(function(as) { return as.meta_ad_set_id; });
 
     if (adSetsWithMeta.length === 0) {
@@ -906,7 +930,18 @@
       return;
     }
 
-    $assignOptions.innerHTML = adSetsWithMeta.map(function(as) {
+    // Build body copy dropdown
+    var bcHtml = '<div style="padding:0 16px 8px;"><label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Body Copy</label>'
+      + '<select id="deploy-body-copy" style="width:100%;padding:8px;border:1px solid var(--separator);border-radius:var(--radius);font-size:14px;font-family:var(--font-body);">'
+      + '<option value="">No body copy</option>'
+      + STATE.bodyCopy.map(function(bc) {
+          var label = bc.headline || bc.text || 'Body ' + bc.id.slice(0, 8);
+          if (label.length > 60) label = label.slice(0, 57) + '...';
+          return '<option value="' + bc.id + '">' + escapeHtml(label) + '</option>';
+        }).join('')
+      + '</select></div>';
+
+    $assignOptions.innerHTML = bcHtml + adSetsWithMeta.map(function(as) {
       return '<div class="assign-option" data-as-id="' + as.id + '">' + escapeHtml(as.name) + '</div>';
     }).join('');
 
@@ -916,7 +951,10 @@
     $assignOptions.querySelectorAll('.assign-option').forEach(function(opt) {
       opt.addEventListener('click', async function() {
         var asId = opt.dataset.asId;
-        var res = await db().from('ad').update({ ad_set_id: asId }).eq('id', assigningAdId);
+        var bcSelect = document.getElementById('deploy-body-copy');
+        var bodyObj = { image_creative_id: deployingCreativeId, ad_set_id: asId, desired_status: 'draft' };
+        if (bcSelect && bcSelect.value) bodyObj.body_copy_id = bcSelect.value;
+        var res = await db().from('meta_ad').insert(bodyObj).select().single();
         if (res.error) { alert('Failed: ' + res.error.message); return; }
         closeAssignSheet();
         await loadData();
@@ -927,7 +965,7 @@
   function closeAssignSheet() {
     $assignSheet.classList.add('hidden');
     $assignOverlay.classList.add('hidden');
-    assigningAdId = null;
+    deployingCreativeId = null;
   }
 
   $assignOverlay.addEventListener('click', closeAssignSheet);
