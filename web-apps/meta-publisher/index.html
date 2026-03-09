@@ -368,12 +368,16 @@
 
   function db() { return supabaseClient.schema('marketing'); }
 
-  function fnError(error, data) {
+  async function fnError(error, data) {
     if (error) {
       console.error('fnError raw:', { error: error, data: data });
       if (error.context) {
-        if (typeof error.context === 'object' && error.context.error) return error.context.error;
-        if (typeof error.context === 'string') return error.context;
+        var ctx = error.context;
+        if (ctx instanceof Response) {
+          try { var body = await ctx.json(); return body.error || body.msg || body.message || JSON.stringify(body); } catch (e) {}
+        }
+        if (typeof ctx === 'object') return ctx.error || ctx.msg || ctx.message || JSON.stringify(ctx);
+        if (typeof ctx === 'string') return ctx;
       }
       return error.message || 'Edge Function error';
     }
@@ -516,7 +520,7 @@
     try {
       var resp = await supabaseClient.functions.invoke('meta-sync', { body: { action: 'pull' } });
       if (resp.error || (resp.data && resp.data.error)) {
-        alert('Pull failed: ' + fnError(resp.error, resp.data));
+        alert('Pull failed: ' + await fnError(resp.error, resp.data));
         return;
       }
       var c = resp.data.campaigns;
@@ -537,7 +541,7 @@
     try {
       var resp = await supabaseClient.functions.invoke('meta-sync', { body: { action: 'diagnose' } });
       if (resp.error || (resp.data && resp.data.error)) {
-        STATE.account = { error: fnError(resp.error, resp.data) };
+        STATE.account = { error: await fnError(resp.error, resp.data) };
       } else {
         STATE.account = resp.data.account;
       }
@@ -566,7 +570,7 @@
       body: { action: 'sync_campaign', campaign_id: campaignId }
     });
     if (resp.error || (resp.data && resp.data.error)) {
-      alert('Sync failed: ' + fnError(resp.error, resp.data));
+      alert('Sync failed: ' + await fnError(resp.error, resp.data));
       await loadData();
       return;
     }
@@ -973,7 +977,7 @@
 
     try {
       var resp = await supabaseClient.functions.invoke('meta-sync', { body: { ad_set_id: adSetId } });
-      var errMsg = fnError(resp.error, resp.data);
+      var errMsg = await fnError(resp.error, resp.data);
       if (errMsg) {
         console.error('Sync error:', errMsg);
         if ($syncResults) { $syncResults.innerHTML = '<div class="sync-result sync-result-error">' + escapeHtml(errMsg) + '</div>'; }

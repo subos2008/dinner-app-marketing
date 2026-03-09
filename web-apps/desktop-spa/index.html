@@ -1931,9 +1931,16 @@
   function db() { return supabaseClient.schema('marketing'); }
 
   // Extract error message from supabase.functions.invoke response
-  function fnError(error, data) {
+  async function fnError(error, data) {
     if (error) {
-      if (error.context && error.context.error) return error.context.error;
+      if (error.context) {
+        const ctx = error.context;
+        if (ctx instanceof Response) {
+          try { const body = await ctx.json(); return body.error || body.msg || body.message || JSON.stringify(body); } catch (e) {}
+        }
+        if (typeof ctx === 'object') return ctx.error || ctx.msg || ctx.message || JSON.stringify(ctx);
+        if (typeof ctx === 'string') return ctx;
+      }
       return error.message || 'Edge Function error';
     }
     if (data && data.error) return data.error;
@@ -3048,7 +3055,7 @@
         }
         const { data, error } = await supabaseClient.functions.invoke(fnName, { body });
 
-        const errMsg = fnError(error, data);
+        const errMsg = await fnError(error, data);
         if (errMsg) {
           $genStatus.textContent = 'Error: ' + errMsg;
           return;
@@ -3922,7 +3929,7 @@
       const { data, error } = await supabaseClient.functions.invoke('composite', {
         body: { adId: id }
       });
-      const errMsg = fnError(error, data);
+      const errMsg = await fnError(error, data);
       if (errMsg) {
         alert('Generation failed: ' + errMsg);
       }

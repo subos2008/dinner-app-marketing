@@ -2356,14 +2356,17 @@
   function db() { return supabaseClient.schema('marketing'); }
 
   // Extract error message from supabase.functions.invoke response
-  function fnError(error, data) {
+  async function fnError(error, data) {
     if (error) {
       console.error('fnError raw:', { error, data, context: error.context, msg: error.message });
-      // Non-2xx: Supabase puts our JSON body in error.context
       if (error.context) {
-        // context may be the parsed JSON body or a Response object
-        if (typeof error.context === 'object' && error.context.error) return error.context.error;
-        if (typeof error.context === 'string') return error.context;
+        const ctx = error.context;
+        // supabase-js v2 may put a Response object or parsed JSON in context
+        if (ctx instanceof Response) {
+          try { const body = await ctx.json(); return body.error || body.msg || body.message || JSON.stringify(body); } catch (e) {}
+        }
+        if (typeof ctx === 'object') return ctx.error || ctx.msg || ctx.message || JSON.stringify(ctx);
+        if (typeof ctx === 'string') return ctx;
       }
       return error.message || 'Edge Function error';
     }
@@ -3168,7 +3171,7 @@
 
         // Submit the job
         const { data, error } = await supabaseClient.functions.invoke('generate-video', { body });
-        const errMsg = fnError(error, data);
+        const errMsg = await fnError(error, data);
         if (errMsg) throw new Error(errMsg);
         if (!data || !data.operationName) throw new Error(data?.error || 'No operation returned from server');
 
@@ -3199,7 +3202,7 @@
           $genSubmit.textContent = 'Generating... (' + (pollCount * 10) + 's)';
 
           const { data: statusData, error: statusError } = await supabaseClient.functions.invoke('video-status', { body: pollBody });
-          const statusErrMsg = fnError(statusError, statusData);
+          const statusErrMsg = await fnError(statusError, statusData);
           if (statusErrMsg) throw new Error(statusErrMsg);
 
           if (statusData.status === 'done' && statusData.video) {
@@ -3233,7 +3236,7 @@
 
         const { data, error } = await supabaseClient.functions.invoke('generate-body-copy', { body });
 
-        const errMsg = fnError(error, data);
+        const errMsg = await fnError(error, data);
         if (errMsg) throw new Error(errMsg);
 
         if (data && data.suggestions) {
@@ -3266,7 +3269,7 @@
 
         const { data, error } = await supabaseClient.functions.invoke(fnName, { body });
 
-        const errMsg = fnError(error, data);
+        const errMsg = await fnError(error, data);
         if (errMsg) throw new Error(errMsg);
 
         if (generateType === 'image' && data && data.image) {
@@ -4557,7 +4560,7 @@
       const { data, error } = await supabaseClient.functions.invoke('edit-image', {
         body: { base_image_id: sourceImage.id, prompt: editPrompt }
       });
-      const errMsg = fnError(error, data);
+      const errMsg = await fnError(error, data);
       if (errMsg) throw new Error(errMsg);
 
       await loadData();
@@ -5312,7 +5315,7 @@
       const { data: compData, error: compError } = await supabaseClient.functions.invoke('composite', {
         body: { adId }
       });
-      const compErrMsg = fnError(compError, compData);
+      const compErrMsg = await fnError(compError, compData);
       if (compErrMsg) throw new Error(compErrMsg);
 
       // Show preview
