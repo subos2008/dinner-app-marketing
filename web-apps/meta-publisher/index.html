@@ -817,9 +817,7 @@
       + '<div class="ad-row-info">'
       + '<div class="ad-row-caption">' + escapeHtml(captionText) + '</div>'
       + '<div class="ad-row-status">'
-      + '<span class="status-dot dot-' + ad.desired_status + '"></span> ' + ad.desired_status
-      + (ad.meta_status ? ' &rarr; Meta: ' + ad.meta_status : '')
-      + (syncState === 'pending' ? ' <span style="color:var(--orange);font-weight:600">(needs sync)</span>' : '')
+      + statusLabel(ad)
       + '</div>'
       + '</div>'
       + '<div class="ad-row-actions">'
@@ -919,8 +917,7 @@
       + '<div class="ad-row-info">'
       + '<div class="ad-row-caption">' + escapeHtml(label) + '</div>'
       + '<div class="ad-row-status">'
-      + '<span class="status-dot dot-' + ad.desired_status + '"></span> ' + ad.desired_status
-      + (ad.meta_status ? ' &rarr; Meta: ' + ad.meta_status : '')
+      + statusLabel(ad)
       + '</div>'
       + adSetLabel
       + '</div>'
@@ -1007,12 +1004,8 @@
           + '<span>' + escapeHtml(adSet ? adSet.name : 'Unassigned') + '</span>'
         + '</div>'
         + '<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">'
-          + '<span style="color:var(--text-secondary);">Desired Status</span>'
-          + '<span><span class="status-dot dot-' + ad.desired_status + '"></span> ' + escapeHtml(ad.desired_status) + '</span>'
-        + '</div>'
-        + '<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">'
-          + '<span style="color:var(--text-secondary);">Meta Status</span>'
-          + '<span>' + (ad.meta_status ? escapeHtml(ad.meta_status) : '\u2014') + '</span>'
+          + '<span style="color:var(--text-secondary);">Status</span>'
+          + '<span>' + statusLabel(ad) + '</span>'
         + '</div>'
         + '<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">'
           + '<span style="color:var(--text-secondary);">Meta Ad ID</span>'
@@ -1123,6 +1116,20 @@
   }
 
   // --- Helpers ---
+  function statusLabel(ad) {
+    var d = ad.desired_status;
+    var m = ad.meta_status;
+    if (d === 'draft') return '<span class="status-dot dot-draft"></span> Draft';
+    if (d === 'queued' && !m) return '<span class="status-dot dot-queued"></span> Queued for publishing';
+    if (d === 'live' && m === 'ACTIVE') return '<span class="status-dot dot-synced"></span> Live';
+    if (d === 'live' && m === 'PAUSED') return '<span class="status-dot dot-pending"></span> Paused on Meta &middot; queued to unpause';
+    if (d === 'live' && !m) return '<span class="status-dot dot-pending"></span> Queued to go live';
+    if (d === 'paused' && m === 'ACTIVE') return '<span class="status-dot dot-pending"></span> Live on Meta &middot; queued to pause';
+    if (d === 'paused' && m === 'PAUSED') return '<span class="status-dot dot-paused"></span> Paused';
+    if (d === 'paused' && !m) return '<span class="status-dot dot-paused"></span> Paused';
+    return '<span class="status-dot dot-' + d + '"></span> ' + d + (m ? ' &rarr; Meta: ' + m : '');
+  }
+
   function statusActionHtml(ad) {
     var btn = '';
     if (ad.desired_status === 'draft') btn = '<button class="status-action-btn action-queue" data-ad-id="' + ad.id + '" data-next="queued">Queue</button>';
