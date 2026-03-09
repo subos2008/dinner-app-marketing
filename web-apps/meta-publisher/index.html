@@ -336,6 +336,24 @@
   }
   .new-adset-btn:active { opacity: 0.8; }
 
+  /* City resolution */
+  .city-resolve-section {
+    margin: 0 16px 12px; padding: 12px 14px;
+    background: var(--surface); border: 1px solid var(--separator);
+    border-radius: var(--radius-lg); font-size: 13px;
+  }
+  .city-resolve-section h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .city-resolve-item { padding: 8px 0; border-bottom: 0.5px solid var(--separator); }
+  .city-resolve-item:last-child { border-bottom: none; }
+  .city-resolve-item .city-name { font-weight: 600; margin-bottom: 4px; }
+  .city-pick-option {
+    display: block; width: 100%; text-align: left;
+    padding: 6px 10px; margin: 3px 0; border: 1px solid var(--separator);
+    border-radius: 6px; background: var(--surface); cursor: pointer;
+    font-family: var(--font-body); font-size: 12px;
+  }
+  .city-pick-option:hover { background: var(--accent-light); }
+
   /* Campaign info row */
   .campaign-info {
     padding: 4px 16px 8px; font-size: 12px; color: var(--text-secondary);
@@ -472,6 +490,7 @@
   var detailAdSetId = null;
   var deployingCreativeId = null;
   var pullResultMsg = null;
+  var cityResolveResult = null;
 
   function db() { return supabaseClient.schema('marketing'); }
 
@@ -676,6 +695,36 @@
     }
   }
 
+  async function resolveCityKeys() {
+    var btn = document.getElementById('resolve-keys-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Resolving...'; }
+    try {
+      var resp = await supabaseClient.functions.invoke('meta-sync', { body: { action: 'resolve_city_keys' } });
+      var errMsg = await fnError(resp.error, resp.data);
+      if (errMsg) { alert('Resolve failed: ' + errMsg); return; }
+      cityResolveResult = resp.data;
+      await loadData();
+    } catch (err) {
+      console.error('Resolve error:', err);
+      alert('Resolve failed: ' + (err.message || 'Unknown error'));
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Resolve Keys'; }
+    }
+  }
+
+  async function pickCityKey(cityId, metaGeoKey) {
+    var resp = await supabaseClient.functions.invoke('meta-sync', {
+      body: { action: 'set_city_key', city_id: cityId, meta_geo_key: metaGeoKey }
+    });
+    var errMsg = await fnError(resp.error, resp.data);
+    if (errMsg) { alert('Failed: ' + errMsg); return; }
+    // Remove from ambiguous list
+    if (cityResolveResult && cityResolveResult.ambiguous) {
+      cityResolveResult.ambiguous = cityResolveResult.ambiguous.filter(function(a) { return a.city_id !== cityId; });
+    }
+    await loadData();
+  }
+
   async function toggleCampaignStatus(campaignId, isCurrentlyActive) {
     var newStatus = isCurrentlyActive ? 'paused' : 'live';
     var msg = isCurrentlyActive
@@ -717,7 +766,7 @@
         + '<div class="connection-dot connected"></div>'
         + '<div class="connection-info"><div class="connection-name">' + escapeHtml(STATE.account.name) + '</div>'
         + '<div class="connection-detail">' + STATE.account.currency + ' &middot; ' + escapeHtml(STATE.account.timezone_name || '') + ' &middot; ID: ' + STATE.account.id + '</div></div>'
-        + '<div class="connection-actions"><button class="new-adset-btn" id="new-adset-btn">+ Ad Set</button><button class="pull-btn" id="pull-btn" style="margin-left:6px;">Pull</button></div>'
+        + '<div class="connection-actions"><button class="new-adset-btn" id="new-adset-btn">+ Ad Set</button><button class="pull-btn" id="resolve-keys-btn" style="margin-left:6px;background:var(--orange);">Resolve Keys</button><button class="pull-btn" id="pull-btn" style="margin-left:6px;">Pull</button></div>'
         + '</div>';
     } else {
       html += '<div class="connection-banner">'
@@ -731,6 +780,35 @@
     // Pull result toast
     if (pullResultMsg) {
       html += '<div class="pull-result"><span>' + escapeHtml(pullResultMsg) + '</span><button class="dismiss" id="dismiss-pull">&times;</button></div>';
+    }
+
+    // City key resolution results
+    if (cityResolveResult) {
+      var cr = cityResolveResult;
+      if (cr.resolved && cr.resolved.length > 0) {
+        html += '<div class="pull-result"><span>'
+          + cr.resolved.length + ' cit' + (cr.resolved.length === 1 ? 'y' : 'ies') + ' auto-resolved: '
+          + cr.resolved.map(function(r) { return escapeHtml(r.city_name) + ' &rarr; ' + r.key; }).join(', ')
+          + '</span><button class="dismiss" id="dismiss-resolve">&times;</button></div>';
+      }
+      if (cr.no_match && cr.no_match.length > 0) {
+        html += '<div class="sync-result sync-result-error" style="margin:0 16px 8px;">No Meta match: '
+          + cr.no_match.map(function(n) { return escapeHtml(n.city_name); }).join(', ')
+          + '</div>';
+      }
+      if (cr.ambiguous && cr.ambiguous.length > 0) {
+        html += '<div class="city-resolve-section"><h4>' + cr.ambiguous.length + ' cit' + (cr.ambiguous.length === 1 ? 'y needs' : 'ies need') + ' manual selection</h4>';
+        cr.ambiguous.forEach(function(a) {
+          html += '<div class="city-resolve-item">'
+            + '<div class="city-name">' + escapeHtml(a.city_name) + '</div>'
+            + a.results.map(function(r) {
+                var label = r.name + (r.region ? ', ' + r.region : '') + (r.country_name ? ' (' + r.country_name + ')' : '') + ' — key: ' + r.key;
+                return '<button class="city-pick-option" data-city-id="' + a.city_id + '" data-key="' + r.key + '">' + escapeHtml(label) + '</button>';
+              }).join('')
+            + '</div>';
+        });
+        html += '</div>';
+      }
     }
 
     // Group ad sets by campaign
@@ -819,11 +897,21 @@
     var newAdSetBtn = document.getElementById('new-adset-btn');
     if (newAdSetBtn) newAdSetBtn.addEventListener('click', openCreateAdSetSheet);
 
+    var resolveKeysBtn = document.getElementById('resolve-keys-btn');
+    if (resolveKeysBtn) resolveKeysBtn.addEventListener('click', resolveCityKeys);
+
     var diagnoseBtn = document.getElementById('diagnose-btn');
     if (diagnoseBtn) diagnoseBtn.addEventListener('click', diagnoseConnection);
 
     var dismissBtn = document.getElementById('dismiss-pull');
     if (dismissBtn) dismissBtn.addEventListener('click', function() { pullResultMsg = null; render(); });
+
+    var dismissResolve = document.getElementById('dismiss-resolve');
+    if (dismissResolve) dismissResolve.addEventListener('click', function() { cityResolveResult = null; render(); });
+
+    $viewCampaigns.querySelectorAll('.city-pick-option').forEach(function(btn) {
+      btn.addEventListener('click', function() { pickCityKey(btn.dataset.cityId, btn.dataset.key); });
+    });
 
     $viewCampaigns.querySelectorAll('.campaign-lang-select').forEach(function(sel) {
       sel.addEventListener('change', async function(e) {
