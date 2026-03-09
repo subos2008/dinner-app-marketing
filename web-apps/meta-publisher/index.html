@@ -486,6 +486,18 @@
       <option value="IMPRESSIONS">Impressions</option>
     </select>
   </div>
+  <div class="form-field" id="cas-event-field">
+    <label>Conversion Event</label>
+    <select id="cas-event-type">
+      <option value="PURCHASE">Purchase</option>
+      <option value="COMPLETE_REGISTRATION">Complete Registration</option>
+      <option value="ADD_TO_CART">Add to Cart</option>
+      <option value="LEAD">Lead</option>
+      <option value="INITIATED_CHECKOUT">Initiated Checkout</option>
+      <option value="SEARCH">Search</option>
+      <option value="VIEW_CONTENT">View Content</option>
+    </select>
+  </div>
   <div class="form-field">
     <label>Call to Action</label>
     <select id="cas-cta">
@@ -534,9 +546,13 @@
     <label>Cities</label>
     <div id="eas-cities-list" style="display:flex;flex-direction:column;gap:6px;max-height:150px;overflow-y:auto;"></div>
   </div>
-  <div class="form-field" id="eas-optimization-field">
-    <label>Optimization Goal <span style="font-weight:400;color:var(--text-tertiary);">— read-only after creation</span></label>
-    <input type="text" id="eas-optimization-goal" disabled style="background:#f5f5f5;" />
+  <div style="margin-top:8px;padding:12px;background:#f9f9fb;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);">
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;color:var(--text-tertiary);">Meta API — set at creation</div>
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <div><span style="color:var(--text-tertiary);">Optimization:</span> <span id="eas-optimization-goal" style="color:var(--text-primary);"></span></div>
+      <div><span style="color:var(--text-tertiary);">Billing:</span> <span id="eas-billing-event" style="color:var(--text-primary);"></span></div>
+      <div id="eas-event-row" class="hidden"><span style="color:var(--text-tertiary);">Conversion Event:</span> <span id="eas-event-type" style="color:var(--text-primary);"></span></div>
+    </div>
   </div>
   <button class="form-submit" id="eas-submit">Save</button>
   <div class="form-error hidden" id="eas-error"></div>
@@ -1479,6 +1495,8 @@
     document.getElementById('cas-age-min').value = '18';
     document.getElementById('cas-age-max').value = '65';
     document.getElementById('cas-optimization-goal').value = 'OFFSITE_CONVERSIONS';
+    document.getElementById('cas-event-type').value = 'PURCHASE';
+    document.getElementById('cas-event-field').classList.remove('hidden');
     document.getElementById('cas-cta').value = 'LEARN_MORE';
     document.getElementById('cas-error').classList.add('hidden');
 
@@ -1499,6 +1517,10 @@
     document.getElementById('cas-cities-field').classList.toggle('hidden', this.value === 'all');
   });
 
+  document.getElementById('cas-optimization-goal').addEventListener('change', function() {
+    document.getElementById('cas-event-field').classList.toggle('hidden', this.value !== 'OFFSITE_CONVERSIONS');
+  });
+
   document.getElementById('cas-campaign').addEventListener('change', function() {
     renderCityCheckboxes(this.value);
   });
@@ -1515,6 +1537,7 @@
     var ageMin = parseInt(document.getElementById('cas-age-min').value) || 18;
     var ageMax = parseInt(document.getElementById('cas-age-max').value) || 65;
     var optimizationGoal = document.getElementById('cas-optimization-goal').value;
+    var customEventType = document.getElementById('cas-event-type').value;
     var callToAction = document.getElementById('cas-cta').value;
 
     if (!name) { $error.textContent = 'Name is required'; $error.classList.remove('hidden'); return; }
@@ -1559,6 +1582,7 @@
         optimization_goal: optimizationGoal,
         billing_event: 'IMPRESSIONS',
         call_to_action: callToAction,
+        custom_event_type: optimizationGoal === 'OFFSITE_CONVERSIONS' ? customEventType : undefined,
       };
       if (budgetGbp && budgetGbp > 0) reqBody.daily_budget_cents = Math.round(budgetGbp * 100);
       var resp = await supabaseClient.functions.invoke('meta-sync', { body: reqBody });
@@ -1604,7 +1628,15 @@
     document.getElementById('eas-cta').value = adSet.call_to_action || 'LEARN_MORE';
     document.getElementById('eas-scope').value = adSet.city_scope || 'all';
     document.getElementById('eas-cities-field').classList.toggle('hidden', (adSet.city_scope || 'all') === 'all');
-    document.getElementById('eas-optimization-goal').value = adSet.optimization_goal || '(not set)';
+    document.getElementById('eas-optimization-goal').textContent = adSet.optimization_goal || '(not set)';
+    document.getElementById('eas-billing-event').textContent = adSet.billing_event || '(not set)';
+    var eventRow = document.getElementById('eas-event-row');
+    if (adSet.custom_event_type) {
+      document.getElementById('eas-event-type').textContent = adSet.custom_event_type;
+      eventRow.classList.remove('hidden');
+    } else {
+      eventRow.classList.add('hidden');
+    }
     document.getElementById('eas-error').classList.add('hidden');
     renderEditCityCheckboxes(adSet);
     $editAdSetSheet.classList.remove('hidden');
