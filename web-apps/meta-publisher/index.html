@@ -629,7 +629,7 @@
       db().from('sync_log').select('*').order('synced_at', { ascending: false }).limit(50),
       db().from('image_creative').select('*, base_image:base_image_id(*), image_creative_caption(caption_id, caption:caption_id(*))').in('status', ['ready', 'deployed']).order('created_at', { ascending: false }),
       db().from('body_copy').select('*').order('created_at', { ascending: false }),
-      supabaseClient.from('city').select('id, name, slug, meta_geo_key, active, country:country_id(id, name, language_code)').eq('active', true).not('meta_geo_key', 'is', null).order('name'),
+      supabaseClient.from('city').select('id, name, slug, meta_geo_key, active, country:country_id(id, name, language_code)').eq('active', true).order('name'),
       supabaseClient.from('language').select('*').order('name'),
     ]);
 
@@ -643,6 +643,12 @@
     STATE.languages = results[7].data || [];
 
     render();
+
+    // Auto-populate missing Meta geo keys
+    var citiesMissingKeys = STATE.cities.filter(function(c) { return !c.meta_geo_key; });
+    if (citiesMissingKeys.length > 0 && !cityResolveResult) {
+      resolveCityKeys();
+    }
   }
 
   function render() {
@@ -696,19 +702,17 @@
   }
 
   async function resolveCityKeys() {
-    var btn = document.getElementById('resolve-keys-btn');
-    if (btn) { btn.disabled = true; btn.textContent = 'Resolving...'; }
     try {
       var resp = await supabaseClient.functions.invoke('meta-sync', { body: { action: 'resolve_city_keys' } });
       var errMsg = await fnError(resp.error, resp.data);
-      if (errMsg) { alert('Resolve failed: ' + errMsg); return; }
+      if (errMsg) { console.error('City key resolve failed:', errMsg); return; }
       cityResolveResult = resp.data;
-      await loadData();
+      // Reload cities to pick up auto-resolved keys
+      var citiesResp = await supabaseClient.from('city').select('id, name, slug, meta_geo_key, active, country:country_id(id, name, language_code)').eq('active', true).order('name');
+      STATE.cities = citiesResp.data || [];
+      render();
     } catch (err) {
-      console.error('Resolve error:', err);
-      alert('Resolve failed: ' + (err.message || 'Unknown error'));
-    } finally {
-      if (btn) { btn.disabled = false; btn.textContent = 'Resolve Keys'; }
+      console.error('City key resolve error:', err);
     }
   }
 
@@ -766,7 +770,7 @@
         + '<div class="connection-dot connected"></div>'
         + '<div class="connection-info"><div class="connection-name">' + escapeHtml(STATE.account.name) + '</div>'
         + '<div class="connection-detail">' + STATE.account.currency + ' &middot; ' + escapeHtml(STATE.account.timezone_name || '') + ' &middot; ID: ' + STATE.account.id + '</div></div>'
-        + '<div class="connection-actions"><button class="new-adset-btn" id="new-adset-btn">+ Ad Set</button><button class="pull-btn" id="resolve-keys-btn" style="margin-left:6px;background:var(--orange);">Resolve Keys</button><button class="pull-btn" id="pull-btn" style="margin-left:6px;">Pull</button></div>'
+        + '<div class="connection-actions"><button class="new-adset-btn" id="new-adset-btn">+ Ad Set</button><button class="pull-btn" id="pull-btn" style="margin-left:6px;">Pull</button></div>'
         + '</div>';
     } else {
       html += '<div class="connection-banner">'
@@ -797,7 +801,7 @@
           + '</div>';
       }
       if (cr.ambiguous && cr.ambiguous.length > 0) {
-        html += '<div class="city-resolve-section"><h4>' + cr.ambiguous.length + ' cit' + (cr.ambiguous.length === 1 ? 'y needs' : 'ies need') + ' manual selection</h4>';
+        html += '<div class="city-resolve-section"><h4>Populate City Targeting Keys — ' + cr.ambiguous.length + ' cit' + (cr.ambiguous.length === 1 ? 'y needs' : 'ies need') + ' manual selection</h4>';
         cr.ambiguous.forEach(function(a) {
           html += '<div class="city-resolve-item">'
             + '<div class="city-name">' + escapeHtml(a.city_name) + '</div>'
@@ -896,9 +900,6 @@
 
     var newAdSetBtn = document.getElementById('new-adset-btn');
     if (newAdSetBtn) newAdSetBtn.addEventListener('click', openCreateAdSetSheet);
-
-    var resolveKeysBtn = document.getElementById('resolve-keys-btn');
-    if (resolveKeysBtn) resolveKeysBtn.addEventListener('click', resolveCityKeys);
 
     var diagnoseBtn = document.getElementById('diagnose-btn');
     if (diagnoseBtn) diagnoseBtn.addEventListener('click', diagnoseConnection);
@@ -1595,14 +1596,22 @@
     return adSet.targeting.geo_locations.cities.map(function(c) { return c.key || c.key_; });
   }
 
+  function getGeoLocationNames(gl) {
+    var names = [];
+    if (gl.cities && gl.cities.length > 0) gl.cities.forEach(function(c) { names.push(c.name || ('key:' + c.key)); });
+    if (gl.medium_geo_areas && gl.medium_geo_areas.length > 0) gl.medium_geo_areas.forEach(function(a) { names.push(a.name || ('key:' + a.key)); });
+    if (gl.regions && gl.regions.length > 0) gl.regions.forEach(function(r) { names.push(r.name || r); });
+    if (gl.countries && gl.countries.length > 0) gl.countries.forEach(function(c) { names.push(typeof c === 'string' ? c : c.name || c); });
+    return names;
+  }
+
   function getTargetingSummary(targeting) {
     if (!targeting) return '';
     var parts = [];
     if (targeting.age_min || targeting.age_max) parts.push((targeting.age_min || '?') + '–' + (targeting.age_max || '?'));
     if (targeting.geo_locations) {
-      var gl = targeting.geo_locations;
-      if (gl.cities && gl.cities.length > 0) parts.push(gl.cities.map(function(c) { return c.name || ('key:' + c.key); }).join(', '));
-      if (gl.countries && gl.countries.length > 0) parts.push(gl.countries.join(', '));
+      var geoNames = getGeoLocationNames(targeting.geo_locations);
+      if (geoNames.length > 0) parts.push(geoNames.join(', '));
     }
     return parts.join(' · ');
   }
@@ -1614,12 +1623,8 @@
       parts.push((targeting.age_min || '?') + '–' + (targeting.age_max || '?'));
     }
     if (targeting.geo_locations) {
-      var gl = targeting.geo_locations;
-      if (gl.cities && gl.cities.length > 0) {
-        var cityNames = gl.cities.map(function(c) { return c.name || ('key:' + c.key); });
-        parts.push(cityNames.join(', '));
-      }
-      if (gl.countries && gl.countries.length > 0) parts.push(gl.countries.join(', '));
+      var geoNames = getGeoLocationNames(targeting.geo_locations);
+      if (geoNames.length > 0) parts.push(geoNames.join(', '));
     }
     if (targeting.genders && targeting.genders.length > 0 && targeting.genders.length < 2) {
       parts.push(targeting.genders[0] === 1 ? 'Male' : 'Female');
