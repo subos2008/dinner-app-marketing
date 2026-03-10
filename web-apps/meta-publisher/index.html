@@ -1471,8 +1471,11 @@
       : (ic.base_image ? storageBaseUrl + '/' + ic.base_image.storage_path : '');
     var captions = ic.image_creative_caption || [];
     var captionText = captions[0] && captions[0].caption ? captions[0].caption.text : '';
-    var bodyText = ad.body_copy ? ad.body_copy.headline || ad.body_copy.text || '' : '';
-    var label = captionText || bodyText || 'Ad ' + ad.id.slice(0, 8);
+    var label = captionText || 'Ad ' + ad.id.slice(0, 8);
+    var bc = ad.body_copy;
+    var bcLabel = bc
+      ? '<span style="color:var(--text-tertiary);">' + escapeHtml((bc.headline || bc.text || '').slice(0, 40)) + '</span>'
+      : '<span style="color:#d33;font-weight:600;">No body copy</span>';
 
     var actions = statusActionHtml(ad);
     if (showAssign) {
@@ -1485,6 +1488,7 @@
       + (imgUrl ? '<img class="ad-row-thumb" src="' + imgUrl + '" alt="" />' : '<div class="ad-row-thumb"></div>')
       + '<div class="ad-row-info">'
       + '<div class="ad-row-caption">' + escapeHtml(label) + '</div>'
+      + '<div style="font-size:12px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + bcLabel + '</div>'
       + '<div class="ad-row-status">'
       + statusLabel(ad)
       + '</div>'
