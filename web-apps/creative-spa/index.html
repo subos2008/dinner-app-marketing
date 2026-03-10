@@ -722,6 +722,22 @@
     width: 100%;
     display: block;
   }
+  .gen-result-build-btn {
+    display: block;
+    width: calc(100% - 24px);
+    margin: 12px auto;
+    padding: 12px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+  .gen-result-build-btn:active { background: var(--accent-dark); }
 
   .gen-result-caption-card {
     background: var(--surface);
@@ -2029,6 +2045,28 @@
     color: var(--text-tertiary);
     padding: 8px 4px;
   }
+
+  /* Collapsed section — hide unselected cards */
+  .builder-role-section.collapsed .builder-caption-card:not(.selected),
+  .builder-body-copy-section.collapsed .builder-body-copy-card:not(.selected) {
+    display: none;
+  }
+  .builder-unselect-btn {
+    display: none;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 8px;
+    font-family: var(--font-body);
+  }
+  .builder-role-section.collapsed .builder-unselect-btn,
+  .builder-body-copy-section.collapsed .builder-unselect-btn {
+    display: inline;
+  }
+  .builder-unselect-btn:active { color: var(--accent); }
 
   /* Body copy suggestion cards */
   .gen-body-copy-suggestion {
@@ -3393,7 +3431,12 @@
     const imgUrl = storageBaseUrl + '/' + image.storage_path;
     const card = document.createElement('div');
     card.className = 'gen-result-card';
-    card.innerHTML = '<img src="' + escapeHtml(imgUrl) + '?t=' + Date.now() + '" alt="Generated image" />';
+    card.innerHTML = '<img src="' + escapeHtml(imgUrl) + '?t=' + Date.now() + '" alt="Generated image" />'
+      + '<button class="gen-result-build-btn">Build Ad</button>';
+    card.querySelector('.gen-result-build-btn').addEventListener('click', () => {
+      builderImageId = image.id;
+      openAdBuilder();
+    });
     $genResults.appendChild(card);
   }
 
@@ -5370,8 +5413,11 @@
     const allRoles = [...roleOrder, 'other'];
     for (const role of allRoles) {
       const caps = groups[role];
-      html += '<div class="builder-role-section">';
-      html += '<div class="builder-role-title">' + roleLabels[role] + '</div>';
+      const hasSelection = caps.some(c => selectedCaptionIds.includes(c.id));
+      html += '<div class="builder-role-section' + (hasSelection ? ' collapsed' : '') + '" data-role="' + role + '">';
+      html += '<div class="builder-role-title">' + roleLabels[role]
+        + '<button class="builder-unselect-btn" data-role="' + role + '">Change</button>'
+        + '</div>';
       if (caps.length === 0) {
         html += '<div class="builder-role-empty">No ' + roleLabels[role].toLowerCase() + '</div>';
       } else {
@@ -5388,8 +5434,10 @@
 
     // Body copy picker
     const bodyCopyItems = filteredBodyCopy();
-    html += '<div class="builder-body-copy-section">';
-    html += '<div class="builder-body-copy-title">Body Copy (below image)</div>';
+    html += '<div class="builder-body-copy-section' + (selectedBodyCopyId ? ' collapsed' : '') + '">';
+    html += '<div class="builder-body-copy-title">Body Copy (below image)'
+      + '<button class="builder-unselect-btn" data-section="body-copy">Change</button>'
+      + '</div>';
     if (bodyCopyItems.length === 0) {
       html += '<div class="builder-body-copy-empty">No body copy yet. Add some in Library &gt; Copy.</div>';
     } else {
@@ -5426,6 +5474,41 @@
         toggleBodyCopy(card.dataset.bcId);
       });
     });
+
+    // "Change" buttons — expand collapsed sections
+    $builderBody.querySelectorAll('.builder-unselect-btn[data-role]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const role = btn.dataset.role;
+        const section = $builderBody.querySelector('.builder-role-section[data-role="' + role + '"]');
+        if (!section) return;
+        // Deselect all captions in this role group
+        const cards = section.querySelectorAll('.builder-caption-card.selected');
+        cards.forEach(card => {
+          const idx = selectedCaptionIds.indexOf(card.dataset.captionId);
+          if (idx !== -1) selectedCaptionIds.splice(idx, 1);
+          card.classList.remove('selected');
+          const checkEl = card.querySelector('.builder-caption-check');
+          if (checkEl) checkEl.innerHTML = '';
+        });
+        section.classList.remove('collapsed');
+        updateBuilderActionBtn();
+      });
+    });
+    $builderBody.querySelectorAll('.builder-unselect-btn[data-section="body-copy"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectedBodyCopyId = null;
+        const section = $builderBody.querySelector('.builder-body-copy-section');
+        if (section) section.classList.remove('collapsed');
+        $builderBody.querySelectorAll('.builder-body-copy-card').forEach(card => {
+          card.classList.remove('selected');
+          const checkEl = card.querySelector('.builder-body-copy-check');
+          if (checkEl) checkEl.innerHTML = '';
+        });
+        updateBuilderActionBtn();
+      });
+    });
   }
 
   function renderBuilderPreview(imageUrl) {
@@ -5451,6 +5534,12 @@
       if (checkEl) checkEl.innerHTML = isSelected ? '&#10003;' : '';
     });
 
+    // Collapse/expand role sections based on selection
+    $builderBody.querySelectorAll('.builder-role-section').forEach(section => {
+      const hasSelected = section.querySelector('.builder-caption-card.selected');
+      section.classList.toggle('collapsed', !!hasSelected);
+    });
+
     updateBuilderActionBtn();
   }
 
@@ -5464,6 +5553,10 @@
       const checkEl = card.querySelector('.builder-body-copy-check');
       if (checkEl) checkEl.innerHTML = isSelected ? '&#10003;' : '';
     });
+
+    // Collapse/expand body copy section
+    const bcSection = $builderBody.querySelector('.builder-body-copy-section');
+    if (bcSection) bcSection.classList.toggle('collapsed', !!selectedBodyCopyId);
   }
 
   function updateBuilderActionBtn() {
