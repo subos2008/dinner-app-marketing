@@ -1361,12 +1361,16 @@
 
     var captions = ic.image_creative_caption || [];
     var captionText = captions[0] && captions[0].caption ? captions[0].caption.text : 'No caption';
-    var syncState = getSyncState(ad);
+    var bc = ad.body_copy;
+    var bcLabel = bc
+      ? '<span style="color:var(--text-tertiary);">' + escapeHtml((bc.headline || bc.text || '').slice(0, 40)) + '</span>'
+      : '<span style="color:#d33;font-weight:600;">No body copy</span>';
 
     return '<div class="ad-row" data-meta-ad-id="' + ad.id + '" style="cursor:pointer;">'
       + (imgUrl ? '<img class="ad-row-thumb" src="' + imgUrl + '" alt="" />' : '<div class="ad-row-thumb"></div>')
       + '<div class="ad-row-info">'
       + '<div class="ad-row-caption">' + escapeHtml(captionText) + '</div>'
+      + '<div style="font-size:12px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + bcLabel + '</div>'
       + '<div class="ad-row-status">'
       + statusLabel(ad)
       + '</div>'
@@ -2091,7 +2095,8 @@
 
   function statusActionHtml(ad) {
     var btn = '';
-    if (ad.desired_status === 'draft') btn = '<button class="status-action-btn action-queue" data-ad-id="' + ad.id + '" data-next="queued">Queue</button>';
+    if (ad.desired_status === 'draft' && !ad.body_copy_id) btn = '<span style="font-size:12px;color:#d33;">Assign body copy to queue</span>';
+    else if (ad.desired_status === 'draft') btn = '<button class="status-action-btn action-queue" data-ad-id="' + ad.id + '" data-next="queued">Queue</button>';
     else if (ad.desired_status === 'queued') btn = '<button class="status-action-btn action-unqueue" data-ad-id="' + ad.id + '" data-next="draft">Back to Draft</button>';
     else if (ad.desired_status === 'live') btn = '<button class="status-action-btn action-pause" data-ad-id="' + ad.id + '" data-next="paused">Pause</button>';
     else if (ad.desired_status === 'paused') btn = '<button class="status-action-btn action-unpause" data-ad-id="' + ad.id + '" data-next="live">Unpause</button>';
