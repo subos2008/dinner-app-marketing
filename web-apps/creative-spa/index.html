@@ -262,6 +262,14 @@
     transform: translateX(-50%) scale(1);
   }
 
+  .segment-dropdown-overlay.centered .segment-dropdown {
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%) scale(0.95);
+  }
+  .segment-dropdown-overlay.centered.visible .segment-dropdown {
+    transform: translateX(-50%) translateY(-50%) scale(1);
+  }
+
   .segment-dropdown-item {
     display: flex;
     align-items: center;
@@ -291,6 +299,18 @@
     color: var(--accent);
     font-weight: 700;
     font-size: 16px;
+  }
+  .segment-dropdown-new {
+    padding: 12px 16px;
+    font-size: 15px;
+    color: var(--accent-dark);
+    cursor: pointer;
+    border-top: 0.5px solid var(--separator);
+    -webkit-tap-highlight-color: transparent;
+    font-weight: 500;
+  }
+  .segment-dropdown-new:active {
+    background: var(--bg);
   }
 
   /* --- Tab content area --- */
@@ -1923,6 +1943,25 @@
   .body-copy-editor-delete { width: 100%; padding: 14px; border-radius: 12px; border: none; background: none; color: #d33; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 8px; }
   .body-copy-editor-delete:active { background: rgba(221,51,51,0.06); }
 
+  /* Image editor (segment assignment) */
+  .image-editor { position: fixed; inset: 0; z-index: 220; background: var(--bg); display: flex; flex-direction: column; }
+  .image-editor.hidden { display: none !important; }
+  .image-editor-header { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  .image-editor-close { background: none; border: none; font-size: 28px; padding: 0 12px 0 0; cursor: pointer; color: var(--text-primary); line-height: 1; }
+  .image-editor-title { font-size: 17px; font-weight: 600; flex: 1; }
+  .image-editor-body { flex: 1; overflow-y: auto; padding: 20px 16px; display: flex; flex-direction: column; gap: 20px; }
+  .image-editor-preview { width: 100%; max-height: 300px; object-fit: contain; border-radius: 10px; background: #000; }
+  .image-editor-section label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .image-editor-segments { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .image-editor-seg-chip { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 14px; background: rgba(0,0,0,0.06); font-size: 13px; }
+  .image-editor-seg-chip button { background: none; border: none; font-size: 14px; cursor: pointer; padding: 0 0 0 2px; color: var(--text-secondary); }
+  .image-editor-seg-add { padding: 6px 12px; border-radius: 14px; border: 1px dashed var(--border); background: none; font-size: 13px; cursor: pointer; color: var(--text-secondary); }
+  .image-editor-footer { padding: 16px; padding-bottom: calc(16px + var(--safe-bottom)); border-top: 1px solid var(--border); flex-shrink: 0; }
+  .image-editor-delete { width: 100%; padding: 14px; border-radius: 12px; border: none; background: none; color: #d33; font-size: 15px; font-weight: 500; cursor: pointer; }
+  .image-editor-delete:active { background: rgba(221,51,51,0.06); }
+  .image-seg-chips { position: absolute; bottom: 2px; left: 2px; right: 2px; display: flex; flex-wrap: wrap; gap: 2px; pointer-events: none; }
+  .image-seg-chip { font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 3px; background: rgba(0,0,0,0.55); color: #fff; white-space: nowrap; }
+
   /* Body copy picker in ad builder */
   .builder-body-copy-section { margin-top: 16px; }
   .builder-body-copy-title {
@@ -2050,11 +2089,6 @@
       </div>
       <button class="signout-btn" id="signout-btn">Sign out</button>
     </div>
-  </div>
-
-  <!-- Segment dropdown -->
-  <div class="segment-dropdown-overlay" id="segment-dropdown-overlay">
-    <div class="segment-dropdown" id="segment-dropdown"></div>
   </div>
 
   <!-- Tab content -->
@@ -2312,6 +2346,23 @@
   </div>
 </div>
 
+<!-- Segment dropdown (must be outside #app for z-index stacking) -->
+<div class="segment-dropdown-overlay" id="segment-dropdown-overlay">
+  <div class="segment-dropdown" id="segment-dropdown"></div>
+</div>
+
+<!-- Image editor (segment assignment) -->
+<div id="image-editor" class="image-editor hidden">
+  <div class="image-editor-header">
+    <button class="image-editor-close" id="image-editor-close">&times;</button>
+    <div class="image-editor-title">Image Segments</div>
+  </div>
+  <div class="image-editor-body" id="image-editor-body"></div>
+  <div class="image-editor-footer">
+    <button class="image-editor-delete" id="image-editor-delete">Delete Image</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 (function() {
@@ -2349,6 +2400,7 @@
   let editorBodyCopyId = null;
   let editorBodyCopyIsLocked = false;
   let selectedBodyCopyId = null;
+  let editorImageId = null;
 
   // --- Supabase helpers ---
   function db() { return supabaseClient.schema('marketing'); }
@@ -2468,6 +2520,12 @@
   const $viewerEditForm = document.getElementById('viewer-edit-form');
   const $viewerEditInput = document.getElementById('viewer-edit-input');
   const $viewerEditSubmit = document.getElementById('viewer-edit-submit');
+
+  // Image editor DOM refs
+  const $imageEditor = document.getElementById('image-editor');
+  const $imageEditorBody = document.getElementById('image-editor-body');
+  const $imageEditorClose = document.getElementById('image-editor-close');
+  const $imageEditorDelete = document.getElementById('image-editor-delete');
 
   // Ad viewer DOM refs
   const $adViewer = document.getElementById('ad-viewer');
@@ -2612,6 +2670,8 @@
         + '</div>';
     }
 
+    html += '<div class="segment-dropdown-new" id="segment-dropdown-new-btn">+ New Segment</div>';
+
     $segmentDropdown.innerHTML = html;
 
     // Attach click handlers
@@ -2622,6 +2682,15 @@
         closeSegmentDropdown();
       });
     });
+
+    const newBtn = document.getElementById('segment-dropdown-new-btn');
+    if (newBtn) {
+      newBtn.addEventListener('click', async () => {
+        closeSegmentDropdown();
+        const seg = await createSegment();
+        if (seg) setActiveSegment(seg.id);
+      });
+    }
   }
 
   function setActiveSegment(id) {
@@ -2647,6 +2716,21 @@
       activeSegmentId = null;
       localStorage.removeItem('mobile-active-segment');
       $segmentPickerLabel.textContent = 'All';
+    }
+  }
+
+  async function createSegment() {
+    const name = prompt('New segment name:');
+    if (!name || !name.trim()) return null;
+    try {
+      const { data, error } = await db().from('segment').insert({ name: name.trim() }).select().single();
+      if (error) throw error;
+      await loadData();
+      return data;
+    } catch (err) {
+      console.error('Create segment failed:', err);
+      alert('Failed to create segment: ' + err.message);
+      return null;
     }
   }
 
@@ -3877,9 +3961,43 @@
     html += '</div>';
     $libImageGrid.innerHTML = html;
 
-    // Attach click handlers
+    // Attach click + long-press handlers
     $libImageGrid.querySelectorAll('.image-cell-wrap').forEach(cell => {
+      let pressTimer = null;
+      let didLongPress = false;
+
+      function startPress() {
+        didLongPress = false;
+        pressTimer = setTimeout(() => {
+          didLongPress = true;
+          const imageId = cell.dataset.imageId;
+          if (imageId && !selectMode) openImageEditor(imageId);
+        }, 500);
+      }
+
+      function cancelPress() {
+        clearTimeout(pressTimer);
+      }
+
+      function endPress(e) {
+        clearTimeout(pressTimer);
+        if (didLongPress) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+
+      cell.addEventListener('touchstart', startPress, { passive: true });
+      cell.addEventListener('touchmove', cancelPress);
+      cell.addEventListener('touchend', endPress);
+      cell.addEventListener('touchcancel', cancelPress);
+      cell.addEventListener('mousedown', startPress);
+      cell.addEventListener('mousemove', cancelPress);
+      cell.addEventListener('mouseup', endPress);
+      cell.addEventListener('mouseleave', cancelPress);
+
       cell.addEventListener('click', () => {
+        if (didLongPress) return;
         if (selectMode) {
           const id = cell.dataset.imageId;
           if (selectedImageIds.has(id)) {
@@ -3976,9 +4094,18 @@
   function renderImageCell(img) {
     const src = storageBaseUrl + '/' + img.storage_path;
     const selectedClass = selectedImageIds.has(img.id) ? ' selected' : '';
-    return '<div class="image-cell-wrap' + selectedClass + '" data-image-id="' + escapeHtml(img.id) + '">'
+    let segChips = '';
+    if (img.segments && img.segments.length > 0) {
+      segChips = '<div class="image-seg-chips">';
+      for (const seg of img.segments) {
+        segChips += '<span class="image-seg-chip">' + escapeHtml(seg.name) + '</span>';
+      }
+      segChips += '</div>';
+    }
+    return '<div class="image-cell-wrap' + selectedClass + '" data-image-id="' + escapeHtml(img.id) + '" style="position:relative;">'
       + '<div class="select-check"></div>'
       + '<img src="' + escapeHtml(src) + '" loading="lazy" alt="" />'
+      + segChips
       + '</div>';
   }
 
@@ -4755,23 +4882,19 @@
     const assignedIds = new Set((caption.segments || []).map(s => s.id));
     const available = STATE.segments.filter(s => !assignedIds.has(s.id));
 
-    if (available.length === 0) {
-      alert('Already assigned to all segments.');
-      return;
-    }
-
     const dropdown = $segmentDropdown;
     let html = '<div class="segment-dropdown-title">Add to Segment</div>';
     for (const seg of available) {
       html += '<div class="segment-dropdown-item" data-seg-id="' + seg.id + '">' + escapeHtml(seg.name) + '</div>';
     }
+    html += '<div class="segment-dropdown-new" data-action="new">+ New Segment</div>';
     dropdown.innerHTML = html;
-    $segmentDropdownOverlay.classList.add('visible');
+    $segmentDropdownOverlay.classList.add('visible', 'centered');
 
     dropdown.querySelectorAll('.segment-dropdown-item').forEach(item => {
       item.addEventListener('click', async () => {
         const segId = item.dataset.segId;
-        $segmentDropdownOverlay.classList.remove('visible');
+        $segmentDropdownOverlay.classList.remove('visible', 'centered');
         await db().from('caption_segment').insert({ caption_id: editorCaptionId, segment_id: segId });
         await loadData();
         const updated = STATE.captions.find(c => c.id === editorCaptionId);
@@ -4779,9 +4902,20 @@
       });
     });
 
+    dropdown.querySelector('[data-action="new"]').addEventListener('click', async () => {
+      $segmentDropdownOverlay.classList.remove('visible', 'centered');
+      const seg = await createSegment();
+      if (seg) {
+        await db().from('caption_segment').insert({ caption_id: editorCaptionId, segment_id: seg.id });
+        await loadData();
+        const updated = STATE.captions.find(c => c.id === editorCaptionId);
+        if (updated) renderCaptionEditorBody(updated);
+      }
+    });
+
     const backdropHandler = (e) => {
       if (e.target === $segmentDropdownOverlay) {
-        $segmentDropdownOverlay.classList.remove('visible');
+        $segmentDropdownOverlay.classList.remove('visible', 'centered');
         $segmentDropdownOverlay.removeEventListener('click', backdropHandler);
       }
     };
@@ -4937,23 +5071,19 @@
     const assignedIds = new Set((bc.segments || []).map(s => s.id));
     const available = STATE.segments.filter(s => !assignedIds.has(s.id));
 
-    if (available.length === 0) {
-      alert('Already assigned to all segments.');
-      return;
-    }
-
     const dropdown = $segmentDropdown;
     let html = '<div class="segment-dropdown-title">Add to Segment</div>';
     for (const seg of available) {
       html += '<div class="segment-dropdown-item" data-seg-id="' + seg.id + '">' + escapeHtml(seg.name) + '</div>';
     }
+    html += '<div class="segment-dropdown-new" data-action="new">+ New Segment</div>';
     dropdown.innerHTML = html;
-    $segmentDropdownOverlay.classList.add('visible');
+    $segmentDropdownOverlay.classList.add('visible', 'centered');
 
     dropdown.querySelectorAll('.segment-dropdown-item').forEach(item => {
       item.addEventListener('click', async () => {
         const segId = item.dataset.segId;
-        $segmentDropdownOverlay.classList.remove('visible');
+        $segmentDropdownOverlay.classList.remove('visible', 'centered');
         await db().from('body_copy_segment').insert({ body_copy_id: editorBodyCopyId, segment_id: segId });
         await loadData();
         const updated = STATE.bodyCopy.find(b => b.id === editorBodyCopyId);
@@ -4961,9 +5091,20 @@
       });
     });
 
+    dropdown.querySelector('[data-action="new"]').addEventListener('click', async () => {
+      $segmentDropdownOverlay.classList.remove('visible', 'centered');
+      const seg = await createSegment();
+      if (seg) {
+        await db().from('body_copy_segment').insert({ body_copy_id: editorBodyCopyId, segment_id: seg.id });
+        await loadData();
+        const updated = STATE.bodyCopy.find(b => b.id === editorBodyCopyId);
+        if (updated) renderBodyCopyEditorBody(updated);
+      }
+    });
+
     const backdropHandler = (e) => {
       if (e.target === $segmentDropdownOverlay) {
-        $segmentDropdownOverlay.classList.remove('visible');
+        $segmentDropdownOverlay.classList.remove('visible', 'centered');
         $segmentDropdownOverlay.removeEventListener('click', backdropHandler);
       }
     };
@@ -5026,6 +5167,124 @@
       alert('Failed to save body copy.');
     } finally {
       $bodyCopyEditorSave.disabled = false;
+    }
+  });
+
+  // --- Image Editor (segment assignment) ---
+
+  function openImageEditor(imageId) {
+    const image = STATE.images.find(i => i.id === imageId);
+    if (!image) return;
+    editorImageId = imageId;
+    renderImageEditorBody(image);
+    show($imageEditor);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeImageEditor() {
+    hide($imageEditor);
+    document.body.style.overflow = '';
+    editorImageId = null;
+  }
+
+  function renderImageEditorBody(image) {
+    const src = storageBaseUrl + '/' + image.storage_path;
+
+    let segsHtml = '';
+    for (const seg of (image.segments || [])) {
+      segsHtml += '<span class="image-editor-seg-chip">'
+        + escapeHtml(seg.name)
+        + ' <button data-segment-id="' + seg.id + '" title="Remove">&times;</button>'
+        + '</span>';
+    }
+    segsHtml += '<button class="image-editor-seg-add" id="image-editor-add-seg">+ Segment</button>';
+
+    let html = '<img class="image-editor-preview" src="' + escapeHtml(src) + '" alt="" />';
+    html += '<div class="image-editor-section"><label>Segments</label>'
+      + '<div class="image-editor-segments">' + segsHtml + '</div>'
+      + '</div>';
+
+    $imageEditorBody.innerHTML = html;
+
+    // Remove segment chip
+    $imageEditorBody.querySelectorAll('.image-editor-seg-chip button').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const segId = btn.dataset.segmentId;
+        await db().from('base_image_segment').delete().eq('base_image_id', editorImageId).eq('segment_id', segId);
+        await loadData();
+        const updated = STATE.images.find(i => i.id === editorImageId);
+        if (updated) renderImageEditorBody(updated);
+      });
+    });
+
+    // Add segment button
+    const addSegBtn = document.getElementById('image-editor-add-seg');
+    if (addSegBtn) {
+      addSegBtn.addEventListener('click', () => {
+        showImageEditorSegmentPicker();
+      });
+    }
+  }
+
+  function showImageEditorSegmentPicker() {
+    const image = STATE.images.find(i => i.id === editorImageId);
+    if (!image) return;
+    const assignedIds = new Set((image.segments || []).map(s => s.id));
+    const available = STATE.segments.filter(s => !assignedIds.has(s.id));
+
+    const dropdown = $segmentDropdown;
+    let html = '<div class="segment-dropdown-title">Add to Segment</div>';
+    for (const seg of available) {
+      html += '<div class="segment-dropdown-item" data-seg-id="' + seg.id + '">' + escapeHtml(seg.name) + '</div>';
+    }
+    html += '<div class="segment-dropdown-new" data-action="new">+ New Segment</div>';
+    dropdown.innerHTML = html;
+    $segmentDropdownOverlay.classList.add('visible', 'centered');
+
+    dropdown.querySelectorAll('.segment-dropdown-item').forEach(item => {
+      item.addEventListener('click', async () => {
+        const segId = item.dataset.segId;
+        $segmentDropdownOverlay.classList.remove('visible', 'centered');
+        await db().from('base_image_segment').insert({ base_image_id: editorImageId, segment_id: segId });
+        await loadData();
+        const updated = STATE.images.find(i => i.id === editorImageId);
+        if (updated) renderImageEditorBody(updated);
+      });
+    });
+
+    dropdown.querySelector('[data-action="new"]').addEventListener('click', async () => {
+      $segmentDropdownOverlay.classList.remove('visible', 'centered');
+      const seg = await createSegment();
+      if (seg) {
+        await db().from('base_image_segment').insert({ base_image_id: editorImageId, segment_id: seg.id });
+        await loadData();
+        const updated = STATE.images.find(i => i.id === editorImageId);
+        if (updated) renderImageEditorBody(updated);
+      }
+    });
+
+    const backdropHandler = (e) => {
+      if (e.target === $segmentDropdownOverlay) {
+        $segmentDropdownOverlay.classList.remove('visible', 'centered');
+        $segmentDropdownOverlay.removeEventListener('click', backdropHandler);
+      }
+    };
+    $segmentDropdownOverlay.addEventListener('click', backdropHandler);
+  }
+
+  $imageEditorClose.addEventListener('click', closeImageEditor);
+
+  $imageEditorDelete.addEventListener('click', async () => {
+    if (!editorImageId) return;
+    if (!confirm('Delete this image?')) return;
+    try {
+      const { error } = await db().from('base_image').delete().eq('id', editorImageId);
+      if (error) throw error;
+      await loadData();
+      closeImageEditor();
+    } catch (err) {
+      console.error('Delete image failed:', err);
+      alert('Can\u2019t delete \u2014 this image is used by an ad. Delete the ad first.');
     }
   });
 
