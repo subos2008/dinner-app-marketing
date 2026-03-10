@@ -223,10 +223,10 @@
   .sync-btn:disabled { opacity: 0.5; cursor: default; }
 
   .ad-row {
-    display: flex; gap: 12px; align-items: center;
+    display: flex; gap: 12px; align-items: flex-start;
     padding: 12px 16px; border-bottom: 0.5px solid var(--separator); background: var(--surface);
   }
-  .ad-row-thumb { width: 112px; height: 112px; border-radius: 8px; object-fit: cover; background: var(--separator); flex-shrink: 0; cursor: pointer; }
+  .ad-row-thumb { width: 112px; border-radius: 8px; background: var(--separator); flex-shrink: 0; cursor: pointer; }
 
   .fullscreen-overlay {
     position: fixed; inset: 0; z-index: 400;
@@ -1333,13 +1333,27 @@
       html += readyCreatives.map(function(c) { return renderCreativeCard(c); }).join('');
     }
 
-    // Existing meta_ads
+    // Existing meta_ads grouped by ad set
     if (STATE.ads.length > 0) {
+      var adsBySet = {};
+      STATE.ads.forEach(function(ad) {
+        var key = ad.ad_set_id || '_none';
+        if (!adsBySet[key]) adsBySet[key] = [];
+        adsBySet[key].push(ad);
+      });
+
       html += '<div class="section-header">' + STATE.ads.length + ' deployed</div>';
-      html += STATE.ads.map(function(ad) {
-        var adSet = STATE.adSets.find(function(as) { return as.id === ad.ad_set_id; });
-        return renderAdCard(ad, false, adSet);
-      }).join('');
+
+      Object.keys(adsBySet).forEach(function(setId) {
+        var adSet = STATE.adSets.find(function(as) { return as.id === setId; });
+        var setName = adSet ? adSet.name : 'No ad set';
+        var setAds = adsBySet[setId];
+        html += '<div style="padding:10px 16px 4px;font-size:13px;font-weight:600;color:var(--text-secondary);background:var(--bg);">'
+          + escapeHtml(setName) + ' <span style="font-weight:400;color:var(--text-tertiary);">(' + setAds.length + ')</span></div>';
+        html += setAds.map(function(ad) {
+          return renderAdCard(ad, false, adSet);
+        }).join('');
+      });
     }
 
     $viewUnassigned.innerHTML = html;
