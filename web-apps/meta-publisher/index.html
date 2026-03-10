@@ -180,6 +180,7 @@
   }
   .status-active { background: #D1F2D1; color: #1B7A1B; }
   .status-paused { background: #FFF3CD; color: #856404; }
+  .status-learning { background: #E0D4F5; color: #5B21B6; }
   .status-other { background: #E8E8ED; color: var(--text-secondary); }
 
   /* Ad set cards */
@@ -583,7 +584,7 @@
   var currentSession = null;
   var appInitialised = false;
 
-  var STATE = { account: null, campaigns: [], adSets: [], ads: [], creatives: [], bodyCopy: [], syncLog: [], cities: [], languages: [] };
+  var STATE = { account: null, campaigns: [], adSets: [], ads: [], creatives: [], bodyCopy: [], syncLog: [], cities: [], languages: [], insights: {} };
   var activeTab = 'unassigned';
   var detailAdSetId = null;
   var deployingCreativeId = null;
@@ -618,6 +619,7 @@
   function metaStatusClass(status) {
     if (!status) return 'status-other';
     if (status === 'ACTIVE') return 'status-active';
+    if (status === 'LEARNING' || status === 'LEARNING_LIMITED') return 'status-learning';
     if (status === 'PAUSED' || status === 'CAMPAIGN_PAUSED' || status === 'ADSET_PAUSED') return 'status-paused';
     return 'status-other';
   }
@@ -751,6 +753,21 @@
     STATE.languages = results[7].data || [];
 
     render();
+
+    // Fetch insights in background (non-blocking)
+    fetchInsights();
+  }
+
+  async function fetchInsights() {
+    try {
+      var resp = await supabaseClient.functions.invoke('meta-sync', { body: { action: 'fetch_insights' } });
+      if (resp.data && resp.data.insights) {
+        STATE.insights = resp.data.insights;
+        render();
+      }
+    } catch (e) {
+      console.error('Failed to fetch insights:', e);
+    }
   }
 
   function render() {
@@ -1186,8 +1203,30 @@
       badge = '<span class="badge badge-synced">In sync</span>';
     }
 
-    var statusLabel = as.meta_status || '';
-    var statusCls = metaStatusClass(as.meta_status);
+    // Use live effective_status from insights if available, fall back to stored meta_status
+    var insight = STATE.insights[as.id];
+    var liveStatus = (insight && insight.effective_status) ? insight.effective_status : as.meta_status;
+    var statusLabel = liveStatus || '';
+    var statusCls = metaStatusClass(liveStatus);
+
+    // Learning badge
+    var learningBadge = '';
+    if (liveStatus === 'LEARNING') {
+      learningBadge = '<span class="badge status-learning">Learning</span>';
+    } else if (liveStatus === 'LEARNING_LIMITED') {
+      learningBadge = '<span class="badge" style="background:#FDE8E8;color:#991B1B;">Learning Limited</span>';
+    }
+
+    // Conversion counts (compact for card)
+    var convBadge = '';
+    if (insight) {
+      var parts = [];
+      if (insight.conversions_1d > 0) parts.push(insight.conversions_1d + ' today');
+      if (insight.conversions_7d > 0) parts.push(insight.conversions_7d + ' / 7d');
+      if (parts.length > 0) {
+        convBadge = '<span style="font-size:11px;color:var(--accent-dark);">' + parts.join(' · ') + '</span>';
+      }
+    }
 
     var targetingSummary = getTargetingSummary(as.targeting);
 
@@ -1217,7 +1256,7 @@
       + '<span>' + total + ' ad' + (total !== 1 ? 's' : '') + '</span>'
       + (statusLabel ? '<span class="campaign-status ' + statusCls + '">' + statusLabel + '</span>' : '')
       + (as.daily_budget_cents ? '<span>' + (as.daily_budget_cents / 100).toFixed(2) + '/day</span>' : '')
-      + badge + cityBadge
+      + badge + learningBadge + convBadge + cityBadge
       + '</div>'
       + (targetingSummary ? '<div style="font-size:11px;color:var(--text-tertiary);margin-top:3px;">' + escapeHtml(targetingSummary) + '</div>' : '')
       + '</div>';
@@ -1231,11 +1270,36 @@
     var ads = STATE.ads.filter(function(a) { return a.ad_set_id === adSet.id; });
     var pendingCount = ads.filter(function(a) { return needsSync(a); }).length;
 
+    var insight = STATE.insights[adSet.id];
+    var liveStatus = (insight && insight.effective_status) ? insight.effective_status : adSet.meta_status;
+
     var html = '<div class="detail-header">'
       + '<button class="detail-back" id="detail-back">&larr;</button>'
       + '<div class="detail-title">' + escapeHtml(adSet.name) + '</div>'
       + '<button id="edit-adset-btn" style="margin-left:auto;padding:6px 14px;font-size:13px;font-weight:600;background:none;border:1px solid var(--separator);border-radius:var(--radius);color:var(--text-primary);cursor:pointer;">Edit</button>'
       + '</div>';
+
+    // Status bar
+    if (liveStatus) {
+      var cls = metaStatusClass(liveStatus);
+      var label = liveStatus === 'LEARNING_LIMITED' ? 'Learning Limited' : liveStatus;
+      html += '<div style="padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-bottom:0.5px solid var(--separator);">'
+        + '<span class="campaign-status ' + cls + '">' + label + '</span>'
+        + '</div>';
+    }
+
+    // Conversions
+    if (insight) {
+      html += '<div style="padding:10px 16px;display:flex;gap:16px;align-items:center;border-bottom:0.5px solid var(--separator);">';
+      if (insight.conversions_1d > 0 || insight.conversions_7d > 0) {
+        html += '<span style="font-size:13px;color:var(--text-secondary);">Conversions:</span>';
+        html += '<span style="font-size:13px;font-weight:600;">' + insight.conversions_1d + ' today</span>';
+        html += '<span style="font-size:13px;font-weight:600;">' + insight.conversions_7d + ' last 7 days</span>';
+      } else {
+        html += '<span style="font-size:13px;color:var(--text-tertiary);">No conversions yet</span>';
+      }
+      html += '</div>';
+    }
 
     // Targeting info
     html += renderTargetingInfo(adSet.targeting);
