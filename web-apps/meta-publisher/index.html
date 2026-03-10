@@ -1836,14 +1836,28 @@
       return '<option value="' + bc.id + '"' + selected + '>' + escapeHtml(label) + '</option>';
     }).join('');
 
+    var canChangeAdSet = !ad.meta_ad_id;
+    var adSetHtml = '';
+    if (canChangeAdSet) {
+      var asOptions = STATE.adSets.map(function(as) {
+        var selected = ad.ad_set_id === as.id ? ' selected' : '';
+        return '<option value="' + as.id + '"' + selected + '>' + escapeHtml(as.name) + '</option>';
+      }).join('');
+      adSetHtml = '<label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Ad Set</label>'
+        + '<select id="detail-ad-set" style="width:100%;padding:8px;border:1px solid var(--separator);border-radius:var(--radius);font-size:14px;font-family:var(--font-body);margin-bottom:12px;">'
+        + asOptions
+        + '</select>';
+    } else {
+      adSetHtml = '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;">'
+        + '<span style="color:var(--text-secondary);">Ad Set</span>'
+        + '<span>' + escapeHtml(adSet ? adSet.name : 'Unassigned') + '</span>'
+        + '</div>';
+    }
+
     $adDetailContent.innerHTML = ''
       + (imgUrl ? '<img src="' + imgUrl + '" alt="" style="width:100%;border-radius:var(--radius);margin-bottom:12px;" />' : '')
       + (captionText ? '<div style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;">' + escapeHtml(captionText) + '</div>' : '')
       + '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">'
-        + '<div style="display:flex;justify-content:space-between;font-size:13px;">'
-          + '<span style="color:var(--text-secondary);">Ad Set</span>'
-          + '<span>' + escapeHtml(adSet ? adSet.name : 'Unassigned') + '</span>'
-        + '</div>'
         + '<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">'
           + '<span style="color:var(--text-secondary);">Status</span>'
           + '<span>' + statusLabel(ad) + '</span>'
@@ -1854,6 +1868,7 @@
         + '</div>'
       + '</div>'
       + '<div style="margin-bottom:12px;">' + statusActionHtml(ad) + '</div>'
+      + adSetHtml
       + '<label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Body Copy</label>'
       + '<select id="detail-body-copy" style="width:100%;padding:8px;border:1px solid var(--separator);border-radius:var(--radius);font-size:14px;font-family:var(--font-body);margin-bottom:12px;">'
       + bcOptions
@@ -1867,7 +1882,9 @@
 
     document.getElementById('detail-save-btn').addEventListener('click', async function() {
       var bcSelect = document.getElementById('detail-body-copy');
+      var asSelect = document.getElementById('detail-ad-set');
       var updateObj = { body_copy_id: bcSelect.value || null };
+      if (asSelect) updateObj.ad_set_id = asSelect.value;
       var res = await db().from('meta_ad').update(updateObj).eq('id', adId);
       if (res.error) { alert('Failed: ' + res.error.message); return; }
       closeAdDetail();
